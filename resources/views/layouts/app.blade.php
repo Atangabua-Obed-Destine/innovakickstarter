@@ -196,7 +196,7 @@
         @include('partials.alerts')
 
         <!-- Page Content -->
-        <div class="p-6">
+        <div class="p-6 pb-24 lg:pb-6">
             @yield('content')
         </div>
     </main>
