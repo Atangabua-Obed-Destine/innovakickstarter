@@ -130,9 +130,9 @@
                                 class="input w-full @error('track_id') border-red-500 @enderror"
                                 required
                             >
-                                <option value="">Select your career track</option>
+                                <option value="" class="bg-dark-800 text-white">Select your career track</option>
                                 @foreach($tracks as $track)
-                                    <option value="{{ $track->id }}" {{ old('track_id') == $track->id ? 'selected' : '' }}>
+                                    <option value="{{ $track->id }}" class="bg-dark-800 text-white" {{ old('track_id') == $track->id ? 'selected' : '' }}>
                                         {{ $track->name }}
                                     </option>
                                 @endforeach
@@ -287,10 +287,10 @@
                                 name="availability"
                                 class="input w-full"
                             >
-                                <option value="immediate" {{ old('availability') == 'immediate' ? 'selected' : '' }}>Immediately</option>
-                                <option value="2_weeks" {{ old('availability') == '2_weeks' ? 'selected' : '' }}>In 2 weeks</option>
-                                <option value="1_month" {{ old('availability') == '1_month' ? 'selected' : '' }}>In 1 month</option>
-                                <option value="3_months" {{ old('availability') == '3_months' ? 'selected' : '' }}>In 3 months</option>
+                                <option value="immediate" class="bg-dark-800 text-white" {{ old('availability') == 'immediate' ? 'selected' : '' }}>Immediately</option>
+                                <option value="2_weeks" class="bg-dark-800 text-white" {{ old('availability') == '2_weeks' ? 'selected' : '' }}>In 2 weeks</option>
+                                <option value="1_month" class="bg-dark-800 text-white" {{ old('availability') == '1_month' ? 'selected' : '' }}>In 1 month</option>
+                                <option value="3_months" class="bg-dark-800 text-white" {{ old('availability') == '3_months' ? 'selected' : '' }}>In 3 months</option>
                             </select>
                         </div>
 
