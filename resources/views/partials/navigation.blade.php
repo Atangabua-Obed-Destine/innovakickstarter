@@ -63,6 +63,22 @@
             </svg>
             <span>My Profile</span>
         </a>
+
+        <a href="{{ route('fees.index') }}" 
+           class="nav-link {{ str_starts_with($currentRoute, 'fees') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>My Fees</span>
+        </a>
+
+        <a href="{{ route('attendance.index') }}" 
+           class="nav-link {{ str_starts_with($currentRoute, 'attendance') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <span>My Attendance</span>
+        </a>
     </div>
 
 {{-- Admin Navigation --}}
@@ -200,6 +216,42 @@
             @endif
         </a>
 
+        <a href="{{ route('admin.fees.index') }}" 
+           class="nav-link {{ str_starts_with($currentRoute, 'admin.fees') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>Fee Reports</span>
+        </a>
+
+        <a href="{{ route('admin.payment-verifications.index') }}" 
+           class="nav-link {{ str_starts_with($currentRoute, 'admin.payment-verifications') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+            <span>Payment Verifications</span>
+            @php
+                $pendingVerifications = \App\Models\FeePayment::where('status', 'submitted')->count();
+            @endphp
+            @if($pendingVerifications > 0)
+                <span class="ml-auto badge badge-warning">{{ $pendingVerifications }}</span>
+            @endif
+        </a>
+
+        <a href="{{ route('admin.attendance.index') }}" 
+           class="nav-link {{ str_starts_with($currentRoute, 'admin.attendance') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <span>Attendance Tracking</span>
+            @php
+                $activeSession = \App\Models\AttendanceSession::where('status', 'active')->first();
+            @endphp
+            @if($activeSession)
+                <span class="ml-auto w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            @endif
+        </a>
+
         <a href="{{ route('admin.interviews.index') }}" 
            class="nav-link {{ str_starts_with($currentRoute, 'admin.interviews') ? 'nav-link-active' : '' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -220,6 +272,22 @@
 
     <div class="space-y-1 mt-6">
         <p class="px-3 py-2 text-xs font-semibold text-dark-500 uppercase tracking-wider">Configuration</p>
+        
+        <a href="{{ route('admin.users.index') }}" 
+           class="nav-link {{ str_starts_with($currentRoute, 'admin.users') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <span>User Management</span>
+        </a>
+
+        <a href="{{ route('admin.roles.index') }}" 
+           class="nav-link {{ str_starts_with($currentRoute, 'admin.roles') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+            <span>Roles & Permissions</span>
+        </a>
         
         <a href="{{ route('admin.content.index') }}" 
            class="nav-link {{ str_starts_with($currentRoute, 'admin.content') ? 'nav-link-active' : '' }}">
@@ -324,21 +392,3 @@
     </div>
 @endif
 
-{{-- Common Links --}}
-<div class="space-y-1 mt-6">
-    <p class="px-3 py-2 text-xs font-semibold text-dark-500 uppercase tracking-wider">Help</p>
-    
-    <a href="#" class="nav-link">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        <span>Documentation</span>
-    </a>
-
-    <a href="#" class="nav-link">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
-        </svg>
-        <span>Support</span>
-    </a>
-</div>

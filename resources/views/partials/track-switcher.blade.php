@@ -86,7 +86,7 @@
         x-transition:leave-start="opacity-100 scale-100 translate-y-0"
         x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
         x-cloak
-        class="absolute top-full right-0 mt-2 w-96 bg-dark-900 border border-dark-700 rounded-xl shadow-2xl shadow-black/40 z-50 overflow-hidden"
+        class="fixed left-4 right-4 top-16 sm:absolute sm:left-auto sm:right-0 sm:top-12 sm:w-96 max-w-sm mx-auto bg-dark-900 border border-dark-700 rounded-xl shadow-2xl shadow-black/40 z-50 overflow-hidden origin-top-right transform"
     >
         {{-- Header with achievements --}}
         <div class="px-4 py-3 border-b border-dark-700 bg-dark-800/50">

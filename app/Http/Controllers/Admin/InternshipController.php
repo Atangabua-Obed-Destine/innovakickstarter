@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\InternshipProfile;
 use App\Models\Notification;
+use App\Services\FeeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -83,16 +84,25 @@ class InternshipController extends Controller
     /**
      * Approve an internship profile.
      */
-    public function approve(Request $request, InternshipProfile $internship): RedirectResponse
+    public function approve(Request $request, InternshipProfile $internship, FeeService $feeService): RedirectResponse
     {
         $validated = $request->validate([
             'approved_start_date' => ['required', 'date'],
             'approved_end_date' => ['required', 'date', 'after:approved_start_date'],
             'review_notes' => ['nullable', 'string', 'max:2000'],
+            'assign_fee' => ['nullable', 'boolean'],
+            'fee_title' => ['required_if:assign_fee,1', 'string', 'max:255'],
+            'fee_amount' => ['required_if:assign_fee,1', 'numeric', 'min:1'],
+            'fee_plan_type' => ['required_if:assign_fee,1', 'in:full,installments'],
+            'fee_due_date' => ['required_if:assign_fee,1', 'date'],
         ], [
             'approved_start_date.required' => 'You must confirm an internship start date.',
             'approved_end_date.required' => 'You must confirm an internship end date.',
             'approved_end_date.after' => 'End date must be after start date.',
+            'fee_title.required_if' => 'Fee title is required when assigning a fee.',
+            'fee_amount.required_if' => 'Fee amount is required when assigning a fee.',
+            'fee_plan_type.required_if' => 'Fee plan type is required when assigning a fee.',
+            'fee_due_date.required_if' => 'First due date is required when assigning a fee.',
         ]);
 
         $today = now()->startOfDay();
@@ -151,8 +161,26 @@ class InternshipController extends Controller
             'action_url' => route('fellow.onboarding'),
         ]);
 
+        if ($request->boolean('assign_fee')) {
+            $dueDate = \Carbon\Carbon::parse($validated['fee_due_date']);
+            
+            $feeService->assignFee([
+                'fellow_id' => $internship->user_id,
+                'title' => $validated['fee_title'],
+                'amount_total' => $validated['fee_amount'],
+                'plan_type' => $validated['fee_plan_type'],
+                'first_due_date' => $dueDate,
+                'final_due_date' => $validated['fee_plan_type'] === 'installments' ? $dueDate->copy()->addMonths(2) : $dueDate,
+                'billable_type' => $internship->getMorphClass(),
+                'billable_id' => $internship->id,
+                'description' => 'Assigned upon internship approval.',
+                'installments_count' => $validated['fee_plan_type'] === 'installments' ? 3 : null,
+                'installment_cadence' => $validated['fee_plan_type'] === 'installments' ? 'monthly' : null,
+            ], $request->user());
+        }
+
         return redirect()->route('admin.internships.show', $internship)
-            ->with('success', 'Internship profile approved.');
+            ->with('success', 'Internship profile approved' . ($request->boolean('assign_fee') ? ' and fee assigned.' : '.'));
     }
 
     /**

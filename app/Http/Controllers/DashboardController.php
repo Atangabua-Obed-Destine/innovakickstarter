@@ -173,6 +173,23 @@ class DashboardController extends Controller
             $programEnrollment = $programFellow;
         }
 
+        // Get unpaid fees information
+        $unpaidFeesQuery = \App\Models\Fee::where('fellow_id', $user->id)
+            ->whereNotIn('status', [\App\Models\Fee::STATUS_PAID, \App\Models\Fee::STATUS_WAIVED])
+            ->whereColumn('amount_paid', '<', 'amount_total');
+        
+        $unpaidFeesCount = (clone $unpaidFeesQuery)->count();
+        $nextUnpaidFee = $unpaidFeesQuery->orderBy('final_due_date', 'asc')->first();
+
+        // Get active attendance session and fellow's record for it
+        $activeAttendanceSession = \App\Models\AttendanceSession::where('status', 'active')->first();
+        $attendanceRecord = null;
+        if ($activeAttendanceSession) {
+            $attendanceRecord = \App\Models\AttendanceRecord::where('session_id', $activeAttendanceSession->id)
+                ->where('fellow_id', $user->id)
+                ->first();
+        }
+
         return view('dashboard.index', [
             'user' => $user,
             'primaryTrack' => $primaryTrack,
@@ -193,6 +210,10 @@ class DashboardController extends Controller
             'currentProgram' => $currentProgram,
             'programEnrollment' => $programEnrollment,
             'internshipProfile' => $user->internshipProfile,
+            'unpaidFeesCount' => $unpaidFeesCount,
+            'nextUnpaidFee' => $nextUnpaidFee,
+            'activeAttendanceSession' => $activeAttendanceSession,
+            'attendanceRecord' => $attendanceRecord,
             'pendingTrackEnrollments' => $user->fellowTracks()
                 ->with('track')
                 ->awaitingReview()

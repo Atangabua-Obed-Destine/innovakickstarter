@@ -53,6 +53,7 @@ class AdminController extends Controller
     public function dashboard(): View
     {
         // Key metrics
+        $activeSession = \App\Models\AttendanceSession::where('status', 'active')->first();
         $metrics = [
             'total_fellows' => User::role('fellow')->where('is_active', true)->count(),
             'total_recruiters' => User::role('recruiter')->count(),
@@ -72,6 +73,9 @@ class AdminController extends Controller
             'program_enrollments' => \DB::table('program_fellows')
                 ->whereIn('status', [ProgramFellow::STATUS_ENROLLED, ProgramFellow::STATUS_ACTIVE])
                 ->count(),
+            // Attendance metrics
+            'active_attendance_session' => $activeSession,
+            'attendance_today' => \App\Models\AttendanceRecord::whereDate('clock_in_time', today())->count(),
         ];
 
         // Recent activities awaiting approval

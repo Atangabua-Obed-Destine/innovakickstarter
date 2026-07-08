@@ -26,6 +26,16 @@ class EnsureInternshipApproved
             return $next($request);
         }
 
+        // Check for overdue fees past grace period (blocks all fellows, regardless of type)
+        $hasOverdueFees = \App\Models\Fee::forFellow($user->id)->overduePastGrace()->exists();
+        if ($hasOverdueFees) {
+            if ($request->routeIs('fees.*', 'logout', 'profile.*', 'verification.*')) {
+                return $next($request);
+            }
+            return redirect()->route('fees.index')
+                ->with('warning', 'Your access is restricted due to overdue fees. Please settle your balance or upload a payment receipt to restore full access.');
+        }
+
         // Independent (or unset) fellows don't need internship approval.
         $type = $user->fellow_type;
         if (!$type || !$type instanceof FellowType || !$type->requiresInternshipDetails()) {

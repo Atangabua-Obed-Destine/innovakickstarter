@@ -200,6 +200,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/fees/{fee}/upload', [FellowFeeController::class, 'uploadForm'])->name('fees.upload');
         Route::post('/fees/{fee}/upload', [FellowFeeController::class, 'uploadStore'])->name('fees.upload.store');
         Route::get('/fees/payments/{payment}/receipt', [FellowFeeController::class, 'downloadReceipt'])->name('fees.receipt');
+
+        // Attendance Tracking
+        Route::get('/attendance', [\App\Http\Controllers\Fellow\AttendanceController::class, 'index'])->name('attendance.index');
+        Route::post('/attendance/clock-in', [\App\Http\Controllers\Fellow\AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
+        Route::post('/attendance/clock-out', [\App\Http\Controllers\Fellow\AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
     });
 
     /*
@@ -262,6 +267,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         
+        // User & Role Management
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+        Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class)->only(['index', 'edit', 'update']);
+        
         // Activity Queue
         Route::get('/activities', [AdminController::class, 'activityQueue'])->name('activities.queue');
         Route::get('/activities/{activity}/review', [AdminController::class, 'reviewActivity'])->name('activities.review');
@@ -297,6 +306,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/payment-verifications/{payment}', [AdminFeeController::class, 'showVerification'])->name('payment-verifications.show');
         Route::post('/payment-verifications/{payment}/approve', [AdminFeeController::class, 'approveVerification'])->name('payment-verifications.approve');
         Route::post('/payment-verifications/{payment}/reject', [AdminFeeController::class, 'rejectVerification'])->name('payment-verifications.reject');
+
+        // Attendance Management
+        Route::get('/attendance', [\App\Http\Controllers\Admin\AttendanceController::class, 'index'])->name('attendance.index');
+        Route::post('/attendance/start', [\App\Http\Controllers\Admin\AttendanceController::class, 'store'])->name('attendance.store');
+        Route::get('/attendance/{session}', [\App\Http\Controllers\Admin\AttendanceController::class, 'show'])->name('attendance.show');
+        Route::post('/attendance/{session}/close', [\App\Http\Controllers\Admin\AttendanceController::class, 'close'])->name('attendance.close');
+        Route::post('/attendance/{session}/records/{record}', [\App\Http\Controllers\Admin\AttendanceController::class, 'updateRecord'])->name('attendance.update-record');
+        Route::get('/attendance/{session}/live-data', [\App\Http\Controllers\Admin\AttendanceController::class, 'liveData'])->name('attendance.live-data');
 
         // Track Enrollment Review
         Route::get('/track-enrollments', [\App\Http\Controllers\Admin\TrackEnrollmentController::class, 'index'])->name('track-enrollments.index');

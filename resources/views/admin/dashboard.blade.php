@@ -26,6 +26,41 @@
         </div>
     </div>
 
+    <!-- Attendance Widget Shortcut -->
+    <div class="card p-5 border-l-4 border-primary-500 bg-dark-800">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-primary-500/20 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-6 h-6 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <h2 class="text-white font-bold text-lg">Daily Attendance Tracking</h2>
+                    <p class="text-dark-400 text-sm mt-1">
+                        @if(isset($metrics['active_attendance_session']) && $metrics['active_attendance_session'])
+                            <span class="text-emerald-400 font-medium animate-pulse inline-flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Active Session
+                            </span>
+                            &middot; <span class="text-white font-medium">{{ $metrics['attendance_today'] ?? 0 }}</span> fellows clocked in today
+                        @else
+                            <span class="text-amber-400 font-medium">No active session today.</span> Start one to begin tracking fellows' clock-ins.
+                        @endif
+                    </p>
+                </div>
+            </div>
+            <div class="flex-shrink-0">
+                @if(isset($metrics['active_attendance_session']) && $metrics['active_attendance_session'])
+                    <a href="{{ route('admin.attendance.show', $metrics['active_attendance_session']) }}" class="btn bg-primary-600 hover:bg-primary-700 text-white w-full sm:w-auto">
+                        View Live Board
+                    </a>
+                @else
+                    <a href="{{ route('admin.attendance.index') }}" class="btn bg-dark-600 hover:bg-dark-700 text-white border-transparent w-full sm:w-auto">
+                        Manage Attendance
+                    </a>
+                @endif
+            </div>
+        </div>
+    </div>
+
     <!-- Stats Overview -->
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Total Fellows -->

@@ -19,14 +19,14 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div class="card p-4">
+    <div class="flex lg:grid lg:grid-cols-5 gap-4 overflow-x-auto pb-4 snap-x snap-mandatory hide-scrollbar">
+        <div class="card p-4 flex-none w-48 lg:w-auto snap-center">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-dark-400 text-sm">Total</p>
                     <p class="text-2xl font-bold text-white">{{ $stats['total'] ?? 0 }}</p>
                 </div>
-                <div class="w-10 h-10 rounded-lg bg-dark-700 flex items-center justify-center">
+                <div class="w-10 h-10 rounded-xl bg-dark-700 flex items-center justify-center">
                     <svg class="w-5 h-5 text-dark-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                     </svg>
@@ -34,13 +34,13 @@
             </div>
         </div>
         
-        <div class="card p-4">
+        <div class="card p-4 flex-none w-48 lg:w-auto snap-center">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-dark-400 text-sm">Approved</p>
                     <p class="text-2xl font-bold text-green-400">{{ $stats['approved'] ?? 0 }}</p>
                 </div>
-                <div class="w-10 h-10 rounded-lg bg-green-600/20 flex items-center justify-center">
+                <div class="w-10 h-10 rounded-xl bg-green-600/20 flex items-center justify-center">
                     <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
@@ -48,13 +48,13 @@
             </div>
         </div>
         
-        <div class="card p-4">
+        <div class="card p-4 flex-none w-48 lg:w-auto snap-center">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-dark-400 text-sm">Pending</p>
                     <p class="text-2xl font-bold text-amber-400">{{ $stats['pending'] ?? 0 }}</p>
                 </div>
-                <div class="w-10 h-10 rounded-lg bg-amber-600/20 flex items-center justify-center">
+                <div class="w-10 h-10 rounded-xl bg-amber-600/20 flex items-center justify-center">
                     <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -62,13 +62,13 @@
             </div>
         </div>
         
-        <div class="card p-4">
+        <div class="card p-4 flex-none w-48 lg:w-auto snap-center">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-dark-400 text-sm">Rejected</p>
                     <p class="text-2xl font-bold text-red-400">{{ $stats['rejected'] ?? 0 }}</p>
                 </div>
-                <div class="w-10 h-10 rounded-lg bg-red-600/20 flex items-center justify-center">
+                <div class="w-10 h-10 rounded-xl bg-red-600/20 flex items-center justify-center">
                     <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -76,13 +76,13 @@
             </div>
         </div>
         
-        <div class="card p-4">
+        <div class="card p-4 flex-none w-48 lg:w-auto snap-center">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-dark-400 text-sm">Total Points</p>
+                    <p class="text-dark-400 text-sm">Points</p>
                     <p class="text-2xl font-bold text-primary-400">{{ $stats['total_points'] ?? 0 }}</p>
                 </div>
-                <div class="w-10 h-10 rounded-lg bg-primary-600/20 flex items-center justify-center">
+                <div class="w-10 h-10 rounded-xl bg-primary-600/20 flex items-center justify-center">
                     <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
                     </svg>
@@ -93,10 +93,10 @@
 
     <!-- Filters -->
     <div class="card p-4">
-        <form method="GET" action="{{ route('activities.index') }}" class="flex flex-wrap items-center gap-4">
-            <div class="flex items-center gap-2">
-                <label class="text-sm text-dark-400">Status:</label>
-                <select name="status" class="form-input py-2 w-32" onchange="this.form.submit()">
+        <form method="GET" action="{{ route('activities.index') }}" class="flex items-center gap-4 overflow-x-auto pb-2 hide-scrollbar">
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <label class="text-sm font-medium text-dark-400">Status:</label>
+                <select name="status" class="form-input py-2 w-32 rounded-xl bg-dark-800/80 border-dark-700/50 text-sm focus:ring-primary-500" onchange="this.form.submit()">
                     <option value="">All</option>
                     <option value="pending" {{ ($filters['status'] ?? '') === 'pending' ? 'selected' : '' }}>Pending</option>
                     <option value="approved" {{ ($filters['status'] ?? '') === 'approved' ? 'selected' : '' }}>Approved</option>
@@ -104,9 +104,9 @@
                 </select>
             </div>
             
-            <div class="flex items-center gap-2">
-                <label class="text-sm text-dark-400">Track:</label>
-                <select name="track_id" class="form-input py-2 w-40" onchange="this.form.submit()">
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <label class="text-sm font-medium text-dark-400">Track:</label>
+                <select name="track_id" class="form-input py-2 w-40 rounded-xl bg-dark-800/80 border-dark-700/50 text-sm focus:ring-primary-500" onchange="this.form.submit()">
                     <option value="">All Tracks</option>
                     @foreach($tracks as $track)
                         <option value="{{ $track->id }}" {{ ($filters['track_id'] ?? '') == $track->id ? 'selected' : '' }}>
@@ -116,9 +116,9 @@
                 </select>
             </div>
             
-            <div class="flex items-center gap-2">
-                <label class="text-sm text-dark-400">Type:</label>
-                <select name="type" class="form-input py-2 w-36" onchange="this.form.submit()">
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <label class="text-sm font-medium text-dark-400">Type:</label>
+                <select name="type" class="form-input py-2 w-36 rounded-xl bg-dark-800/80 border-dark-700/50 text-sm focus:ring-primary-500" onchange="this.form.submit()">
                     <option value="">All Types</option>
                     <option value="project" {{ ($filters['type'] ?? '') === 'project' ? 'selected' : '' }}>Project</option>
                     <option value="certification" {{ ($filters['type'] ?? '') === 'certification' ? 'selected' : '' }}>Certification</option>
@@ -132,7 +132,7 @@
             </div>
             
             @if(array_filter($filters ?? []))
-                <a href="{{ route('activities.index') }}" class="text-sm text-primary-400 hover:text-primary-300">
+                <a href="{{ route('activities.index') }}" class="text-sm font-medium text-primary-400 hover:text-primary-300 flex-shrink-0 px-2 active:scale-95 transition-transform">
                     Clear Filters
                 </a>
             @endif

@@ -446,7 +446,7 @@
                         <button type="button" @click="action = action === 'reject' ? null : 'reject'" class="btn btn-outline text-red-400 border-red-500/40 hover:bg-red-500/10 w-full">Reject</button>
                     </div>
 
-                    <form x-show="action === 'approve'" x-cloak method="POST" action="{{ route('admin.internships.approve', $profile) }}" class="mt-4 space-y-3 border-t border-dark-700 pt-4">
+                    <form x-data="{ assignFee: false }" x-show="action === 'approve'" x-cloak method="POST" action="{{ route('admin.internships.approve', $profile) }}" class="mt-4 space-y-3 border-t border-dark-700 pt-4">
                         @csrf
                         <p class="text-dark-400 text-xs">Confirm the official window. The fellow will only have platform access between these dates.</p>
                         @php
@@ -473,7 +473,40 @@
                             <span class="text-dark-300 text-sm">Optional notes</span>
                             <textarea name="review_notes" rows="2" class="form-input w-full mt-1" placeholder="Anything the fellow should know"></textarea>
                         </label>
-                        <button type="submit" class="btn btn-primary w-full">Confirm approval</button>
+
+                        {{-- Fee Assignment section --}}
+                        <div class="pt-2 border-t border-dark-700 mt-2">
+                            <label class="flex items-center gap-2 cursor-pointer mb-3">
+                                <input type="checkbox" name="assign_fee" value="1" x-model="assignFee" class="form-checkbox text-primary-500 rounded border-dark-600 bg-dark-800 focus:ring-primary-500/50">
+                                <span class="text-sm text-white font-medium">Assign a fee with this approval</span>
+                            </label>
+
+                            <div x-show="assignFee" x-transition.opacity class="space-y-3 bg-dark-800/50 p-3 rounded-lg border border-dark-700">
+                                <label class="block">
+                                    <span class="text-dark-300 text-xs">Fee Title <span class="text-red-400">*</span></span>
+                                    <input type="text" name="fee_title" class="form-input w-full mt-1 text-sm" placeholder="e.g. Internship Processing Fee" :required="assignFee">
+                                </label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <label class="block">
+                                        <span class="text-dark-300 text-xs">Amount (CFA) <span class="text-red-400">*</span></span>
+                                        <input type="number" name="fee_amount" min="1" step="1" class="form-input w-full mt-1 text-sm" :required="assignFee">
+                                    </label>
+                                    <label class="block">
+                                        <span class="text-dark-300 text-xs">Payment Plan <span class="text-red-400">*</span></span>
+                                        <select name="fee_plan_type" class="form-input w-full mt-1 text-sm" :required="assignFee">
+                                            <option value="full">Full Payment</option>
+                                            <option value="installments">Installments (3 splits)</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <label class="block">
+                                    <span class="text-dark-300 text-xs">First Due Date <span class="text-red-400">*</span></span>
+                                    <input type="date" name="fee_due_date" value="{{ date('Y-m-d') }}" class="form-input w-full mt-1 text-sm" :required="assignFee">
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-full mt-4">Confirm approval</button>
                     </form>
 
                     <form x-show="action === 'changes'" x-cloak method="POST" action="{{ route('admin.internships.request-changes', $profile) }}" class="mt-4 space-y-3 border-t border-dark-700 pt-4">

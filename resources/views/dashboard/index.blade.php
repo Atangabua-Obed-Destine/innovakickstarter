@@ -19,30 +19,39 @@
                  : ($progress >= 40 ? 'from-teal-500 to-primary-500'
                  : 'from-primary-500 to-blue-500'));
         @endphp
-        <div class="card p-5 border-l-4 border-primary-500">
-            <div class="flex flex-col lg:flex-row lg:items-center gap-4">
-                <div class="flex items-center gap-3 flex-1 min-w-0">
-                    <span class="w-2.5 h-2.5 rounded-full {{ $ipTone['dot'] }} {{ $ip->status === 'active' ? 'animate-pulse' : '' }}"></span>
+        <div class="card p-6 bg-dark-800/60 backdrop-blur-md relative overflow-hidden border border-primary-500/20">
+            <!-- Subtle background glow -->
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-primary-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="flex flex-col lg:flex-row lg:items-center gap-5 relative z-10">
+                <div class="flex items-center gap-4 flex-1 min-w-0">
+                    <div class="w-12 h-12 rounded-2xl bg-dark-700/80 flex items-center justify-center flex-shrink-0 border border-dark-600 shadow-sm relative">
+                        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full {{ $ipTone['dot'] }} {{ $ip->status === 'active' ? 'animate-pulse ring-4 ring-dark-800' : 'ring-2 ring-dark-800' }}"></span>
+                        <svg class="w-6 h-6 text-dark-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </div>
                     <div class="min-w-0">
-                        <p class="text-white font-semibold truncate">
-                            {{ ucfirst($ip->type) }} internship &middot; {{ $ip->institution_name }}
-                        </p>
-                        <p class="text-xs {{ $ipTone['accent'] }}">{{ $ipTone['label'] }}</p>
+                        <h3 class="text-white font-bold text-lg truncate tracking-tight">
+                            {{ ucfirst($ip->type) }} Internship
+                        </h3>
+                        <p class="text-sm text-dark-300 truncate mt-0.5">{{ $ip->institution_name }}</p>
+                        <p class="text-xs font-medium {{ $ipTone['accent'] }} mt-1">{{ $ipTone['label'] }}</p>
                     </div>
                 </div>
 
                 @if($ip->approved_start_date && $ip->approved_end_date)
-                    <div class="flex-1 min-w-0">
-                        <div class="flex justify-between text-xs text-dark-400 mb-1">
+                    <div class="flex-1 min-w-0 bg-dark-900/50 rounded-xl p-4 border border-dark-700/50">
+                        <div class="flex justify-between text-xs font-medium text-dark-400 mb-2">
                             <span>{{ $ip->approved_start_date->format('M j') }}</span>
                             <span>{{ $ip->approved_end_date->format('M j, Y') }}</span>
                         </div>
-                        <div class="h-2 bg-dark-800 rounded-full overflow-hidden">
-                            <div class="h-full bg-gradient-to-r {{ $bar }}" style="width: {{ $progress }}%"></div>
+                        <div class="h-2.5 bg-dark-800 rounded-full overflow-hidden shadow-inner">
+                            <div class="h-full bg-gradient-to-r {{ $bar }} relative" style="width: {{ $progress }}%">
+                                <div class="absolute inset-0 bg-white/20" style="animation: shimmer 2s infinite linear;"></div>
+                            </div>
                         </div>
-                        <div class="flex justify-between text-[11px] mt-1">
-                            <span class="text-dark-500">{{ $ip->days_elapsed ?? 0 }}/{{ $ip->total_days ?? 0 }} days</span>
-                            <span class="{{ $ipTone['accent'] }} font-medium">
+                        <div class="flex justify-between text-xs mt-2">
+                            <span class="text-dark-500 font-medium">{{ $ip->days_elapsed ?? 0 }}/{{ $ip->total_days ?? 0 }} days</span>
+                            <span class="{{ $ipTone['accent'] }} font-semibold">
                                 @if($ip->is_expired)
                                     Ended {{ $ip->approved_end_date->diffForHumans() }}
                                 @else
@@ -108,6 +117,75 @@
             @endif
         </div>
     </div>
+
+    <!-- Attendance Widget -->
+    @if(isset($activeAttendanceSession))
+        <div class="card border border-primary-500 bg-dark-800 p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-primary-500/20 flex items-center justify-center text-primary-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-white font-bold text-lg">Daily Attendance</h2>
+                        <p class="text-dark-400 text-sm">
+                            @if(!$attendanceRecord)
+                                <span class="text-red-400">Not Clocked In</span>
+                            @elseif(!$attendanceRecord->clock_out_time)
+                                <span class="text-emerald-400 animate-pulse">Clocked In at {{ $attendanceRecord->clock_in_time->format('h:i A') }}</span>
+                            @else
+                                <span class="text-blue-400">Completed (Out at {{ $attendanceRecord->clock_out_time->format('h:i A') }})</span>
+                            @endif
+                        </p>
+                    </div>
+                </div>
+                
+                <div x-data="{ openScanner: false }" class="flex-shrink-0">
+                    @if(!$attendanceRecord)
+                        <button @click="openScanner = true; initScanner('{{ route('attendance.clock-in') }}')" class="btn bg-primary-600 hover:bg-primary-700 text-white w-full sm:w-auto">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            Scan to Clock In
+                        </button>
+                    @elseif(!$attendanceRecord->clock_out_time)
+                        <button @click="openScanner = true; initScanner('{{ route('attendance.clock-out') }}')" class="btn bg-dark-600 hover:bg-dark-700 text-white border-transparent w-full sm:w-auto">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            Scan to Clock Out
+                        </button>
+                    @else
+                        <a href="{{ route('attendance.index') }}" class="btn border border-dark-600 hover:bg-dark-700 text-white w-full sm:w-auto">
+                            View History
+                        </a>
+                    @endif
+
+                    <!-- Scanner Modal -->
+                    <div x-show="openScanner" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto">
+                        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                            <div x-show="openScanner" x-transition.opacity class="fixed inset-0 transition-opacity bg-dark-900/90 backdrop-blur-sm" @click="openScanner = false; stopScanner()"></div>
+                            <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+                            <div x-show="openScanner" x-transition.scale class="relative z-10 inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-dark-800 rounded-2xl shadow-2xl sm:my-8 sm:align-middle sm:max-w-md sm:w-full sm:p-6 border border-dark-700">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-lg font-bold text-white">Scan QR Code</h3>
+                                    <button @click="openScanner = false; stopScanner()" class="text-dark-400 hover:text-white">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
+                                </div>
+                                <div class="bg-black rounded-lg overflow-hidden border border-dark-600 mb-4 aspect-square flex items-center justify-center relative">
+                                    <div id="reader" class="w-full"></div>
+                                    <div id="scanner-overlay" class="absolute inset-0 border-2 border-primary-500 rounded-lg opacity-50 animate-pulse pointer-events-none hidden"></div>
+                                </div>
+                                <p class="text-sm text-dark-400 text-center mb-4">Point your camera at the attendance QR code displayed by the admin.</p>
+                                
+                                <form id="scanner-form" action="" method="POST" class="hidden">
+                                    @csrf
+                                    <input type="hidden" name="token" id="qr-token-input">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <!-- Track Switcher -->
     @if($fellowTracks->count() > 0)
@@ -885,3 +963,51 @@
     @endif
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+    let html5QrcodeScanner = null;
+
+    function initScanner(actionUrl) {
+        if (html5QrcodeScanner) return;
+        
+        // Wait a tick for the modal to be visible
+        setTimeout(() => {
+            html5QrcodeScanner = new Html5Qrcode("reader");
+            
+            const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+                // Stop scanning
+                html5QrcodeScanner.stop().then((ignore) => {
+                    // Inject token and submit form
+                    const form = document.getElementById('scanner-form');
+                    form.action = actionUrl;
+                    document.getElementById('qr-token-input').value = decodedText;
+                    form.submit();
+                }).catch((err) => {
+                    console.log("Stop failed: ", err);
+                });
+            };
+            
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            
+            html5QrcodeScanner.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
+                .catch((err) => {
+                    console.error("Camera start failed", err);
+                    alert("Unable to access camera. Please ensure you have granted camera permissions.");
+                });
+        }, 100);
+    }
+
+    function stopScanner() {
+        if (html5QrcodeScanner) {
+            html5QrcodeScanner.stop().then((ignore) => {
+                html5QrcodeScanner.clear();
+                html5QrcodeScanner = null;
+            }).catch((err) => {
+                console.log("Stop failed: ", err);
+            });
+        }
+    }
+</script>
+@endpush

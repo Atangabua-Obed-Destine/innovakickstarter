@@ -129,6 +129,17 @@ body {
     background-clip: text;
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
 /* Glass effect */
 .glass {
     background: rgba(30, 41, 59, 0.5);
@@ -279,24 +290,37 @@ body {
    ========================================================================== */
 
 .card {
-    background-color: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 0.75rem;
-}
-
-.card-hover {
-    transition: all 0.3s ease;
+    background-color: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(51, 65, 85, 0.5);
+    border-radius: 1.5rem; /* rounded-3xl */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card-hover:hover {
     border-color: rgba(124, 58, 237, 0.5);
-    transform: translateY(-2px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
 /* ==========================================================================
-   NAVIGATION
+   ANIMATIONS
    ========================================================================== */
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.animate-shimmer {
+    animation: shimmer 2s infinite linear;
+}
 
 .nav-link {
     display: flex;
@@ -365,8 +389,10 @@ body {
     left: 280px;
     right: 0;
     height: 64px;
-    background-color: #0f172a;
-    border-bottom: 1px solid #1e293b;
+    background-color: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(30, 41, 59, 0.7);
     display: flex;
     align-items: center;
     justify-content: space-between;
