@@ -184,19 +184,43 @@
                             <label class="block text-sm font-medium text-dark-300 mb-2">
                                 Skills <span class="text-red-500">*</span>
                             </label>
-                            <div class="space-y-2" x-data="{ skills: [] }">
-                                <input
-                                    type="text"
-                                    id="skills_input"
-                                    placeholder="Type a skill and press Enter"
-                                    class="input w-full"
-                                    @keydown.enter.prevent="
-                                        if ($el.value.trim() && skills.length < 20) {
-                                            skills.push($el.value.trim());
+                            <div class="space-y-2" x-data="{ skills: {{ json_encode(old('skills', is_array($user->skills) ? ($user->skills['skills'] ?? []) : [])) }} }">
+                                <div class="flex gap-2">
+                                    <input
+                                        type="text"
+                                        id="skills_input"
+                                        placeholder="Type a skill and press Enter or Add"
+                                        class="input flex-1"
+                                        @keydown.enter.prevent="
+                                            if ($el.value.trim() && skills.length < 20 && !skills.includes($el.value.trim())) {
+                                                skills.push($el.value.trim());
+                                            }
                                             $el.value = '';
-                                        }
-                                    "
-                                >
+                                        "
+                                        @keydown.comma.prevent="
+                                            let val = $el.value.replace(/,/g, '').trim();
+                                            if (val && skills.length < 20 && !skills.includes(val)) {
+                                                skills.push(val);
+                                            }
+                                            $el.value = '';
+                                        "
+                                    >
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-secondary shrink-0"
+                                        @click="
+                                            const input = document.getElementById('skills_input');
+                                            let val = input.value.trim();
+                                            if (val && skills.length < 20 && !skills.includes(val)) {
+                                                skills.push(val);
+                                            }
+                                            input.value = '';
+                                            input.focus();
+                                        "
+                                    >
+                                        Add
+                                    </button>
+                                </div>
                                 <div class="flex flex-wrap gap-2">
                                     <template x-for="(skill, index) in skills" :key="index">
                                         <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm bg-primary-600/20 text-primary-400 border border-primary-600/30">
