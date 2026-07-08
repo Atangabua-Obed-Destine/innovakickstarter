@@ -243,7 +243,7 @@
                     </h1>
                     
                     <p class="text-lg sm:text-xl text-gray-400 mb-8 max-w-xl mx-auto lg:mx-0">
-                        {{ $content['hero_subtitle'] ?? 'Build measurable career readiness through structured learning, real-world challenges, and mock interviews. Track your progress with our revolutionary Career Capital Score.' }}
+                        {{ $content['hero_subtitle'] ?? 'Bridge the gap between education and employment through hands-on projects, mock interviews, and direct recruiter access. Track your growth with our Career Capital Score.' }}
                     </p>
                     
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
@@ -265,21 +265,15 @@
                     </div>
                     
                     <!-- Stats -->
-                    <div class="grid grid-cols-3 gap-8">
+                    <div class="grid grid-cols-2 gap-8">
                         <div class="text-center lg:text-left">
-                            <div class="text-3xl sm:text-4xl font-bold text-white mb-1" x-data="{ count: 0 }" x-init="setTimeout(() => { let i = setInterval(() => { count++; if(count >= {{ intval($stats['fellows_count'] ?? 50) }}) clearInterval(i) }, 30) }, 500)">
-                                <span x-text="count"></span>+
-                            </div>
-                            <div class="text-sm text-gray-500">{{ $content['stat_fellows_label'] ?? 'Fellows Trained' }}</div>
-                        </div>
-                        <div class="text-center lg:text-left">
-                            <div class="text-3xl sm:text-4xl font-bold text-white mb-1" x-data="{ count: 0 }" x-init="setTimeout(() => { let i = setInterval(() => { count++; if(count >= {{ intval($stats['placement_rate'] ?? 65) }}) clearInterval(i) }, 30) }, 800)">
+                            <div class="text-3xl sm:text-4xl font-bold text-white mb-1" x-data="{ count: 0 }" x-init="setTimeout(() => { let i = setInterval(() => { count++; if(count >= {{ intval($stats['placement_rate'] ?? 65) }}) clearInterval(i) }, 30) }, 500)">
                                 <span x-text="count"></span>%
                             </div>
                             <div class="text-sm text-gray-500">{{ $content['stat_placement_label'] ?? 'Placement Rate' }}</div>
                         </div>
                         <div class="text-center lg:text-left">
-                            <div class="text-3xl sm:text-4xl font-bold text-white mb-1" x-data="{ count: 0 }" x-init="setTimeout(() => { let i = setInterval(() => { count++; if(count >= {{ intval($stats['tracks_count'] ?? 6) }}) clearInterval(i) }, 100) }, 1100)">
+                            <div class="text-3xl sm:text-4xl font-bold text-white mb-1" x-data="{ count: 0 }" x-init="setTimeout(() => { let i = setInterval(() => { count++; if(count >= {{ intval($stats['tracks_count'] ?? 6) }}) clearInterval(i) }, 100) }, 800)">
                                 <span x-text="count"></span>
                             </div>
                             <div class="text-sm text-gray-500">{{ $content['stat_tracks_label'] ?? 'Career Tracks' }}</div>
