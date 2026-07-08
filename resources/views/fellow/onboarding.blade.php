@@ -327,8 +327,8 @@
                                class="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-primary-600 focus:border-transparent">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-dark-300 mb-1">Supervisor Email *</label>
-                        <input type="email" x-model="internship.supervisor_email" required
+                        <label class="block text-sm font-medium text-dark-300 mb-1">Supervisor Email</label>
+                        <input type="email" x-model="internship.supervisor_email"
                                placeholder="supervisor@university.edu"
                                class="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-primary-600 focus:border-transparent">
                     </div>
