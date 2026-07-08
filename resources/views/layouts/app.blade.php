@@ -196,46 +196,46 @@
         @include('partials.alerts')
 
         <!-- Page Content -->
-        <div class="p-6 pb-24 lg:pb-6">
+        <div class="p-4 sm:p-6 pb-36 lg:pb-6">
             @yield('content')
         </div>
     </main>
 
     <!-- Mobile Bottom Navigation -->
     @if(auth()->user()->hasRole('fellow'))
-    <nav class="fixed bottom-0 left-0 right-0 bg-dark-900/80 backdrop-blur-xl border-t border-dark-700/50 lg:hidden z-40 pb-safe">
-        <div class="flex items-center justify-around py-2">
-            <a href="{{ route('dashboard') }}" class="flex flex-col items-center gap-1 p-2 text-dark-400 hover:text-primary-400 active:scale-95 transition-all duration-200">
+    <nav class="fixed bottom-0 left-0 right-0 bg-dark-900/90 backdrop-blur-xl border-t border-dark-700/50 lg:hidden z-40 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+        <div class="flex items-center justify-around py-1.5 px-1">
+            <a href="{{ route('dashboard') }}" class="flex flex-col items-center gap-0.5 p-1.5 text-dark-400 hover:text-primary-400 active:scale-95 transition-all duration-200">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                 </svg>
-                <span class="text-[10px] font-medium">Home</span>
+                <span class="text-[9px] font-medium tracking-wide">Home</span>
             </a>
-            <a href="{{ route('activities.index') }}" class="flex flex-col items-center gap-1 p-2 text-dark-400 hover:text-primary-400 active:scale-95 transition-all duration-200">
+            <a href="{{ route('activities.index') }}" class="flex flex-col items-center gap-0.5 p-1.5 text-dark-400 hover:text-primary-400 active:scale-95 transition-all duration-200">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
                 </svg>
-                <span class="text-[10px] font-medium">Activities</span>
+                <span class="text-[9px] font-medium tracking-wide">Activities</span>
             </a>
-            <a href="{{ route('activities.create') }}" class="flex flex-col items-center gap-1 p-2 active:scale-90 transition-transform duration-300">
-                <div class="w-14 h-14 -mt-8 bg-gradient-to-br from-primary-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-primary-500/40 border-4 border-dark-900">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="{{ route('activities.create') }}" class="flex flex-col items-center gap-0.5 p-1 active:scale-90 transition-transform duration-300 relative z-50">
+                <div class="w-12 h-12 -mt-6 bg-gradient-to-br from-primary-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-primary-500/40 border-4 border-dark-900">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
                 </div>
-                <span class="text-[10px] font-semibold text-primary-400">Log</span>
+                <span class="text-[9px] font-semibold text-primary-400 tracking-wide mt-0.5">Log</span>
             </a>
-            <a href="{{ route('interviews.index') }}" class="flex flex-col items-center gap-1 p-2 text-dark-400 hover:text-primary-400 active:scale-95 transition-all duration-200">
+            <a href="{{ route('interviews.index') }}" class="flex flex-col items-center gap-0.5 p-1.5 text-dark-400 hover:text-primary-400 active:scale-95 transition-all duration-200">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                 </svg>
-                <span class="text-[10px] font-medium">Interviews</span>
+                <span class="text-[9px] font-medium tracking-wide">Interviews</span>
             </a>
-            <a href="{{ route('profile.show') }}" class="flex flex-col items-center gap-1 p-2 text-dark-400 hover:text-primary-400 active:scale-95 transition-all duration-200">
+            <a href="{{ route('profile.show') }}" class="flex flex-col items-center gap-0.5 p-1.5 text-dark-400 hover:text-primary-400 active:scale-95 transition-all duration-200">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                 </svg>
-                <span class="text-[10px] font-medium">Profile</span>
+                <span class="text-[9px] font-medium tracking-wide">Profile</span>
             </a>
         </div>
     </nav>
