@@ -98,6 +98,12 @@ class ProfileController extends Controller
         // Check if profile is now complete
         $wasComplete = $user->profile_completed_at !== null;
         
+        if (isset($validated['skills'])) {
+            $validated['skills'] = array_merge($user->skills ?? [], [
+                'skills' => $validated['skills']
+            ]);
+        }
+
         $user->update($validated);
 
         // Mark profile as complete if all required fields are filled
@@ -159,7 +165,7 @@ class ProfileController extends Controller
         $validated = $request->validate($rules);
 
         // Update user profile
-        $user->update([
+        $updateData = [
             'bio' => $validated['bio'],
             'location' => $validated['location'],
             'headline' => $validated['headline'] ?? null,
@@ -168,7 +174,15 @@ class ProfileController extends Controller
             'availability' => $request->input('availability', 'immediate'),
             'open_to_opportunities' => $request->boolean('open_to_opportunities'),
             'profile_completed_at' => now(),
-        ]);
+        ];
+
+        if ($user->hasRole('fellow') && isset($validated['skills'])) {
+            $updateData['skills'] = array_merge($user->skills ?? [], [
+                'skills' => $validated['skills']
+            ]);
+        }
+
+        $user->update($updateData);
 
         // Enroll fellow in selected track (use updateOrCreate to avoid duplicates)
         if ($user->hasRole('fellow') && isset($validated['track_id'])) {

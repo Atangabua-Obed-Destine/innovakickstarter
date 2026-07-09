@@ -1176,7 +1176,7 @@ class AdminController extends Controller
         $this->auditService->log(
             'cohort.delete',
             auth()->user(),
-            null,
+            $cohort,
             "Deleted cohort: {$name}"
         );
 

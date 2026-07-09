@@ -180,11 +180,14 @@
             </div>
 
             <!-- Skills -->
-            @if($user->skills && count($user->skills) > 0)
+            @php
+                $displaySkills = is_array($user->skills) ? ($user->skills['skills'] ?? array_filter($user->skills, 'is_string')) : [];
+            @endphp
+            @if($displaySkills && count($displaySkills) > 0)
             <div class="card p-5">
                 <h2 class="text-lg font-semibold text-white mb-4">Skills</h2>
                 <div class="flex flex-wrap gap-2">
-                    @foreach($user->skills as $skill)
+                    @foreach($displaySkills as $skill)
                         <span class="px-3 py-1.5 bg-dark-700 text-dark-200 rounded-lg text-sm">{{ $skill }}</span>
                     @endforeach
                 </div>
