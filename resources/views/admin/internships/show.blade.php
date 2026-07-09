@@ -38,7 +38,7 @@
         'withdrawn'      => ['label' => 'Withdrawn',      'class' => 'bg-dark-600/40 text-dark-300 border-dark-500/30'],
     ];
     $s = $statusStyles[$profile->status] ?? ['label' => ucfirst($profile->status), 'class' => 'bg-dark-700 text-dark-300'];
-    $isTerminal = in_array($profile->status, ['approved', 'rejected']);
+    $isTerminal = in_array($profile->status, ['approved', 'active', 'completed', 'withdrawn']);
 @endphp
 
 <style>
@@ -378,13 +378,23 @@
                     <span>📎</span> Internship letter / convention
                 </h3>
                 @if($profile->internship_letter_path)
-                    <a href="{{ route('admin.internships.letter', $profile) }}" target="_blank"
-                       class="inline-flex items-center gap-2 btn btn-outline">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V17a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                        </svg>
-                        Download {{ basename($profile->internship_letter_path) }}
-                    </a>
+                    <div class="flex gap-2">
+                        <a href="{{ route('admin.internships.letter.preview', $profile) }}" target="_blank"
+                           class="inline-flex items-center gap-2 btn btn-primary">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                            Preview
+                        </a>
+                        <a href="{{ route('admin.internships.letter', $profile) }}"
+                           class="inline-flex items-center gap-2 btn btn-outline">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V17a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                            </svg>
+                            Download
+                        </a>
+                    </div>
                 @else
                     <p class="text-amber-400 text-sm">⚠️ No letter uploaded. Consider requesting revision.</p>
                 @endif
@@ -446,7 +456,7 @@
                         <button type="button" @click="action = action === 'reject' ? null : 'reject'" class="btn btn-outline text-red-400 border-red-500/40 hover:bg-red-500/10 w-full">Reject</button>
                     </div>
 
-                    <form x-data="{ assignFee: false }" x-show="action === 'approve'" x-cloak method="POST" action="{{ route('admin.internships.approve', $profile) }}" class="mt-4 space-y-3 border-t border-dark-700 pt-4">
+                    <form x-data="{ assignFee: true, fees: [{ title: '', amount: '', due_date: '{{ date('Y-m-d') }}' }] }" x-show="action === 'approve'" x-cloak method="POST" action="{{ route('admin.internships.approve', $profile) }}" class="mt-4 space-y-3 border-t border-dark-700 pt-4">
                         @csrf
                         <p class="text-dark-400 text-xs">Confirm the official window. The fellow will only have platform access between these dates.</p>
                         @php
@@ -481,28 +491,27 @@
                                 <span class="text-sm text-white font-medium">Assign a fee with this approval</span>
                             </label>
 
-                            <div x-show="assignFee" x-transition.opacity class="space-y-3 bg-dark-800/50 p-3 rounded-lg border border-dark-700">
-                                <label class="block">
-                                    <span class="text-dark-300 text-xs">Fee Title <span class="text-red-400">*</span></span>
-                                    <input type="text" name="fee_title" class="form-input w-full mt-1 text-sm" placeholder="e.g. Internship Processing Fee" :required="assignFee">
-                                </label>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <label class="block">
-                                        <span class="text-dark-300 text-xs">Amount (CFA) <span class="text-red-400">*</span></span>
-                                        <input type="number" name="fee_amount" min="1" step="1" class="form-input w-full mt-1 text-sm" :required="assignFee">
-                                    </label>
-                                    <label class="block">
-                                        <span class="text-dark-300 text-xs">Payment Plan <span class="text-red-400">*</span></span>
-                                        <select name="fee_plan_type" class="form-input w-full mt-1 text-sm" :required="assignFee">
-                                            <option value="full">Full Payment</option>
-                                            <option value="installments">Installments (3 splits)</option>
-                                        </select>
-                                    </label>
-                                </div>
-                                <label class="block">
-                                    <span class="text-dark-300 text-xs">First Due Date <span class="text-red-400">*</span></span>
-                                    <input type="date" name="fee_due_date" value="{{ date('Y-m-d') }}" class="form-input w-full mt-1 text-sm" :required="assignFee">
-                                </label>
+                            <div x-show="assignFee" x-transition.opacity class="space-y-3">
+                                <template x-for="(fee, index) in fees" :key="index">
+                                    <div class="bg-dark-800/50 p-3 rounded-lg border border-dark-700 relative">
+                                        <button type="button" @click="fees.splice(index, 1)" x-show="fees.length > 1" class="absolute top-2 right-2 text-dark-400 hover:text-red-400">&times;</button>
+                                        <label class="block">
+                                            <span class="text-dark-300 text-xs">Fee Title <span class="text-red-400">*</span></span>
+                                            <input type="text" :name="`fees[${index}][title]`" x-model="fee.title" class="form-input w-full mt-1 text-sm" placeholder="e.g. Internship Processing Fee" :required="assignFee">
+                                        </label>
+                                        <div class="grid grid-cols-2 gap-3 mt-3">
+                                            <label class="block">
+                                                <span class="text-dark-300 text-xs">Amount (CFA) <span class="text-red-400">*</span></span>
+                                                <input type="number" :name="`fees[${index}][amount]`" x-model="fee.amount" min="1" step="1" class="form-input w-full mt-1 text-sm" :required="assignFee">
+                                            </label>
+                                            <label class="block">
+                                                <span class="text-dark-300 text-xs">Due Date <span class="text-red-400">*</span></span>
+                                                <input type="date" :name="`fees[${index}][due_date]`" x-model="fee.due_date" class="form-input w-full mt-1 text-sm" :required="assignFee">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </template>
+                                <button type="button" @click="fees.push({ title: '', amount: '', due_date: '{{ date('Y-m-d') }}' })" class="text-primary-400 text-sm hover:underline">+ Add another fee line</button>
                             </div>
                         </div>
 

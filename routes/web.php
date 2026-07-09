@@ -287,6 +287,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Internship Profile Review
         Route::get('/internships', [\App\Http\Controllers\Admin\InternshipController::class, 'index'])->name('internships.index');
         Route::get('/internships/{internship}', [\App\Http\Controllers\Admin\InternshipController::class, 'show'])->name('internships.show');
+        Route::get('/internships/{internship}/letter/preview', [\App\Http\Controllers\Admin\InternshipController::class, 'previewLetter'])->name('internships.letter.preview');
         Route::get('/internships/{internship}/letter', [\App\Http\Controllers\Admin\InternshipController::class, 'downloadLetter'])->name('internships.letter');
         Route::post('/internships/{internship}/approve', [\App\Http\Controllers\Admin\InternshipController::class, 'approve'])->name('internships.approve');
         Route::post('/internships/{internship}/request-changes', [\App\Http\Controllers\Admin\InternshipController::class, 'requestChanges'])->name('internships.request-changes');
@@ -299,13 +300,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/fees/{fee}', [AdminFeeController::class, 'show'])->name('fees.show');
         Route::post('/fees/{fee}/payment', [AdminFeeController::class, 'recordPayment'])->name('fees.record-payment');
         Route::post('/fees/{fee}/waive', [AdminFeeController::class, 'waive'])->name('fees.waive');
+        Route::delete('/fees/{fee}', [AdminFeeController::class, 'destroy'])->name('fees.destroy');
         Route::get('/fees/payments/{payment}/receipt', [AdminFeeController::class, 'printReceipt'])->name('fees.receipt');
+        Route::get('/fees/fellow/{fellow}/billables', [AdminFeeController::class, 'getFellowBillables'])->name('fees.fellow-billables');
 
         // Payment Verifications
         Route::get('/payment-verifications', [AdminFeeController::class, 'verifications'])->name('payment-verifications.index');
         Route::get('/payment-verifications/{payment}', [AdminFeeController::class, 'showVerification'])->name('payment-verifications.show');
         Route::post('/payment-verifications/{payment}/approve', [AdminFeeController::class, 'approveVerification'])->name('payment-verifications.approve');
         Route::post('/payment-verifications/{payment}/reject', [AdminFeeController::class, 'rejectVerification'])->name('payment-verifications.reject');
+        Route::delete('/payment-verifications/{payment}', [AdminFeeController::class, 'destroyPayment'])->name('payment-verifications.destroy');
 
         // Attendance Management
         Route::get('/attendance', [\App\Http\Controllers\Admin\AttendanceController::class, 'index'])->name('attendance.index');

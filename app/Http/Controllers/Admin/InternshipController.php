@@ -86,23 +86,29 @@ class InternshipController extends Controller
      */
     public function approve(Request $request, InternshipProfile $internship, FeeService $feeService): RedirectResponse
     {
+        abort_if(in_array($internship->status, [
+            InternshipProfile::STATUS_APPROVED,
+            InternshipProfile::STATUS_ACTIVE,
+            InternshipProfile::STATUS_COMPLETED,
+            InternshipProfile::STATUS_WITHDRAWN,
+        ]), 403, 'This profile has already been processed.');
+
         $validated = $request->validate([
             'approved_start_date' => ['required', 'date'],
             'approved_end_date' => ['required', 'date', 'after:approved_start_date'],
             'review_notes' => ['nullable', 'string', 'max:2000'],
             'assign_fee' => ['nullable', 'boolean'],
-            'fee_title' => ['required_if:assign_fee,1', 'string', 'max:255'],
-            'fee_amount' => ['required_if:assign_fee,1', 'numeric', 'min:1'],
-            'fee_plan_type' => ['required_if:assign_fee,1', 'in:full,installments'],
-            'fee_due_date' => ['required_if:assign_fee,1', 'date'],
+            'fees' => ['nullable', 'array', 'min:1'],
+            'fees.*.title' => ['nullable', 'required_with:fees', 'string', 'max:255'],
+            'fees.*.amount' => ['nullable', 'required_with:fees', 'numeric', 'min:1'],
+            'fees.*.due_date' => ['nullable', 'required_with:fees', 'date'],
         ], [
             'approved_start_date.required' => 'You must confirm an internship start date.',
             'approved_end_date.required' => 'You must confirm an internship end date.',
             'approved_end_date.after' => 'End date must be after start date.',
-            'fee_title.required_if' => 'Fee title is required when assigning a fee.',
-            'fee_amount.required_if' => 'Fee amount is required when assigning a fee.',
-            'fee_plan_type.required_if' => 'Fee plan type is required when assigning a fee.',
-            'fee_due_date.required_if' => 'First due date is required when assigning a fee.',
+            'fees.*.title.required_with' => 'Fee title is required for all fee lines.',
+            'fees.*.amount.required_with' => 'Fee amount is required for all fee lines.',
+            'fees.*.due_date.required_with' => 'Due date is required for all fee lines.',
         ]);
 
         $today = now()->startOfDay();
@@ -161,22 +167,29 @@ class InternshipController extends Controller
             'action_url' => route('fellow.onboarding'),
         ]);
 
-        if ($request->boolean('assign_fee')) {
-            $dueDate = \Carbon\Carbon::parse($validated['fee_due_date']);
-            
-            $feeService->assignFee([
-                'fellow_id' => $internship->user_id,
-                'title' => $validated['fee_title'],
-                'amount_total' => $validated['fee_amount'],
-                'plan_type' => $validated['fee_plan_type'],
-                'first_due_date' => $dueDate,
-                'final_due_date' => $validated['fee_plan_type'] === 'installments' ? $dueDate->copy()->addMonths(2) : $dueDate,
-                'billable_type' => $internship->getMorphClass(),
-                'billable_id' => $internship->id,
-                'description' => 'Assigned upon internship approval.',
-                'installments_count' => $validated['fee_plan_type'] === 'installments' ? 3 : null,
-                'installment_cadence' => $validated['fee_plan_type'] === 'installments' ? 'monthly' : null,
-            ], $request->user());
+        if ($request->boolean('assign_fee') && !empty($validated['fees'])) {
+            foreach ($validated['fees'] as $feeData) {
+                // If inputs are submitted empty and ignored by nullable, skip them
+                if (empty($feeData['title']) || empty($feeData['amount'])) {
+                    continue;
+                }
+
+                $dueDate = \Carbon\Carbon::parse($feeData['due_date']);
+                
+                $feeService->assignFee([
+                    'fellow_id' => $internship->user_id,
+                    'title' => $feeData['title'],
+                    'amount_total' => $feeData['amount'],
+                    'plan_type' => 'full',
+                    'first_due_date' => $dueDate,
+                    'final_due_date' => $dueDate,
+                    'billable_type' => $internship->getMorphClass(),
+                    'billable_id' => $internship->id,
+                    'description' => 'Assigned upon internship approval.',
+                    'installments_count' => null,
+                    'installment_cadence' => null,
+                ], $request->user());
+            }
         }
 
         return redirect()->route('admin.internships.show', $internship)
@@ -188,6 +201,13 @@ class InternshipController extends Controller
      */
     public function requestChanges(Request $request, InternshipProfile $internship): RedirectResponse
     {
+        abort_if(in_array($internship->status, [
+            InternshipProfile::STATUS_APPROVED,
+            InternshipProfile::STATUS_ACTIVE,
+            InternshipProfile::STATUS_COMPLETED,
+            InternshipProfile::STATUS_WITHDRAWN,
+        ]), 403, 'This profile has already been processed.');
+
         $validated = $request->validate([
             'review_notes' => ['required', 'string', 'min:10', 'max:2000'],
         ]);
@@ -210,6 +230,13 @@ class InternshipController extends Controller
      */
     public function reject(Request $request, InternshipProfile $internship): RedirectResponse
     {
+        abort_if(in_array($internship->status, [
+            InternshipProfile::STATUS_APPROVED,
+            InternshipProfile::STATUS_ACTIVE,
+            InternshipProfile::STATUS_COMPLETED,
+            InternshipProfile::STATUS_WITHDRAWN,
+        ]), 403, 'This profile has already been processed.');
+
         $validated = $request->validate([
             'review_notes' => ['required', 'string', 'min:10', 'max:2000'],
         ]);
@@ -225,6 +252,19 @@ class InternshipController extends Controller
 
         return redirect()->route('admin.internships.index')
             ->with('success', 'Internship profile rejected.');
+    }
+
+    /**
+     * Preview the uploaded internship letter inline.
+     */
+    public function previewLetter(InternshipProfile $internship): StreamedResponse
+    {
+        abort_unless($internship->internship_letter_path, 404);
+
+        $disk = Storage::disk('public');
+        abort_unless($disk->exists($internship->internship_letter_path), 404);
+
+        return $disk->response($internship->internship_letter_path);
     }
 
     /**

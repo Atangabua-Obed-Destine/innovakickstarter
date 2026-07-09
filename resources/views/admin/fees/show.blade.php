@@ -105,6 +105,23 @@
             @if($fee->balance > 0 && $fee->status !== \App\Models\Fee::STATUS_WAIVED)
                 <div class="card p-6 border-red-500/30">
                     <h2 class="text-lg font-semibold text-white mb-2">Administrative Actions</h2>
+                    
+                    @if($fee->amount_paid == 0 && $fee->payments()->count() === 0)
+                        <div class="mb-4 pb-4 border-b border-dark-700">
+                            <p class="text-dark-400 text-sm mb-4">You can permanently delete this fee because no payments have been recorded against it yet.</p>
+                            <form action="{{ route('admin.fees.destroy', $fee) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this fee? This action cannot be undone.');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline border-red-500 text-red-400 hover:bg-red-500 hover:text-white w-full">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                    Permanently Delete Fee
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+
                     <p class="text-dark-400 text-sm mb-4">Waiving a fee will mark it as fully settled and stop any overdue alerts.</p>
                     <button @click="showWaiveModal = true" class="btn btn-outline border-red-500/50 text-red-400 hover:bg-red-500/10 w-full">
                         Waive Remaining Fee

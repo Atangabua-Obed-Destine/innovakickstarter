@@ -210,10 +210,17 @@
             init() {
                 if (this.status === 'active') {
                     this.initQR();
-                    this.fetchData();
+                    this.fetchData(false);
+                    
+                    // Poll for live records every 2 seconds
                     this.pollInterval = setInterval(() => {
-                        this.fetchData();
-                    }, 15000); // Poll every 15s
+                        this.fetchData(false);
+                    }, 2000);
+                    
+                    // Refresh QR token every 15 seconds for security
+                    this.tokenInterval = setInterval(() => {
+                        this.fetchData(true);
+                    }, 15000);
                 }
             },
 
@@ -226,19 +233,29 @@
                 });
             },
 
-            fetchData() {
-                fetch(this.liveDataUrl)
+            fetchData(refreshToken = false) {
+                const url = new URL(this.liveDataUrl);
+                if (refreshToken) {
+                    url.searchParams.append('refresh_token', '1');
+                }
+                
+                fetch(url.toString())
                     .then(res => res.json())
                     .then(data => {
                         if (data.status === 'closed') {
                             window.location.reload();
                             return;
                         }
-                        this.token = data.token;
-                        this.records = data.records;
-                        if (this.qr) {
-                            this.qr.value = this.token;
+                        
+                        // Only update token and QR code if it actually changed
+                        if (data.token && data.token !== this.token) {
+                            this.token = data.token;
+                            if (this.qr) {
+                                this.qr.value = this.token;
+                            }
                         }
+                        
+                        this.records = data.records;
                     })
                     .catch(err => console.error("Polling error:", err));
             },

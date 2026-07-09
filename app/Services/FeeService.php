@@ -202,6 +202,46 @@ class FeeService
         return $payment->fresh();
     }
 
+    /**
+     * Delete a payment record and correct financial balances.
+     */
+    public function deletePayment(FeePayment $payment): void
+    {
+        DB::transaction(function () use ($payment) {
+            $fee = $payment->fee;
+            $installmentId = $payment->installment_id;
+
+            // Delete the payment record
+            $payment->delete();
+
+            // If it was applied to an installment, recalculate that installment's paid amount
+            if ($installmentId) {
+                $installment = FeeInstallment::find($installmentId);
+                if ($installment) {
+                    $newPaid = $installment->payments()->where('status', FeePayment::STATUS_VERIFIED)->sum('amount');
+                    $installment->update([
+                        'amount_paid' => $newPaid,
+                        'status' => $newPaid >= (float) $installment->amount_due
+                            ? FeeInstallment::STATUS_PAID
+                            : ($newPaid > 0 ? FeeInstallment::STATUS_PARTIAL : FeeInstallment::STATUS_DUE)
+                    ]);
+                    
+                    // We also reset any future installments back to upcoming if they were prematurely activated, 
+                    // but keeping them DUE is also safe and prompts collection.
+                }
+            }
+
+            // Always recalculate the fee's paid amount
+            if ($fee) {
+                $totalVerified = $fee->payments()->where('status', FeePayment::STATUS_VERIFIED)->sum('amount');
+                $fee->update(['amount_paid' => $totalVerified]);
+                
+                // Recalculate overall status
+                $this->recalculateFeeStatus($fee->fresh());
+            }
+        });
+    }
+
     // ==========================================
     // FEE WAIVER
     // ==========================================

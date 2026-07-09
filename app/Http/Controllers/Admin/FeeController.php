@@ -94,15 +94,27 @@ class FeeController extends Controller
             'title'               => 'required|string|max:200',
             'description'         => 'nullable|string|max:1000',
             'amount_total'        => 'required|numeric|min:1',
-            'plan_type'           => 'required|in:one_time,installments',
-            'installments_count'  => 'required_if:plan_type,installments|nullable|integer|min:2|max:12',
-            'installment_cadence' => 'required_if:plan_type,installments|nullable|in:weekly,biweekly,monthly',
-            'first_due_date'      => 'required|date',
-            'final_due_date'      => 'required|date|after_or_equal:first_due_date',
+            'due_date'            => 'required|date',
             'grace_period_hours'  => 'nullable|integer|min:0|max:720',
-            'billable_type'       => 'nullable|string',
-            'billable_id'         => 'nullable|string',
+            'billable_composite'  => 'nullable|string',
         ]);
+
+        // Hardcode "one_time" payment plan logic for the underlying service
+        $validated['plan_type'] = 'one_time';
+        $validated['first_due_date'] = $validated['due_date'];
+        $validated['final_due_date'] = $validated['due_date'];
+
+        // Parse composite billable field (e.g., "App\Models\InternshipProfile|8")
+        if (!empty($validated['billable_composite'])) {
+            $parts = explode('|', $validated['billable_composite']);
+            if (count($parts) === 2) {
+                $validated['billable_type'] = $parts[0];
+                $validated['billable_id'] = $parts[1];
+            }
+        }
+        
+        // Remove the composite field so it doesn't interfere
+        unset($validated['billable_composite']);
 
         $fee = $this->feeService->assignFee($validated, auth()->user());
 
@@ -175,8 +187,7 @@ class FeeController extends Controller
     {
         $stats = $this->feeService->getVerificationStats();
 
-        $query = FeePayment::with(['fee', 'fellow', 'verifier'])
-            ->where('source', FeePayment::SOURCE_FELLOW);
+        $query = FeePayment::with(['fee', 'fellow', 'verifier']);
 
         // Filters
         if ($status = $request->input('status')) {
@@ -279,5 +290,78 @@ class FeeController extends Controller
             ->firstOrFail();
 
         return view('public.receipt-verify', compact('payment'));
+    }
+    /**
+     * Delete a fee if it has no payment records.
+     */
+    public function destroy(Fee $fee)
+    {
+        abort_if($fee->amount_paid > 0 || $fee->payments()->count() > 0, 403, 'Cannot delete a fee that has payment records.');
+
+        // Delete associated installments first
+        $fee->installments()->delete();
+        
+        // Delete the fee itself
+        $fee->delete();
+
+        return redirect()->route('admin.fees.index')
+            ->with('success', 'Fee deleted successfully.');
+    }
+    /**
+     * Delete a payment record and correct balances.
+     */
+    public function destroyPayment(FeePayment $payment)
+    {
+        $this->feeService->deletePayment($payment);
+
+        return redirect()->route('admin.payment-verifications.index')
+            ->with('success', 'Payment record deleted and balances updated successfully.');
+    }
+
+    /**
+     * Get billable items (internships, programs) for a specific fellow.
+     */
+    public function getFellowBillables(User $fellow)
+    {
+        $billables = [];
+
+        // 1. Internships
+        $internships = \App\Models\InternshipProfile::where('user_id', $fellow->id)
+            ->whereIn('status', [
+                \App\Models\InternshipProfile::STATUS_APPROVED, 
+                \App\Models\InternshipProfile::STATUS_ACTIVE, 
+                \App\Models\InternshipProfile::STATUS_COMPLETED
+            ])
+            ->get();
+            
+        foreach ($internships as $internship) {
+            $billables[] = [
+                'type' => 'App\Models\InternshipProfile',
+                'id' => $internship->id,
+                'label' => "Internship at {$internship->institution_name}"
+            ];
+        }
+
+        // 2. Programs (Current or Active)
+        $programs = $fellow->programs()->get();
+        foreach ($programs as $program) {
+            $billables[] = [
+                'type' => 'App\Models\Program',
+                'id' => $program->id,
+                'label' => "Program: {$program->name}"
+            ];
+        }
+
+        // 3. Cohorts
+        $cohorts = $fellow->cohorts()->get();
+        foreach ($cohorts as $cohort) {
+            $billables[] = [
+                'type' => 'App\Models\Cohort',
+                'id' => $cohort->id,
+                'label' => "Cohort: {$cohort->name}"
+            ];
+        }
+
+        return response()->json($billables);
     }
 }

@@ -96,6 +96,30 @@
         @endif
     @endisset
 
+    @if(isset($unpaidFeesCount) && $unpaidFeesCount > 0)
+        <div class="card p-4 border-l-4 border-red-500 bg-red-500/5">
+            <div class="flex items-start gap-3">
+                <div class="w-9 h-9 rounded-lg bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-red-400 font-semibold">
+                        Action Required: You have {{ $unpaidFeesCount }} pending fee {{ $unpaidFeesCount > 1 ? 'records' : 'record' }}
+                    </p>
+                    @if($nextUnpaidFee)
+                        <p class="mt-1 text-red-300/80 text-sm">
+                            Next due date: <span class="font-medium text-red-300">{{ $nextUnpaidFee->final_due_date->format('M j, Y') }}</span>
+                            · Balance: {{ number_format($nextUnpaidFee->amount_total - $nextUnpaidFee->amount_paid) }} CFA
+                        </p>
+                    @endif
+                    <a href="{{ route('fees.index') }}" class="inline-block mt-2 text-red-400 hover:text-red-300 text-sm font-medium">View Payment Details →</a>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Welcome Header -->
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
@@ -972,7 +996,7 @@
     function initScanner(actionUrl) {
         if (html5QrcodeScanner) return;
         
-        // Wait a tick for the modal to be visible
+        // Wait for Alpine modal transition to finish completely (iOS Safari quirk)
         setTimeout(() => {
             html5QrcodeScanner = new Html5Qrcode("reader");
             
@@ -989,14 +1013,28 @@
                 });
             };
             
-            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            const config = { 
+                fps: 10, 
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0 
+            };
             
             html5QrcodeScanner.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
+                .then(() => {
+                    // iOS Safari Fix: Force playsinline and trigger play manually just in case
+                    const videoElement = document.querySelector('#reader video');
+                    if (videoElement) {
+                        videoElement.setAttribute('playsinline', 'true');
+                        videoElement.setAttribute('webkit-playsinline', 'true');
+                        videoElement.play().catch(e => console.log("Auto-play warning:", e));
+                    }
+                    document.getElementById('scanner-overlay').classList.remove('hidden');
+                })
                 .catch((err) => {
                     console.error("Camera start failed", err);
-                    alert("Unable to access camera. Please ensure you have granted camera permissions.");
+                    alert("Unable to access camera. Please ensure you have granted camera permissions in your browser and your camera is not in use.");
                 });
-        }, 100);
+        }, 350);
     }
 
     function stopScanner() {

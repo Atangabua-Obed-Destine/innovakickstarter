@@ -53,14 +53,16 @@ class AttendanceController extends Controller
         return view('admin.attendance.show', compact('session', 'records'));
     }
 
-    public function liveData(AttendanceSession $session)
+    public function liveData(Request $request, AttendanceSession $session)
     {
         if ($session->status !== 'active') {
             return response()->json(['status' => 'closed']);
         }
         
-        // Refresh token every time live data is polled (every 15s) to make the QR dynamic
-        $session->update(['token' => Str::random(32)]);
+        // Refresh token only when requested (e.g., every 15s) to make the QR dynamic but keep polling fast
+        if ($request->boolean('refresh_token')) {
+            $session->update(['token' => Str::random(32)]);
+        }
 
         $records = $session->records()->with('fellow:id,name')->orderBy('clock_in_time', 'desc')->get();
 

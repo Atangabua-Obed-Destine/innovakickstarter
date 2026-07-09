@@ -36,7 +36,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-dark-300 mb-1">Select Fellow *</label>
-                    <select name="fellow_id" class="form-input w-full" required>
+                    <select name="fellow_id" class="form-input w-full" x-model="fellowId" @change="fetchBillables" required>
                         <option value="">-- Select Fellow --</option>
                         @foreach($fellows as $fellow)
                             <option value="{{ $fellow->id }}" {{ old('fellow_id') == $fellow->id ? 'selected' : '' }}>
@@ -48,13 +48,14 @@
 
                 <div>
                     <label class="block text-sm font-medium text-dark-300 mb-1">Linked To (Optional)</label>
-                    <select name="billable_type" class="form-input w-full">
+                    <select name="billable_composite" class="form-input w-full" :disabled="loading">
                         <option value="">General Fee (No Link)</option>
-                        <option value="App\Models\InternshipProfile" {{ old('billable_type') === 'App\Models\InternshipProfile' ? 'selected' : '' }}>Internship</option>
-                        <option value="App\Models\Cohort" {{ old('billable_type') === 'App\Models\Cohort' ? 'selected' : '' }}>Cohort</option>
-                        <option value="App\Models\Program" {{ old('billable_type') === 'App\Models\Program' ? 'selected' : '' }}>Program</option>
-                        <option value="App\Models\Track" {{ old('billable_type') === 'App\Models\Track' ? 'selected' : '' }}>Track</option>
+                        <template x-for="billable in billables" :key="billable.type + '|' + billable.id">
+                            <option :value="billable.type + '|' + billable.id" x-text="billable.label"></option>
+                        </template>
                     </select>
+                    <p x-show="loading" class="text-xs text-blue-400 mt-1">Loading linked options...</p>
+                    <p x-show="!loading && fellowId && billables.length === 0" class="text-xs text-dark-400 mt-1">This fellow has no active internships or programs.</p>
                 </div>
             </div>
         </div>
@@ -77,59 +78,10 @@
                 </div>
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-dark-300 mb-1">Description</label>
-                <textarea name="description" class="form-input w-full" rows="3"
-                          placeholder="Optional: description of the fee...">{{ old('description') }}</textarea>
-            </div>
-        </div>
-
-        {{-- Payment Plan --}}
-        <div class="card p-6 space-y-4">
-            <h2 class="text-lg font-semibold text-white">Payment Plan</h2>
-
-            <div>
-                <label class="block text-sm font-medium text-dark-300 mb-1">Plan Type *</label>
-                <div class="flex gap-4">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="plan_type" value="one_time" x-model="planType"
-                               {{ old('plan_type', 'one_time') === 'one_time' ? 'checked' : '' }}
-                               class="text-primary-500 focus:ring-primary-500">
-                        <span class="text-dark-200">One-Time Payment</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="plan_type" value="installments" x-model="planType"
-                               {{ old('plan_type') === 'installments' ? 'checked' : '' }}
-                               class="text-primary-500 focus:ring-primary-500">
-                        <span class="text-dark-200">Installments</span>
-                    </label>
-                </div>
-            </div>
-
-            <div x-show="planType === 'installments'" x-transition class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-dark-300 mb-1">Number of Installments *</label>
-                    <input type="number" name="installments_count" value="{{ old('installments_count', 2) }}"
-                           class="form-input w-full" min="2" max="12">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-dark-300 mb-1">Cadence *</label>
-                    <select name="installment_cadence" class="form-input w-full">
-                        <option value="monthly" {{ old('installment_cadence') === 'monthly' ? 'selected' : '' }}>Monthly</option>
-                        <option value="biweekly" {{ old('installment_cadence') === 'biweekly' ? 'selected' : '' }}>Bi-Weekly</option>
-                        <option value="weekly" {{ old('installment_cadence') === 'weekly' ? 'selected' : '' }}>Weekly</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-dark-300 mb-1">First Due Date *</label>
-                    <input type="date" name="first_due_date" value="{{ old('first_due_date') }}" class="form-input w-full" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-dark-300 mb-1">Final Due Date *</label>
-                    <input type="date" name="final_due_date" value="{{ old('final_due_date') }}" class="form-input w-full" required>
+                    <label class="block text-sm font-medium text-dark-300 mb-1">Due Date *</label>
+                    <input type="date" name="due_date" value="{{ old('due_date') }}" class="form-input w-full" required>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-dark-300 mb-1">Grace Period (Hours)</label>
@@ -137,7 +89,15 @@
                            class="form-input w-full" min="0" max="720">
                 </div>
             </div>
+
+            <div>
+                <label class="block text-sm font-medium text-dark-300 mb-1">Description</label>
+                <textarea name="description" class="form-input w-full" rows="3"
+                          placeholder="Optional: description of the fee...">{{ old('description') }}</textarea>
+            </div>
         </div>
+
+
 
         <div class="flex justify-end gap-3">
             <a href="{{ route('admin.fees.index') }}" class="btn btn-outline">Cancel</a>
@@ -149,7 +109,39 @@
 <script>
 function feeForm() {
     return {
-        planType: '{{ old('plan_type', 'one_time') }}',
+        fellowId: '{{ old('fellow_id', '') }}',
+        billables: [],
+        loading: false,
+
+        init() {
+            if (this.fellowId) {
+                this.fetchBillables();
+            }
+        },
+
+        fetchBillables() {
+            if (!this.fellowId) {
+                this.billables = [];
+                return;
+            }
+            
+            this.loading = true;
+            let url = '{{ route("admin.fees.fellow-billables", ["fellow" => ":id"]) }}';
+            url = url.replace(':id', this.fellowId);
+            
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    this.billables = data;
+                })
+                .catch(err => {
+                    console.error('Failed to fetch billables', err);
+                    this.billables = [];
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+        }
     };
 }
 </script>

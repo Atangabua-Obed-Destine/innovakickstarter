@@ -66,7 +66,7 @@ class OnboardingController extends Controller
                 'tone' => 'amber',
                 'icon' => '⏳',
                 'title' => 'Awaiting admin review',
-                'message' => 'An admin will verify your institution, supervisor and letter, then confirm the official duration. You\'ll get access to the dashboard once approved.',
+                'message' => 'An admin will verify your institution, supervisor and letter, then confirm the official duration. In the meantime, please complete the rest of your onboarding steps below.',
             ],
             InternshipProfile::STATUS_NEEDS_REVISION => [
                 'tone' => 'orange',
@@ -86,7 +86,7 @@ class OnboardingController extends Controller
                 'title' => 'Approved — starts ' . optional($profile->approved_start_date)->format('M j, Y'),
                 'message' => 'Your internship is approved. Access opens on '
                     . optional($profile->approved_start_date)->format('M j, Y')
-                    . ' and runs for ' . ($profile->total_days ?? 0) . ' days.',
+                    . '. Please complete any remaining onboarding steps below to proceed to your dashboard.',
             ],
             InternshipProfile::STATUS_ACTIVE => [
                 'tone' => 'emerald',
@@ -190,8 +190,12 @@ class OnboardingController extends Controller
             'start_date' => $validated['start_date'] ?? null,
             'end_date' => $validated['end_date'] ?? null,
             'notes' => $validated['notes'] ?? null,
-            'status' => InternshipProfile::STATUS_PENDING,
         ];
+
+        $existingProfile = InternshipProfile::where('user_id', $user->id)->first();
+        if (!$existingProfile || !in_array($existingProfile->status, [InternshipProfile::STATUS_APPROVED, InternshipProfile::STATUS_ACTIVE])) {
+            $profileData['status'] = InternshipProfile::STATUS_PENDING;
+        }
 
         // Academic-specific fields
         if ($fellowType->requiresAcademicFields()) {
