@@ -72,7 +72,7 @@ class AttendanceController extends Controller
             'records' => $records->map(function ($record) {
                 return [
                     'id' => $record->id,
-                    'fellow_name' => $record->fellow->name,
+                    'fellow_name' => optional($record->fellow)->name ?? 'Deleted User',
                     'clock_in_time' => $record->clock_in_time->format('H:i:s'),
                     'clock_out_time' => $record->clock_out_time ? $record->clock_out_time->format('H:i:s') : null,
                     'status' => $record->status,

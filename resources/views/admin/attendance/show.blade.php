@@ -116,9 +116,9 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-full bg-primary-500/20 flex items-center justify-center text-primary-400 font-bold uppercase text-xs">
-                                            {{ substr($record->fellow->name, 0, 1) }}
+                                            {{ substr(optional($record->fellow)->name ?? '?', 0, 1) }}
                                         </div>
-                                        <span class="text-white font-medium">{{ $record->fellow->name }}</span>
+                                        <span class="text-white font-medium">{{ optional($record->fellow)->name ?? 'Deleted User' }}</span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-dark-300">

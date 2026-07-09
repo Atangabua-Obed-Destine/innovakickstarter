@@ -37,6 +37,6 @@ class AttendanceRecord extends Model
 
     public function fellow()
     {
-        return $this->belongsTo(User::class, 'fellow_id');
+        return $this->belongsTo(User::class, 'fellow_id')->withTrashed();
     }
 }
