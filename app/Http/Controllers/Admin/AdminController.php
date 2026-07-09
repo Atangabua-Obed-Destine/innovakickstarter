@@ -1164,7 +1164,7 @@ class AdminController extends Controller
     public function destroyCohort(Cohort $cohort): RedirectResponse
     {
         // Don't allow deleting active cohorts with enrolled fellows
-        if ($cohort->isActive() && $cohort->fellows_count > 0) {
+        if ($cohort->status === Cohort::STATUS_ACTIVE && $cohort->fellows()->count() > 0) {
             return redirect()->back()
                 ->with('error', 'Cannot delete an active cohort with enrolled fellows. Please complete or cancel the cohort first.');
         }
@@ -1552,6 +1552,25 @@ class AdminController extends Controller
 
         return redirect()->route('admin.interviews.show', $interview)
             ->with('success', 'Interview rescheduled successfully.');
+    }
+
+    /**
+     * Delete an interview session.
+     */
+    public function destroyInterview(InterviewSession $interview): RedirectResponse
+    {
+        // Add audit log
+        $this->auditService->log(
+            'interview_deleted',
+            auth()->user(),
+            $interview,
+            "Deleted interview session: {$interview->title}",
+            ['interview_id' => $interview->id, 'fellow_id' => $interview->fellow_id]
+        );
+
+        $interview->delete();
+
+        return redirect()->back()->with('success', 'Interview session deleted successfully.');
     }
 
     /**

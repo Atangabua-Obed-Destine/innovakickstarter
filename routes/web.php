@@ -100,6 +100,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/toggle-visibility', [ProfileController::class, 'toggleVisibility'])->name('profile.toggle-visibility');
 
+    // Leave Impersonation
+    Route::post('/leave-impersonation', function () {
+        if (session()->has('impersonate_original_id')) {
+            $originalId = session()->pull('impersonate_original_id');
+            $admin = \App\Models\User::find($originalId);
+            
+            if ($admin) {
+                auth()->login($admin);
+                return redirect()->route('admin.fellows.index')->with('success', 'Left impersonation successfully.');
+            }
+        }
+        return redirect()->route('dashboard');
+    })->name('leave-impersonation');
+
     /*
     |--------------------------------------------------------------------------
     | Fellow Onboarding Routes (outside profile.complete middleware)
@@ -282,6 +296,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Fellow Management
         Route::get('/fellows', [AdminController::class, 'fellows'])->name('fellows.index');
         Route::get('/fellows/{user}', [AdminController::class, 'showFellow'])->name('fellows.show');
+        
+        // Impersonate Fellow
+        Route::post('/fellows/{user}/impersonate', function (\App\Models\User $user) {
+            if ($user->hasRole('admin')) {
+                return redirect()->back()->with('error', 'Cannot impersonate an admin.');
+            }
+            session()->put('impersonate_original_id', auth()->id());
+            auth()->login($user);
+            return redirect()->route('dashboard')->with('success', 'You are now impersonating ' . $user->name);
+        })->name('fellows.impersonate');
+        
         Route::post('/fellows/{user}/toggle-status', [AdminController::class, 'toggleFellowStatus'])->name('fellows.toggle-status');
 
         // Internship Profile Review
@@ -357,6 +382,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/interviews/{interview}/assign-mentor', [AdminController::class, 'assignMentor'])->name('interviews.assign-mentor');
         Route::post('/interviews/{interview}/cancel', [AdminController::class, 'cancelInterview'])->name('interviews.cancel');
         Route::post('/interviews/{interview}/reschedule', [AdminController::class, 'rescheduleInterview'])->name('interviews.reschedule');
+        Route::delete('/interviews/{interview}', [AdminController::class, 'destroyInterview'])->name('interviews.destroy');
         
         // Cohort Management
         Route::get('/cohorts', [AdminController::class, 'cohorts'])->name('cohorts.index');
