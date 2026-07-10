@@ -118,13 +118,20 @@ enum CareerCapitalCategory: string
     }
 
     /**
-     * Get all categories with default weights
+     * Get all categories with configured or default weights
      */
     public static function defaultRubric(): array
     {
         $rubric = [];
+        $weights = [];
+        try {
+            $weights = \App\Models\AdminSetting::getCategoryWeights();
+        } catch (\Throwable $e) {
+            // Database might not be available
+        }
+
         foreach (self::cases() as $category) {
-            $rubric[$category->value] = $category->defaultWeight();
+            $rubric[$category->value] = (int) ($weights[$category->value] ?? $category->defaultWeight());
         }
         return $rubric;
     }

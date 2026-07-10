@@ -105,11 +105,22 @@ enum Tier: string
      */
     public function defaultRange(): array
     {
+        try {
+            $t = \App\Models\AdminSetting::getTierThresholds();
+            $elite = (float) ($t['elite'] ?? 75);
+            $professional = (float) ($t['professional'] ?? 50);
+            $intern = (float) ($t['intern'] ?? 25);
+        } catch (\Throwable $e) {
+            $elite = 75;
+            $professional = 50;
+            $intern = 25;
+        }
+
         return match($this) {
-            self::ROOKIE => ['min' => 0, 'max' => 20],
-            self::INTERN => ['min' => 21, 'max' => 40],
-            self::PROFESSIONAL => ['min' => 41, 'max' => 60],
-            self::ELITE => ['min' => 61, 'max' => 100],
+            self::ROOKIE => ['min' => 0, 'max' => max(0, $intern - 0.1)],
+            self::INTERN => ['min' => $intern, 'max' => max(0, $professional - 0.1)],
+            self::PROFESSIONAL => ['min' => $professional, 'max' => max(0, $elite - 0.1)],
+            self::ELITE => ['min' => $elite, 'max' => 100],
         };
     }
 

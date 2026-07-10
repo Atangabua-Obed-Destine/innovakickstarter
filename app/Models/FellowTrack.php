@@ -246,20 +246,19 @@ class FellowTrack extends Model
     public function getProgressToNextTierAttribute(): float
     {
         $currentTier = $this->tierEnum;
-        $range = $currentTier->defaultRange();
         
         if ($currentTier === Tier::ELITE) {
             return 100.0;
         }
 
-        $nextTierMin = match($currentTier) {
-            Tier::ROOKIE => 21,
-            Tier::INTERN => 41,
-            Tier::PROFESSIONAL => 61,
-            default => 100,
-        };
+        $range = $currentTier->defaultRange();
+        // Since max is calculated as next_min - 0.1 in defaultRange, we add 0.1 to get the exact next min
+        $nextTierMin = $range['max'] + 0.1;
 
         $rangeSize = $nextTierMin - $range['min'];
+        
+        if ($rangeSize <= 0) return 0.0; // Safety fallback
+        
         $progress = $this->score - $range['min'];
 
         return min(100, max(0, ($progress / $rangeSize) * 100));
@@ -402,12 +401,12 @@ class FellowTrack extends Model
     {
         $currentTier = $this->tierEnum;
         
-        $nextTierMin = match($currentTier) {
-            Tier::ROOKIE => 21,
-            Tier::INTERN => 41,
-            Tier::PROFESSIONAL => 61,
-            Tier::ELITE => 0, // Already at top
-        };
+        if ($currentTier === Tier::ELITE) {
+            return 0.0; // Already at top
+        }
+
+        $range = $currentTier->defaultRange();
+        $nextTierMin = $range['max'] + 0.1;
 
         return max(0, $nextTierMin - $this->score);
     }

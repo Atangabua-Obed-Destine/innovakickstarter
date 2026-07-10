@@ -219,6 +219,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/attendance', [\App\Http\Controllers\Fellow\AttendanceController::class, 'index'])->name('attendance.index');
         Route::post('/attendance/clock-in', [\App\Http\Controllers\Fellow\AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
         Route::post('/attendance/clock-out', [\App\Http\Controllers\Fellow\AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
+
+        // Mentorship Pod
+        Route::get('/mentorship-pod', [\App\Http\Controllers\Fellow\MentorshipPodController::class, 'show'])->name('mentorship-pod.show');
+        Route::patch('/mentorship-pod/branding', [\App\Http\Controllers\Fellow\MentorshipPodController::class, 'updateBranding'])->name('mentorship-pod.branding');
     });
 
     /*
@@ -475,6 +479,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/content/footer-links', [ContentController::class, 'storeFooterLink'])->name('content.footer-links.store');
         Route::delete('/content/footer-links/{footerLink}', [ContentController::class, 'destroyFooterLink'])->name('content.footer-links.destroy');
         
+        // Mentorship Pods
+        Route::get('/mentorship-pods', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'index'])->name('mentorship-pods.index');
+        Route::get('/mentorship-pods/create', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'create'])->name('mentorship-pods.create');
+        Route::post('/mentorship-pods', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'store'])->name('mentorship-pods.store');
+        Route::get('/mentorship-pods/eligible-fellows', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'eligibleFellows'])->name('mentorship-pods.eligible-fellows');
+        Route::get('/mentorship-pods/{pod}', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'show'])->name('mentorship-pods.show');
+        Route::post('/mentorship-pods/{pod}/close', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'close'])->name('mentorship-pods.close');
+        Route::delete('/mentorship-pods/{pod}/members/{fellow}', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'removeMember'])->name('mentorship-pods.remove-member');
+
         // Audit Logs
         Route::get('/audit-logs', [AdminController::class, 'auditLogs'])->name('audit-logs');
     });

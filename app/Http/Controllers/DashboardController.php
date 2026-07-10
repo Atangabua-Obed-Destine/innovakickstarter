@@ -190,8 +190,16 @@ class DashboardController extends Controller
                 ->first();
         }
 
+        // Mentorship Pod
+        $mentorshipPod = clone $user; // avoid n+1 issues by just getting it directly via the helper
+        $mentorshipPod = $user->activeMentorshipPod();
+        if ($mentorshipPod) {
+            $mentorshipPod->loadMissing(['track', 'lead']);
+        }
+
         return view('dashboard.index', [
             'user' => $user,
+            'mentorshipPod' => $mentorshipPod,
             'primaryTrack' => $primaryTrack,
             'fellowTracks' => $fellowTracks,
             'scoreBreakdown' => $scoreBreakdown,

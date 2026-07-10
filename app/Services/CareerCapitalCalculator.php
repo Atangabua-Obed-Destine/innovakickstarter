@@ -98,7 +98,17 @@ class CareerCapitalCalculator
         }
 
         $totalPoints = $activities->sum('points_earned');
-        $maxExpectedPoints = 500; // Baseline for 100% technical
+        
+        // Dynamically calculate max expected points from curriculum
+        $maxExpectedPoints = \App\Models\TrackCurriculumActivity::where('track_id', $track->id)
+            ->where('is_active', true)
+            ->whereIn('type', ['project', 'open_source', 'certification'])
+            ->sum('points');
+            
+        // Fallback if curriculum has no technical activities
+        if ($maxExpectedPoints < 100) {
+            $maxExpectedPoints = 100;
+        }
 
         // Scale the points to a percentage
         $score = min(100, ($totalPoints / $maxExpectedPoints) * 100);
@@ -166,26 +176,34 @@ class CareerCapitalCalculator
             return 0.0;
         }
 
-        $score = 0;
+        $totalPoints = $portfolioActivities->sum('points_earned');
+        
+        // Dynamically calculate max expected points from curriculum
+        $maxExpectedPoints = \App\Models\TrackCurriculumActivity::where('track_id', $track->id)
+            ->where('is_active', true)
+            ->whereIn('type', ['project', 'blog_post', 'open_source'])
+            ->sum('points');
+            
+        // Fallback if curriculum has no portfolio activities
+        if ($maxExpectedPoints < 50) {
+            $maxExpectedPoints = 50;
+        }
+        
+        $score = min(100, ($totalPoints / $maxExpectedPoints) * 100);
 
-        // Projects with proof links score higher
+        // Quality bonus: Projects with proof links score higher
         $projectsWithProof = $portfolioActivities
             ->where('type', 'project')
             ->filter(fn ($a) => !empty($a->proof_url));
-        $score += min(40, $projectsWithProof->count() * 10);
-
-        // Blog posts
-        $blogPosts = $portfolioActivities->where('type', 'blog_post');
-        $score += min(30, $blogPosts->count() * 5);
-
-        // Open source contributions
-        $openSource = $portfolioActivities->where('type', 'open_source');
-        $score += min(30, $openSource->count() * 6);
+            
+        if ($projectsWithProof->count() > 0) {
+            $score = min(100, $score * 1.1); // 10% bonus
+        }
 
         // Quality bonus based on average points earned
         $avgPoints = $portfolioActivities->avg('points_earned') ?? 0;
         if ($avgPoints > 15) {
-            $score = min(100, $score * 1.1);
+            $score = min(100, $score * 1.1); // 10% bonus
         }
 
         return round(min(100, $score), 2);

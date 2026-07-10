@@ -444,6 +444,36 @@ class User extends Authenticatable implements MustVerifyEmail
             ->orWhere('fellow_b_id', $this->id);
     }
 
+    // --- Mentorship Pod Relationships ---
+
+    /**
+     * Get the fellow's active mentorship pod membership.
+     */
+    public function mentorshipPodMembership(): HasOne
+    {
+        return $this->hasOne(MentorshipPodMember::class, 'fellow_id')
+            ->where('is_active', true);
+    }
+
+    /**
+     * Get the fellow's active mentorship pod (via membership).
+     */
+    public function activeMentorshipPod(): ?MentorshipPod
+    {
+        $membership = $this->mentorshipPodMembership;
+        return $membership?->pod;
+    }
+
+    /**
+     * Check if this fellow is a Pod Lead of any active pod.
+     */
+    public function isPodLead(): bool
+    {
+        return MentorshipPod::where('lead_id', $this->id)
+            ->where('is_active', true)
+            ->exists();
+    }
+
     // ==========================================
     // ACCESSORS
     // ==========================================

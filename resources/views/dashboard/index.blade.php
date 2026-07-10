@@ -65,6 +65,40 @@
         </div>
     @endisset
 
+    @isset($mentorshipPod)
+        <div class="card p-5 bg-dark-800/60 backdrop-blur-md relative overflow-hidden border {{ $mentorshipPod->isLead(auth()->user()) ? 'border-primary-500/40 shadow-[0_0_15px_rgba(139,92,246,0.1)]' : 'border-dark-700' }}">
+            @if($mentorshipPod->color)
+                <div class="absolute inset-x-0 top-0 h-1" style="background-color: {{ $mentorshipPod->color }}"></div>
+            @endif
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" 
+                         style="background-color: {{ $mentorshipPod->color ?? '#374151' }}20; color: {{ $mentorshipPod->color ?? '#9CA3AF' }}">
+                        {{ $mentorshipPod->emoji ?? '🫂' }}
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-white font-bold text-lg leading-tight">{{ $mentorshipPod->display_name }}</h3>
+                            @if($mentorshipPod->isLead(auth()->user()))
+                                <span class="badge badge-primary text-[10px] py-0 px-1.5 uppercase font-bold tracking-wider">Pod Lead</span>
+                            @endif
+                        </div>
+                        <p class="text-sm text-dark-400 mt-0.5 flex items-center gap-2">
+                            <span>Led by {{ $mentorshipPod->isLead(auth()->user()) ? 'You' : $mentorshipPod->lead->first_name }}</span>
+                            <span class="text-dark-600">•</span>
+                            <span>{{ $mentorshipPod->active_member_count }} Members</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <a href="{{ route('mentorship-pod.show') }}" class="btn {{ $mentorshipPod->isLead(auth()->user()) && !$mentorshipPod->name ? 'btn-primary animate-pulse' : 'btn-outline border-dark-600 hover:border-dark-500' }} sm:w-auto w-full text-center shrink-0">
+                    {{ $mentorshipPod->isLead(auth()->user()) && !$mentorshipPod->name ? 'Setup Your Pod' : 'View Pod' }}
+                </a>
+            </div>
+        </div>
+    @endisset
+
     @isset($pendingTrackEnrollments)
         @if($pendingTrackEnrollments->isNotEmpty())
             <div class="card p-4 border-l-4 border-amber-500 bg-amber-500/5">

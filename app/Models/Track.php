@@ -170,6 +170,14 @@ class Track extends Model
     }
 
     /**
+     * Get mentorship pods for this track.
+     */
+    public function mentorshipPods(): HasMany
+    {
+        return $this->hasMany(MentorshipPod::class, 'track_id');
+    }
+
+    /**
      * Get all badges awarded in this track.
      */
     public function badges(): HasMany
