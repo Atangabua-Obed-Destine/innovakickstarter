@@ -130,7 +130,7 @@ class CareerCapitalCalculator
                 $q->where('track_id', $track->id)
                   ->whereIn('type', $technicalTypes);
             })
-            ->sum('score_awarded');
+            ->sum('points_awarded');
             
         $totalPoints += $curriculumPoints;
         
@@ -227,7 +227,7 @@ class CareerCapitalCalculator
                 $q->where('track_id', $track->id)
                   ->whereIn('type', $portfolioTypes);
             })
-            ->sum('score_awarded');
+            ->sum('points_awarded');
             
         $totalPoints += $curriculumPoints;
         
@@ -288,7 +288,7 @@ class CareerCapitalCalculator
                 $q->where('track_id', $track->id)
                   ->whereIn('type', $collaborationTypes);
             })
-            ->sum('score_awarded');
+            ->sum('points_awarded');
             
         $totalPoints = $collaborationActivities->sum('points_earned') + $curriculumPoints;
 
@@ -338,7 +338,7 @@ class CareerCapitalCalculator
                 $q->where('track_id', $track->id)
                   ->whereIn('type', $learningTypes);
             })
-            ->sum('score_awarded');
+            ->sum('points_awarded');
             
         $totalPoints = $learningActivities->sum('points_earned') + $curriculumPoints;
 
@@ -430,6 +430,18 @@ class CareerCapitalCalculator
             $collaborationScore = $this->calculateCollaborationScore($fellow, $track);
             $learningScore = $this->calculateLearningScore($fellow, $track);
 
+            // Calculate total raw points earned
+            $totalPointsEarned = \App\Models\FellowCurriculumProgress::where('fellow_id', $fellow->id)
+                ->where('status', \App\Enums\CurriculumStatus::COMPLETED)
+                ->whereHas('curriculumActivity', function ($q) use ($track) {
+                    $q->where('track_id', $track->id);
+                })
+                ->sum('points_awarded') + 
+                \App\Models\Activity::where('fellow_id', $fellow->id)
+                ->where('track_id', $track->id)
+                ->where('status', \App\Enums\ActivityStatus::APPROVED)
+                ->sum('points_earned');
+
             // Update fellow track
             $fellowTrack->update([
                 'score' => $newScore,
@@ -439,6 +451,7 @@ class CareerCapitalCalculator
                 'portfolio_score' => $portfolioScore,
                 'collaboration_score' => $collaborationScore,
                 'learning_score' => $learningScore,
+                'total_points_earned' => $totalPointsEarned,
                 'last_active_at' => now(),
             ]);
 
