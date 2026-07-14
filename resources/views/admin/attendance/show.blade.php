@@ -72,6 +72,10 @@
                                 <div>
                                     <p class="font-medium text-white" x-text="record.fellow_name"></p>
                                     <p class="text-xs text-dark-400">Clocked in at <span x-text="record.clock_in_time"></span></p>
+                                    <div class="mt-1 flex items-center gap-2 text-[10px] text-dark-500">
+                                        <span class="bg-dark-800 px-1.5 py-0.5 rounded border border-dark-600"><span x-text="record.activities_completed"></span> Completed</span>
+                                        <span class="bg-dark-800 px-1.5 py-0.5 rounded border border-dark-600"><span x-text="record.activities_started"></span> In Progress</span>
+                                    </div>
                                 </div>
                             </div>
                             <div>
@@ -255,9 +259,57 @@
                             }
                         }
                         
+                        // Detect changes for sounds
+                        if (this.records.length > 0) {
+                            const currentIds = this.records.map(r => r.id);
+                            
+                            // Check for new clock ins
+                            const newRecords = data.records.filter(r => !currentIds.includes(r.id));
+                            if (newRecords.length > 0) {
+                                this.playSound('in');
+                            } else {
+                                // Check for clock outs
+                                for (let newRec of data.records) {
+                                    const oldRec = this.records.find(r => r.id === newRec.id);
+                                    if (oldRec && !oldRec.clock_out_time && newRec.clock_out_time) {
+                                        this.playSound('out');
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        
                         this.records = data.records;
                     })
                     .catch(err => console.error("Polling error:", err));
+            },
+
+            playSound(type) {
+                if (!window.audioCtx) {
+                    window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (window.audioCtx.state === 'suspended') {
+                    window.audioCtx.resume();
+                }
+                const osc = window.audioCtx.createOscillator();
+                const gain = window.audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(window.audioCtx.destination);
+                
+                osc.type = 'sine';
+                if (type === 'in') {
+                    osc.frequency.setValueAtTime(523.25, window.audioCtx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, window.audioCtx.currentTime + 0.1); // E5
+                } else {
+                    osc.frequency.setValueAtTime(659.25, window.audioCtx.currentTime); // E5
+                    osc.frequency.setValueAtTime(523.25, window.audioCtx.currentTime + 0.1); // C5
+                }
+                
+                gain.gain.setValueAtTime(0.1, window.audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, window.audioCtx.currentTime + 0.3);
+                
+                osc.start();
+                osc.stop(window.audioCtx.currentTime + 0.3);
             },
 
             openAdjustModal(id, status, notes) {
