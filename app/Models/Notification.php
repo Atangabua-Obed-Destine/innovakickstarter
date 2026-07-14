@@ -457,7 +457,7 @@ class Notification extends Model
             '🎉 Tier Promotion!',
             "Congratulations! You've been promoted from {$previousTier} to {$newTier} with a score of {$score}%!",
             [
-                'action_url' => route('fellow.dashboard'),
+                'action_url' => route('dashboard'),
                 'action_label' => 'View Dashboard',
                 'data' => [
                     'previous_tier' => $previousTier,

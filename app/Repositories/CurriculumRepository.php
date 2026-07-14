@@ -54,7 +54,9 @@ class CurriculumRepository extends BaseRepository implements CurriculumRepositor
             ->where('is_active', true)
             ->orderBy('sequence_order')
             ->with(['curriculumActivities' => function ($q) {
-                $q->where('is_active', true)->orderBy('sequence_order');
+                $q->where('is_active', true)
+                  ->orderBy('sequence_order')
+                  ->withCount('comments');
             }])
             ->get();
     }
@@ -268,7 +270,7 @@ class CurriculumRepository extends BaseRepository implements CurriculumRepositor
                 'curriculumActivity.milestone',
                 'curriculumActivity',
                 'reviewer',
-                'peerReviewer',
+                'peerReviews',
             ])
             ->orderBy('created_at', 'desc')
             ->get();
@@ -334,20 +336,12 @@ class CurriculumRepository extends BaseRepository implements CurriculumRepositor
      */
     public function getPendingPeerReviews(User $fellow, ?Track $track = null): Collection
     {
-        // Find progress records that need peer review from this fellow's accountability partner
-        $partnerIds = AccountabilityPair::where(function ($q) use ($fellow) {
-            $q->where('fellow_a_id', $fellow->id)
-                ->orWhere('fellow_b_id', $fellow->id);
-        })
-            ->where('is_active', true)
-            ->get()
-            ->map(function ($pair) use ($fellow) {
-                return $pair->getPartner($fellow)?->id;
+        // Find progress records where this fellow is assigned as a peer reviewer
+        $query = FellowCurriculumProgress::whereHas('peerReviews', function ($q) use ($fellow) {
+                $q->where('reviewer_id', $fellow->id)
+                  ->where('status', 'pending');
             })
-            ->filter();
-
-        $query = FellowCurriculumProgress::where('status', CurriculumStatus::PEER_REVIEW->value)
-            ->whereIn('fellow_id', $partnerIds)
+            ->where('status', CurriculumStatus::PEER_REVIEW->value)
             ->with(['fellow', 'curriculumActivity']);
 
         if ($track) {

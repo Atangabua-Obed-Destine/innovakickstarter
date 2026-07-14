@@ -17,6 +17,7 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="{{ asset('js/audio-manager.js') }}"></script>
 
     <!-- Additional Head Content -->
     @stack('head')
@@ -261,6 +262,9 @@
 
     <!-- Alpine.js CDN (for interactivity) -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <!-- Additional Scripts -->
     @stack('scripts')

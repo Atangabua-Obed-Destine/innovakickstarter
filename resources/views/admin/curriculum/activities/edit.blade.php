@@ -23,7 +23,7 @@
     </div>
     @endif
 
-    <form action="{{ route('admin.curriculum.activities.update', [$track, $activity]) }}" method="POST" class="space-y-6">
+    <form action="{{ route('admin.curriculum.activities.update', [$track, $activity]) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf @method('PUT')
 
         {{-- Basic Info --}}
@@ -98,6 +98,20 @@
                 </div>
             </div>
 
+            @php $currentPrereqs = old('prerequisites', $activity->prerequisites ?? []); @endphp
+            <div>
+                <label for="prerequisites" class="block text-sm font-medium text-dark-300 mb-2">Prerequisites</label>
+                <select name="prerequisites[]" id="prerequisites" multiple size="4"
+                        class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2.5 text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
+                    @foreach($existingActivities as $act)
+                        <option value="{{ $act->id }}" {{ in_array($act->id, $currentPrereqs) ? 'selected' : '' }}>
+                            #{{ $act->sequence_order }}: {{ Str::limit($act->title, 40) }}
+                        </option>
+                    @endforeach
+                </select>
+                <p class="text-dark-500 text-xs mt-1">Hold Ctrl/Cmd to select multiple activities that must be completed before this one unlocks.</p>
+            </div>
+
             <div class="flex items-center gap-6">
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="hidden" name="is_required" value="0">
@@ -169,9 +183,11 @@
                     <label for="interview_config_mode" class="block text-sm font-medium text-dark-300 mb-2">Interview Mode</label>
                     <select name="interview_config[mode]" id="interview_config_mode"
                             class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2.5 text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
-                        <option value="ai" {{ ($interviewConfig['mode'] ?? 'ai') === 'ai' ? 'selected' : '' }}>🤖 AI Interview</option>
-                        <option value="human" {{ ($interviewConfig['mode'] ?? '') === 'human' ? 'selected' : '' }}>👤 Human Interview</option>
-                        <option value="peer" {{ ($interviewConfig['mode'] ?? '') === 'peer' ? 'selected' : '' }}>👥 Peer Interview</option>
+                        @foreach(\App\Enums\InterviewMode::cases() as $iMode)
+                            <option value="{{ $iMode->value }}" {{ ($interviewConfig['mode'] ?? 'ai') === $iMode->value ? 'selected' : '' }}>
+                                {{ $iMode->icon() }} {{ $iMode->label() }}
+                            </option>
+                        @endforeach
                     </select>
                     <p class="text-dark-500 text-xs mt-1">AI interviews launch instantly; human/peer require scheduling</p>
                 </div>
@@ -290,16 +306,74 @@
         </div>
 
         {{-- Resources & Tags --}}
-        <div class="card p-6 space-y-5">
-            <h2 class="text-white font-semibold text-lg border-b border-dark-700 pb-3">Resources & Tags</h2>
-
-            <div>
-                <label class="block text-sm font-medium text-dark-300 mb-2">Resource Links</label>
-                <textarea name="resources_text" rows="3"
-                          class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2.5 text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500">{{ old('resources_text', is_array($activity->resources) ? implode("\n", $activity->resources) : '') }}</textarea>
+        <div class="card p-6 space-y-5" x-data='resourceManager({{ json_encode(old("resources", is_array($activity->resources) ? $activity->resources : [])) }})'>
+            <div class="flex items-center justify-between border-b border-dark-700 pb-3">
+                <h2 class="text-white font-semibold text-lg">Resources & Tags</h2>
+                <button type="button" @click="addResource()" class="text-primary-400 hover:text-primary-300 text-sm font-medium transition flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Add Resource
+                </button>
             </div>
 
+            <div class="space-y-4">
+                <template x-for="(res, index) in resources" :key="res.id || index">
+                    <div class="bg-dark-800/50 border border-dark-700 rounded-lg p-4 relative group">
+                        <button type="button" @click="removeResource(index)" class="absolute top-3 right-3 text-dark-500 hover:text-red-400 transition" title="Remove Resource">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 pr-8">
+                            <div>
+                                <label class="block text-xs font-medium text-dark-300 mb-1">Resource Title *</label>
+                                <input type="text" x-model="res.title" :name="`resources[${index}][title]`" required placeholder="e.g. Intro to Laravel"
+                                       class="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-dark-300 mb-1">Type *</label>
+                                <select x-model="res.type" :name="`resources[${index}][type]`" @change="res.content = ''" required
+                                        class="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
+                                    <option value="link">External Link</option>
+                                    <option value="youtube">YouTube Embed</option>
+                                    <option value="file">File Upload (PDF, Image, Doc)</option>
+                                </select>
+                            </div>
+                        </div>
 
+                        <div>
+                            <template x-if="res.type === 'youtube' || res.type === 'link'">
+                                <div>
+                                    <label class="block text-xs font-medium text-dark-300 mb-1">URL *</label>
+                                    <input type="url" x-model="res.content" :name="`resources[${index}][content_url]`" required placeholder="https://..."
+                                           class="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
+                                </div>
+                            </template>
+                            <template x-if="res.type === 'file'">
+                                <div>
+                                    <label class="block text-xs font-medium text-dark-300 mb-1">Upload File <span x-show="!res.content">*</span></label>
+                                    <input type="file" :name="`resources[${index}][content_file]`" :required="!res.content" accept=".pdf,image/*,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                                           class="w-full text-sm text-dark-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-500/10 file:text-primary-400 hover:file:bg-primary-500/20 transition cursor-pointer">
+                                    
+                                    <!-- Hidden input to preserve existing file path if a new one isn't uploaded -->
+                                    <template x-if="res.content">
+                                        <div class="mt-2 text-xs text-dark-400 flex items-center gap-2">
+                                            <span>Current file:</span>
+                                            <a :href="res.content" target="_blank" class="text-primary-400 hover:underline flex items-center gap-1">
+                                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                                View existing
+                                            </a>
+                                            <input type="hidden" :name="`resources[${index}][existing_content]`" :value="res.content">
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                <div x-show="resources.length === 0" class="text-center py-6 text-dark-400 text-sm italic">
+                    No resources added. Click "Add Resource" to attach files or links.
+                </div>
+            </div>
         </div>
 
         {{-- Submit --}}
@@ -354,5 +428,22 @@ function addRubricRow() {
     container.insertAdjacentHTML('beforeend', html);
     rubricIndex++;
 }
+
+document.addEventListener('alpine:init', () => {
+    Alpine.data('resourceManager', (initialResources) => ({
+        resources: initialResources,
+        addResource() {
+            this.resources.push({
+                id: Date.now(),
+                title: '',
+                type: 'link',
+                content: ''
+            });
+        },
+        removeResource(index) {
+            this.resources.splice(index, 1);
+        }
+    }));
+});
 </script>
 @endsection

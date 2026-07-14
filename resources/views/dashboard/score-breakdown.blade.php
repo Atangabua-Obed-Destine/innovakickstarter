@@ -27,7 +27,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-dark-400 text-sm font-medium">Total Career Capital Score</p>
-                <p class="text-4xl font-bold text-white mt-1">{{ number_format($breakdown['total'] ?? 0, 1) }}</p>
+                <p class="text-4xl font-bold text-white mt-1">{{ number_format($breakdown['total'] ?? 0, 3) }}</p>
                 <p class="text-dark-500 text-sm mt-1">{{ $primaryTrack?->track?->name ?? 'No track selected' }}</p>
             </div>
             <div class="w-20 h-20 rounded-full border-4 border-primary-500 flex items-center justify-center">
@@ -68,7 +68,7 @@
                 </div>
             </div>
             <div class="flex items-end justify-between mb-3">
-                <span class="text-3xl font-bold text-{{ $meta['color'] }}-400">{{ number_format($category['score'] ?? 0, 1) }}</span>
+                <span class="text-3xl font-bold text-{{ $meta['color'] }}-400">{{ number_format($category['score'] ?? 0, 3) }}</span>
                 <span class="text-dark-500 text-sm">/ {{ $maxScore }} pts</span>
             </div>
             <div class="w-full bg-dark-700 rounded-full h-2 mb-4">
@@ -87,7 +87,7 @@
             @foreach(array_slice(array_reverse($scoreHistory), 0, 10) as $entry)
             <div class="flex items-center justify-between py-2 border-b border-dark-700 last:border-0">
                 <span class="text-dark-300 text-sm">{{ $entry['date'] ?? 'N/A' }}</span>
-                <span class="text-white font-semibold">{{ number_format($entry['score'] ?? 0, 1) }}</span>
+                <span class="text-white font-semibold">{{ number_format($entry['score'] ?? 0, 3) }}</span>
             </div>
             @endforeach
         </div>

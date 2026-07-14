@@ -428,11 +428,36 @@ class CurriculumService
                 "Best score: {$bestScore}%. Sessions: {$completedInterviews->count()}/{$requiredCount}.";
         }
 
-        return DB::transaction(function () use ($progress, $data, $activity) {
+        return DB::transaction(function () use ($progress, $data, $activity, $fellow) {
             $notes = $data['reflection'] ?? $data['submission_notes'] ?? null;
             unset($data['reflection'], $data['submission_notes']);
 
             $progress->submit($data, $notes);
+
+            // If it requires peer review, create peer review requests for pod members
+            if ($activity->requires_peer_review) {
+                $pod = $fellow->activeMentorshipPod();
+                $podMembers = collect();
+                
+                if ($pod) {
+                    $podMembers = $pod->activeMembers()
+                        ->where('fellow_id', '!=', $fellow->id)
+                        ->get();
+                }
+                
+                if ($podMembers->isEmpty()) {
+                    // Bypass automatically if no pod members available
+                    $progress->bypassPeerReview('No active pod members available for peer review.');
+                } else {
+                    foreach ($podMembers as $member) {
+                        \App\Models\FellowActivityPeerReview::create([
+                            'progress_id' => $progress->id,
+                            'reviewer_id' => $member->fellow_id,
+                            'status' => 'pending',
+                        ]);
+                    }
+                }
+            }
 
             return $progress->fresh();
         });
@@ -453,14 +478,15 @@ class CurriculumService
             throw new \Exception('This submission is not awaiting peer review.');
         }
 
-        // Verify reviewer is the accountability partner
-        $fellow = User::findOrFail($progress->fellow_id);
-        $pair = $fellow->allAccountabilityPairs()
-            ->where('is_active', true)
-            ->first();
+        // Verify reviewer is assigned to this
+        $review = $progress->peerReviews()->where('reviewer_id', $reviewer->id)->first();
 
-        if (!$pair || !$pair->includesFellow($reviewer)) {
-            throw new \Exception('You are not the accountability partner for this fellow.');
+        if (!$review) {
+            throw new \Exception('You are not assigned to peer review this submission.');
+        }
+
+        if ($review->status !== 'pending') {
+            throw new \Exception('You have already completed or bypassed this peer review.');
         }
 
         return DB::transaction(function () use ($progress, $reviewer, $rating, $feedback) {
@@ -577,11 +603,32 @@ class CurriculumService
     /**
      * Unlock activities that depend on a completed activity.
      */
-    protected function unlockDependentActivities(User $fellow, TrackCurriculumActivity $completedActivity): void
+    public function unlockDependentActivities(User $fellow, TrackCurriculumActivity $completedActivity): void
     {
-        // Find chain children
-        $chainChildren = $completedActivity->chainChildren;
-        foreach ($chainChildren as $child) {
+        $dependentActivities = collect();
+
+        // 1. Chain children
+        $dependentActivities = $dependentActivities->merge($completedActivity->chainChildren);
+
+        // 2. Next sequential sibling
+        $nextSequential = TrackCurriculumActivity::where('milestone_id', $completedActivity->milestone_id)
+            ->where('sequence_order', '>', $completedActivity->sequence_order)
+            ->where('is_active', true)
+            ->orderBy('sequence_order')
+            ->first();
+
+        if ($nextSequential && $nextSequential->is_sequential) {
+            $dependentActivities->push($nextSequential);
+        }
+
+        // 3. Explicit prerequisites
+        $prereqActivities = TrackCurriculumActivity::whereJsonContains('prerequisites', $completedActivity->id)
+            ->where('is_active', true)
+            ->get();
+
+        $dependentActivities = $dependentActivities->merge($prereqActivities);
+
+        foreach ($dependentActivities->unique('id') as $child) {
             if ($child->prerequisitesMet($fellow)) {
                 $progress = FellowCurriculumProgress::where('fellow_id', $fellow->id)
                     ->where('curriculum_activity_id', $child->id)

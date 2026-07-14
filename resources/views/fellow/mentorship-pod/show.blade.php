@@ -130,7 +130,7 @@
                                 @foreach($member->score_breakdown as $key => $cat)
                                     @if($cat['score'] > 0)
                                         <div style="width: {{ $cat['score'] }}%; background-color: {{ $cat['color'] }}" 
-                                             title="{{ $cat['label'] }}: {{ number_format($cat['score'], 1) }}%"
+                                             title="{{ $cat['label'] }}: {{ number_format($cat['score'], 3) }}%"
                                              class="h-full hover:brightness-110 transition-all cursor-help"></div>
                                     @endif
                                 @endforeach
@@ -142,7 +142,7 @@
                                     @if($cat['score'] > 0)
                                         <div class="flex items-center gap-1.5 text-[10px] text-dark-400">
                                             <span class="w-2 h-2 rounded-full" style="background-color: {{ $cat['color'] }}"></span>
-                                            {{ $cat['label'] }}
+                                            {{ $cat['label'] }}: {{ number_format($cat['score'], 3) }}%
                                         </div>
                                     @endif
                                 @endforeach

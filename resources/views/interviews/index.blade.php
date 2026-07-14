@@ -45,7 +45,7 @@
                 <div>
                     <p class="text-dark-400 text-sm">Average Score</p>
                     <p class="text-2xl font-bold text-primary-400">
-                        {{ $stats['average_score'] ? number_format($stats['average_score'], 1) : 'N/A' }}
+                        {{ $stats['average_score'] ? number_format($stats['average_score'], 3) : 'N/A' }}
                     </p>
                 </div>
                 <div class="w-12 h-12 rounded-xl bg-primary-600/20 flex items-center justify-center">
@@ -228,7 +228,7 @@
                             <!-- Score -->
                             @if($interview->status->value === 'completed' && $interview->score)
                                 <div class="text-right">
-                                    <p class="text-2xl font-bold text-primary-400">{{ number_format($interview->score, 1) }}</p>
+                                    <p class="text-2xl font-bold text-primary-400">{{ number_format($interview->score, 3) }}</p>
                                     <p class="text-dark-500 text-xs">Score</p>
                                 </div>
                             @endif

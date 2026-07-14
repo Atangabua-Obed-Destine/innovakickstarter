@@ -11,6 +11,15 @@
             <p class="text-dark-400">View and manage all fellows across cohorts</p>
         </div>
         <div class="flex gap-2">
+            <form action="{{ route('admin.fellows.recalc-cc') }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to recalculate Career Capital scores for all fellows? This might take a few moments.');">
+                @csrf
+                <button type="submit" class="btn btn-outline border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-500/50">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Recalculate CC
+                </button>
+            </form>
             <button class="btn btn-outline">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
@@ -177,7 +186,7 @@
                                                     class="{{ $score >= 80 ? 'text-green-500' : ($score >= 60 ? 'text-amber-500' : 'text-red-500') }}"/>
                                         </svg>
                                         <span class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">
-                                            {{ min(round($score), 100) }}
+                                            {{ number_format(min($score, 100), 2) }}
                                         </span>
                                     </div>
                                 </div>

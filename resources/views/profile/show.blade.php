@@ -227,7 +227,7 @@
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="text-2xl font-bold text-primary-400">{{ number_format($fellowTrack->score ?? 0) }}</p>
+                                <p class="text-2xl font-bold text-primary-400">{{ number_format($fellowTrack->score ?? 0, 3) }}</p>
                                 <p class="text-dark-500 text-xs">Score</p>
                             </div>
                         </div>

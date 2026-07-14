@@ -216,6 +216,9 @@
                                        class="input-field w-full pr-8">
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400">%</span>
                             </div>
+                            <div class="mt-2 text-xs text-dark-500 leading-tight">
+                                {{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::TECHNICAL)->map(fn($t) => $t->label())->join(', ') }}
+                            </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-dark-300 mb-2">Interview Readiness</label>
@@ -225,6 +228,9 @@
                                        min="0" max="100"
                                        class="input-field w-full pr-8">
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400">%</span>
+                            </div>
+                            <div class="mt-2 text-xs text-dark-500 leading-tight">
+                                {{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::INTERVIEW)->map(fn($t) => $t->label())->join(', ') }}
                             </div>
                         </div>
                         <div>
@@ -236,6 +242,9 @@
                                        class="input-field w-full pr-8">
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400">%</span>
                             </div>
+                            <div class="mt-2 text-xs text-dark-500 leading-tight">
+                                {{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::PORTFOLIO)->map(fn($t) => $t->label())->join(', ') }}
+                            </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-dark-300 mb-2">Collaboration</label>
@@ -246,6 +255,9 @@
                                        class="input-field w-full pr-8">
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400">%</span>
                             </div>
+                            <div class="mt-2 text-xs text-dark-500 leading-tight">
+                                {{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::COLLABORATION)->map(fn($t) => $t->label())->join(', ') }}
+                            </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-dark-300 mb-2">Continuous Learning</label>
@@ -255,6 +267,9 @@
                                        min="0" max="100"
                                        class="input-field w-full pr-8">
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400">%</span>
+                            </div>
+                            <div class="mt-2 text-xs text-dark-500 leading-tight">
+                                {{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::LEARNING)->map(fn($t) => $t->label())->join(', ') }}
                             </div>
                         </div>
                     </div>

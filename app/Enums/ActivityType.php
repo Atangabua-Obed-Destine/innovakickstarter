@@ -141,6 +141,20 @@ enum ActivityType: string
     }
 
     /**
+     * Get all activity type values belonging to a specific career capital category
+     */
+    public static function getValuesByCategory(CareerCapitalCategory $category): array
+    {
+        $values = [];
+        foreach (self::cases() as $case) {
+            if ($case->category() === $category) {
+                $values[] = $case->value;
+            }
+        }
+        return $values;
+    }
+
+    /**
      * Get default points for this activity type
      * Note: Actual points come from admin_settings
      */

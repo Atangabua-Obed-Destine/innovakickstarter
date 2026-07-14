@@ -94,10 +94,45 @@ class CurriculumController extends Controller
         // Peer reviews waiting for me
         $peerReviews = $this->curriculumService->getPeerReviewsForFellow($fellow, $track);
 
+        // Leaderboard: Top 5 fellows in this track based on their track score
+        $leaderboard = \App\Models\User::whereHas('fellowTracks', fn($q) => $q->where('track_id', $track->id))
+            ->with(['fellowTracks' => fn($q) => $q->where('track_id', $track->id)])
+            ->get()
+            ->sortByDesc(fn($u) => $u->fellowTracks->first()->score ?? 0)
+            ->take(5);
+
+        // Determine Active Milestone
+        $activeMilestone = null;
+        if (isset($dashboard['milestones'])) {
+            foreach ($dashboard['milestones'] as $milestone) {
+                $msActivities = $milestone->curriculumActivities ?? collect();
+                if ($msActivities->isEmpty()) continue;
+
+                $msProgress = $dashboard['progress']->whereIn('curriculum_activity_id', $msActivities->pluck('id'));
+                $msCompleted = $msProgress->where('status', 'completed')->count();
+                $msTotal = $msActivities->count();
+
+                $isUnlocked = $milestone->isUnlockedFor($fellow);
+                $isComplete = $msTotal > 0 && $msCompleted === $msTotal;
+
+                if ($isUnlocked && !$isComplete) {
+                    $activeMilestone = $milestone;
+                    break;
+                }
+            }
+            
+            // If all are completed, the active is the last one
+            if (!$activeMilestone && $dashboard['milestones']->isNotEmpty()) {
+                $activeMilestone = $dashboard['milestones']->last();
+            }
+        }
+
         return view('fellow.curriculum.index', array_merge($dashboard, [
             'streakSummary' => $streakSummary,
             'partner' => $partner,
             'peerReviews' => $peerReviews,
+            'leaderboard' => $leaderboard,
+            'activeMilestone' => $activeMilestone,
             'currentTrack' => $track,
         ]));
     }
@@ -123,7 +158,7 @@ class CurriculumController extends Controller
             ->where('curriculum_activity_id', $activity->id)
             ->first();
 
-        $activity->load(['milestone', 'track', 'chainParent', 'chainChildren']);
+        $activity->load(['milestone', 'track', 'chainParent', 'chainChildren', 'comments.user', 'comments.replies.user']);
 
         // For mock_interview activities, load linked interview sessions
         $linkedInterviews = collect();
@@ -259,7 +294,7 @@ class CurriculumController extends Controller
             $this->curriculumService->submitActivity($fellow, $progress->id, $data);
 
             return redirect()
-                ->route('curriculum.index')
+                ->route('curriculum.activity.show', $progress->curriculumActivity)
                 ->with('success', 'Activity submitted for review!');
         } catch (\Exception $e) {
             return redirect()
@@ -281,12 +316,12 @@ class CurriculumController extends Controller
     {
         $fellow = Auth::user();
 
-        // Verify this submission belongs to the fellow's accountability partner
-        $partner = $this->accountabilityService->getPartner($fellow, $progress->curriculumActivity->track);
+        // Verify this user is assigned to review this submission
+        $isReviewer = $progress->peerReviews()->where('reviewer_id', $fellow->id)->exists();
 
-        if (!$partner || $progress->fellow_id !== $partner->id) {
+        if (!$isReviewer) {
             return redirect()->route('curriculum.index')
-                ->with('error', 'You can only review your accountability partner\'s submissions.');
+                ->with('error', 'You are not assigned to review this submission.');
         }
 
         $progress->load(['fellow', 'curriculumActivity']);
@@ -323,6 +358,33 @@ class CurriculumController extends Controller
                 ->back()
                 ->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Bypass peer review manually.
+     * POST /curriculum/progress/{progress}/bypass-peer-review
+     */
+    public function bypassPeerReview(Request $request, FellowCurriculumProgress $progress)
+    {
+        $fellow = Auth::user();
+
+        if ($progress->fellow_id !== $fellow->id) {
+            abort(403);
+        }
+
+        if ($progress->status !== \App\Enums\CurriculumStatus::PEER_REVIEW) {
+            return redirect()->back()->with('error', 'This submission is not awaiting peer review.');
+        }
+
+        $validated = $request->validate([
+            'reason' => 'required|string|max:1000',
+        ]);
+
+        $progress->bypassPeerReview($validated['reason']);
+
+        return redirect()
+            ->route('curriculum.activity.show', $progress->curriculumActivity)
+            ->with('success', 'Peer review bypassed. Your submission is now awaiting admin review.');
     }
 
     // ==========================================

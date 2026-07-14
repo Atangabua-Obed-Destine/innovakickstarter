@@ -168,11 +168,11 @@ class FellowCurriculumProgress extends Model
     }
 
     /**
-     * Get the peer reviewer.
+     * Get the multiple pod peer reviews for this submission.
      */
-    public function peerReviewer(): BelongsTo
+    public function peerReviews()
     {
-        return $this->belongsTo(User::class, 'peer_reviewer_id');
+        return $this->hasMany(FellowActivityPeerReview::class, 'progress_id');
     }
 
     /**
@@ -273,6 +273,26 @@ class FellowCurriculumProgress extends Model
     // ==========================================
     // ACCESSORS
     // ==========================================
+
+    public function getEvidenceUrlAttribute()
+    {
+        return is_array($this->evidence) ? ($this->evidence['evidence_url'] ?? null) : null;
+    }
+
+    public function getEvidenceTextAttribute()
+    {
+        return is_array($this->evidence) ? ($this->evidence['evidence_text'] ?? null) : null;
+    }
+
+    public function getEvidenceFilesAttribute()
+    {
+        return is_array($this->evidence) ? ($this->evidence['evidence_files'] ?? []) : [];
+    }
+
+    public function getReflectionAttribute()
+    {
+        return $this->submission_notes;
+    }
 
     /**
      * Get status label.
@@ -401,16 +421,49 @@ class FellowCurriculumProgress extends Model
     }
 
     /**
-     * Complete peer review and advance to mentor review.
+     * Complete one peer review and advance to mentor review if all are done.
      */
     public function completePeerReview(User $peerReviewer, string $notes, int $score): self
     {
+        $review = $this->peerReviews()->where('reviewer_id', $peerReviewer->id)->first();
+        if ($review) {
+            $review->update([
+                'status' => 'completed',
+                'notes' => $notes,
+                'score' => $score,
+                'reviewed_at' => now(),
+            ]);
+        }
+
+        // Check if all peer reviews are completed or bypassed
+        $pendingCount = $this->peerReviews()->where('status', 'pending')->count();
+        if ($pendingCount === 0) {
+            // Average the score
+            $avgScore = (int) round($this->peerReviews()->where('status', 'completed')->avg('score') ?? 0);
+            
+            $this->update([
+                'status' => CurriculumStatus::SUBMITTED,
+                'peer_reviewed_at' => now(),
+                'peer_review_score' => $avgScore,
+            ]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Bypass peer review manually.
+     */
+    public function bypassPeerReview(string $reason): self
+    {
+        $this->peerReviews()->where('status', 'pending')->update([
+            'status' => 'bypassed'
+        ]);
+
         $this->update([
             'status' => CurriculumStatus::SUBMITTED,
-            'peer_reviewer_id' => $peerReviewer->id,
-            'peer_review_notes' => $notes,
+            'peer_review_bypass_reason' => $reason,
             'peer_reviewed_at' => now(),
-            'peer_review_score' => $score,
         ]);
 
         return $this;

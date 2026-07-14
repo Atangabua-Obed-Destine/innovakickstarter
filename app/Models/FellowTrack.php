@@ -269,7 +269,7 @@ class FellowTrack extends Model
      */
     public function getFormattedScoreAttribute(): string
     {
-        return number_format($this->score, 1) . '%';
+        return number_format($this->score, 3) . '%';
     }
 
     /**

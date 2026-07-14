@@ -56,19 +56,44 @@ class CurriculumTemplateSeeder extends Seeder
             return;
         }
 
-        $this->command->info('  📚 Seeding Software Engineering curriculum...');
+        $this->command->info('  📚 Seeding Software Engineering curriculum via Markdown Parser...');
 
-        // --- Milestone 1: Foundation Sprint ---
+        \Illuminate\Support\Facades\Artisan::call('curriculum:import-markdown', [
+            'folder' => base_path('Software engineering TRACK MILESTONES'),
+            '--track' => 'software-engineering'
+        ]);
+
+        $this->command->info('  ✅ ' . \Illuminate\Support\Facades\Artisan::output());
+    }
+
+    // ==========================================
+    // DATA SCIENCE TRACK
+    // ==========================================
+
+    protected function seedDataScience(?string $adminId): void
+    {
+        $track = Track::where('slug', 'data-science')->first();
+        if (!$track) {
+            $this->command->warn('  ⏭ Data Science track not found, skipping.');
+            return;
+        }
+
+        // Check if already seeded
+        if (TrackMilestone::where('track_id', $track->id)->exists()) {
+            $this->command->info('  ⏭ Data Science curriculum already exists, skipping.');
+            return;
+        }
+
+        $this->command->info('  📚 Seeding Data Science curriculum...');
+
+        // --- Milestone 1: Data Foundations ---
         $m1 = TrackMilestone::create([
             'track_id' => $track->id,
-            'title' => 'Foundation Sprint',
-            'description' => 'Build your developer toolkit: environment setup, Git mastery, and your first project scaffold. Prove you can ship working code from day one.',
+            'title' => 'Data Foundations',
+            'description' => 'Master the basics of data manipulation, exploratory data analysis (EDA), and statistical reasoning.',
             'sequence_order' => 1,
             'is_required' => true,
             'estimated_duration_days' => 14,
-            'badge_name' => 'Foundation Builder',
-            'badge_icon' => '🏗️',
-            'badge_color' => '#3B82F6',
             'created_by' => $adminId,
         ]);
 

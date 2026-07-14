@@ -126,7 +126,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-lg font-semibold text-white">Career Capital Score</h2>
                     <div class="text-right">
-                        <p class="text-3xl font-bold {{ $score >= 80 ? 'text-green-400' : ($score >= 60 ? 'text-teal-400' : 'text-amber-400') }}">{{ number_format($score, 1) }}%</p>
+                        <p class="text-3xl font-bold {{ $score >= 80 ? 'text-green-400' : ($score >= 60 ? 'text-teal-400' : 'text-amber-400') }}">{{ number_format($score, 3) }}%</p>
                         <p class="text-dark-500 text-sm">{{ ucfirst($primaryTrack?->tier ?? 'Rookie') }}</p>
                     </div>
                 </div>

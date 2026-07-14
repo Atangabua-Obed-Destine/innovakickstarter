@@ -67,10 +67,28 @@
 
     <!-- Members Grid -->
     <div>
-        <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-            Pod Members
-        </h2>
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                Pod Members
+            </h2>
+        </div>
+
+        @if($pod->is_active && !$pod->isFull())
+            <div class="card bg-dark-800 border border-dark-700 p-6 mb-6">
+                <h3 class="text-lg font-bold text-white mb-4">Add Member</h3>
+                <form action="{{ route('admin.mentorship-pods.add-member', $pod) }}" method="POST" class="flex flex-col sm:flex-row gap-4">
+                    @csrf
+                    <select name="fellow_id" class="form-input flex-1" required>
+                        <option value="">Select an eligible fellow...</option>
+                        @foreach($eligibleFellows as $fellow)
+                            <option value="{{ $fellow->id }}">{{ $fellow->name }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="btn btn-primary whitespace-nowrap">Add to Pod</button>
+                </form>
+            </div>
+        @endif
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             @foreach($members as $member)
@@ -103,19 +121,28 @@
                                         <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border" style="background-color: {{ $member->tier['color'] }}15; color: {{ $member->tier['color'] }}; border-color: {{ $member->tier['color'] }}30;">
                                             {{ $member->tier['icon'] }} {{ $member->tier['label'] }}
                                         </span>
-                                        <span class="text-sm font-bold text-white">{{ number_format($member->score, 1) }}% <span class="text-dark-400 font-normal">Score</span></span>
+                                        <span class="text-sm font-bold text-white">{{ number_format($member->score, 3) }}% <span class="text-dark-400 font-normal">Score</span></span>
                                     </div>
                                 </div>
                             </div>
 
                             @if($pod->is_active && !$member->is_lead)
-                                <form action="{{ route('admin.mentorship-pods.remove-member', [$pod->id, $member->id]) }}" method="POST" onsubmit="return confirm('Remove this fellow from the pod?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="p-2 text-dark-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors" title="Remove Member">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                    </button>
-                                </form>
+                                <div class="flex items-center gap-2">
+                                    <form action="{{ route('admin.mentorship-pods.change-lead', $pod) }}" method="POST" onsubmit="return confirm('Make this fellow the Pod Lead?');">
+                                        @csrf
+                                        <input type="hidden" name="new_lead_id" value="{{ $member->id }}">
+                                        <button type="submit" class="p-2 text-dark-500 hover:text-accent-400 hover:bg-accent-500/10 rounded-lg transition-colors" title="Make Pod Lead">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('admin.mentorship-pods.remove-member', [$pod->id, $member->id]) }}" method="POST" onsubmit="return confirm('Remove this fellow from the pod?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="p-2 text-dark-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors" title="Remove Member">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        </button>
+                                    </form>
+                                </div>
                             @endif
                         </div>
 
@@ -130,8 +157,20 @@
                                     @foreach($member->score_breakdown as $key => $cat)
                                         @if($cat['score'] > 0)
                                             <div style="width: {{ $cat['score'] }}%; background-color: {{ $cat['color'] }}" 
-                                                 title="{{ $cat['label'] }}: {{ number_format($cat['score'], 1) }}%"
+                                                 title="{{ $cat['label'] }}: {{ number_format($cat['score'], 3) }}%"
                                                  class="h-full"></div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                                
+                                <!-- Legend -->
+                                <div class="flex flex-wrap gap-x-3 gap-y-1.5 mt-3">
+                                    @foreach($member->score_breakdown as $key => $cat)
+                                        @if($cat['score'] > 0)
+                                            <div class="flex items-center gap-1.5 text-[10px] text-dark-400">
+                                                <span class="w-2 h-2 rounded-full" style="background-color: {{ $cat['color'] }}"></span>
+                                                {{ $cat['label'] }}: {{ number_format($cat['score'], 3) }}%
+                                            </div>
                                         @endif
                                     @endforeach
                                 </div>

@@ -276,7 +276,7 @@
                         <span class="text-white font-semibold">{{ $primaryTrack?->track?->name ?? 'None Selected' }}</span>
                         @if($primaryTrack)
                             <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-violet-600/20 text-violet-400">
-                                {{ number_format($primaryTrack->score, 1) }}% &middot; {{ ucfirst($primaryTrack->tier) }}
+                                {{ number_format($primaryTrack->score, 3) }}% &middot; {{ ucfirst($primaryTrack->tier) }}
                             </span>
                             @if($primaryTrack->is_primary)
                                 <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-600/20 text-emerald-400">Primary</span>
@@ -338,7 +338,7 @@
                 <div class="min-w-0 flex-1">
                     <p class="text-xs font-medium truncate {{ $isViewing ? 'text-violet-300' : 'text-dark-200' }}">{{ $ft->track?->name ?? 'Unknown' }}</p>
                     <div class="flex items-center gap-2 mt-0.5">
-                        <span class="text-[10px] text-dark-500">{{ number_format($ft->score, 1) }}%</span>
+                        <span class="text-[10px] text-dark-500">{{ number_format($ft->score, 3) }}%</span>
                         <span class="text-[10px] text-{{ $ftHealth['color'] }}-400">{{ $ftHealth['label'] }}</span>
                         @if($ft->days_since_activity !== null && $ft->days_since_activity > 0)
                             <span class="text-[10px] text-dark-600">{{ $ft->days_since_activity }}d ago</span>
@@ -615,12 +615,14 @@
                                 </div>
                                 <span class="text-dark-200 font-medium">Technical Skills</span>
                             </div>
-                            <span class="text-purple-400 font-semibold">{{ number_format($scoreBreakdown['categories']['technical']['score'] ?? 0, 0) }}%</span>
+                            <span class="text-purple-400 font-semibold">{{ number_format($scoreBreakdown['categories']['technical']['score'] ?? 0, 3) }}%</span>
                         </div>
                         <div class="h-2 bg-dark-700 rounded-full overflow-hidden">
                             <div class="h-full bg-purple-600 rounded-full transition-all duration-500" style="width: {{ $scoreBreakdown['categories']['technical']['score'] ?? 0 }}%"></div>
                         </div>
-                        <p class="text-xs text-dark-500">Projects, certifications & code quality</p>
+                        <p class="text-xs text-dark-500 line-clamp-1" title="{{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::TECHNICAL)->map(fn($t) => $t->label())->join(', ') }}">
+                            {{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::TECHNICAL)->map(fn($t) => $t->label())->join(', ') }}
+                        </p>
                     </div>
                     
                     <!-- Interview Performance -->
@@ -634,12 +636,14 @@
                                 </div>
                                 <span class="text-dark-200 font-medium">Interview Performance</span>
                             </div>
-                            <span class="text-blue-400 font-semibold">{{ number_format($scoreBreakdown['categories']['interview']['score'] ?? 0, 0) }}%</span>
+                            <span class="text-blue-400 font-semibold">{{ number_format($scoreBreakdown['categories']['interview']['score'] ?? 0, 3) }}%</span>
                         </div>
                         <div class="h-2 bg-dark-700 rounded-full overflow-hidden">
                             <div class="h-full bg-blue-600 rounded-full transition-all duration-500" style="width: {{ $scoreBreakdown['categories']['interview']['score'] ?? 0 }}%"></div>
                         </div>
-                        <p class="text-xs text-dark-500">Mock interviews & communication</p>
+                        <p class="text-xs text-dark-500 line-clamp-1" title="{{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::INTERVIEW)->map(fn($t) => $t->label())->join(', ') }}">
+                            {{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::INTERVIEW)->map(fn($t) => $t->label())->join(', ') }}
+                        </p>
                     </div>
                     
                     <!-- Portfolio -->
@@ -653,12 +657,14 @@
                                 </div>
                                 <span class="text-dark-200 font-medium">Portfolio</span>
                             </div>
-                            <span class="text-teal-400 font-semibold">{{ number_format($scoreBreakdown['categories']['portfolio']['score'] ?? 0, 0) }}%</span>
+                            <span class="text-teal-400 font-semibold">{{ number_format($scoreBreakdown['categories']['portfolio']['score'] ?? 0, 3) }}%</span>
                         </div>
                         <div class="h-2 bg-dark-700 rounded-full overflow-hidden">
                             <div class="h-full bg-teal-600 rounded-full transition-all duration-500" style="width: {{ $scoreBreakdown['categories']['portfolio']['score'] ?? 0 }}%"></div>
                         </div>
-                        <p class="text-xs text-dark-500">Projects, blogs & open source</p>
+                        <p class="text-xs text-dark-500 line-clamp-1" title="{{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::PORTFOLIO)->map(fn($t) => $t->label())->join(', ') }}">
+                            {{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::PORTFOLIO)->map(fn($t) => $t->label())->join(', ') }}
+                        </p>
                     </div>
                     
                     <!-- Collaboration -->
@@ -672,12 +678,14 @@
                                 </div>
                                 <span class="text-dark-200 font-medium">Collaboration</span>
                             </div>
-                            <span class="text-amber-400 font-semibold">{{ number_format($scoreBreakdown['categories']['collaboration']['score'] ?? 0, 0) }}%</span>
+                            <span class="text-amber-400 font-semibold">{{ number_format($scoreBreakdown['categories']['collaboration']['score'] ?? 0, 3) }}%</span>
                         </div>
                         <div class="h-2 bg-dark-700 rounded-full overflow-hidden">
                             <div class="h-full bg-amber-600 rounded-full transition-all duration-500" style="width: {{ $scoreBreakdown['categories']['collaboration']['score'] ?? 0 }}%"></div>
                         </div>
-                        <p class="text-xs text-dark-500">Mentoring, peer reviews & workshops</p>
+                        <p class="text-xs text-dark-500 line-clamp-1" title="{{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::COLLABORATION)->map(fn($t) => $t->label())->join(', ') }}">
+                            {{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::COLLABORATION)->map(fn($t) => $t->label())->join(', ') }}
+                        </p>
                     </div>
                     
                     <!-- Learning -->
@@ -691,22 +699,28 @@
                                 </div>
                                 <span class="text-dark-200 font-medium">Learning</span>
                             </div>
-                            <span class="text-rose-400 font-semibold">{{ number_format($scoreBreakdown['categories']['learning']['score'] ?? 0, 0) }}%</span>
+                            <span class="text-rose-400 font-semibold">{{ number_format($scoreBreakdown['categories']['learning']['score'] ?? 0, 3) }}%</span>
                         </div>
                         <div class="h-2 bg-dark-700 rounded-full overflow-hidden">
                             <div class="h-full bg-rose-600 rounded-full transition-all duration-500" style="width: {{ $scoreBreakdown['categories']['learning']['score'] ?? 0 }}%"></div>
                         </div>
-                        <p class="text-xs text-dark-500">Courses, certifications & workshops</p>
+                        <p class="text-xs text-dark-500 line-clamp-1" title="{{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::LEARNING)->map(fn($t) => $t->label())->join(', ') }}">
+                            {{ collect(\App\Enums\ActivityType::cases())->filter(fn($t) => $t->category() === \App\Enums\CareerCapitalCategory::LEARNING)->map(fn($t) => $t->label())->join(', ') }}
+                        </p>
                     </div>
                 </div>
                 @else
-                <div class="text-center py-8">
+                <div class="text-center py-8 relative z-10">
                     <div class="w-16 h-16 rounded-full bg-dark-700 flex items-center justify-center mx-auto mb-4">
                         <svg class="w-8 h-8 text-dark-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
                     </div>
-                    <p class="text-dark-400">No track selected yet. Complete activities to see your breakdown.</p>
+                    @if($primaryTrack)
+                        <p class="text-dark-400">Complete activities to earn points and see your Career Capital breakdown here.</p>
+                    @else
+                        <p class="text-dark-400">No track selected yet. Enroll in a track to start building Career Capital.</p>
+                    @endif
                 </div>
                 @endif
             </div>

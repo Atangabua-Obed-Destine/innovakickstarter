@@ -192,14 +192,30 @@ class CurriculumController extends Controller
      */
     public function storeActivity(Request $request, Track $track, TrackMilestone $milestone)
     {
-        // Convert resources_text (textarea) to resources array
-        if ($request->filled('resources_text')) {
-            $request->merge([
-                'resources' => array_values(array_filter(
-                    array_map('trim', explode("\n", $request->input('resources_text')))
-                )),
-            ]);
+        // Convert dynamic resources array
+        $structuredResources = [];
+        if ($request->has('resources') && is_array($request->resources)) {
+            foreach ($request->resources as $res) {
+                if (empty($res['title'])) continue;
+                
+                $structured = [
+                    'title' => $res['title'],
+                    'type' => $res['type'] ?? 'link',
+                ];
+                
+                if ($structured['type'] === 'file' && isset($res['content_file'])) {
+                    $path = $res['content_file']->store('activity_resources', 'public');
+                    $structured['content'] = \Illuminate\Support\Facades\Storage::url($path);
+                } elseif ($structured['type'] === 'file' && !empty($res['existing_content'])) {
+                    $structured['content'] = $res['existing_content'];
+                } else {
+                    $structured['content'] = $res['content_url'] ?? '';
+                }
+                
+                $structuredResources[] = $structured;
+            }
         }
+        $request->merge(['resources' => $structuredResources]);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -216,14 +232,22 @@ class CurriculumController extends Controller
             'evidence_requirements' => 'nullable|array',
             'evidence_requirements.*' => 'string',
             'evaluation_rubric' => 'nullable|array',
+            'evaluation_rubric.*.criterion' => 'required_with:evaluation_rubric|string|max:255',
+            'evaluation_rubric.*.description' => 'nullable|string|max:1000',
+            'evaluation_rubric.*.weight' => 'required_with:evaluation_rubric|integer|min:1|max:100',
+            'prerequisites' => 'nullable|array',
+            'prerequisites.*' => 'uuid|exists:track_curriculum_activities,id',
             'chain_parent_id' => 'nullable|uuid|exists:track_curriculum_activities,id',
             'requires_peer_review' => 'boolean',
             'is_collaborative' => 'boolean',
             'requires_cross_track' => 'boolean',
             'resources' => 'nullable|array',
+            'resources.*.title' => 'required_with:resources|string|max:255',
+            'resources.*.type' => 'required_with:resources|string|in:link,file,youtube',
+            'resources.*.content' => 'required_with:resources|string',
             'interview_config' => 'nullable|array',
             'interview_config.type' => 'required_if:type,mock_interview|string',
-            'interview_config.mode' => 'nullable|string|in:ai,human,peer',
+            'interview_config.mode' => ['nullable', \Illuminate\Validation\Rule::enum(\App\Enums\InterviewMode::class)],
             'interview_config.min_score' => 'nullable|integer|min:0|max:100',
             'interview_config.count' => 'nullable|integer|min:1|max:10',
             'interview_config.difficulty' => 'nullable|string|in:beginner,intermediate,advanced',
@@ -232,6 +256,13 @@ class CurriculumController extends Controller
         // Only include interview_config for mock_interview type
         if (($validated['type'] ?? '') !== 'mock_interview') {
             $validated['interview_config'] = null;
+        }
+
+        if (isset($validated['evaluation_rubric']) && is_array($validated['evaluation_rubric'])) {
+            $validated['evaluation_rubric'] = array_values($validated['evaluation_rubric']);
+        }
+        if (isset($validated['prerequisites']) && is_array($validated['prerequisites'])) {
+            $validated['prerequisites'] = array_values($validated['prerequisites']);
         }
 
         $validated['milestone_id'] = $milestone->id;
@@ -272,14 +303,30 @@ class CurriculumController extends Controller
      */
     public function updateActivity(Request $request, Track $track, TrackCurriculumActivity $activity)
     {
-        // Convert resources_text (textarea) to resources array
-        if ($request->filled('resources_text')) {
-            $request->merge([
-                'resources' => array_values(array_filter(
-                    array_map('trim', explode("\n", $request->input('resources_text')))
-                )),
-            ]);
+        // Convert dynamic resources array
+        $structuredResources = [];
+        if ($request->has('resources') && is_array($request->resources)) {
+            foreach ($request->resources as $res) {
+                if (empty($res['title'])) continue;
+                
+                $structured = [
+                    'title' => $res['title'],
+                    'type' => $res['type'] ?? 'link',
+                ];
+                
+                if ($structured['type'] === 'file' && isset($res['content_file'])) {
+                    $path = $res['content_file']->store('activity_resources', 'public');
+                    $structured['content'] = \Illuminate\Support\Facades\Storage::url($path);
+                } elseif ($structured['type'] === 'file' && !empty($res['existing_content'])) {
+                    $structured['content'] = $res['existing_content'];
+                } else {
+                    $structured['content'] = $res['content_url'] ?? '';
+                }
+                
+                $structuredResources[] = $structured;
+            }
         }
+        $request->merge(['resources' => $structuredResources]);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -295,15 +342,24 @@ class CurriculumController extends Controller
             'grace_period_days' => 'nullable|integer|min:0|max:30',
             'late_penalty_percent' => 'nullable|integer|min:0|max:100',
             'evidence_requirements' => 'nullable|array',
+            'evidence_requirements.*' => 'string',
             'evaluation_rubric' => 'nullable|array',
+            'evaluation_rubric.*.criterion' => 'required_with:evaluation_rubric|string|max:255',
+            'evaluation_rubric.*.description' => 'nullable|string|max:1000',
+            'evaluation_rubric.*.weight' => 'required_with:evaluation_rubric|integer|min:1|max:100',
+            'prerequisites' => 'nullable|array',
+            'prerequisites.*' => 'uuid|exists:track_curriculum_activities,id',
             'chain_parent_id' => 'nullable|uuid|exists:track_curriculum_activities,id',
             'requires_peer_review' => 'boolean',
             'is_collaborative' => 'boolean',
             'requires_cross_track' => 'boolean',
             'resources' => 'nullable|array',
+            'resources.*.title' => 'required_with:resources|string|max:255',
+            'resources.*.type' => 'required_with:resources|string|in:link,file,youtube',
+            'resources.*.content' => 'required_with:resources|string',
             'interview_config' => 'nullable|array',
             'interview_config.type' => 'required_if:type,mock_interview|string',
-            'interview_config.mode' => 'nullable|string|in:ai,human,peer',
+            'interview_config.mode' => ['nullable', \Illuminate\Validation\Rule::enum(\App\Enums\InterviewMode::class)],
             'interview_config.min_score' => 'nullable|integer|min:0|max:100',
             'interview_config.count' => 'nullable|integer|min:1|max:10',
             'interview_config.difficulty' => 'nullable|string|in:beginner,intermediate,advanced',
@@ -312,6 +368,13 @@ class CurriculumController extends Controller
         // Only include interview_config for mock_interview type
         if (($validated['type'] ?? '') !== 'mock_interview') {
             $validated['interview_config'] = null;
+        }
+
+        if (isset($validated['evaluation_rubric']) && is_array($validated['evaluation_rubric'])) {
+            $validated['evaluation_rubric'] = array_values($validated['evaluation_rubric']);
+        }
+        if (isset($validated['prerequisites']) && is_array($validated['prerequisites'])) {
+            $validated['prerequisites'] = array_values($validated['prerequisites']);
         }
 
         $this->curriculumService->updateCurriculumActivity($activity->id, $validated);
@@ -377,7 +440,7 @@ class CurriculumController extends Controller
     {
         $progress = \App\Models\FellowCurriculumProgress::with([
             'fellow', 'curriculumActivity.milestone', 'curriculumActivity.track',
-            'reviewer', 'peerReviewer',
+            'reviewer', 'peerReviews',
         ])->findOrFail($progressId);
 
         return view('admin.curriculum.reviews.show', compact('progress'));
@@ -391,7 +454,7 @@ class CurriculumController extends Controller
     {
         $validated = $request->validate([
             'decision' => 'required|in:approve,reject',
-            'points' => 'nullable|integer|min:0|max:1000',
+            'points' => 'required_if:decision,approve|nullable|integer|min:0|max:1000',
             'feedback' => 'nullable|string|max:2000',
             'rubric_scores' => 'nullable|array',
             'rubric_scores.*' => 'integer|min:0|max:100',

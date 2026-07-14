@@ -97,7 +97,7 @@
                 @if($primaryTrack)
                 <div class="text-center p-6 bg-dark-800 rounded-2xl flex-shrink-0">
                     <p class="text-dark-500 text-xs uppercase tracking-wider mb-1">Career Capital</p>
-                    <p class="text-4xl font-bold text-primary-400">{{ number_format($primaryTrack->score ?? 0, 1) }}</p>
+                    <p class="text-4xl font-bold text-primary-400">{{ number_format($primaryTrack->score ?? 0, 3) }}</p>
                     <p class="text-dark-500 text-sm mt-1">{{ ucfirst($primaryTrack->tier ?? 'rookie') }} tier</p>
                 </div>
                 @endif

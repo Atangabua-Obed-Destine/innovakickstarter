@@ -111,7 +111,7 @@
                             </defs>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span class="text-4xl font-bold text-white">{{ number_format($score, 0) }}%</span>
+                            <span class="text-4xl font-bold text-white">{{ number_format($score, 3) }}%</span>
                             <span class="text-dark-500 text-xs">Career Capital</span>
                         </div>
                     </div>
@@ -146,7 +146,7 @@
                                             <p class="text-dark-500 text-xs">{{ $pillar['desc'] }}</p>
                                         </div>
                                     </div>
-                                    <span class="text-xl font-bold text-white">{{ $pillar['score'] }}%</span>
+                                    <span class="text-xl font-bold text-white">{{ number_format($pillar['score'], 3) }}%</span>
                                 </div>
                                 <div class="h-2 bg-dark-700 rounded-full overflow-hidden">
                                     <div class="h-full bg-gradient-to-r {{ $pillar['color'] }} rounded-full transition-all duration-1000" 
@@ -316,7 +316,7 @@
                         </div>
                         <div class="flex items-center justify-between py-2 border-b border-dark-700">
                             <span class="text-dark-400">Career Capital</span>
-                            <span class="text-primary-400 font-bold">{{ number_format($primaryTrack?->score ?? 0, 1) }}%</span>
+                            <span class="text-primary-400 font-bold">{{ number_format($primaryTrack?->score ?? 0, 3) }}%</span>
                         </div>
                         <div class="flex items-center justify-between py-2 border-b border-dark-700">
                             <span class="text-dark-400">Activities Completed</span>

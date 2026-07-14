@@ -214,6 +214,16 @@ class TrackCurriculumActivity extends Model
     }
 
     /**
+     * Get the discussion comments for this activity.
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(ActivityComment::class, 'curriculum_activity_id')
+            ->whereNull('parent_id') // only fetch root comments by default
+            ->orderBy('created_at', 'desc');
+    }
+
+    /**
      * Get all fellow progress records for this activity.
      */
     public function fellowProgress(): HasMany

@@ -3,7 +3,7 @@
 @section('title', 'Review Submission')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
+<div x-data="{ previewOpen: false, previewUrl: '', previewType: '' }" class="max-w-4xl mx-auto space-y-6">
     <!-- Header -->
     <div>
         <div class="flex items-center gap-2 text-dark-400 text-sm mb-2">
@@ -110,11 +110,26 @@
                     <p class="text-dark-500 text-xs font-medium uppercase tracking-wider mb-2">Attached Files</p>
                     <div class="space-y-2">
                         @foreach($progress->evidence_files as $file)
-                        <a href="{{ asset('storage/' . $file) }}" target="_blank"
-                           class="flex items-center gap-2 text-primary-400 hover:text-primary-300 text-sm bg-dark-800 rounded-lg px-4 py-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            {{ basename($file) }}
-                        </a>
+                            @php
+                                $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                                $isPdf = $ext === 'pdf';
+                                $url = asset('storage/' . $file);
+                            @endphp
+
+                            @if($isImage || $isPdf)
+                                <button type="button" @click="previewUrl = '{{ $url }}'; previewType = '{{ $ext }}'; previewOpen = true;"
+                                   class="w-full flex items-center gap-2 text-primary-400 hover:text-primary-300 text-sm bg-dark-800 rounded-lg px-4 py-2 transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                    {{ basename($file) }} <span class="text-dark-500 text-xs ml-auto border border-dark-600 rounded px-1.5 py-0.5">Preview</span>
+                                </button>
+                            @else
+                                <a href="{{ $url }}" target="_blank"
+                                   class="flex items-center gap-2 text-primary-400 hover:text-primary-300 text-sm bg-dark-800 rounded-lg px-4 py-2 transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    {{ basename($file) }} <span class="text-dark-500 text-xs ml-auto border border-dark-600 rounded px-1.5 py-0.5">Download</span>
+                                </a>
+                            @endif
                         @endforeach
                     </div>
                 </div>
@@ -134,26 +149,49 @@
                 @endif
             </div>
 
-            {{-- Peer Review --}}
-            @if($progress->peer_rating || $progress->peer_feedback)
+            {{-- Peer Reviews --}}
+            @if($progress->peerReviews && $progress->peerReviews->count() > 0)
             <div class="card p-6">
-                <h3 class="text-white font-semibold mb-3">Peer Review</h3>
-                <div class="flex items-center gap-4 mb-3">
-                    <div class="flex items-center gap-1">
-                        @for($i = 1; $i <= 5; $i++)
-                            <span class="text-lg {{ $i <= ($progress->peer_rating ?? 0) ? 'text-amber-400' : 'text-dark-600' }}">★</span>
-                        @endfor
+                <h3 class="text-white font-semibold mb-4 flex items-center gap-2">
+                    <span class="text-purple-400">👥</span> Peer Reviews ({{ $progress->peerReviews->where('status', \App\Enums\ActivityStatus::COMPLETED)->count() }}/{{ $progress->peerReviews->count() }})
+                </h3>
+                
+                <div class="space-y-4">
+                @foreach($progress->peerReviews as $review)
+                    <div class="p-4 bg-dark-800/50 rounded-lg border border-dark-700">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-white font-medium">{{ $review->reviewer->name ?? 'Unknown' }}</span>
+                                @if($review->status === \App\Enums\ActivityStatus::COMPLETED)
+                                    <span class="px-2 py-0.5 bg-green-500/10 text-green-400 text-xs rounded border border-green-500/20">Completed</span>
+                                @elseif($review->status === \App\Enums\ActivityStatus::BYPASSED)
+                                    <span class="px-2 py-0.5 bg-dark-600 text-dark-300 text-xs rounded border border-dark-500">Bypassed</span>
+                                @else
+                                    <span class="px-2 py-0.5 bg-amber-500/10 text-amber-400 text-xs rounded border border-amber-500/20">Pending</span>
+                                @endif
+                            </div>
+                            @if($review->completed_at)
+                                <span class="text-dark-500 text-xs">{{ $review->completed_at->diffForHumans() }}</span>
+                            @endif
+                        </div>
+                        
+                        @if($review->status === \App\Enums\ActivityStatus::COMPLETED)
+                            <div class="flex items-center gap-1 mb-2">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <span class="text-lg {{ $i <= ($review->rating ?? 0) ? 'text-amber-400' : 'text-dark-600' }}">★</span>
+                                @endfor
+                            </div>
+                            @if($review->feedback)
+                            <div class="bg-dark-900 rounded p-3 text-dark-300 text-sm">
+                                {!! nl2br(e($review->feedback)) !!}
+                            </div>
+                            @endif
+                        @elseif($review->status === \App\Enums\ActivityStatus::BYPASSED)
+                            <p class="text-dark-400 text-sm italic">This review was bypassed.</p>
+                        @endif
                     </div>
-                    <span class="text-dark-400 text-sm">by {{ $progress->peerReviewer->name ?? 'Unknown' }}</span>
-                    @if($progress->peer_reviewed_at)
-                        <span class="text-dark-500 text-xs">{{ $progress->peer_reviewed_at->diffForHumans() }}</span>
-                    @endif
+                @endforeach
                 </div>
-                @if($progress->peer_feedback)
-                <div class="bg-dark-800 rounded-lg p-4 text-dark-300 text-sm">
-                    {!! nl2br(e($progress->peer_feedback)) !!}
-                </div>
-                @endif
             </div>
             @endif
         </div>
@@ -212,11 +250,17 @@
 
                     {{-- Points Override --}}
                     <div>
-                        <label for="points" class="block text-sm font-medium text-dark-300 mb-2">Points to Award</label>
-                        <input type="number" name="points" id="points" min="0" max="1000"
-                               value="{{ old('points', $progress->curriculumActivity->points ?? 100) }}"
-                               class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2 text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
-                        <p class="text-dark-500 text-xs mt-1">Default: {{ $progress->curriculumActivity->points ?? 100 }} base pts</p>
+                        <label for="points" class="block text-sm font-medium text-dark-300 mb-2">Points to Award *</label>
+                        <input type="number" name="points" id="points" min="0" max="1000" required
+                               value="{{ old('points') }}" placeholder="e.g. {{ $progress->curriculumActivity->points ?? 100 }}"
+                               class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2 text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500 @error('points') border-red-500 @enderror">
+                        @error('points')
+                            <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                        <p class="text-dark-500 text-xs mt-1 flex items-center justify-between">
+                            <span>Default: {{ $progress->curriculumActivity->points ?? 100 }} base pts</span>
+                            <span class="text-amber-500/70 italic">Type a higher number to award bonus points!</span>
+                        </p>
                     </div>
 
                     {{-- Feedback --}}
@@ -238,6 +282,57 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Preview Modal -->
+    <div x-show="previewOpen" 
+         class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         x-cloak 
+         style="display: none;">
+        
+        <div @click.away="previewOpen = false" 
+             class="bg-dark-800 rounded-xl w-full max-w-5xl h-[85vh] flex flex-col relative shadow-2xl ring-1 ring-white/10"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+             x-transition:leave-end="opacity-0 scale-95 translate-y-4">
+            
+            <div class="flex justify-between items-center px-6 py-4 border-b border-dark-700 bg-dark-800/80 backdrop-blur rounded-t-xl">
+                <h3 class="text-white font-medium flex items-center gap-2">
+                    <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    File Preview
+                </h3>
+                <div class="flex items-center gap-4">
+                    <a :href="previewUrl" target="_blank" class="text-primary-400 hover:text-primary-300 text-sm font-medium flex items-center gap-1">
+                        Open in New Tab
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+                    <button @click="previewOpen = false" class="text-dark-400 hover:text-white bg-dark-700 hover:bg-dark-600 rounded-full p-1.5 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex-1 p-0 overflow-auto flex items-center justify-center bg-dark-900 rounded-b-xl relative">
+                <!-- PDF iframe -->
+                <template x-if="previewType === 'pdf'">
+                    <iframe :src="previewUrl" class="w-full h-full border-0"></iframe>
+                </template>
+                
+                <!-- Image tag -->
+                <template x-if="['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(previewType)">
+                    <img :src="previewUrl" class="max-w-full max-h-full object-contain p-4">
+                </template>
             </div>
         </div>
     </div>

@@ -423,6 +423,12 @@ class AdminController extends Controller
     /**
      * Display fellow management.
      */
+    public function recalculateCC()
+    {
+        \Illuminate\Support\Facades\Artisan::call('app:recalc-cc');
+        return redirect()->back()->with('success', 'All Career Capital scores have been successfully recalculated!');
+    }
+
     public function fellows(Request $request): View
     {
         $query = User::role('fellow')->with(['primaryTrack.track', 'internshipProfile']);

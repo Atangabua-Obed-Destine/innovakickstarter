@@ -18,8 +18,8 @@
         </div>
     </div>
 
-    <!-- Streak & Partner Bar -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- Streak, Partner, & Leaderboard Bar -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {{-- Streak --}}
         <div class="card p-4">
             <div class="flex items-center gap-3">
@@ -48,20 +48,43 @@
             @endif
         </div>
 
-        {{-- Accountability Partner --}}
-        <div class="card p-4">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-2xl">🤝</div>
+        {{-- Mentorship Pod --}}
+        <div class="card p-4 flex flex-col">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-xl">👥</div>
                 <div>
-                    @if($partner)
-                        <p class="text-white font-bold">{{ $partner->name }}</p>
-                        <p class="text-dark-400 text-sm">Accountability Partner</p>
+                    @php $pod = auth()->user()->activeMentorshipPod(); @endphp
+                    @if($pod)
+                        <p class="text-white font-bold">{{ $pod->name }}</p>
+                        <p class="text-dark-400 text-xs">Mentorship Pod ({{ $pod->activeMembers()->count() }} members)</p>
                     @else
-                        <p class="text-dark-400 font-medium">No Partner Yet</p>
-                        <p class="text-dark-500 text-sm">Pairing happens automatically</p>
+                        <p class="text-dark-400 font-medium">No Mentorship Pod Yet</p>
+                        <p class="text-dark-500 text-xs">You will be assigned to a pod soon</p>
                     @endif
                 </div>
             </div>
+            
+            @if($pod)
+            <div class="space-y-2 mt-auto">
+                @foreach($pod->activeMembers as $membership)
+                    @php $member = $membership->fellow; @endphp
+                    <div class="flex items-center justify-between text-sm p-1.5 rounded-lg {{ $member->id === auth()->id() ? 'bg-blue-500/10 border border-blue-500/20' : '' }}">
+                        <div class="flex items-center gap-2">
+                            <div class="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center text-[10px] font-bold text-blue-400">
+                                {{ strtoupper(substr($member->name, 0, 1)) }}
+                            </div>
+                            <span class="{{ $member->id === auth()->id() ? 'text-blue-400 font-medium' : 'text-dark-300' }} truncate max-w-[100px]" title="{{ $member->name }}">
+                                {{ explode(' ', $member->name)[0] }}
+                                @if($member->id === $pod->lead_id)
+                                    <span class="text-amber-400 ml-0.5 text-[10px]" title="Pod Lead">👑</span>
+                                @endif
+                            </span>
+                        </div>
+                        <span class="text-dark-400 text-xs">{{ number_format($member->fellowTracks->firstWhere('track_id', $currentTrack->id)?->score ?? 0, 3) }}</span>
+                    </div>
+                @endforeach
+            </div>
+            @endif
         </div>
 
         {{-- Peer Reviews Pending --}}
@@ -79,6 +102,32 @@
                 Review Now →
             </a>
             @endif
+        </div>
+
+        {{-- Leaderboard --}}
+        <div class="card p-4">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center text-xl">🏆</div>
+                    <div>
+                        <p class="text-white font-bold">Top Fellows</p>
+                        <p class="text-dark-400 text-xs">Track Leaderboard</p>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-2 mt-2">
+                @foreach($leaderboard as $index => $user)
+                    <div class="flex items-center justify-between text-sm p-1.5 rounded-lg {{ $user->id === auth()->id() ? 'bg-primary-500/10 border border-primary-500/20' : '' }}">
+                        <div class="flex items-center gap-2">
+                            <span class="text-dark-500 font-mono text-xs w-4 text-center">{{ $index + 1 }}</span>
+                            <span class="{{ $user->id === auth()->id() ? 'text-primary-400 font-medium' : 'text-dark-300' }} truncate max-w-[100px]" title="{{ $user->name }}">
+                                {{ explode(' ', $user->name)[0] }}
+                            </span>
+                        </div>
+                        <span class="text-amber-400 font-medium text-xs">{{ number_format($user->fellowTracks->first()->score ?? 0, 3) }}</span>
+                    </div>
+                @endforeach
+            </div>
         </div>
     </div>
 
@@ -98,7 +147,7 @@
                  style="width: {{ $overallPct }}%"></div>
         </div>
         <div class="flex items-center justify-between text-sm text-dark-400 mt-2">
-            <span>{{ number_format($overallPct, 0) }}% complete</span>
+            <span>{{ number_format($overallPct, 3) }}% complete</span>
             <span>{{ $totalPoints ?? 0 }} points earned</span>
         </div>
     </div>
@@ -115,8 +164,171 @@
     </div>
     @endif
 
-    <!-- Milestones -->
-    @foreach($milestones as $milestone)
+    <!-- FOCUS MODE: Current Active Milestone -->
+    @if(isset($activeMilestone))
+    <div class="mb-8">
+        <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <span class="text-primary-400">🎯</span> Focus: Current Milestone
+        </h2>
+        @php
+            $msActivities = $activeMilestone->curriculumActivities ?? collect();
+            $msProgress = $progress->whereIn('curriculum_activity_id', $msActivities->pluck('id'));
+            $msCompleted = $msProgress->where('status', 'completed')->count();
+            $msTotal = $msActivities->count();
+            $msPct = $msTotal > 0 ? ($msCompleted / $msTotal) * 100 : 0;
+            $isUnlocked = true;
+            $isComplete = $msTotal > 0 && $msCompleted === $msTotal;
+        @endphp
+        <div class="card overflow-hidden border border-primary-500/30 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
+            <!-- Milestone Header -->
+            <div class="p-6 border-b border-dark-700 bg-gradient-to-r from-primary-500/10 to-transparent">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl bg-primary-500/20">
+                        {{ $activeMilestone->badge_icon ?? '🏁' }}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 bg-primary-500/20 text-primary-400 text-xs rounded-full font-bold">M{{ $activeMilestone->sequence_order }}</span>
+                            <h3 class="text-xl font-bold text-white">{{ $activeMilestone->title }}</h3>
+                        </div>
+                        @if($activeMilestone->description)
+                        <p class="text-dark-300 text-sm mt-1">{{ $activeMilestone->description }}</p>
+                        @endif
+                    </div>
+                    <div class="text-right">
+                        <p class="text-white font-bold text-lg">{{ $msCompleted }}/{{ $msTotal }}</p>
+                        <p class="text-dark-500 text-xs uppercase tracking-wider">Activities</p>
+                    </div>
+                </div>
+                @if($msTotal > 0)
+                <div class="w-full bg-dark-800 rounded-full h-2 mt-5">
+                    <div class="bg-primary-500 rounded-full h-2 transition-all duration-500" style="width: {{ $msPct }}%"></div>
+                </div>
+                @endif
+            </div>
+
+            <!-- Activities -->
+            <div class="divide-y divide-dark-700/50 bg-dark-800/20">
+                @foreach($msActivities->sortBy('sequence_order') as $activity)
+                @php
+                    $actProgress = $msProgress->firstWhere('curriculum_activity_id', $activity->id);
+                    $actStatus = $actProgress?->status?->value ?? $actProgress?->status ?? 'locked';
+                    $actStatusLabel = $actProgress?->status?->label() ?? ucfirst($actStatus);
+                @endphp
+                <div class="px-6 py-5 flex items-center gap-4 hover:bg-dark-800/50 transition relative group">
+                    {{-- Status Icon --}}
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center text-lg shadow-sm
+                        @switch($actStatus)
+                            @case('completed') bg-green-500/20 text-green-400 @break
+                            @case('in_progress') bg-blue-500/20 text-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.3)] @break
+                            @case('submitted') @case('peer_review') @case('under_review') bg-purple-500/20 text-purple-400 @break
+                            @case('available') bg-primary-500/20 text-primary-400 @break
+                            @case('rejected') bg-red-500/20 text-red-400 @break
+                            @case('overdue') bg-red-500/20 text-red-400 @break
+                            @default bg-dark-700 text-dark-500 @break
+                        @endswitch">
+                        @switch($actStatus)
+                            @case('completed') ✓ @break
+                            @case('in_progress') ▶ @break
+                            @case('submitted') @case('peer_review') @case('under_review') ⏳ @break
+                            @case('available') ○ @break
+                            @case('rejected') ✕ @break
+                            @case('overdue') ⚠ @break
+                            @default 🔒 @break
+                        @endswitch
+                    </div>
+
+                    {{-- Activity Info --}}
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <span class="text-dark-500 text-xs font-mono">#{{ $activity->sequence_order }}</span>
+                            <p class="text-white font-medium text-base group-hover:text-primary-400 transition">{{ $activity->title }}</p>
+                            @if($activity->is_required)
+                                <span class="px-1.5 py-0.5 bg-red-500/10 text-red-400 text-[10px] rounded uppercase font-bold">*Req</span>
+                            @endif
+                        </div>
+                        <div class="flex items-center flex-wrap gap-2 mt-1.5">
+                            <span class="inline-flex items-center gap-1 text-dark-400 text-xs bg-dark-800 px-2 py-0.5 rounded">{{ $activity->type?->icon() ?? '' }} {{ $activity->type?->label() ?? '' }}</span>
+                            <span class="inline-flex items-center gap-1 text-dark-400 text-xs bg-dark-800 px-2 py-0.5 rounded">{{ $activity->difficulty_level?->icon() ?? '' }} {{ $activity->difficulty_level?->label() ?? '' }}</span>
+                            
+                            @php
+                                $hasVideo = collect($activity->resources ?? [])->contains(function ($res) {
+                                    $content = is_array($res) ? ($res['content'] ?? '') : $res;
+                                    $type = is_array($res) ? ($res['type'] ?? '') : '';
+                                    return $type === 'youtube' || (is_string($content) && (str_contains($content, 'youtube.com') || str_contains($content, 'youtu.be')));
+                                });
+                            @endphp
+                            @if($hasVideo)
+                                <span class="inline-flex items-center gap-1 text-red-400 text-[10px] uppercase font-bold tracking-wider bg-red-500/10 px-2 py-0.5 rounded">▶ Video</span>
+                            @endif
+
+                            @if($activity->comments_count > 0)
+                                <span class="inline-flex items-center gap-1 text-blue-400 text-[10px] uppercase font-bold tracking-wider bg-blue-500/10 px-2 py-0.5 rounded">💬 {{ $activity->comments_count }}</span>
+                            @endif
+
+                            @if($activity->requiresInterviewSession())
+                                <span class="inline-flex items-center gap-1 text-purple-400 text-[10px] uppercase font-bold tracking-wider bg-purple-500/10 px-2 py-0.5 rounded">🎤 Interview</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Points --}}
+                    <div class="text-right mr-4 hidden sm:block">
+                        <span class="text-dark-300 font-medium text-sm">{{ $activity->points ?? 0 }} pts</span>
+                        @if($actProgress && $actStatus === 'completed')
+                            <p class="text-green-400 text-xs font-bold mt-0.5">+{{ $actProgress->points_awarded ?? 0 }}</p>
+                        @endif
+                    </div>
+
+                    {{-- Deadline --}}
+                    @if($actProgress && $actProgress->deadline_at)
+                    <div class="text-right mr-4 hidden md:block">
+                        @if($actProgress->isPastDeadline && $actStatus !== 'completed')
+                            <span class="text-red-400 text-xs font-medium bg-red-500/10 px-2 py-1 rounded">Overdue</span>
+                        @elseif($actStatus !== 'completed' && $actStatus !== 'locked')
+                            <span class="text-dark-400 text-xs bg-dark-800 px-2 py-1 rounded flex items-center gap-1">⏰ {{ $actProgress->daysRemaining ?? '' }}d left</span>
+                        @endif
+                    </div>
+                    @endif
+
+                    {{-- Action --}}
+                    <div>
+                        @if($actStatus === 'available')
+                            <a href="{{ route('curriculum.activity.show', $activity) }}" class="btn-primary py-2 px-4 shadow-lg shadow-primary-500/20">Start</a>
+                        @elseif($actStatus === 'in_progress')
+                            <a href="{{ route('curriculum.activity.show', $activity) }}" class="btn-primary py-2 px-4 shadow-lg shadow-blue-500/20">Continue</a>
+                        @elseif($actStatus === 'rejected')
+                            <a href="{{ route('curriculum.activity.show', $activity) }}" class="px-4 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg font-medium hover:bg-red-500/30 transition">Resubmit</a>
+                        @elseif(in_array($actStatus, ['submitted', 'peer_review', 'under_review']))
+                            <span class="text-dark-400 text-sm px-4 py-2 bg-dark-800 rounded-lg border border-dark-700">In Review</span>
+                        @elseif($actStatus === 'completed')
+                            <a href="{{ route('curriculum.activity.show', $activity) }}" class="text-dark-400 hover:text-white text-sm px-3 py-2 transition bg-dark-800 hover:bg-dark-700 rounded-lg">View</a>
+                        @else
+                            <span class="text-dark-600 text-sm px-4 py-2 bg-dark-800/50 rounded-lg cursor-not-allowed">Locked</span>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- All Milestones (Track Map) -->
+    <div x-data="{ expanded: false }">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-dark-300">Track Map (All Milestones)</h2>
+            <button @click="expanded = !expanded" class="text-sm text-primary-400 hover:text-primary-300 transition flex items-center gap-1">
+                <span x-text="expanded ? 'Collapse All' : 'Expand All'">Expand All</span>
+                <svg :class="expanded ? 'rotate-180' : ''" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+        </div>
+        
+        <div class="space-y-4" x-show="expanded" x-collapse>
+            @foreach($milestones as $milestone)
+            @if(isset($activeMilestone) && $activeMilestone->id === $milestone->id)
+                @continue
+            @endif
     @php
         $msActivities = $milestone->curriculumActivities ?? collect();
         $msProgress = $progress->whereIn('curriculum_activity_id', $msActivities->pluck('id'));
@@ -204,10 +416,24 @@
                             <span class="text-red-400 text-xs">*</span>
                         @endif
                     </div>
-                    <div class="flex items-center gap-3 mt-0.5">
-                        <span class="text-dark-500 text-xs">{{ $activity->type?->icon() ?? '' }} {{ $activity->type?->label() ?? '' }}</span>
-                        <span class="text-dark-600 text-xs">•</span>
-                        <span class="text-dark-500 text-xs">{{ $activity->difficulty_level?->icon() ?? '' }} {{ $activity->difficulty_level?->label() ?? '' }}</span>
+                    <div class="flex items-center flex-wrap gap-2 mt-1">
+                        <span class="inline-flex items-center gap-1 text-dark-400 text-[10px] bg-dark-800 px-1.5 py-0.5 rounded">{{ $activity->type?->icon() ?? '' }} {{ $activity->type?->label() ?? '' }}</span>
+                        <span class="inline-flex items-center gap-1 text-dark-400 text-[10px] bg-dark-800 px-1.5 py-0.5 rounded">{{ $activity->difficulty_level?->icon() ?? '' }} {{ $activity->difficulty_level?->label() ?? '' }}</span>
+                        
+                        @php
+                            $hasVideo = collect($activity->resources ?? [])->contains(function ($res) {
+                                $content = is_array($res) ? ($res['content'] ?? '') : $res;
+                                $type = is_array($res) ? ($res['type'] ?? '') : '';
+                                return $type === 'youtube' || (is_string($content) && (str_contains($content, 'youtube.com') || str_contains($content, 'youtu.be')));
+                            });
+                        @endphp
+                        @if($hasVideo)
+                            <span class="inline-flex items-center gap-1 text-red-400 text-[9px] uppercase font-bold tracking-wider bg-red-500/10 px-1.5 py-0.5 rounded">▶ Video</span>
+                        @endif
+
+                        @if($activity->comments_count > 0)
+                            <span class="inline-flex items-center gap-1 text-blue-400 text-[9px] uppercase font-bold tracking-wider bg-blue-500/10 px-1.5 py-0.5 rounded">💬 {{ $activity->comments_count }}</span>
+                        @endif
                     </div>
                 </div>
 
@@ -262,6 +488,8 @@
         @endif
     </div>
     @endforeach
+        </div>
+    </div>
 
     @if($milestones->isEmpty())
     <div class="card p-12 text-center">

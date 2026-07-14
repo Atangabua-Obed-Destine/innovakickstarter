@@ -195,6 +195,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/activities/{activity}/start', [FellowCurriculumController::class, 'startActivity'])->name('activity.start');
             Route::post('/activities/{activity}/interview', [FellowCurriculumController::class, 'launchInterview'])->name('activity.interview');
 
+            // Activity Comments
+            Route::post('/activities/{activity}/comments', [\App\Http\Controllers\Fellow\ActivityCommentController::class, 'store'])->name('activities.comments.store');
+            Route::delete('/comments/{comment}', [\App\Http\Controllers\Fellow\ActivityCommentController::class, 'destroy'])->name('comments.destroy');
+
             // Submission
             Route::get('/progress/{progress}/submit', [FellowCurriculumController::class, 'submitForm'])->name('submit.form');
             Route::post('/progress/{progress}/submit', [FellowCurriculumController::class, 'submit'])->name('submit');
@@ -202,6 +206,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             // Peer review
             Route::get('/peer-review/{progress}', [FellowCurriculumController::class, 'peerReviewForm'])->name('peer-review.form');
             Route::post('/peer-review/{progress}', [FellowCurriculumController::class, 'peerReviewSubmit'])->name('peer-review.submit');
+            Route::post('/progress/{progress}/bypass-peer-review', [FellowCurriculumController::class, 'bypassPeerReview'])->name('peer-review.bypass');
 
             // Badges
             Route::get('/badges', [FellowCurriculumController::class, 'badges'])->name('badges');
@@ -298,6 +303,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/activities/{activity}/revision', [AdminController::class, 'needsRevision'])->name('activities.revision');
         
         // Fellow Management
+        Route::post('/fellows/recalculate-cc', [AdminController::class, 'recalculateCC'])->name('fellows.recalc-cc');
         Route::get('/fellows', [AdminController::class, 'fellows'])->name('fellows.index');
         Route::get('/fellows/{user}', [AdminController::class, 'showFellow'])->name('fellows.show');
         
@@ -485,6 +491,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/mentorship-pods', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'store'])->name('mentorship-pods.store');
         Route::get('/mentorship-pods/eligible-fellows', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'eligibleFellows'])->name('mentorship-pods.eligible-fellows');
         Route::get('/mentorship-pods/{pod}', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'show'])->name('mentorship-pods.show');
+        Route::post('/mentorship-pods/{pod}/add-member', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'addMember'])->name('mentorship-pods.add-member');
+        Route::post('/mentorship-pods/{pod}/change-lead', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'changeLead'])->name('mentorship-pods.change-lead');
         Route::post('/mentorship-pods/{pod}/close', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'close'])->name('mentorship-pods.close');
         Route::delete('/mentorship-pods/{pod}/members/{fellow}', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'removeMember'])->name('mentorship-pods.remove-member');
 

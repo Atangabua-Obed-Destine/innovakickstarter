@@ -54,14 +54,58 @@ class AccountabilityService
                 return;
             }
 
-            // Shuffle for randomness
-            $shuffled = $unpairedIds->shuffle();
+            // Group unpaired fellows by their mentorship pod
+            $podMemberships = \App\Models\MentorshipPodMember::whereIn('fellow_id', $unpairedIds)
+                ->where('is_active', true)
+                ->get()
+                ->keyBy('fellow_id');
 
-            // Pair sequentially
-            for ($i = 0; $i + 1 < $shuffled->count(); $i += 2) {
+            $podGroups = [];
+            $noPodGroup = [];
+
+            foreach ($unpairedIds as $fellowId) {
+                if ($podMemberships->has($fellowId)) {
+                    $podId = $podMemberships->get($fellowId)->pod_id;
+                    $podGroups[$podId][] = $fellowId;
+                } else {
+                    $noPodGroup[] = $fellowId;
+                }
+            }
+
+            $leftovers = [];
+
+            // Pair fellows within their pods
+            foreach ($podGroups as $podId => $fellowsInPod) {
+                $shuffledPod = collect($fellowsInPod)->shuffle();
+                
+                // Pair sequentially inside the pod
+                for ($i = 0; $i + 1 < $shuffledPod->count(); $i += 2) {
+                    AccountabilityPair::create([
+                        'fellow_a_id' => $shuffledPod[$i],
+                        'fellow_b_id' => $shuffledPod[$i + 1],
+                        'track_id' => $track->id,
+                        'cohort_id' => $cohortId,
+                        'milestone_id' => $milestoneId,
+                        'paired_at' => now(),
+                        'is_active' => true,
+                    ]);
+                    $pairedCount++;
+                }
+
+                // If odd number, add the last one to leftovers
+                if ($shuffledPod->count() % 2 !== 0) {
+                    $leftovers[] = $shuffledPod->last();
+                }
+            }
+
+            // Combine leftovers and no-pod fellows
+            $globalPool = collect(array_merge($leftovers, $noPodGroup))->shuffle();
+
+            // Pair the global pool sequentially
+            for ($i = 0; $i + 1 < $globalPool->count(); $i += 2) {
                 AccountabilityPair::create([
-                    'fellow_a_id' => $shuffled[$i],
-                    'fellow_b_id' => $shuffled[$i + 1],
+                    'fellow_a_id' => $globalPool[$i],
+                    'fellow_b_id' => $globalPool[$i + 1],
                     'track_id' => $track->id,
                     'cohort_id' => $cohortId,
                     'milestone_id' => $milestoneId,
@@ -74,7 +118,7 @@ class AccountabilityService
             Log::info("Auto-paired fellows in track", [
                 'track_id' => $track->id,
                 'pairs_created' => $pairedCount,
-                'unpaired_remaining' => $shuffled->count() % 2,
+                'unpaired_remaining' => $globalPool->count() % 2,
             ]);
         });
 

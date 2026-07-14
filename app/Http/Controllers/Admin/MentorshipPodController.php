@@ -175,7 +175,9 @@ class MentorshipPodController extends Controller
             ];
         })->sortByDesc('score')->values();
 
-        return view('admin.mentorship-pods.show', compact('pod', 'members'));
+        $eligibleFellows = $this->getEligibleFellowsQuery($pod->track_id)->orderBy('name')->get();
+
+        return view('admin.mentorship-pods.show', compact('pod', 'members', 'eligibleFellows'));
     }
 
     /**
@@ -225,6 +227,123 @@ class MentorshipPodController extends Controller
         ]);
 
         return back()->with('success', 'Member removed successfully.');
+    }
+
+    /**
+     * Add a member to a pod.
+     */
+    public function addMember(Request $request, MentorshipPod $pod)
+    {
+        if (!$pod->is_active) {
+            return back()->with('error', 'Cannot add members to a closed pod.');
+        }
+
+        if ($pod->isFull()) {
+            return back()->with('error', 'This pod has already reached its maximum capacity of 4 members.');
+        }
+
+        $validated = $request->validate([
+            'fellow_id' => ['required', 'exists:users,id'],
+        ]);
+
+        $fellowId = $validated['fellow_id'];
+
+        // Validate eligible
+        $eligibleFellows = $this->getEligibleFellowsQuery($pod->track_id)->pluck('id')->toArray();
+        if (!in_array($fellowId, $eligibleFellows)) {
+            return back()->with('error', 'The selected fellow is not eligible for this track or is already in a pod.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            MentorshipPodMember::create([
+                'pod_id' => $pod->id,
+                'fellow_id' => $fellowId,
+            ]);
+
+            Notification::create([
+                'user_id' => $fellowId,
+                'type' => 'pod_assigned',
+                'title' => 'You\'ve been added to a Mentorship Pod! 🫂',
+                'message' => 'You are now part of a pod. Meet your team and start collaborating!',
+                'icon' => 'users',
+                'color' => 'primary',
+                'action_url' => route('mentorship-pod.show'),
+                'action_text' => 'Meet Your Pod',
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', 'Member added successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Change the lead of a pod.
+     */
+    public function changeLead(Request $request, MentorshipPod $pod)
+    {
+        if (!$pod->is_active) {
+            return back()->with('error', 'Cannot change the lead of a closed pod.');
+        }
+
+        $validated = $request->validate([
+            'new_lead_id' => ['required', 'exists:users,id'],
+        ]);
+
+        $newLeadId = $validated['new_lead_id'];
+        $oldLeadId = $pod->lead_id;
+
+        if ($newLeadId === $oldLeadId) {
+            return back()->with('error', 'The selected fellow is already the Pod Lead.');
+        }
+
+        // Validate the new lead is a member of the pod
+        $isMember = $pod->activeMembers()->where('fellow_id', $newLeadId)->exists();
+        if (!$isMember) {
+            return back()->with('error', 'The new Pod Lead must be an active member of the pod.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $pod->update(['lead_id' => $newLeadId]);
+
+            // Notify new lead
+            Notification::create([
+                'user_id' => $newLeadId,
+                'type' => 'pod_lead_assigned',
+                'title' => 'You are a Pod Lead! 👑',
+                'message' => 'You have been assigned to lead your Mentorship Pod.',
+                'icon' => 'crown',
+                'color' => 'accent',
+                'action_url' => route('mentorship-pod.show'),
+                'action_text' => 'Manage Pod',
+            ]);
+
+            // Notify old lead
+            Notification::create([
+                'user_id' => $oldLeadId,
+                'type' => 'pod_lead_removed',
+                'title' => 'Pod Lead Status Updated',
+                'message' => 'You are no longer the Lead of this Mentorship Pod.',
+                'icon' => 'user-minus',
+                'color' => 'dark',
+                'action_url' => route('mentorship-pod.show'),
+                'action_text' => 'View Pod',
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', 'Pod Lead changed successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
 
     /**

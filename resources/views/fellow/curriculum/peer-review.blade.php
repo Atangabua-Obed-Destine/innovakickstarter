@@ -12,7 +12,7 @@
             <span class="text-primary-400">Peer Review</span>
         </div>
         <h1 class="text-2xl font-bold text-white">Peer Review</h1>
-        <p class="text-dark-400 mt-1">Review {{ $progress->fellow->name ?? 'your partner' }}'s submission</p>
+        <p class="text-dark-400 mt-1">Review {{ $progress->fellow->name ?? 'your pod member' }}'s submission</p>
     </div>
 
     @if(session('error'))
@@ -26,7 +26,7 @@
                 {{ strtoupper(substr($progress->fellow->name ?? 'P', 0, 1)) }}
             </div>
             <div class="flex-1 min-w-0">
-                <h3 class="text-white font-semibold">{{ $progress->fellow->name ?? 'Partner' }}</h3>
+                <h3 class="text-white font-semibold">{{ $progress->fellow->name ?? 'Pod Member' }}</h3>
                 <p class="text-dark-400 text-sm mt-0.5">{{ $progress->curriculumActivity->title }}</p>
                 <div class="flex items-center gap-3 mt-2 text-xs text-dark-500">
                     <span>{{ $progress->curriculumActivity->type?->icon() }} {{ $progress->curriculumActivity->type?->label() }}</span>
@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <!-- Partner's Evidence -->
+    <!-- Fellow's Evidence -->
     <div class="card p-6">
         <h3 class="text-white font-semibold mb-4">Submitted Evidence</h3>
 
@@ -114,7 +114,7 @@
                 <textarea name="feedback" id="feedback" rows="5"
                           placeholder="Share constructive feedback: What did they do well? Any suggestions for improvement?"
                           class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2.5 text-white placeholder-dark-500 focus:border-primary-500 focus:ring-1 focus:ring-primary-500">{{ old('feedback') }}</textarea>
-                <p class="text-dark-500 text-xs mt-1">Be constructive and specific. Your feedback helps your partner grow</p>
+                <p class="text-dark-500 text-xs mt-1">Be constructive and specific. Your feedback helps your pod member grow</p>
             </div>
         </div>
 
