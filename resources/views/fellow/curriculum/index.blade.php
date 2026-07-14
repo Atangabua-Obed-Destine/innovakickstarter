@@ -66,6 +66,23 @@
             
             @if($pod)
             <div class="space-y-2 mt-auto">
+                {{-- Pod Lead (Mentor) --}}
+                @if($pod->lead)
+                <div class="flex items-center justify-between text-sm p-1.5 rounded-lg border border-amber-500/20 bg-amber-500/5">
+                    <div class="flex items-center gap-2">
+                        <div class="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center text-[10px] font-bold text-amber-400">
+                            {{ strtoupper(substr($pod->lead->name, 0, 1)) }}
+                        </div>
+                        <span class="text-amber-400 font-medium truncate max-w-[100px]" title="{{ $pod->lead->name }}">
+                            {{ explode(' ', $pod->lead->name)[0] }}
+                            <span class="text-amber-400 ml-0.5 text-[10px]" title="Pod Lead">👑</span>
+                        </span>
+                    </div>
+                    <span class="text-amber-500/50 text-xs">Mentor</span>
+                </div>
+                @endif
+                
+                {{-- Fellow Members --}}
                 @foreach($pod->activeMembers as $membership)
                     @php $member = $membership->fellow; @endphp
                     <div class="flex items-center justify-between text-sm p-1.5 rounded-lg {{ $member->id === auth()->id() ? 'bg-blue-500/10 border border-blue-500/20' : '' }}">

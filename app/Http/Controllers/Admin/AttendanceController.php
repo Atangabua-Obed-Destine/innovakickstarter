@@ -64,7 +64,7 @@ class AttendanceController extends Controller
             $session->update(['token' => Str::random(32)]);
         }
 
-        $records = $session->records()->with('fellow:id,name', 'fellow.curriculumProgresses')->orderBy('clock_in_time', 'desc')->get();
+        $records = $session->records()->with('fellow:id,name', 'fellow.curriculumProgress')->orderBy('clock_in_time', 'desc')->get();
 
         return response()->json([
             'status' => 'active',
@@ -76,8 +76,8 @@ class AttendanceController extends Controller
                     'clock_in_time' => $record->clock_in_time->format('H:i:s'),
                     'clock_out_time' => $record->clock_out_time ? $record->clock_out_time->format('H:i:s') : null,
                     'status' => $record->status,
-                    'activities_completed' => optional($record->fellow)->curriculumProgresses ? $record->fellow->curriculumProgresses->where('status', 'completed')->count() : 0,
-                    'activities_started' => optional($record->fellow)->curriculumProgresses ? $record->fellow->curriculumProgresses->whereIn('status', ['started', 'submitted', 'under_review', 'peer_review'])->count() : 0,
+                    'activities_completed' => optional($record->fellow)->curriculumProgress ? $record->fellow->curriculumProgress->where('status', 'completed')->count() : 0,
+                    'activities_started' => optional($record->fellow)->curriculumProgress ? $record->fellow->curriculumProgress->whereIn('status', ['started', 'submitted', 'under_review', 'peer_review'])->count() : 0,
                 ];
             })
         ]);
