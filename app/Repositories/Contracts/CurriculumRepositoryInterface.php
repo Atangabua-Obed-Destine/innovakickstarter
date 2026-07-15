@@ -121,7 +121,7 @@ interface CurriculumRepositoryInterface extends RepositoryInterface
     /**
      * Get progress records pending review (for admin/mentor).
      */
-    public function getPendingReviews(int $perPage = 15, ?Track $track = null): LengthAwarePaginator;
+    public function getReviews(int $perPage = 15, ?Track $track = null, string $statusFilter = 'pending'): LengthAwarePaginator;
 
     /**
      * Get progress records pending peer review.

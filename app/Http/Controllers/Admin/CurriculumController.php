@@ -424,12 +424,13 @@ class CurriculumController extends Controller
     public function reviewQueue(Request $request)
     {
         $trackId = $request->get('track_id');
+        $statusFilter = $request->get('status', 'pending'); // pending or reviewed
         $track = $trackId ? Track::find($trackId) : null;
         $tracks = Track::active()->ordered()->get();
 
-        $pendingReviews = $this->curriculumService->getPendingReviews(20, $track);
+        $pendingReviews = $this->curriculumService->getReviews(20, $track, $statusFilter);
 
-        return view('admin.curriculum.reviews.index', compact('pendingReviews', 'tracks', 'track'));
+        return view('admin.curriculum.reviews.index', compact('pendingReviews', 'tracks', 'track', 'statusFilter'));
     }
 
     /**

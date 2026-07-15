@@ -745,9 +745,9 @@ class CurriculumService
     /**
      * Get pending review items for a mentor/admin.
      */
-    public function getPendingReviews(int $perPage = 15, ?Track $track = null): LengthAwarePaginator
+    public function getReviews(int $perPage = 15, ?Track $track = null, string $statusFilter = 'pending'): LengthAwarePaginator
     {
-        return $this->curriculumRepository->getPendingReviews($perPage, $track);
+        return $this->curriculumRepository->getReviews($perPage, $track, $statusFilter);
     }
 
     /**

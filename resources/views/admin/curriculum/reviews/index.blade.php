@@ -12,6 +12,11 @@
         </div>
         <div>
             <form method="GET" action="{{ route('admin.curriculum.reviews') }}" class="flex items-center gap-3">
+                <select name="status" onchange="this.form.submit()"
+                        class="bg-dark-800 border border-dark-600 rounded-lg px-4 py-2 text-white text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
+                    <option value="pending" {{ $statusFilter === 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="reviewed" {{ $statusFilter === 'reviewed' ? 'selected' : '' }}>Reviewed (Approved/Rejected)</option>
+                </select>
                 <select name="track_id" onchange="this.form.submit()"
                         class="bg-dark-800 border border-dark-600 rounded-lg px-4 py-2 text-white text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
                     <option value="">All Tracks</option>
@@ -39,7 +44,7 @@
                     <th class="px-6 py-3 text-dark-400 text-xs font-medium uppercase tracking-wider">Track</th>
                     <th class="px-6 py-3 text-dark-400 text-xs font-medium uppercase tracking-wider">Status</th>
                     <th class="px-6 py-3 text-dark-400 text-xs font-medium uppercase tracking-wider">Submitted</th>
-                    <th class="px-6 py-3 text-dark-400 text-xs font-medium uppercase tracking-wider">Peer</th>
+                    <th class="px-6 py-3 text-dark-400 text-xs font-medium uppercase tracking-wider">{{ $statusFilter === 'reviewed' ? 'Reviewed By' : 'Peer' }}</th>
                     <th class="px-6 py-3 text-dark-400 text-xs font-medium uppercase tracking-wider"></th>
                 </tr>
             </thead>
@@ -70,6 +75,8 @@
                                 'submitted' => 'text-blue-400 bg-blue-500/10',
                                 'peer_review' => 'text-amber-400 bg-amber-500/10',
                                 'under_review' => 'text-purple-400 bg-purple-500/10',
+                                'completed' => 'text-green-400 bg-green-500/10',
+                                'rejected' => 'text-red-400 bg-red-500/10',
                                 default => 'text-dark-400 bg-dark-700',
                             };
                         @endphp
@@ -81,14 +88,23 @@
                         {{ $progress->submitted_at ? $progress->submitted_at->diffForHumans() : '—' }}
                     </td>
                     <td class="px-6 py-4">
-                        @if($progress->peer_rating)
-                            <div class="flex items-center gap-1">
-                                @for($i = 1; $i <= 5; $i++)
-                                    <span class="text-xs {{ $i <= $progress->peer_rating ? 'text-amber-400' : 'text-dark-600' }}">★</span>
-                                @endfor
+                        @if($statusFilter === 'reviewed')
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-dark-700 flex items-center justify-center text-dark-300 text-xs font-bold">
+                                    {{ strtoupper(substr($progress->reviewer->name ?? 'S', 0, 1)) }}
+                                </div>
+                                <span class="text-white text-sm">{{ $progress->reviewer->name ?? 'System' }}</span>
                             </div>
                         @else
-                            <span class="text-dark-600 text-xs">Pending</span>
+                            @if($progress->peer_rating)
+                                <div class="flex items-center gap-1">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <span class="text-xs {{ $i <= $progress->peer_rating ? 'text-amber-400' : 'text-dark-600' }}">★</span>
+                                    @endfor
+                                </div>
+                            @else
+                                <span class="text-dark-600 text-xs">Pending</span>
+                            @endif
                         @endif
                     </td>
                     <td class="px-6 py-4 text-right">
@@ -108,9 +124,9 @@
 
     @else
     <div class="card p-12 text-center">
-        <div class="text-4xl mb-4">✅</div>
-        <h3 class="text-white font-semibold text-lg">All caught up!</h3>
-        <p class="text-dark-400 mt-1">No submissions pending review.</p>
+        <div class="text-4xl mb-4">{{ $statusFilter === 'pending' ? '✅' : '🔍' }}</div>
+        <h3 class="text-white font-semibold text-lg">{{ $statusFilter === 'pending' ? 'All caught up!' : 'No reviews found' }}</h3>
+        <p class="text-dark-400 mt-1">{{ $statusFilter === 'pending' ? 'No submissions pending review.' : 'You have not reviewed any submissions.' }}</p>
     </div>
     @endif
 </div>

@@ -163,6 +163,7 @@ class CareerCapitalCalculator
      */
     public function calculateInterviewScore(User $fellow, Track $track): float
     {
+        // 1. Calculate score from actual recorded interview sessions
         $interviews = $fellow->interviewSessions()
             ->where('track_id', $track->id)
             ->completed()
@@ -170,35 +171,70 @@ class CareerCapitalCalculator
             ->limit(10) // Use last 10 interviews
             ->get();
 
-        if ($interviews->isEmpty()) {
-            return 0.0;
+        $sessionScore = 0.0;
+        
+        if ($interviews->isNotEmpty()) {
+            // Weighted average: recent interviews matter more
+            $weightedSum = 0;
+            $weightTotal = 0;
+            $weight = 1.0;
+
+            foreach ($interviews as $interview) {
+                $weightedSum += $interview->overall_score * $weight;
+                $weightTotal += $weight;
+                $weight *= 0.9; // Each older interview has 10% less weight
+            }
+
+            $sessionScore = $weightTotal > 0 ? $weightedSum / $weightTotal : 0;
+
+            // Strict Volume Penalty: An average is meaningless with low volume.
+            // They must do at least 20 interviews to unlock their full score.
+            $volumeMultiplier = min(1.0, $interviews->count() / 20);
+            $sessionScore *= $volumeMultiplier;
+
+            // Bonus for interview consistency (low variance)
+            $variance = $this->calculateVariance($interviews->pluck('overall_score')->toArray());
+            if ($variance < 10 && $interviews->count() >= 3) {
+                $sessionScore = min(100, $sessionScore * 1.05); // 5% consistency bonus
+            }
         }
 
-        // Weighted average: recent interviews matter more
-        $weightedSum = 0;
-        $weightTotal = 0;
-        $weight = 1.0;
+        // 2. Calculate score from curriculum and manual activities
+        $interviewTypes = \App\Enums\ActivityType::getValuesByCategory(\App\Enums\CareerCapitalCategory::INTERVIEW);
 
-        foreach ($interviews as $interview) {
-            $weightedSum += $interview->overall_score * $weight;
-            $weightTotal += $weight;
-            $weight *= 0.9; // Each older interview has 10% less weight
+        $activities = $fellow->activities()
+            ->where('track_id', $track->id)
+            ->approved()
+            ->whereIn('type', $interviewTypes)
+            ->get();
+
+        $totalPoints = $activities->sum('points_earned');
+
+        $curriculumPoints = \App\Models\FellowCurriculumProgress::where('fellow_id', $fellow->id)
+            ->where('status', \App\Enums\CurriculumStatus::COMPLETED)
+            ->whereHas('curriculumActivity', function ($q) use ($track, $interviewTypes) {
+                $q->where('track_id', $track->id)
+                  ->whereIn('type', $interviewTypes);
+            })
+            ->sum('points_awarded');
+            
+        $totalPoints += $curriculumPoints;
+
+        $maxExpectedPoints = \App\Models\TrackCurriculumActivity::where('track_id', $track->id)
+            ->where('is_active', true)
+            ->whereIn('type', $interviewTypes)
+            ->sum('points');
+            
+        if ($maxExpectedPoints < 50) {
+            $maxExpectedPoints = 50;
         }
 
-        $averageScore = $weightTotal > 0 ? $weightedSum / $weightTotal : 0;
+        $activityScore = $this->calculateHardScaledScore($totalPoints, $maxExpectedPoints);
 
-        // Strict Volume Penalty: An average is meaningless with low volume.
-        // They must do at least 20 interviews to unlock their full score.
-        $volumeMultiplier = min(1.0, $interviews->count() / 20);
-        $averageScore *= $volumeMultiplier;
+        // Combine both scores. Since hard scaling is very strict, we can safely add them.
+        $finalScore = min(100, $sessionScore + $activityScore);
 
-        // Bonus for interview consistency (low variance)
-        $variance = $this->calculateVariance($interviews->pluck('overall_score')->toArray());
-        if ($variance < 10 && $interviews->count() >= 3) {
-            $averageScore = min(100, $averageScore * 1.05); // 5% consistency bonus
-        }
-
-        return round($averageScore, 3);
+        return round($finalScore, 3);
     }
 
     /**

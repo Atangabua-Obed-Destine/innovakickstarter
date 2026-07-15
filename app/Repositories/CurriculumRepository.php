@@ -310,14 +310,16 @@ class CurriculumRepository extends BaseRepository implements CurriculumRepositor
     /**
      * {@inheritDoc}
      */
-    public function getPendingReviews(int $perPage = 15, ?Track $track = null): LengthAwarePaginator
+    public function getReviews(int $perPage = 15, ?Track $track = null, string $statusFilter = 'pending'): LengthAwarePaginator
     {
-        $query = FellowCurriculumProgress::whereIn('status', [
-                CurriculumStatus::SUBMITTED->value,
-                CurriculumStatus::UNDER_REVIEW->value,
-            ])
+        $statuses = $statusFilter === 'reviewed' 
+            ? [CurriculumStatus::COMPLETED->value, CurriculumStatus::REJECTED->value]
+            : [CurriculumStatus::SUBMITTED->value, CurriculumStatus::UNDER_REVIEW->value];
+
+        $query = FellowCurriculumProgress::whereIn('status', $statuses)
             ->with([
                 'fellow',
+                'reviewer',
                 'curriculumActivity.milestone',
                 'curriculumActivity.track',
             ]);
@@ -328,7 +330,10 @@ class CurriculumRepository extends BaseRepository implements CurriculumRepositor
             });
         }
 
-        return $query->orderBy('submitted_at', 'asc')->paginate($perPage);
+        $orderByDate = $statusFilter === 'reviewed' ? 'reviewed_at' : 'submitted_at';
+        $orderDir = $statusFilter === 'reviewed' ? 'desc' : 'asc';
+        
+        return $query->orderBy($orderByDate, $orderDir)->paginate($perPage);
     }
 
     /**

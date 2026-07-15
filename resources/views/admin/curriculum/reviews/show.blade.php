@@ -66,21 +66,8 @@
                 </div>
             </div>
 
-            {{-- Activity Instructions --}}
-            <div class="card p-6">
-                <h3 class="text-white font-semibold mb-3">Activity Description</h3>
-                <div class="text-dark-300 text-sm prose prose-invert max-w-none">
-                    {!! nl2br(e($progress->curriculumActivity->description)) !!}
-                </div>
-                @if($progress->curriculumActivity->instructions)
-                <div class="mt-4 pt-4 border-t border-dark-700">
-                    <h4 class="text-dark-400 text-sm font-medium mb-2">Instructions</h4>
-                    <div class="text-dark-300 text-sm prose prose-invert max-w-none">
-                        {!! nl2br(e($progress->curriculumActivity->instructions)) !!}
-                    </div>
-                </div>
-                @endif
-            </div>
+            {{-- Activity Details (Collapsible) --}}
+            @include('admin.curriculum.reviews._activity_details', ['activity' => $progress->curriculumActivity])
 
             {{-- Submission Evidence --}}
             <div class="card p-6">
@@ -223,6 +210,7 @@
                 </div>
             </div>
 
+            @if(in_array($progress->status?->value ?? $progress->status, ['submitted', 'under_review']))
             {{-- Review Form --}}
             <div class="card p-6">
                 <h3 class="text-white font-semibold mb-4">Your Review</h3>
@@ -283,8 +271,48 @@
                     </div>
                 </form>
             </div>
+            @else
+            {{-- Review Details --}}
+            <div class="card p-6 border {{ ($progress->status?->value ?? $progress->status) === 'completed' ? 'border-green-500/30 bg-green-500/5' : 'border-red-500/30 bg-red-500/5' }}">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-white font-semibold">Review Details</h3>
+                    <span class="px-3 py-1 rounded-full text-xs font-medium {{ ($progress->status?->value ?? $progress->status) === 'completed' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400' }}">
+                        {{ ucfirst($progress->status?->value ?? $progress->status) }}
+                    </span>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-dark-400 text-xs">Reviewed By</p>
+                            <p class="text-white text-sm font-medium">{{ $progress->reviewer->name ?? 'System' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-dark-400 text-xs">Reviewed On</p>
+                            <p class="text-white text-sm font-medium">{{ $progress->reviewed_at?->format('M d, Y h:i A') ?? 'N/A' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-dark-400 text-xs">Score Awarded</p>
+                            <p class="text-white text-sm font-medium">{{ $progress->score_awarded }} / 100</p>
+                        </div>
+                        <div>
+                            <p class="text-dark-400 text-xs">Points Awarded</p>
+                            <p class="text-white text-sm font-medium">{{ $progress->points_awarded }} pts</p>
+                        </div>
+                    </div>
+                    
+                    @if($progress->review_notes)
+                    <div>
+                        <p class="text-dark-400 text-xs mb-1">Feedback Provided</p>
+                        <div class="bg-dark-900 rounded-lg p-3 text-dark-300 text-sm border border-dark-700">
+                            {!! nl2br(e($progress->review_notes)) !!}
+                        </div>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endif
         </div>
-    </div>
 
     <!-- File Preview Modal -->
     <div x-show="previewOpen" 
