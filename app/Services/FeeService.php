@@ -262,6 +262,46 @@ class FeeService
     }
 
     // ==========================================
+    // CHANGE DEADLINE
+    // ==========================================
+
+    /**
+     * Change fee deadline.
+     */
+    public function changeFeeDeadline(Fee $fee, string $newDate, bool $shiftInstallments = false): Fee
+    {
+        return DB::transaction(function () use ($fee, $newDate, $shiftInstallments) {
+            $oldDate = $fee->final_due_date->copy();
+            $newDateObj = \Carbon\Carbon::parse($newDate);
+            
+            $daysDiff = (int) $oldDate->diffInDays($newDateObj, false); // can be negative if shortening
+
+            $fee->update([
+                'final_due_date' => $newDateObj,
+            ]);
+
+            // Shift unpaid installments if requested
+            if ($shiftInstallments && $daysDiff !== 0 && $fee->installments()->exists()) {
+                $unpaidInstallments = $fee->installments()->whereNotIn('status', [FeeInstallment::STATUS_PAID])->get();
+                foreach ($unpaidInstallments as $installment) {
+                    $installment->update([
+                        'due_date' => $installment->due_date->copy()->addDays($daysDiff),
+                    ]);
+                    
+                    // Recalculate installment status if it was overdue
+                    if ($installment->status === FeeInstallment::STATUS_OVERDUE && !$installment->is_overdue) {
+                        $installment->update(['status' => $installment->amount_paid > 0 ? FeeInstallment::STATUS_PARTIAL : FeeInstallment::STATUS_DUE]);
+                    }
+                }
+            }
+
+            $this->recalculateFeeStatus($fee);
+
+            return $fee->fresh();
+        });
+    }
+
+    // ==========================================
     // PAYMENT ALLOCATION
     // ==========================================
 

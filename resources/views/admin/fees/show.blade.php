@@ -3,7 +3,7 @@
 @section('title', 'Fee Details · ' . $fee->reference)
 
 @section('content')
-<div class="space-y-6" x-data="{ showPaymentModal: false, showWaiveModal: false }">
+<div class="space-y-6" x-data="{ showPaymentModal: false, showWaiveModal: false, showExtendModal: false }">
     {{-- Header --}}
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
@@ -121,6 +121,11 @@
                             </form>
                         </div>
                     @endif
+
+                    <p class="text-dark-400 text-sm mb-4">You can change the final deadline for this fee.</p>
+                    <button @click="showExtendModal = true" class="btn btn-outline border-blue-500/50 text-blue-400 hover:bg-blue-500/10 w-full mb-6">
+                        Change Deadline
+                    </button>
 
                     <p class="text-dark-400 text-sm mb-4">Waiving a fee will mark it as fully settled and stop any overdue alerts.</p>
                     <button @click="showWaiveModal = true" class="btn btn-outline border-red-500/50 text-red-400 hover:bg-red-500/10 w-full">
@@ -267,6 +272,42 @@
                     <div class="flex justify-end gap-3 mt-6">
                         <button type="button" @click="showWaiveModal = false" class="btn btn-outline">Cancel</button>
                         <button type="submit" class="btn bg-red-600 hover:bg-red-700 text-white border-transparent">Confirm Waiver</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- Change Deadline Modal --}}
+    @if($fee->balance > 0 && $fee->status !== \App\Models\Fee::STATUS_WAIVED)
+    <div x-show="showExtendModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div x-show="showExtendModal" x-transition.opacity class="fixed inset-0 transition-opacity bg-dark-900/80 backdrop-blur-sm" @click="showExtendModal = false"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+            <div x-show="showExtendModal" x-transition.scale class="relative z-10 inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-dark-800 rounded-2xl shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 border border-dark-700">
+                <h3 class="text-lg font-bold text-white mb-4">Change Deadline</h3>
+                <p class="text-dark-300 text-sm mb-4">Current Final Due Date: <span class="font-bold text-white">{{ $fee->final_due_date->format('M j, Y') }}</span></p>
+                
+                <form action="{{ route('admin.fees.change-deadline', $fee) }}" method="POST">
+                    @csrf
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-dark-300 mb-1">New Final Due Date *</label>
+                        <input type="date" name="new_deadline" class="form-input w-full" value="{{ $fee->final_due_date->format('Y-m-d') }}" required>
+                    </div>
+
+                    @if($fee->plan_type === 'installments' && $fee->installments()->exists())
+                        <div class="mb-4">
+                            <label class="flex items-center space-x-3">
+                                <input type="checkbox" name="shift_installments" value="1" class="form-checkbox text-blue-500 rounded bg-dark-800 border-dark-600 focus:ring-blue-500 focus:ring-offset-dark-800" checked>
+                                <span class="text-dark-300 text-sm">Automatically shift unpaid installment dates by the same amount of days</span>
+                            </label>
+                        </div>
+                    @endif
+                    
+                    <div class="flex justify-end gap-3 mt-6">
+                        <button type="button" @click="showExtendModal = false" class="btn btn-outline">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Change Deadline</button>
                     </div>
                 </form>
             </div>

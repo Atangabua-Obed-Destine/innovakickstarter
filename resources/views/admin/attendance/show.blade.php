@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@php
+    $tz = app(\App\Services\AdminSettingsService::class)->get('platform_timezone', 'Africa/Douala');
+@endphp
+
 @section('title', 'Attendance Live Board')
 
 @section('content')
@@ -126,10 +130,10 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-dark-300">
-                                    {{ $record->clock_in_time ? $record->clock_in_time->format('h:i:s A') : '-' }}
+                                    {{ $record->clock_in_time ? $record->clock_in_time->timezone($tz)->format('h:i:s A') : '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-dark-300">
-                                    {{ $record->clock_out_time ? $record->clock_out_time->format('h:i:s A') : '-' }}
+                                    {{ $record->clock_out_time ? $record->clock_out_time->timezone($tz)->format('h:i:s A') : '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if($record->status === 'present')

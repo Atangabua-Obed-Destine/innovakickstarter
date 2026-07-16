@@ -167,6 +167,26 @@ class FeeController extends Controller
     }
 
     /**
+     * Change the deadline for a fee.
+     */
+    public function changeDeadline(Request $request, Fee $fee)
+    {
+        $validated = $request->validate([
+            'new_deadline' => 'required|date',
+            'shift_installments' => 'nullable|boolean',
+        ]);
+
+        $this->feeService->changeFeeDeadline(
+            $fee, 
+            $validated['new_deadline'], 
+            $validated['shift_installments'] ?? false
+        );
+
+        return redirect()->route('admin.fees.show', $fee)
+            ->with('success', 'Fee deadline changed successfully.');
+    }
+
+    /**
      * Print receipt for a payment.
      */
     public function printReceipt(FeePayment $payment)

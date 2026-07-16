@@ -66,15 +66,17 @@ class AttendanceController extends Controller
 
         $records = $session->records()->with('fellow:id,name', 'fellow.curriculumProgress')->orderBy('clock_in_time', 'desc')->get();
 
+        $tz = app(\App\Services\AdminSettingsService::class)->get('platform_timezone', 'Africa/Douala');
+
         return response()->json([
             'status' => 'active',
             'token' => $session->token,
-            'records' => $records->map(function ($record) {
+            'records' => $records->map(function ($record) use ($tz) {
                 return [
                     'id' => $record->id,
                     'fellow_name' => optional($record->fellow)->name ?? 'Deleted User',
-                    'clock_in_time' => $record->clock_in_time->format('H:i:s'),
-                    'clock_out_time' => $record->clock_out_time ? $record->clock_out_time->format('H:i:s') : null,
+                    'clock_in_time' => $record->clock_in_time->timezone($tz)->format('H:i:s'),
+                    'clock_out_time' => $record->clock_out_time ? $record->clock_out_time->timezone($tz)->format('H:i:s') : null,
                     'status' => $record->status,
                     'activities_completed' => optional($record->fellow)->curriculumProgress ? $record->fellow->curriculumProgress->where('status', 'completed')->count() : 0,
                     'activities_started' => optional($record->fellow)->curriculumProgress ? $record->fellow->curriculumProgress->whereIn('status', ['started', 'submitted', 'under_review', 'peer_review'])->count() : 0,

@@ -51,7 +51,7 @@ class MarkdownCurriculumParser
                 $currentActivity = [
                     'identifier' => trim($matches[1]), // e.g., "1.1"
                     'title' => trim($matches[2]),
-                    'type' => 'learning',
+                    'type' => 'project',
                     'difficulty' => 'beginner',
                     'points' => 10,
                     'deadline_days' => 7,
@@ -74,9 +74,12 @@ class MarkdownCurriculumParser
             // If we are parsing an activity
             if ($currentActivity) {
                 // Type
-                if (preg_match('/^\-\s*\*\*Type:\*\*\s*`?([a-zA-Z_]+)`?/', $line, $matches)) {
-                    $rawType = trim($matches[1]);
+                if (preg_match('/^\-\s*\*\*(?:Activity )?Type:\*\*\s*`?([a-zA-Z_ ]+)`?/i', $line, $matches)) {
+                    $rawType = trim(strtolower(str_replace(' ', '_', $matches[1])));
                     if ($rawType === 'learning') {
+                        $rawType = 'research';
+                    }
+                    if ($rawType === 'technical_research') {
                         $rawType = 'research';
                     }
                     $currentActivity['type'] = $rawType;

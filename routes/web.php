@@ -335,6 +335,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/fees/{fee}', [AdminFeeController::class, 'show'])->name('fees.show');
         Route::post('/fees/{fee}/payment', [AdminFeeController::class, 'recordPayment'])->name('fees.record-payment');
         Route::post('/fees/{fee}/waive', [AdminFeeController::class, 'waive'])->name('fees.waive');
+        Route::post('/fees/{fee}/change-deadline', [AdminFeeController::class, 'changeDeadline'])->name('fees.change-deadline');
         Route::delete('/fees/{fee}', [AdminFeeController::class, 'destroy'])->name('fees.destroy');
         Route::get('/fees/payments/{payment}/receipt', [AdminFeeController::class, 'printReceipt'])->name('fees.receipt');
         Route::get('/fees/fellow/{fellow}/billables', [AdminFeeController::class, 'getFellowBillables'])->name('fees.fellow-billables');
