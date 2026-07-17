@@ -530,6 +530,31 @@ class FellowCurriculumProgress extends Model
     }
 
     /**
+     * Undo an approval or rejection.
+     */
+    public function undoReview(): self
+    {
+        // If it was rejected, we decrement the attempt number
+        $newAttempt = $this->status === CurriculumStatus::REJECTED 
+            ? max(1, $this->attempt_number - 1) 
+            : $this->attempt_number;
+
+        $this->update([
+            'status' => CurriculumStatus::UNDER_REVIEW,
+            // We keep reviewer_id so they know who was reviewing it
+            'review_notes' => null,
+            'reviewed_at' => null,
+            'completed_at' => null,
+            'rubric_scores' => null,
+            'score_awarded' => 0,
+            'points_awarded' => 0,
+            'attempt_number' => $newAttempt,
+        ]);
+
+        return $this;
+    }
+
+    /**
      * Mark as overdue.
      */
     public function markOverdue(): self

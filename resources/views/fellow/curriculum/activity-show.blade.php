@@ -99,6 +99,11 @@
                             🔀 Cross-Track
                         </span>
                     @endif
+                    @if($progress && $progress->attempt_number > 1)
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500/10 rounded-lg text-sm text-amber-400 font-medium">
+                            🔄 Attempt {{ $progress->attempt_number }}
+                        </span>
+                    @endif
                 </div>
             </div>
         </div>

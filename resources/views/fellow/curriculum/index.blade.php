@@ -286,6 +286,10 @@
                             @if($activity->requiresInterviewSession())
                                 <span class="inline-flex items-center gap-1 text-purple-400 text-[10px] uppercase font-bold tracking-wider bg-purple-500/10 px-2 py-0.5 rounded">🎤 Interview</span>
                             @endif
+
+                            @if($actProgress && $actProgress->attempt_number > 1)
+                                <span class="inline-flex items-center gap-1 text-amber-400 text-[10px] uppercase font-bold tracking-wider bg-amber-500/10 px-2 py-0.5 rounded">🔄 Attempt {{ $actProgress->attempt_number }}</span>
+                            @endif
                         </div>
                     </div>
 

@@ -11,7 +11,16 @@
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-2xl font-bold text-white">Attendance: {{ $session->date->format('M d, Y') }}</h1>
-            <p class="text-dark-400 mt-1">
+            <p class="text-dark-400 mt-2 flex items-center gap-4" x-data="{ time: '' }" x-init="
+                const updateTime = () => { 
+                    time = new Date().toLocaleTimeString('en-US', { timeZone: '{{ $tz }}', hour: '2-digit', minute: '2-digit', second: '2-digit' }); 
+                }; 
+                updateTime(); 
+                setInterval(updateTime, 1000);
+            ">
+                <span class="inline-flex items-center text-white font-mono text-sm bg-dark-800 px-3 py-1 rounded-lg border border-dark-600 shadow-sm">
+                    🕒 <span x-text="time" class="ml-2"></span>
+                </span>
                 @if($session->status === 'active')
                     <span class="inline-flex items-center text-emerald-400">
                         <span class="w-2 h-2 mr-2 bg-emerald-400 rounded-full animate-pulse"></span>

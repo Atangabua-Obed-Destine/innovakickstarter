@@ -63,8 +63,15 @@
                         </div>
                     </td>
                     <td class="px-6 py-4">
-                        <p class="text-white text-sm">{{ Str::limit($progress->curriculumActivity->title ?? '', 40) }}</p>
-                        <p class="text-dark-500 text-xs">{{ $progress->curriculumActivity->type?->label() ?? '' }}</p>
+                        <p class="text-white text-sm">
+                            {{ Str::limit($progress->curriculumActivity->title ?? '', 40) }}
+                            @if($progress->attempt_number > 1)
+                                <span class="ml-2 inline-flex items-center gap-1 text-amber-400 text-[9px] uppercase font-bold tracking-wider bg-amber-500/10 px-1.5 py-0.5 rounded align-middle">
+                                    🔄 Attempt {{ $progress->attempt_number }}
+                                </span>
+                            @endif
+                        </p>
+                        <p class="text-dark-500 text-xs mt-1">{{ $progress->curriculumActivity->type?->label() ?? '' }}</p>
                     </td>
                     <td class="px-6 py-4">
                         <span class="text-dark-300 text-sm">{{ $progress->curriculumActivity->track->name ?? '' }}</span>
@@ -119,7 +126,7 @@
     </div>
 
     @if($pendingReviews->hasPages())
-    <div class="mt-4">{{ $pendingReviews->links() }}</div>
+    <div class="mt-4">{{ $pendingReviews->withQueryString()->links() }}</div>
     @endif
 
     @else

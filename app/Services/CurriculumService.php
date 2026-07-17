@@ -541,6 +541,36 @@ class CurriculumService
     }
 
     /**
+     * Undo a review decision.
+     */
+    public function undoReview(string $progressId): FellowCurriculumProgress
+    {
+        $progress = FellowCurriculumProgress::with(['curriculumActivity', 'fellow'])->findOrFail($progressId);
+
+        if (!in_array($progress->status, [CurriculumStatus::COMPLETED, CurriculumStatus::REJECTED])) {
+            throw new \Exception('This submission is not in a reviewed state.');
+        }
+
+        return DB::transaction(function () use ($progress) {
+            $progress->undoReview();
+
+            // Recalculate Career Capital
+            $this->recalculateCareerCapital($progress->fellow, $progress->curriculumActivity->track);
+
+            // Send notification
+            $notificationService = app()->make(\App\Services\NotificationService::class);
+            $notificationService->send(
+                $progress->fellow,
+                \App\Models\Notification::TYPE_ACTIVITY_REVIEW_REVERTED,
+                'Review Status Reverted',
+                "Your review status for '{$progress->curriculumActivity->title}' was reverted by an admin. It is back under review."
+            );
+
+            return $progress->fresh();
+        });
+    }
+
+    /**
      * Check if a milestone has been fully completed and award badge.
      */
     protected function checkMilestoneCompletion(User $fellow, TrackCurriculumActivity $activity): void

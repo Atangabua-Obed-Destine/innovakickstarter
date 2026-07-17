@@ -85,7 +85,7 @@
                                     <span class="text-dark-200">{{ $primaryTrack->track->name ?? 'No Track' }}</span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <span class="text-2xl font-bold text-primary-400">{{ number_format($primaryTrack->score ?? 0, 2) }}%</span>
+                                    <span class="text-2xl font-bold text-primary-400">{{ number_format($primaryTrack->score ?? 0, 3) }}%</span>
                                     <span class="badge bg-{{ $primaryTrack->tier_enum->color() }}-600/20 text-{{ $primaryTrack->tier_enum->color() }}-400 border-{{ $primaryTrack->tier_enum->color() }}-500/30">
                                         {{ ucfirst($primaryTrack->tier ?? 'Rookie') }}
                                     </span>
@@ -199,7 +199,7 @@
                                         @endif
                                     </div>
                                     <div class="flex items-center gap-2">
-                                        <span class="text-xl font-bold text-white">{{ number_format($fellowTrack->score ?? 0, 2) }}%</span>
+                                        <span class="text-xl font-bold text-white">{{ number_format($fellowTrack->score ?? 0, 3) }}%</span>
                                         <span class="badge badge-{{ $fellowTrack->tier ?? 'rookie' }}">{{ ucfirst($fellowTrack->tier ?? 'Rookie') }}</span>
                                     </div>
                                 </div>
@@ -458,14 +458,14 @@
                         <label class="form-label">Select Track</label>
                         <select name="track_id" class="form-input">
                             @foreach($fellow->fellowTracks as $ft)
-                                <option value="{{ $ft->track_id }}">{{ $ft->track->name ?? 'Unknown' }} (Current: {{ number_format($ft->score ?? 0, 2) }}%)</option>
+                                <option value="{{ $ft->track_id }}">{{ $ft->track->name ?? 'Unknown' }} (Current: {{ number_format($ft->score ?? 0, 3) }}%)</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div>
                         <label class="form-label">New Score (%)</label>
-                        <input type="number" name="new_score" class="form-input" min="0" max="100" step="0.1" required>
+                        <input type="number" name="new_score" class="form-input" min="0" max="100" step="0.001" required>
                     </div>
 
                     <div>

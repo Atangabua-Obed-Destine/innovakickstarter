@@ -40,12 +40,14 @@ class FeeController extends Controller
 
         // Filters
         if ($search = $request->input('search')) {
-            $query->whereHas('fellow', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('username', 'like', "%{$search}%");
-            })->orWhere('reference', 'like', "%{$search}%")
-              ->orWhere('title', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('fellow', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%")
+                      ->orWhere('username', 'like', "%{$search}%");
+                })->orWhere('reference', 'like', "%{$search}%")
+                  ->orWhere('title', 'like', "%{$search}%");
+            });
         }
 
         if ($status = $request->input('status')) {

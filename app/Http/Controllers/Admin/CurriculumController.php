@@ -477,6 +477,19 @@ class CurriculumController extends Controller
             ->with('success', $message);
     }
 
+    /**
+     * Undo a review decision.
+     * POST /admin/curriculum/reviews/{progress}/undo
+     */
+    public function undoReview(Request $request, string $progressId)
+    {
+        $progress = $this->curriculumService->undoReview($progressId);
+
+        return redirect()
+            ->back()
+            ->with('success', 'Review has been undone successfully.');
+    }
+
     // ==========================================
     // ACCOUNTABILITY PAIRS
     // ==========================================

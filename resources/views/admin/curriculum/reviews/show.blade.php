@@ -3,7 +3,39 @@
 @section('title', 'Review Submission')
 
 @section('content')
-<div x-data="{ previewOpen: false, previewUrl: '', previewType: '' }" class="max-w-4xl mx-auto space-y-6">
+<div x-data="{ 
+    previewOpen: false, 
+    previewUrl: '', 
+    previewType: '',
+    confirmOpen: false,
+    decision: '',
+    pointsToAward: '',
+    feedbackText: '',
+    promptConfirm(action) {
+        this.decision = action;
+        if (action !== 'undo') {
+            this.pointsToAward = document.getElementById('points').value;
+            this.feedbackText = document.getElementById('feedback').value;
+        } else {
+            this.pointsToAward = '';
+            this.feedbackText = '';
+        }
+        this.confirmOpen = true;
+    },
+    submitReview() {
+        if (this.decision === 'undo') {
+            document.getElementById('undoForm').submit();
+            return;
+        }
+        let form = document.getElementById('reviewForm');
+        let hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'decision';
+        hiddenInput.value = this.decision;
+        form.appendChild(hiddenInput);
+        form.submit();
+    }
+}" class="max-w-4xl mx-auto space-y-6">
     <!-- Header -->
     <div>
         <div class="flex items-center gap-2 text-dark-400 text-sm mb-2">
@@ -43,6 +75,11 @@
                         <span class="px-3 py-1 rounded-full text-xs border {{ $statusColor }}">
                             {{ $progress->status?->label() ?? ucfirst($progress->status ?? 'N/A') }}
                         </span>
+                        @if($progress->attempt_number > 1)
+                        <span class="ml-2 px-2 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/30 align-middle">
+                            🔄 Attempt {{ $progress->attempt_number }}
+                        </span>
+                        @endif
                     </div>
                 </div>
 
@@ -215,7 +252,7 @@
             <div class="card p-6">
                 <h3 class="text-white font-semibold mb-4">Your Review</h3>
 
-                <form action="{{ route('admin.curriculum.reviews.process', $progress->id) }}" method="POST" class="space-y-5">
+                <form id="reviewForm" action="{{ route('admin.curriculum.reviews.process', $progress->id) }}" method="POST" class="space-y-5">
                     @csrf
 
                     {{-- Rubric Scores --}}
@@ -260,11 +297,11 @@
 
                     {{-- Decision Buttons --}}
                     <div class="grid grid-cols-2 gap-3 pt-2">
-                        <button type="submit" name="decision" value="reject"
+                        <button type="button" @click="promptConfirm('reject')"
                                 class="w-full px-4 py-2.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 font-medium text-sm transition">
                             ✕ Reject
                         </button>
-                        <button type="submit" name="decision" value="approve"
+                        <button type="button" @click="promptConfirm('approve')"
                                 class="w-full px-4 py-2.5 bg-green-500/20 text-green-400 border border-green-500/30 rounded-lg hover:bg-green-500/30 font-medium text-sm transition">
                             ✓ Approve
                         </button>
@@ -309,6 +346,17 @@
                         </div>
                     </div>
                     @endif
+                </div>
+                
+                {{-- Undo Button --}}
+                <div class="mt-6 pt-6 border-t border-dark-700">
+                    <form id="undoForm" action="{{ route('admin.curriculum.reviews.undo', $progress->id) }}" method="POST">
+                        @csrf
+                        <button type="button" @click="promptConfirm('undo')" class="w-full px-4 py-2 bg-dark-700 hover:bg-dark-600 text-white border border-dark-600 rounded-lg font-medium text-sm transition flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                            Undo Review
+                        </button>
+                    </form>
                 </div>
             </div>
             @endif
@@ -361,6 +409,62 @@
                 <template x-if="['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(previewType)">
                     <img :src="previewUrl" class="max-w-full max-h-full object-contain p-4">
                 </template>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Confirmation Modal -->
+    <div x-show="confirmOpen" 
+         class="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         x-cloak 
+         style="display: none;">
+        
+        <div @click.away="confirmOpen = false" 
+             class="bg-dark-800 rounded-xl w-full max-w-md p-6 relative shadow-2xl ring-1 ring-white/10"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+             x-transition:leave-end="opacity-0 scale-95 translate-y-4">
+            
+            <h3 class="text-xl font-bold text-white mb-5" x-text="decision === 'approve' ? 'Confirm Approval' : (decision === 'reject' ? 'Confirm Rejection' : 'Confirm Undo')"></h3>
+            
+            <div class="space-y-4 mb-6">
+                <div class="flex justify-between items-center pb-3 border-b border-dark-700">
+                    <span class="text-dark-400 text-sm">Action</span>
+                    <span class="font-bold uppercase px-2 py-1 rounded text-xs" :class="decision === 'approve' ? 'bg-green-500/20 text-green-400' : (decision === 'reject' ? 'bg-red-500/20 text-red-400' : 'bg-amber-500/20 text-amber-400')" x-text="decision"></span>
+                </div>
+                
+                <template x-if="decision !== 'undo'">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center pb-3 border-b border-dark-700">
+                            <span class="text-dark-400 text-sm">Points to Award</span>
+                            <span class="text-white font-medium" x-text="pointsToAward + ' pts'"></span>
+                        </div>
+                        <div>
+                            <span class="text-dark-400 text-sm block mb-2">Feedback Provided</span>
+                            <div class="bg-dark-900/50 p-3 rounded-lg text-dark-300 text-sm border border-dark-700/50 min-h-[60px]" x-text="feedbackText || 'No feedback provided.'"></div>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="decision === 'undo'">
+                    <div class="pb-3 border-b border-dark-700">
+                        <p class="text-dark-300 text-sm">This action will revert the review decision, reset the awarded points to 0, and place the submission back into the "Under Review" queue.</p>
+                    </div>
+                </template>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" @click="confirmOpen = false" class="px-5 py-2.5 bg-dark-700 hover:bg-dark-600 text-white rounded-lg transition text-sm font-medium">Cancel</button>
+                <button type="button" @click="submitReview()" class="px-5 py-2.5 rounded-lg font-medium text-sm transition" :class="decision === 'approve' ? 'bg-green-500 hover:bg-green-600 text-white' : (decision === 'reject' ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-amber-500 hover:bg-amber-600 text-dark-900')">Confirm & Submit</button>
             </div>
         </div>
     </div>

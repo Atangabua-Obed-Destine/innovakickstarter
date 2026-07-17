@@ -461,6 +461,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/curriculum/reviews', [AdminCurriculumController::class, 'reviewQueue'])->name('curriculum.reviews');
         Route::get('/curriculum/reviews/{progress}', [AdminCurriculumController::class, 'reviewShow'])->name('curriculum.reviews.show');
         Route::post('/curriculum/reviews/{progress}', [AdminCurriculumController::class, 'reviewProcess'])->name('curriculum.reviews.process');
+        Route::post('/curriculum/reviews/{progress}/undo', [AdminCurriculumController::class, 'undoReview'])->name('curriculum.reviews.undo');
 
         // Settings
         Route::get('/settings', [AdminController::class, 'settings'])->name('settings');

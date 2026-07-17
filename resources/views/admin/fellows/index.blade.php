@@ -186,7 +186,7 @@
                                                     class="{{ $score >= 80 ? 'text-green-500' : ($score >= 60 ? 'text-amber-500' : 'text-red-500') }}"/>
                                         </svg>
                                         <span class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">
-                                            {{ number_format(min($score, 100), 2) }}
+                                            {{ number_format(min($score, 100), 3) }}
                                         </span>
                                     </div>
                                 </div>

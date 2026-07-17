@@ -96,6 +96,7 @@ class Notification extends Model
     public const TYPE_ACTIVITY_APPROVED = 'activity_approved';
     public const TYPE_ACTIVITY_REJECTED = 'activity_rejected';
     public const TYPE_ACTIVITY_NEEDS_REVISION = 'activity_needs_revision';
+    public const TYPE_ACTIVITY_REVIEW_REVERTED = 'activity_review_reverted';
     public const TYPE_TIER_PROMOTION = 'tier_promotion';
     public const TYPE_TIER_DEMOTION = 'tier_demotion';
     public const TYPE_WEEKLY_REMINDER = 'weekly_reminder';
