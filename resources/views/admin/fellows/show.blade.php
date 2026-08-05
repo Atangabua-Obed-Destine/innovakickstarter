@@ -190,6 +190,15 @@
                 @if($fellow->fellowTracks->isNotEmpty())
                     <div class="space-y-4">
                         @foreach($fellow->fellowTracks as $fellowTrack)
+                            @php
+                                $statusColors = [
+                                    'pending' => 'bg-amber-600/20 text-amber-400 border-amber-500/30',
+                                    'needs_revision' => 'bg-orange-600/20 text-orange-400 border-orange-500/30',
+                                    'approved' => 'bg-green-600/20 text-green-400 border-green-500/30',
+                                    'rejected' => 'bg-red-600/20 text-red-400 border-red-500/30',
+                                ];
+                                $statusColor = $statusColors[$fellowTrack->status] ?? 'bg-dark-600/20 text-dark-300 border-dark-500/30';
+                            @endphp
                             <div class="p-4 bg-dark-800 rounded-lg {{ $fellowTrack->is_primary ? 'ring-2 ring-primary-500' : '' }}">
                                 <div class="flex items-center justify-between mb-3">
                                     <div class="flex items-center gap-3">
@@ -197,28 +206,55 @@
                                         @if($fellowTrack->is_primary)
                                             <span class="badge bg-primary-600/20 text-primary-400 border-primary-500/30 text-xs">Primary</span>
                                         @endif
+                                        <span class="badge {{ $statusColor }} text-xs">{{ ucfirst(str_replace('_', ' ', $fellowTrack->status ?? 'approved')) }}</span>
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <span class="text-xl font-bold text-white">{{ number_format($fellowTrack->score ?? 0, 3) }}%</span>
                                         <span class="badge badge-{{ $fellowTrack->tier ?? 'rookie' }}">{{ ucfirst($fellowTrack->tier ?? 'Rookie') }}</span>
+                                        
+                                        <!-- Actions -->
+                                        <div class="flex items-center gap-1 ml-2">
+                                            @if(!$fellowTrack->is_primary && ($fellowTrack->status ?? 'approved') === 'approved')
+                                            <form action="{{ route('admin.fellows.make-primary', [$fellow, $fellowTrack->track_id]) }}" method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit" class="p-1.5 text-blue-400 hover:text-blue-300 hover:bg-blue-400/10 rounded transition-colors" title="Make Primary">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                                                </button>
+                                            </form>
+                                            @endif
+                                            
+                                            <form action="{{ route('admin.fellows.remove-track', [$fellow, $fellowTrack->track_id]) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to remove this track? This action cannot be undone.');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded transition-colors" title="Remove Track">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                                 
-                                <!-- Progress Bar -->
-                                <div class="h-3 bg-dark-700 rounded-full overflow-hidden mb-3">
-                                    <div class="h-full bg-gradient-to-r from-primary-600 to-blue-500 rounded-full transition-all duration-500"
-                                         style="width: {{ min($fellowTrack->score ?? 0, 100) }}%"></div>
-                                </div>
+                                @if(($fellowTrack->status ?? 'approved') === 'approved')
+                                    <!-- Progress Bar -->
+                                    <div class="h-3 bg-dark-700 rounded-full overflow-hidden mb-3">
+                                        <div class="h-full bg-gradient-to-r from-primary-600 to-blue-500 rounded-full transition-all duration-500"
+                                             style="width: {{ min($fellowTrack->score ?? 0, 100) }}%"></div>
+                                    </div>
 
-                                <!-- Category Breakdown -->
-                                @if($fellowTrack->category_scores)
-                                    <div class="grid grid-cols-5 gap-2">
-                                        @foreach($fellowTrack->category_scores as $category => $score)
-                                            <div class="text-center">
-                                                <div class="text-xs text-dark-500 mb-1">{{ ucfirst($category) }}</div>
-                                                <div class="text-sm font-medium text-dark-200">{{ $score }}%</div>
-                                            </div>
-                                        @endforeach
+                                    <!-- Category Breakdown -->
+                                    @if($fellowTrack->category_scores)
+                                        <div class="grid grid-cols-5 gap-2">
+                                            @foreach($fellowTrack->category_scores as $category => $score)
+                                                <div class="text-center">
+                                                    <div class="text-xs text-dark-500 mb-1">{{ ucfirst($category) }}</div>
+                                                    <div class="text-sm font-medium text-dark-200">{{ $score }}%</div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                @else
+                                    <div class="text-sm text-dark-400 mt-2">
+                                        This track enrollment is currently {{ str_replace('_', ' ', $fellowTrack->status) }}.
                                     </div>
                                 @endif
                             </div>
@@ -458,7 +494,10 @@
                         <label class="form-label">Select Track</label>
                         <select name="track_id" class="form-input">
                             @foreach($fellow->fellowTracks as $ft)
-                                <option value="{{ $ft->track_id }}">{{ $ft->track->name ?? 'Unknown' }} (Current: {{ number_format($ft->score ?? 0, 3) }}%)</option>
+                                <option value="{{ $ft->track_id }}">
+                                    {{ $ft->track->name ?? 'Unknown' }} 
+                                    ({{ ucfirst(str_replace('_', ' ', $ft->status ?? 'approved')) }} - Current: {{ number_format($ft->score ?? 0, 3) }}%)
+                                </option>
                             @endforeach
                         </select>
                     </div>

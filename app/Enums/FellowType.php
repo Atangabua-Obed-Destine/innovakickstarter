@@ -58,10 +58,7 @@ enum FellowType: string
      */
     public function requiresInternshipDetails(): bool
     {
-        return match($this) {
-            self::ACADEMIC, self::CORPORATE => true,
-            self::INDEPENDENT => false,
-        };
+        return true;
     }
 
     /**

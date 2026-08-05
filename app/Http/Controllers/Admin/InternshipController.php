@@ -197,6 +197,74 @@ class InternshipController extends Controller
     }
 
     /**
+     * Update the duration of an approved or active internship.
+     */
+    public function updateDuration(Request $request, InternshipProfile $internship): RedirectResponse
+    {
+        abort_unless(in_array($internship->status, [
+            InternshipProfile::STATUS_APPROVED,
+            InternshipProfile::STATUS_ACTIVE,
+        ]), 403, 'Duration can only be updated for approved or active internships.');
+
+        $validated = $request->validate([
+            'approved_start_date' => ['required', 'date'],
+            'approved_end_date' => ['required', 'date', 'after:approved_start_date'],
+        ], [
+            'approved_start_date.required' => 'You must confirm an internship start date.',
+            'approved_end_date.required' => 'You must confirm an internship end date.',
+            'approved_end_date.after' => 'End date must be after start date.',
+        ]);
+
+        $start = \Carbon\Carbon::parse($validated['approved_start_date'])->startOfDay();
+        $end = \Carbon\Carbon::parse($validated['approved_end_date'])->startOfDay();
+        
+        $oldStart = $internship->approved_start_date?->toDateString();
+        $oldEnd = $internship->approved_end_date?->toDateString();
+
+        $internship->update([
+            'approved_start_date' => $start,
+            'approved_end_date' => $end,
+        ]);
+
+        AuditLog::create([
+            'fellow_id' => $internship->user_id,
+            'admin_id' => $request->user()->id,
+            'action' => 'internship_duration_updated',
+            'auditable_type' => InternshipProfile::class,
+            'auditable_id' => $internship->uuid,
+            'justification' => "Internship duration updated from {$oldStart} → {$oldEnd} to {$start->toDateString()} → {$end->toDateString()}",
+            'old_values' => [
+                'approved_start_date' => $oldStart,
+                'approved_end_date' => $oldEnd,
+            ],
+            'new_values' => [
+                'approved_start_date' => $start->toDateString(),
+                'approved_end_date' => $end->toDateString(),
+            ],
+        ]);
+
+        // Recalculate status just in case the new window changes the state.
+        $today = now()->startOfDay();
+        $newStatus = $internship->status;
+        if ($internship->status === InternshipProfile::STATUS_APPROVED && $today->gte($start) && $today->lte($end)) {
+            $newStatus = InternshipProfile::STATUS_ACTIVE;
+        } elseif ($internship->status === InternshipProfile::STATUS_ACTIVE && $today->lt($start)) {
+            $newStatus = InternshipProfile::STATUS_APPROVED;
+        } elseif ($today->gt($end)) {
+            $newStatus = InternshipProfile::STATUS_COMPLETED;
+            $internship->completed_at = now();
+        }
+        
+        if ($newStatus !== $internship->status) {
+            $internship->status = $newStatus;
+            $internship->save();
+        }
+
+        return redirect()->route('admin.internships.show', $internship)
+            ->with('success', 'Internship duration updated successfully.');
+    }
+
+    /**
      * Request changes from the fellow.
      */
     public function requestChanges(Request $request, InternshipProfile $internship): RedirectResponse

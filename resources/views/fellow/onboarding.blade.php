@@ -251,10 +251,12 @@
             <h2 class="text-2xl font-bold text-white">
                 <span x-show="fellowType === 'academic'">Academic Internship Details</span>
                 <span x-show="fellowType === 'corporate'">Corporate Internship Details</span>
+                <span x-show="fellowType === 'independent'">Independent Fellowship Details</span>
             </h2>
             <p class="text-dark-400 mt-1">
                 <span x-show="fellowType === 'academic'">Tell us about your school and internship program</span>
                 <span x-show="fellowType === 'corporate'">Tell us about your company and internship arrangement</span>
+                <span x-show="fellowType === 'independent'">Tell us about your core focus and accountability setup</span>
             </p>
         </div>
 
@@ -265,26 +267,30 @@
                 <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                     <span x-show="fellowType === 'academic'">🏫</span>
                     <span x-show="fellowType === 'corporate'">🏢</span>
+                    <span x-show="fellowType === 'independent'">🚀</span>
                     <span x-show="fellowType === 'academic'">School / University</span>
                     <span x-show="fellowType === 'corporate'">Company / Organization</span>
+                    <span x-show="fellowType === 'independent'">Project / Focus Area</span>
                 </h3>
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-dark-300 mb-1">
                             <span x-show="fellowType === 'academic'">School / University Name *</span>
                             <span x-show="fellowType === 'corporate'">Company / Organization Name *</span>
+                            <span x-show="fellowType === 'independent'">Primary Project / Focus Name *</span>
                         </label>
                         <input type="text" x-model="internship.institution_name" required
-                               :placeholder="fellowType === 'academic' ? 'e.g. University of Yaoundé I' : 'e.g. Acme Corporation'"
+                               :placeholder="fellowType === 'academic' ? 'e.g. University of Yaoundé I' : (fellowType === 'corporate' ? 'e.g. Acme Corporation' : 'e.g. Building my startup / Self-taught')"
                                class="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-primary-600 focus:border-transparent">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-dark-300 mb-1">
                             <span x-show="fellowType === 'academic'">Faculty / Department</span>
                             <span x-show="fellowType === 'corporate'">Department / Division</span>
+                            <span x-show="fellowType === 'independent'">Specific Field / Niche</span>
                         </label>
                         <input type="text" x-model="internship.department"
-                               :placeholder="fellowType === 'academic' ? 'e.g. Faculty of Science, Computer Science Dept.' : 'e.g. Engineering Department'"
+                               :placeholder="fellowType === 'academic' ? 'e.g. Faculty of Science, Computer Science Dept.' : (fellowType === 'corporate' ? 'e.g. Engineering Department' : 'e.g. Full-Stack Web Development')"
                                class="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-primary-600 focus:border-transparent">
                     </div>
                 </div>
@@ -317,23 +323,33 @@
             {{-- Supervisor Section --}}
             <div class="border-b border-dark-700 pb-6">
                 <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    👤 Supervisor Information
+                    <span x-show="fellowType === 'academic' || fellowType === 'corporate'">👤 Supervisor Information</span>
+                    <span x-show="fellowType === 'independent'">🤝 Accountability Partner / Mentor</span>
                 </h3>
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-medium text-dark-300 mb-1">Supervisor Name *</label>
+                        <label class="block text-sm font-medium text-dark-300 mb-1">
+                            <span x-show="fellowType === 'academic' || fellowType === 'corporate'">Supervisor Name *</span>
+                            <span x-show="fellowType === 'independent'">Partner / Mentor Name *</span>
+                        </label>
                         <input type="text" x-model="internship.supervisor_name" required
                                placeholder="e.g. Dr. Jean Nkeng"
                                class="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-primary-600 focus:border-transparent">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-dark-300 mb-1">Supervisor Email</label>
+                        <label class="block text-sm font-medium text-dark-300 mb-1">
+                            <span x-show="fellowType === 'academic' || fellowType === 'corporate'">Supervisor Email</span>
+                            <span x-show="fellowType === 'independent'">Partner / Mentor Email</span>
+                        </label>
                         <input type="email" x-model="internship.supervisor_email"
-                               placeholder="supervisor@university.edu"
+                               placeholder="supervisor@example.com"
                                class="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-primary-600 focus:border-transparent">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-dark-300 mb-1">Supervisor Phone</label>
+                        <label class="block text-sm font-medium text-dark-300 mb-1">
+                            <span x-show="fellowType === 'academic' || fellowType === 'corporate'">Supervisor Phone</span>
+                            <span x-show="fellowType === 'independent'">Partner / Mentor Phone</span>
+                        </label>
                         <input type="tel" x-model="internship.supervisor_phone"
                                placeholder="+237 6XX XXX XXX"
                                class="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-primary-600 focus:border-transparent">
@@ -344,7 +360,7 @@
             {{-- Duration Section --}}
             <div class="border-b border-dark-700 pb-6">
                 <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    📅 Internship Duration
+                    📅 <span x-show="fellowType !== 'independent'">Internship Duration</span><span x-show="fellowType === 'independent'">Target Duration</span>
                 </h3>
 
                 {{-- Duration Type Toggle --}}
@@ -400,9 +416,13 @@
             {{-- Internship Letter Upload --}}
             <div class="border-b border-dark-700 pb-6">
                 <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    📄 Internship Letter / Convention
+                    <span x-show="fellowType === 'academic' || fellowType === 'corporate'">📄 Internship Letter / Convention</span>
+                    <span x-show="fellowType === 'independent'">📄 Project Plan / Proposal (Optional)</span>
                 </h3>
-                <p class="text-dark-500 text-sm mb-4">Upload your official internship letter, convention, or agreement document. (PDF, DOC, DOCX, JPG. Max 5MB)</p>
+                <p class="text-dark-500 text-sm mb-4">
+                    <span x-show="fellowType === 'academic' || fellowType === 'corporate'">Upload your official internship letter, convention, or agreement document. (PDF, DOC, DOCX, JPG. Max 5MB)</span>
+                    <span x-show="fellowType === 'independent'">Upload any formal project plan or outline you have created for your independent fellowship. (PDF, DOC, DOCX, JPG. Max 5MB)</span>
+                </p>
                 
                 <div class="relative">
                     <input type="file" @change="handleFileUpload($event)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" 
@@ -744,7 +764,7 @@ function onboardingWizard() {
 
         // Computed: active steps based on fellow type
         get activeSteps() {
-            if (this.fellowType === 'independent' || this.fellowType === '') {
+            if (this.fellowType === '') {
                 return this.allSteps.filter(s => s !== 'details');
             }
             return this.allSteps;

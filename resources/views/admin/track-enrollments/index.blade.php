@@ -86,7 +86,7 @@
                             <td class="py-4 px-4">
                                 <p class="text-dark-200 font-medium">{{ $e->track?->name }}</p>
                                 @if($e->track?->category)
-                                    <p class="text-dark-500 text-xs">{{ ucfirst($e->track->category) }}</p>
+                                    <p class="text-dark-500 text-xs">{{ ucfirst($e->track->category->value) }}</p>
                                 @endif
                             </td>
                             <td class="py-4 px-4 max-w-xs">

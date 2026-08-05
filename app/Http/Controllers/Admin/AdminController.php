@@ -510,6 +510,114 @@ class AdminController extends Controller
     }
 
     /**
+     * Change a fellow's primary track.
+     */
+    public function makePrimaryTrack(User $user, Track $track): RedirectResponse
+    {
+        abort_unless($user->hasRole('fellow'), 404);
+
+        $fellowTrack = \App\Models\FellowTrack::where('fellow_id', $user->id)
+            ->where('track_id', $track->id)
+            ->firstOrFail();
+
+        if (!$fellowTrack->isApproved()) {
+            return redirect()->back()->with('error', 'Cannot make a pending track primary.');
+        }
+
+        if ($fellowTrack->is_primary) {
+            return redirect()->back()->with('info', 'Track is already primary.');
+        }
+
+        DB::transaction(function () use ($user, $fellowTrack, $track) {
+            \App\Models\FellowTrack::where('fellow_id', $user->id)
+                ->where('is_primary', true)
+                ->update(['is_primary' => false]);
+
+            $fellowTrack->update(['is_primary' => true]);
+
+            $this->auditService->log(
+                'admin_track_switch',
+                auth()->user(),
+                $fellowTrack,
+                "Admin changed primary track to {$track->name}"
+            );
+        });
+
+        // Update session if impersonating
+        if (session('impersonate_original_id') && auth()->id() === $user->id) {
+            session(['active_track_id' => $track->id]);
+        }
+
+        return redirect()->back()->with('success', "{$track->name} is now the primary track for {$user->name}.");
+    }
+
+    /**
+     * Remove a fellow from a track.
+     */
+    public function removeTrack(User $user, Track $track): RedirectResponse
+    {
+        abort_unless($user->hasRole('fellow'), 404);
+
+        $fellowTrack = \App\Models\FellowTrack::where('fellow_id', $user->id)
+            ->where('track_id', $track->id)
+            ->firstOrFail();
+
+        $allTracks = \App\Models\FellowTrack::where('fellow_id', $user->id)->get();
+
+        if ($allTracks->count() <= 1) {
+            return redirect()->back()->with('error', 'Cannot remove the fellow\'s only track.');
+        }
+
+        DB::transaction(function () use ($user, $fellowTrack, $track) {
+            $wasPrimary = $fellowTrack->is_primary;
+            $effortToRedistribute = $fellowTrack->effort_allocation;
+            
+            // Delete track (force delete to bypass unique constraint issues if re-enrolled)
+            $fellowTrack->forceDelete();
+
+            $remainingTracks = \App\Models\FellowTrack::where('fellow_id', $user->id)->get();
+
+            // Handle primary track fallback
+            if ($wasPrimary && $remainingTracks->isNotEmpty()) {
+                // Promote the oldest remaining active/approved track, or just the oldest
+                $newPrimary = $remainingTracks->where('status', \App\Models\FellowTrack::STATUS_APPROVED)->sortBy('created_at')->first() 
+                    ?? $remainingTracks->sortBy('created_at')->first();
+                
+                if ($newPrimary) {
+                    $newPrimary->update(['is_primary' => true]);
+                }
+            }
+
+            // Handle effort allocation redistribution
+            if ($effortToRedistribute > 0 && $remainingTracks->isNotEmpty()) {
+                $perTrack = floor($effortToRedistribute / $remainingTracks->count());
+                $remainder = $effortToRedistribute % $remainingTracks->count();
+
+                foreach ($remainingTracks as $index => $rt) {
+                    $addedEffort = $perTrack + ($index === 0 ? $remainder : 0);
+                    $rt->increment('effort_allocation', $addedEffort);
+                }
+            }
+
+            $this->auditService->log(
+                'admin_track_removed',
+                auth()->user(),
+                $user,
+                "Admin removed track {$track->name} from fellow {$user->name}"
+            );
+        });
+
+        // Update session if impersonating and removed track was active
+        if (session('impersonate_original_id') && auth()->id() === $user->id) {
+            if (session('active_track_id') === $track->id) {
+                session()->forget('active_track_id');
+            }
+        }
+
+        return redirect()->back()->with('success', "Track removed from fellow successfully.");
+    }
+
+    /**
      * Display track management.
      */
     public function tracks(): View

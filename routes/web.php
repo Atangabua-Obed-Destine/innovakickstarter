@@ -318,6 +318,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->name('fellows.impersonate');
         
         Route::post('/fellows/{user}/toggle-status', [AdminController::class, 'toggleFellowStatus'])->name('fellows.toggle-status');
+        Route::post('/fellows/{user}/tracks/{track}/make-primary', [AdminController::class, 'makePrimaryTrack'])->name('fellows.make-primary');
+        Route::delete('/fellows/{user}/tracks/{track}/remove', [AdminController::class, 'removeTrack'])->name('fellows.remove-track');
 
         // Internship Profile Review
         Route::get('/internships', [\App\Http\Controllers\Admin\InternshipController::class, 'index'])->name('internships.index');
@@ -325,6 +327,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/internships/{internship}/letter/preview', [\App\Http\Controllers\Admin\InternshipController::class, 'previewLetter'])->name('internships.letter.preview');
         Route::get('/internships/{internship}/letter', [\App\Http\Controllers\Admin\InternshipController::class, 'downloadLetter'])->name('internships.letter');
         Route::post('/internships/{internship}/approve', [\App\Http\Controllers\Admin\InternshipController::class, 'approve'])->name('internships.approve');
+        Route::post('/internships/{internship}/update-duration', [\App\Http\Controllers\Admin\InternshipController::class, 'updateDuration'])->name('internships.update-duration');
         Route::post('/internships/{internship}/request-changes', [\App\Http\Controllers\Admin\InternshipController::class, 'requestChanges'])->name('internships.request-changes');
         Route::post('/internships/{internship}/reject', [\App\Http\Controllers\Admin\InternshipController::class, 'reject'])->name('internships.reject');
 

@@ -245,10 +245,10 @@
                 </section>
             @endif
 
-            {{-- ── §3 Institution ── --}}
+            {{-- ── §3 Institution / Project ── --}}
             <section class="card p-6">
                 <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <span>🏛️</span> Institution
+                    <span>{{ $profile->type === 'independent' ? '🚀 Project / Focus Area' : '🏛️ Institution' }}</span>
                 </h3>
                 <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
                     <div>
@@ -261,7 +261,7 @@
                     </div>
                     @if($profile->department)
                         <div>
-                            <dt class="text-dark-500 text-xs uppercase tracking-wide">Department / Faculty</dt>
+                            <dt class="text-dark-500 text-xs uppercase tracking-wide">{{ $profile->type === 'independent' ? 'Specific Field / Niche' : 'Department / Faculty' }}</dt>
                             <dd class="text-dark-200 mt-1">{{ $profile->department }}</dd>
                         </div>
                     @endif
@@ -280,10 +280,10 @@
                 </dl>
             </section>
 
-            {{-- ── §4 Supervisor ── --}}
+            {{-- ── §4 Supervisor / Mentor ── --}}
             <section class="card p-6">
                 <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <span>👤</span> Supervisor
+                    <span>{{ $profile->type === 'independent' ? '🤝 Accountability Partner / Mentor' : '👤 Supervisor' }}</span>
                 </h3>
                 <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
                     <div>
@@ -375,7 +375,7 @@
             {{-- ── §6 Documentation ── --}}
             <section class="card p-6">
                 <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <span>📎</span> Internship letter / convention
+                    <span>📎</span> {{ $profile->type === 'independent' ? 'Project Plan / Proposal' : 'Internship letter / convention' }}
                 </h3>
                 @if($profile->internship_letter_path)
                     <div class="flex gap-2">
@@ -539,7 +539,30 @@
                 </div>
             @else
                 <div class="card p-6 text-dark-400 text-sm no-print">
-                    This profile has already been {{ $profile->status }}. No further review actions available.
+                    <p class="mb-4">This profile has already been {{ $profile->status }}.</p>
+                    
+                    @if(in_array($profile->status, ['approved', 'active']))
+                        <div x-data="{ editingDuration: false }" class="mt-2 border-t border-dark-700 pt-4">
+                            <button type="button" @click="editingDuration = !editingDuration" class="btn btn-outline text-primary-400 border-primary-500/40 hover:bg-primary-500/10 w-full">Edit Duration</button>
+                            
+                            <form x-show="editingDuration" x-cloak method="POST" action="{{ route('admin.internships.update-duration', $profile) }}" class="mt-4 space-y-3 border-t border-dark-700 pt-4">
+                                @csrf
+                                <div class="grid grid-cols-2 gap-3">
+                                    <label class="block">
+                                        <span class="text-dark-300 text-xs">Start date <span class="text-red-400">*</span></span>
+                                        <input type="date" name="approved_start_date" required value="{{ $profile->approved_start_date?->toDateString() }}" class="form-input w-full mt-1 text-sm">
+                                    </label>
+                                    <label class="block">
+                                        <span class="text-dark-300 text-xs">End date <span class="text-red-400">*</span></span>
+                                        <input type="date" name="approved_end_date" required value="{{ $profile->approved_end_date?->toDateString() }}" class="form-input w-full mt-1 text-sm">
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-full mt-4">Save Duration</button>
+                            </form>
+                        </div>
+                    @else
+                        No further review actions available.
+                    @endif
                 </div>
             @endunless
         </aside>

@@ -54,6 +54,23 @@ class EnsureInternshipApproved
                 ->with('warning', 'Please complete your internship details to continue.');
         }
 
+        // Auto-transition approved to active if start date has arrived.
+        if ($profile->status === InternshipProfile::STATUS_APPROVED && $profile->is_currently_active) {
+            $profile->update([
+                'status' => InternshipProfile::STATUS_ACTIVE,
+            ]);
+
+            Notification::create([
+                'user_id' => $user->id,
+                'type' => 'internship_status',
+                'title' => 'Internship Active',
+                'message' => "Your approved internship at {$profile->institution_name} has officially started!",
+                'action_url' => route('dashboard'),
+            ]);
+
+            $profile->refresh();
+        }
+
         // Auto-transition expired approvals.
         if (
             in_array($profile->status, [InternshipProfile::STATUS_APPROVED, InternshipProfile::STATUS_ACTIVE], true)
