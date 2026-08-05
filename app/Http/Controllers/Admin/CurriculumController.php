@@ -204,7 +204,7 @@ class CurriculumController extends Controller
                 ];
                 
                 if ($structured['type'] === 'file' && isset($res['content_file'])) {
-                    $path = $res['content_file']->store('activity_resources', 'public');
+                    $path = $res['content_file']->store('activity_resources');
                     $structured['content'] = \Illuminate\Support\Facades\Storage::url($path);
                 } elseif ($structured['type'] === 'file' && !empty($res['existing_content'])) {
                     $structured['content'] = $res['existing_content'];
@@ -315,7 +315,7 @@ class CurriculumController extends Controller
                 ];
                 
                 if ($structured['type'] === 'file' && isset($res['content_file'])) {
-                    $path = $res['content_file']->store('activity_resources', 'public');
+                    $path = $res['content_file']->store('activity_resources');
                     $structured['content'] = \Illuminate\Support\Facades\Storage::url($path);
                 } elseif ($structured['type'] === 'file' && !empty($res['existing_content'])) {
                     $structured['content'] = $res['existing_content'];

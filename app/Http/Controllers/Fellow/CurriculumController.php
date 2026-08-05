@@ -278,7 +278,7 @@ class CurriculumController extends Controller
         $uploadedFiles = [];
         if ($request->hasFile('evidence_files')) {
             foreach ($request->file('evidence_files') as $file) {
-                $path = $file->store('curriculum-evidence/' . $fellow->id, 'public');
+                $path = $file->store('curriculum-evidence/' . $fellow->id);
                 $uploadedFiles[] = $path;
             }
         }

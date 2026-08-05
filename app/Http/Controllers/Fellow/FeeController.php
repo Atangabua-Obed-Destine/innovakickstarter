@@ -111,7 +111,7 @@ class FeeController extends Controller
         }
 
         // Store the file
-        $path = $request->file('receipt_file')->store('receipts', 'public');
+        $path = $request->file('receipt_file')->store('receipts');
         $validated['receipt_path'] = $path;
 
         $this->feeService->submitPaymentReceipt($fee, $validated, auth()->user());

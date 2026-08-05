@@ -180,7 +180,7 @@ class OnboardingController extends Controller
             }
 
             $letterPath = $request->file('internship_letter')
-                ->store('internship-letters/' . $user->uuid, 'public');
+                ->store('internship-letters/' . $user->uuid);
         }
 
         // Create or update internship profile

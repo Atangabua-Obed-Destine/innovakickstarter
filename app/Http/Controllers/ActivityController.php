@@ -121,7 +121,7 @@ class ActivityController extends Controller
         $attachments = [];
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                $path = $file->store('activities/' . $user->uuid, 'public');
+                $path = $file->store('activities/' . $user->uuid);
                 $attachments[] = [
                     'path' => $path,
                     'name' => $file->getClientOriginalName(),
@@ -214,7 +214,7 @@ class ActivityController extends Controller
         $attachments = $activity->metadata['attachments'] ?? [];
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                $path = $file->store('activities/' . $request->user()->uuid, 'public');
+                $path = $file->store('activities/' . $request->user()->uuid);
                 $attachments[] = [
                     'path' => $path,
                     'name' => $file->getClientOriginalName(),

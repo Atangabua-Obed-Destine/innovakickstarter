@@ -75,7 +75,7 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($user->avatar_url);
             }
             
-            $path = $request->file('avatar')->store('avatars/' . $user->uuid, 'public');
+            $path = $request->file('avatar')->store('avatars/' . $user->uuid);
             $validated['avatar_url'] = $path;
         }
 
@@ -85,13 +85,13 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($user->resume_url);
             }
             
-            $path = $request->file('resume')->store('resumes/' . $user->uuid, 'public');
+            $path = $request->file('resume')->store('resumes/' . $user->uuid);
             $validated['resume_url'] = $path;
         }
 
         // Handle company logo (for recruiters)
         if ($request->hasFile('company_logo')) {
-            $path = $request->file('company_logo')->store('companies/' . $user->uuid, 'public');
+            $path = $request->file('company_logo')->store('companies/' . $user->uuid);
             $validated['company_logo'] = $path;
         }
 
