@@ -64,6 +64,14 @@
             <div class="flex items-center gap-3 flex-wrap">
                 <h1 class="text-2xl font-bold text-white">Internship Dossier</h1>
                 <span class="badge {{ $s['class'] }}">{{ $s['label'] }}</span>
+                
+                @php $primaryTrack = $fellow?->fellowTracks?->firstWhere('is_primary', true); @endphp
+                @if($primaryTrack)
+                    <span class="badge bg-purple-600/20 text-purple-400 border-purple-500/30">
+                        Track: {{ $primaryTrack->track->name ?? 'Unknown' }}
+                    </span>
+                @endif
+
                 @if(!$fellow?->onboarding_completed_at)
                     <span class="badge bg-dark-600/40 text-dark-300 border-dark-500/30">Draft · onboarding incomplete</span>
                 @endif

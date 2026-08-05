@@ -184,23 +184,28 @@ class ProfileController extends Controller
 
         $user->update($updateData);
 
-        // Enroll fellow in selected track (use updateOrCreate to avoid duplicates)
+        // Enroll fellow in selected track
         if ($user->hasRole('fellow') && isset($validated['track_id'])) {
-            // First, set all existing tracks as non-primary
-            $user->fellowTracks()->update(['is_primary' => false]);
-            
-            // Then create or update the selected track
-            \App\Models\FellowTrack::updateOrCreate(
-                [
+            $primaryTrack = $user->fellowTracks()->where('is_primary', true)->first() 
+                ?? $user->fellowTracks()->first();
+
+            if ($primaryTrack) {
+                // Update their existing track to the newly selected one
+                $primaryTrack->update([
+                    'track_id' => $validated['track_id'],
+                    'is_primary' => true,
+                    'effort_allocation' => 100,
+                ]);
+            } else {
+                // Create their first track
+                \App\Models\FellowTrack::create([
                     'fellow_id' => $user->id,
                     'track_id' => $validated['track_id'],
-                ],
-                [
                     'is_primary' => true,
                     'effort_allocation' => 100,
                     'started_at' => now(),
-                ]
-            );
+                ]);
+            }
         }
 
         // Log completion using Laravel Log (not AuditLog which requires more fields)
