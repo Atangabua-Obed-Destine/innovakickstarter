@@ -1038,12 +1038,15 @@ function onboardingWizard() {
             const hasType = !!this.fellowType;
             const hasInternship = @json($internshipProfile ? true : false);
             const onboardingDone = @json($user->onboarding_completed_at ? true : false);
+            const requiresInternship = @json($user->fellow_type?->requiresInternshipDetails() ?? false);
 
-            if (onboardingDone) {
+            if (requiresInternship && !hasInternship) {
+                this.currentStep = 'details';
+            } else if (onboardingDone) {
                 this.currentStep = 'complete';
             } else if (hasType && hasInternship) {
                 this.currentStep = 'profile';
-            } else if (hasType && this.fellowType !== 'independent' && !hasInternship) {
+            } else if (hasType && !hasInternship) {
                 this.currentStep = 'details';
             } else if (hasType) {
                 this.currentStep = 'profile';
