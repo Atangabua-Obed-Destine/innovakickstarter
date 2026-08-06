@@ -67,7 +67,7 @@
             <p class="text-dark-500 text-xs font-medium uppercase tracking-wider mb-2">Files</p>
             <div class="space-y-2">
                 @foreach($progress->evidence_files as $file)
-                <a href="{{ asset('storage/' . $file) }}" target="_blank"
+                <a href="{{ Storage::url($file) }}" target="_blank"
                    class="flex items-center gap-2 text-primary-400 hover:text-primary-300 text-sm bg-dark-800 rounded-lg px-4 py-2">
                     📄 {{ basename($file) }}
                 </a>

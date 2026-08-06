@@ -20,7 +20,7 @@
                 <!-- Avatar -->
                 <div class="flex-shrink-0">
                     @if($talent->avatar_url)
-                        <img src="{{ asset('storage/' . $talent->avatar_url) }}" alt="{{ $talent->name }}" class="w-28 h-28 rounded-full object-cover ring-4 ring-dark-900">
+                        <img src="{{ Storage::url($talent->avatar_url) }}" alt="{{ $talent->name }}" class="w-28 h-28 rounded-full object-cover ring-4 ring-dark-900">
                     @else
                         <div class="w-28 h-28 rounded-full bg-gradient-to-br from-primary-500 to-blue-600 flex items-center justify-center text-white font-bold text-4xl ring-4 ring-dark-900">
                             {{ $talent->initials }}
@@ -297,7 +297,7 @@
             <!-- Download Resume -->
             @if($talent->resume_url)
             <div class="card p-6">
-                <a href="{{ asset('storage/' . $talent->resume_url) }}" target="_blank" class="w-full btn btn-outline inline-flex items-center justify-center gap-2">
+                <a href="{{ Storage::url($talent->resume_url) }}" target="_blank" class="w-full btn btn-outline inline-flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>

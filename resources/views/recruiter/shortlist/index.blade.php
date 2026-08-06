@@ -121,7 +121,7 @@
                             <td class="py-4 px-4">
                                 <div class="flex items-center gap-3">
                                     @if($candidate->avatar_url)
-                                        <img src="{{ asset('storage/' . $candidate->avatar_url) }}" alt="{{ $candidate->name }}" class="w-10 h-10 rounded-full object-cover">
+                                        <img src="{{ Storage::url($candidate->avatar_url) }}" alt="{{ $candidate->name }}" class="w-10 h-10 rounded-full object-cover">
                                     @else
                                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-blue-600 flex items-center justify-center text-white font-medium">
                                             {{ $candidate->initials }}

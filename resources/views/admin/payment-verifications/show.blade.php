@@ -206,7 +206,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg font-semibold text-white">Uploaded Receipt Evidence</h2>
                     @if($payment->receipt_path)
-                        <a href="{{ Storage::disk('public')->url($payment->receipt_path) }}" target="_blank" class="text-primary-400 hover:text-primary-300 text-sm flex items-center gap-1">
+                        <a href="{{ Storage::url($payment->receipt_path) }}" target="_blank" class="text-primary-400 hover:text-primary-300 text-sm flex items-center gap-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                             Download
                         </a>
@@ -220,14 +220,14 @@
                         @endphp
                         
                         @if(in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                            <img src="{{ Storage::disk('public')->url($payment->receipt_path) }}" alt="Payment Receipt" class="max-w-full max-h-[800px] object-contain rounded">
+                            <img src="{{ Storage::url($payment->receipt_path) }}" alt="Payment Receipt" class="max-w-full max-h-[800px] object-contain rounded">
                         @elseif($ext === 'pdf')
-                            <iframe src="{{ Storage::disk('public')->url($payment->receipt_path) }}" class="w-full h-full min-h-[600px] rounded" border="0"></iframe>
+                            <iframe src="{{ Storage::url($payment->receipt_path) }}" class="w-full h-full min-h-[600px] rounded" border="0"></iframe>
                         @else
                             <div class="text-center">
                                 <svg class="w-16 h-16 text-dark-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 <p class="text-white mb-2">File type not supported for preview</p>
-                                <a href="{{ Storage::disk('public')->url($payment->receipt_path) }}" target="_blank" class="btn btn-primary">Download File</a>
+                                <a href="{{ Storage::url($payment->receipt_path) }}" target="_blank" class="btn btn-primary">Download File</a>
                             </div>
                         @endif
                     @else

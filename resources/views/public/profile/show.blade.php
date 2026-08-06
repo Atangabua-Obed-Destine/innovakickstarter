@@ -39,7 +39,7 @@
                 <!-- Photo -->
                 <div class="relative">
                     @if($fellow->avatar_url)
-                        <img src="{{ asset('storage/' . $fellow->avatar_url) }}" alt="{{ $fellow->name }}" class="w-32 h-32 rounded-full object-cover shadow-2xl shadow-primary-500/25">
+                        <img src="{{ Storage::url($fellow->avatar_url) }}" alt="{{ $fellow->name }}" class="w-32 h-32 rounded-full object-cover shadow-2xl shadow-primary-500/25">
                     @else
                         <div class="w-32 h-32 rounded-full bg-gradient-to-br from-primary-500 to-blue-600 flex items-center justify-center text-white text-4xl font-bold shadow-2xl shadow-primary-500/25">
                             {{ $fellow->initials }}

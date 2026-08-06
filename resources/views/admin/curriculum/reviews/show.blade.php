@@ -138,7 +138,7 @@
                                 $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                                 $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
                                 $isPdf = $ext === 'pdf';
-                                $url = asset('storage/' . $file);
+                                $url = Storage::url($file);
                             @endphp
 
                             @if($isImage || $isPdf)

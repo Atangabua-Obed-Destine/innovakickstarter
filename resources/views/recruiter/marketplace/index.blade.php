@@ -192,7 +192,7 @@
                     <!-- Avatar & Score Circle -->
                     <div class="relative w-20 h-20 mx-auto">
                         @if($fellow->avatar_url)
-                            <img src="{{ asset('storage/' . $fellow->avatar_url) }}" alt="{{ $fellow->name }}" class="w-20 h-20 rounded-full object-cover">
+                            <img src="{{ Storage::url($fellow->avatar_url) }}" alt="{{ $fellow->name }}" class="w-20 h-20 rounded-full object-cover">
                         @else
                             <div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary-500 to-blue-600 flex items-center justify-center text-white font-bold text-2xl">
                                 {{ $fellow->initials }}
