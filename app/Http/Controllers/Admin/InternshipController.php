@@ -204,7 +204,8 @@ class InternshipController extends Controller
         abort_unless(in_array($internship->status, [
             InternshipProfile::STATUS_APPROVED,
             InternshipProfile::STATUS_ACTIVE,
-        ]), 403, 'Duration can only be updated for approved or active internships.');
+            InternshipProfile::STATUS_COMPLETED,
+        ]), 403, 'Duration can only be updated for approved, active, or completed internships.');
 
         $validated = $request->validate([
             'approved_start_date' => ['required', 'date'],

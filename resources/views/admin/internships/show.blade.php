@@ -549,7 +549,7 @@
                 <div class="card p-6 text-dark-400 text-sm no-print">
                     <p class="mb-4">This profile has already been {{ $profile->status }}.</p>
                     
-                    @if(in_array($profile->status, ['approved', 'active']))
+                    @if(in_array($profile->status, ['approved', 'active', 'completed']))
                         <div x-data="{ editingDuration: false }" class="mt-2 border-t border-dark-700 pt-4">
                             <button type="button" @click="editingDuration = !editingDuration" class="btn btn-outline text-primary-400 border-primary-500/40 hover:bg-primary-500/10 w-full">Edit Duration</button>
                             
