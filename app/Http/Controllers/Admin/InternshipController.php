@@ -244,19 +244,22 @@ class InternshipController extends Controller
             ],
         ]);
 
-        // Recalculate status just in case the new window changes the state.
+        // Recalculate status based on the new dates
         $today = now()->startOfDay();
         $newStatus = $internship->status;
-        if ($internship->status === InternshipProfile::STATUS_APPROVED && $today->gte($start) && $today->lte($end)) {
-            $newStatus = InternshipProfile::STATUS_ACTIVE;
-        } elseif ($internship->status === InternshipProfile::STATUS_ACTIVE && $today->lt($start)) {
-            $newStatus = InternshipProfile::STATUS_APPROVED;
-        } elseif ($today->gt($end)) {
+
+        if ($today->gt($end)) {
             $newStatus = InternshipProfile::STATUS_COMPLETED;
-            $internship->completed_at = now();
+            $internship->completed_at = $internship->completed_at ?? now();
+        } elseif ($today->gte($start)) {
+            $newStatus = InternshipProfile::STATUS_ACTIVE;
+            $internship->completed_at = null;
+        } else {
+            $newStatus = InternshipProfile::STATUS_APPROVED;
+            $internship->completed_at = null;
         }
         
-        if ($newStatus !== $internship->status) {
+        if ($newStatus !== $internship->status || $internship->isDirty('completed_at')) {
             $internship->status = $newStatus;
             $internship->save();
         }
