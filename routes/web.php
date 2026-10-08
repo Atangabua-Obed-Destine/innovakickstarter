@@ -195,10 +195,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/activities/{activity}/start', [FellowCurriculumController::class, 'startActivity'])->name('activity.start');
             Route::post('/activities/{activity}/interview', [FellowCurriculumController::class, 'launchInterview'])->name('activity.interview');
 
-            // Activity Comments
-            Route::post('/activities/{activity}/comments', [\App\Http\Controllers\Fellow\ActivityCommentController::class, 'store'])->name('activities.comments.store');
-            Route::delete('/comments/{comment}', [\App\Http\Controllers\Fellow\ActivityCommentController::class, 'destroy'])->name('comments.destroy');
-
             // Submission
             Route::get('/progress/{progress}/submit', [FellowCurriculumController::class, 'submitForm'])->name('submit.form');
             Route::post('/progress/{progress}/submit', [FellowCurriculumController::class, 'submit'])->name('submit');
@@ -206,7 +202,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             // Peer review
             Route::get('/peer-review/{progress}', [FellowCurriculumController::class, 'peerReviewForm'])->name('peer-review.form');
             Route::post('/peer-review/{progress}', [FellowCurriculumController::class, 'peerReviewSubmit'])->name('peer-review.submit');
-            Route::post('/progress/{progress}/bypass-peer-review', [FellowCurriculumController::class, 'bypassPeerReview'])->name('peer-review.bypass');
 
             // Badges
             Route::get('/badges', [FellowCurriculumController::class, 'badges'])->name('badges');
@@ -303,7 +298,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/activities/{activity}/revision', [AdminController::class, 'needsRevision'])->name('activities.revision');
         
         // Fellow Management
-        Route::post('/fellows/recalculate-cc', [AdminController::class, 'recalculateCC'])->name('fellows.recalc-cc');
         Route::get('/fellows', [AdminController::class, 'fellows'])->name('fellows.index');
         Route::get('/fellows/{user}', [AdminController::class, 'showFellow'])->name('fellows.show');
         
@@ -318,8 +312,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->name('fellows.impersonate');
         
         Route::post('/fellows/{user}/toggle-status', [AdminController::class, 'toggleFellowStatus'])->name('fellows.toggle-status');
-        Route::post('/fellows/{user}/tracks/{track}/make-primary', [AdminController::class, 'makePrimaryTrack'])->name('fellows.make-primary');
-        Route::delete('/fellows/{user}/tracks/{track}/remove', [AdminController::class, 'removeTrack'])->name('fellows.remove-track');
 
         // Internship Profile Review
         Route::get('/internships', [\App\Http\Controllers\Admin\InternshipController::class, 'index'])->name('internships.index');
@@ -327,7 +319,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/internships/{internship}/letter/preview', [\App\Http\Controllers\Admin\InternshipController::class, 'previewLetter'])->name('internships.letter.preview');
         Route::get('/internships/{internship}/letter', [\App\Http\Controllers\Admin\InternshipController::class, 'downloadLetter'])->name('internships.letter');
         Route::post('/internships/{internship}/approve', [\App\Http\Controllers\Admin\InternshipController::class, 'approve'])->name('internships.approve');
-        Route::post('/internships/{internship}/update-duration', [\App\Http\Controllers\Admin\InternshipController::class, 'updateDuration'])->name('internships.update-duration');
         Route::post('/internships/{internship}/request-changes', [\App\Http\Controllers\Admin\InternshipController::class, 'requestChanges'])->name('internships.request-changes');
         Route::post('/internships/{internship}/reject', [\App\Http\Controllers\Admin\InternshipController::class, 'reject'])->name('internships.reject');
 
@@ -338,7 +329,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/fees/{fee}', [AdminFeeController::class, 'show'])->name('fees.show');
         Route::post('/fees/{fee}/payment', [AdminFeeController::class, 'recordPayment'])->name('fees.record-payment');
         Route::post('/fees/{fee}/waive', [AdminFeeController::class, 'waive'])->name('fees.waive');
-        Route::post('/fees/{fee}/change-deadline', [AdminFeeController::class, 'changeDeadline'])->name('fees.change-deadline');
         Route::delete('/fees/{fee}', [AdminFeeController::class, 'destroy'])->name('fees.destroy');
         Route::get('/fees/payments/{payment}/receipt', [AdminFeeController::class, 'printReceipt'])->name('fees.receipt');
         Route::get('/fees/fellow/{fellow}/billables', [AdminFeeController::class, 'getFellowBillables'])->name('fees.fellow-billables');
@@ -464,7 +454,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/curriculum/reviews', [AdminCurriculumController::class, 'reviewQueue'])->name('curriculum.reviews');
         Route::get('/curriculum/reviews/{progress}', [AdminCurriculumController::class, 'reviewShow'])->name('curriculum.reviews.show');
         Route::post('/curriculum/reviews/{progress}', [AdminCurriculumController::class, 'reviewProcess'])->name('curriculum.reviews.process');
-        Route::post('/curriculum/reviews/{progress}/undo', [AdminCurriculumController::class, 'undoReview'])->name('curriculum.reviews.undo');
 
         // Settings
         Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
@@ -496,8 +485,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/mentorship-pods', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'store'])->name('mentorship-pods.store');
         Route::get('/mentorship-pods/eligible-fellows', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'eligibleFellows'])->name('mentorship-pods.eligible-fellows');
         Route::get('/mentorship-pods/{pod}', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'show'])->name('mentorship-pods.show');
-        Route::post('/mentorship-pods/{pod}/add-member', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'addMember'])->name('mentorship-pods.add-member');
-        Route::post('/mentorship-pods/{pod}/change-lead', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'changeLead'])->name('mentorship-pods.change-lead');
         Route::post('/mentorship-pods/{pod}/close', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'close'])->name('mentorship-pods.close');
         Route::delete('/mentorship-pods/{pod}/members/{fellow}', [\App\Http\Controllers\Admin\MentorshipPodController::class, 'removeMember'])->name('mentorship-pods.remove-member');
 

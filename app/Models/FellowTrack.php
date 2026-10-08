@@ -78,12 +78,12 @@ class FellowTrack extends Model
     protected function casts(): array
     {
         return [
-            'score' => 'decimal:3',
-            'technical_score' => 'decimal:3',
-            'interview_score' => 'decimal:3',
-            'portfolio_score' => 'decimal:3',
-            'collaboration_score' => 'decimal:3',
-            'learning_score' => 'decimal:3',
+            'score' => 'decimal:2',
+            'technical_score' => 'decimal:2',
+            'interview_score' => 'decimal:2',
+            'portfolio_score' => 'decimal:2',
+            'collaboration_score' => 'decimal:2',
+            'learning_score' => 'decimal:2',
             'is_primary' => 'boolean',
             'effort_allocation' => 'integer',
             'total_points_earned' => 'integer',
@@ -269,7 +269,7 @@ class FellowTrack extends Model
      */
     public function getFormattedScoreAttribute(): string
     {
-        return number_format($this->score, 3) . '%';
+        return number_format($this->score, 1) . '%';
     }
 
     /**

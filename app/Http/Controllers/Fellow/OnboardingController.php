@@ -135,10 +135,11 @@ class OnboardingController extends Controller
         $user = $request->user();
         $fellowType = $user->fellow_type;
 
-        if (!$fellowType) {
+        // Ensure this is an academic or corporate fellow
+        if (!$fellowType || !$fellowType->requiresInternshipDetails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Please select a fellow type first.',
+                'message' => 'Internship details are only required for academic and corporate fellows.',
             ], 422);
         }
 
@@ -169,18 +170,11 @@ class OnboardingController extends Controller
 
         $validated = $request->validate($rules);
 
-        $existingProfile = InternshipProfile::where('user_id', $user->id)->first();
-
         // Handle file upload
         $letterPath = null;
         if ($request->hasFile('internship_letter')) {
-            // Delete old letter if it exists to prevent storage leaks
-            if ($existingProfile && $existingProfile->internship_letter_path) {
-                Storage::disk('public')->delete($existingProfile->internship_letter_path);
-            }
-
             $letterPath = $request->file('internship_letter')
-                ->store('internship-letters/' . $user->uuid);
+                ->store('internship-letters/' . $user->uuid, 'public');
         }
 
         // Create or update internship profile
@@ -198,6 +192,7 @@ class OnboardingController extends Controller
             'notes' => $validated['notes'] ?? null,
         ];
 
+        $existingProfile = InternshipProfile::where('user_id', $user->id)->first();
         if (!$existingProfile || !in_array($existingProfile->status, [InternshipProfile::STATUS_APPROVED, InternshipProfile::STATUS_ACTIVE])) {
             $profileData['status'] = InternshipProfile::STATUS_PENDING;
         }
