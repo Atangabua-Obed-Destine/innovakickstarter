@@ -106,6 +106,7 @@ class AttestationService
         $expired = InternshipProfile::whereIn('status', [InternshipProfile::STATUS_APPROVED, InternshipProfile::STATUS_ACTIVE])
             ->whereNotNull('approved_end_date')
             ->whereDate('approved_end_date', '<', now()->toDateString())
+            ->whereHas('fellow')
             ->get();
 
         $expired->each(fn (InternshipProfile $profile) => $this->completeInternship($profile));
@@ -114,6 +115,7 @@ class AttestationService
             ->whereNotNull('approved_start_date')
             ->whereNotNull('approved_end_date')
             ->whereDoesntHave('attestations')
+            ->whereHas('fellow')
             ->get()
             ->each(fn (InternshipProfile $profile) => $this->ensureDraft($profile));
 
@@ -125,7 +127,8 @@ class AttestationService
      */
     public function ensureDraft(InternshipProfile $profile): ?InternshipAttestation
     {
-        if (!$profile->approved_start_date || !$profile->approved_end_date) {
+        // No attestation without confirmed dates or for a deleted fellow account.
+        if (!$profile->approved_start_date || !$profile->approved_end_date || !$profile->fellow) {
             return null;
         }
 

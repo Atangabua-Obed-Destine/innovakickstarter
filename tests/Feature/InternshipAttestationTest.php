@@ -102,6 +102,17 @@ class InternshipAttestationTest extends TestCase
         $this->assertDatabaseCount('internship_attestations', 1);
     }
 
+    public function test_internship_of_a_deleted_fellow_is_skipped(): void
+    {
+        $this->fellow->delete();
+
+        $this->service()->syncCompleted();
+        $this->assertNull($this->service()->ensureDraft($this->profile->fresh()));
+        $this->assertDatabaseCount('internship_attestations', 0);
+
+        $this->actingAs($this->admin)->get(route('admin.attestations.index'))->assertOk();
+    }
+
     public function test_it_cannot_be_issued_while_a_fee_is_outstanding(): void
     {
         $this->unpaidFee();
