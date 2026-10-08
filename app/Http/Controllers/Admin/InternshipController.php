@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\InternshipProfile;
 use App\Models\Notification;
+use App\Services\AttestationService;
 use App\Services\FeeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -78,13 +79,14 @@ class InternshipController extends Controller
 
         return view('admin.internships.show', [
             'profile' => $internship,
+            'attestation' => $internship->currentAttestation(),
         ]);
     }
 
     /**
      * Approve an internship profile.
      */
-    public function approve(Request $request, InternshipProfile $internship, FeeService $feeService): RedirectResponse
+    public function approve(Request $request, InternshipProfile $internship, FeeService $feeService, AttestationService $attestations): RedirectResponse
     {
         abort_if(in_array($internship->status, [
             InternshipProfile::STATUS_APPROVED,
@@ -151,6 +153,11 @@ class InternshipController extends Controller
                 'approved_end_date' => $end->toDateString(),
             ],
         ]);
+
+        // Approved after the window already closed: open the attestation draft now.
+        if ($status === InternshipProfile::STATUS_COMPLETED) {
+            $attestations->ensureDraft($internship);
+        }
 
         $days = (int) $start->diffInDays($end) + 1;
         $msg = match ($status) {

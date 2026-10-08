@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Enums\FellowType;
 use App\Models\InternshipProfile;
-use App\Models\Notification;
+use App\Services\AttestationService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,18 +60,7 @@ class EnsureInternshipApproved
             && $profile->is_expired
             && !$profile->completed_at
         ) {
-            $profile->update([
-                'status' => InternshipProfile::STATUS_COMPLETED,
-                'completed_at' => now(),
-            ]);
-
-            Notification::create([
-                'user_id' => $user->id,
-                'type' => 'internship_status',
-                'title' => 'Internship period ended',
-                'message' => "Your approved internship ended on {$profile->approved_end_date->format('M j, Y')}. Contact your admin if you'd like to extend it.",
-                'action_url' => route('fellow.onboarding'),
-            ]);
+            app(AttestationService::class)->completeInternship($profile);
 
             $profile->refresh();
         }
@@ -85,8 +74,9 @@ class EnsureInternshipApproved
         }
 
         // Anything else (pending, needs_revision, rejected, completed) is blocked.
-        // Let them reach onboarding, profile and logout so they can fix things.
-        if ($request->routeIs('fellow.onboarding*', 'logout', 'profile.*', 'verification.*')) {
+        // Let them reach onboarding, profile and logout so they can fix things,
+        // and fees so a completed intern can settle up before collecting an attestation.
+        if ($request->routeIs('fellow.onboarding*', 'fees.*', 'logout', 'profile.*', 'verification.*')) {
             return $next($request);
         }
 

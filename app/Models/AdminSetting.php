@@ -172,6 +172,21 @@ class AdminSetting extends Model
         'primary_color' => ['value' => '#7C3AED', 'type' => 'string', 'group' => 'brand', 'is_public' => true, 'label' => 'Primary Color'],
         'secondary_color' => ['value' => '#1E40AF', 'type' => 'string', 'group' => 'brand', 'is_public' => true, 'label' => 'Secondary Color'],
         'accent_color' => ['value' => '#14B8A6', 'type' => 'string', 'group' => 'brand', 'is_public' => true, 'label' => 'Accent Color'],
+
+        // Internship Attestations
+        'attestation_signatory_name' => ['value' => 'Atangabua Obed Destine', 'type' => 'string', 'group' => 'attestation', 'label' => 'Signatory Name'],
+        'attestation_signatory_title' => ['value' => 'Founder & CEO', 'type' => 'string', 'group' => 'attestation', 'label' => 'Signatory Title (English)'],
+        'attestation_signatory_title_fr' => ['value' => 'Fondateur & Directeur Général', 'type' => 'string', 'group' => 'attestation', 'label' => 'Signatory Title (French)'],
+        'attestation_issue_place' => ['value' => 'Bamenda', 'type' => 'string', 'group' => 'attestation', 'label' => 'Place of Issue'],
+        'attestation_org_address' => ['value' => 'City Chemist, Bamenda, Cameroon', 'type' => 'string', 'group' => 'attestation', 'label' => 'Organisation Address'],
+        'attestation_org_email' => ['value' => 'contact@innovacmr.com', 'type' => 'string', 'group' => 'attestation', 'label' => 'Organisation Email'],
+        'attestation_org_website' => ['value' => 'www.innovacmr.com', 'type' => 'string', 'group' => 'attestation', 'label' => 'Organisation Website'],
+        'attestation_logo_path' => ['value' => '', 'type' => 'string', 'group' => 'attestation', 'label' => 'Logo Image'],
+        'attestation_signature_path' => ['value' => '', 'type' => 'string', 'group' => 'attestation', 'label' => 'Signature Image'],
+        'attestation_stamp_path' => ['value' => '', 'type' => 'string', 'group' => 'attestation', 'label' => 'Stamp Image'],
+        'attestation_mention_excellent_min' => ['value' => 85, 'type' => 'integer', 'group' => 'attestation', 'label' => 'Excellent: Minimum Result (%)'],
+        'attestation_mention_very_good_min' => ['value' => 70, 'type' => 'integer', 'group' => 'attestation', 'label' => 'Very Good: Minimum Result (%)'],
+        'attestation_mention_good_min' => ['value' => 55, 'type' => 'integer', 'group' => 'attestation', 'label' => 'Good: Minimum Result (%)'],
     ];
 
     // ==========================================

@@ -23,6 +23,12 @@
                 <h2 class="{{ $tone['accent'] }} font-semibold">{{ $internshipStatusBanner['title'] }}</h2>
                 <p class="{{ $tone['text'] }} text-sm mt-1 whitespace-pre-line">{{ $internshipStatusBanner['message'] }}</p>
 
+                @isset($internshipStatusBanner['action_url'])
+                    <a href="{{ $internshipStatusBanner['action_url'] }}" class="btn btn-primary btn-sm mt-3 inline-flex">
+                        {{ $internshipStatusBanner['action_text'] }}
+                    </a>
+                @endisset
+
                 @if($internshipProfile && $internshipProfile->approved_start_date && $internshipProfile->approved_end_date)
                     @php
                         $progress = $internshipProfile->progress_percent ?? 0;

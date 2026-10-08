@@ -437,6 +437,24 @@
                 </div>
             </div>
 
+            @if($profile->status === 'completed')
+                <div class="card p-6 no-print">
+                    <h3 class="text-lg font-semibold text-white mb-3">Attestation</h3>
+                    @if($attestation)
+                        <div class="flex items-center justify-between text-sm mb-4">
+                            <span class="text-dark-200 font-mono">{{ $attestation->reference ?? 'Draft' }}</span>
+                            <span class="badge {{ $attestation->status_badge_class }}">{{ $attestation->status_label }}</span>
+                        </div>
+                        <a href="{{ route('admin.attestations.show', $attestation) }}" class="btn btn-primary w-full">
+                            {{ $attestation->isDraft() ? 'Review & issue' : 'Open attestation' }}
+                        </a>
+                    @else
+                        <p class="text-dark-400 text-sm">The draft is created automatically. Open the attestation queue to generate it now.</p>
+                        <a href="{{ route('admin.attestations.index') }}" class="btn btn-outline w-full mt-3">Attestation queue</a>
+                    @endif
+                </div>
+            @endif
+
             @unless($isTerminal)
                 <div class="card p-6 no-print">
                     <h3 class="text-lg font-semibold text-white mb-4">Actions</h3>

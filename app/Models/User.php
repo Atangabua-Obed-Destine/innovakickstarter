@@ -346,6 +346,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get internship attestations issued (or drafted) for this fellow.
+     */
+    public function attestations(): HasMany
+    {
+        return $this->hasMany(InternshipAttestation::class, 'fellow_id');
+    }
+
+    /**
      * Get subscription (for recruiters).
      */
     public function subscription(): HasOne

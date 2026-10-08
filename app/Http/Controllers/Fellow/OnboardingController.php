@@ -101,7 +101,9 @@ class OnboardingController extends Controller
                 'title' => 'Internship completed',
                 'message' => 'Your approved internship period has ended'
                     . ($profile->approved_end_date ? ' on ' . $profile->approved_end_date->format('M j, Y') : '')
-                    . '. Contact the admin if you need an extension.',
+                    . '. Your internship attestation is available from the link below once it has been issued.',
+                'action_url' => route('fellow.attestation.show'),
+                'action_text' => 'View my attestation',
             ],
             default => null,
         };

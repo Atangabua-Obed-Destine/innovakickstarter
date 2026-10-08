@@ -2,13 +2,16 @@
 
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AttestationController as AdminAttestationController;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\CurriculumController as AdminCurriculumController;
 use App\Http\Controllers\Admin\FeeController as AdminFeeController;
 use App\Http\Controllers\Fellow\FeeController as FellowFeeController;
+use App\Http\Controllers\AttestationVerificationController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Fellow\AttestationController as FellowAttestationController;
 use App\Http\Controllers\Fellow\OnboardingController;
 use App\Http\Controllers\Fellow\CurriculumController as FellowCurriculumController;
 use App\Http\Controllers\HomeController;
@@ -37,6 +40,13 @@ Route::get('/profile/{user}', [ProfileController::class, 'publicById'])->name('p
 
 // Public Receipt Verification (no auth needed)
 Route::get('/receipt/verify/{uuid}', [AdminFeeController::class, 'publicVerify'])->name('receipt.verify');
+
+// Public Internship Attestation Verification (no auth needed; QR code target)
+Route::middleware('throttle:30,1')->group(function () {
+    Route::get('/attestation/verify', [AttestationVerificationController::class, 'lookup'])->name('attestation.lookup');
+    Route::post('/attestation/verify', [AttestationVerificationController::class, 'find'])->name('attestation.find');
+    Route::get('/attestation/verify/{uuid}', [AttestationVerificationController::class, 'show'])->name('attestation.verify');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -126,6 +136,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/profile', [OnboardingController::class, 'saveProfile'])->name('.save-profile');
         Route::post('/goals', [OnboardingController::class, 'saveGoals'])->name('.save-goals');
         Route::post('/complete', [OnboardingController::class, 'complete'])->name('.complete');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Fellow Internship Attestation (outside internship.approved: a completed
+    | intern is locked out of the portal but must still collect the attestation)
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('role:fellow')->prefix('my-attestation')->name('fellow.attestation.')->group(function () {
+        Route::get('/', [FellowAttestationController::class, 'show'])->name('show');
+        Route::get('/download', [FellowAttestationController::class, 'download'])->name('download');
     });
 
     /*
@@ -321,6 +342,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/internships/{internship}/approve', [\App\Http\Controllers\Admin\InternshipController::class, 'approve'])->name('internships.approve');
         Route::post('/internships/{internship}/request-changes', [\App\Http\Controllers\Admin\InternshipController::class, 'requestChanges'])->name('internships.request-changes');
         Route::post('/internships/{internship}/reject', [\App\Http\Controllers\Admin\InternshipController::class, 'reject'])->name('internships.reject');
+
+        // Internship Attestations
+        Route::get('/attestations', [AdminAttestationController::class, 'index'])->name('attestations.index');
+        Route::get('/attestations/settings', [AdminAttestationController::class, 'settings'])->name('attestations.settings');
+        Route::post('/attestations/settings', [AdminAttestationController::class, 'updateSettings'])->name('attestations.settings.update');
+        Route::get('/attestations/{attestation}', [AdminAttestationController::class, 'show'])->name('attestations.show');
+        Route::get('/attestations/{attestation}/preview', [AdminAttestationController::class, 'preview'])->name('attestations.preview');
+        Route::get('/attestations/{attestation}/download', [AdminAttestationController::class, 'download'])->name('attestations.download');
+        Route::post('/attestations/{attestation}/refresh', [AdminAttestationController::class, 'refresh'])->name('attestations.refresh');
+        Route::post('/attestations/{attestation}/issue', [AdminAttestationController::class, 'issue'])->name('attestations.issue');
+        Route::post('/attestations/{attestation}/revoke', [AdminAttestationController::class, 'revoke'])->name('attestations.revoke');
+        Route::post('/attestations/{attestation}/reissue', [AdminAttestationController::class, 'reissue'])->name('attestations.reissue');
 
         // Fee Reports
         Route::get('/fees', [AdminFeeController::class, 'index'])->name('fees.index');

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\FellowType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 /**
@@ -151,6 +152,30 @@ class InternshipProfile extends Model
     public function reviewer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reviewed_by');
+    }
+
+    /**
+     * Every attestation version compiled for this internship.
+     */
+    public function attestations(): HasMany
+    {
+        return $this->hasMany(InternshipAttestation::class);
+    }
+
+    /**
+     * The newest attestation version (draft, issued or revoked), if any.
+     */
+    public function currentAttestation(): ?InternshipAttestation
+    {
+        return $this->attestations()->orderByDesc('version')->first();
+    }
+
+    /**
+     * The attestation that is currently valid, if one has been issued.
+     */
+    public function issuedAttestation(): ?InternshipAttestation
+    {
+        return $this->attestations()->issued()->orderByDesc('version')->first();
     }
 
     // ─── Accessors ───────────────────────────────────────────────
