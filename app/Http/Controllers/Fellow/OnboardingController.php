@@ -137,11 +137,10 @@ class OnboardingController extends Controller
         $user = $request->user();
         $fellowType = $user->fellow_type;
 
-        // Ensure this is an academic or corporate fellow
-        if (!$fellowType || !$fellowType->requiresInternshipDetails()) {
+        if (!$fellowType) {
             return response()->json([
                 'success' => false,
-                'message' => 'Internship details are only required for academic and corporate fellows.',
+                'message' => 'Please select a fellow type first.',
             ], 422);
         }
 

@@ -233,14 +233,14 @@
 <table class="kv">
     <tr><td class="k">Name / Nom</td><td><strong>{{ $holder['name'] }}</strong></td></tr>
     <tr><td class="k">Status / Statut</td><td>{{ $holder['fellow_type_label'] ?? '—' }}</td></tr>
-    <tr><td class="k">Institution / Établissement</td><td>{{ $internship['institution'] }}@if($internship['department']) &middot; {{ $internship['department'] }}@endif</td></tr>
+    <tr><td class="k">{{ $internship['type'] === 'independent' ? 'Project / Projet' : 'Institution / Établissement' }}</td><td>{{ $internship['institution'] }}@if($internship['department']) &middot; {{ $internship['department'] }}@endif</td></tr>
     @if($internship['academic_level'])
         <tr><td class="k">Level / Niveau</td><td>{{ $internship['academic_level'] }}</td></tr>
     @endif
     @if($internship['student_id'])
         <tr><td class="k">Student ID / Matricule</td><td>{{ $internship['student_id'] }}</td></tr>
     @endif
-    <tr><td class="k">Supervisor / Encadreur</td><td>{{ $internship['supervisor_name'] }}</td></tr>
+    <tr><td class="k">{{ $internship['type'] === 'independent' ? 'Mentor / Mentor' : 'Supervisor / Encadreur' }}</td><td>{{ $internship['supervisor_name'] }}</td></tr>
     <tr><td class="k">Period / Période</td><td>{{ $en($start) }} – {{ $en($end) }} ({{ $internship['days'] }} days / jours)</td></tr>
     @if($trackName)
         <tr><td class="k">Track / Filière</td><td>{{ collect($tracks)->pluck('name')->join(', ') }}</td></tr>

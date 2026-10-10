@@ -18,7 +18,7 @@
 <div class="space-y-6">
     <div>
         <h1 class="text-2xl font-bold text-white">Internship Reviews</h1>
-        <p class="text-dark-400">Verify institution, supervisor and documentation for academic and corporate fellows.</p>
+        <p class="text-dark-400">Verify institution, supervisor and documentation for academic, corporate, and independent fellows.</p>
     </div>
 
     @if(session('success'))
@@ -60,6 +60,7 @@
                 <option value="">All types</option>
                 <option value="academic"  {{ ($filters['type'] ?? '') === 'academic'  ? 'selected' : '' }}>Academic</option>
                 <option value="corporate" {{ ($filters['type'] ?? '') === 'corporate' ? 'selected' : '' }}>Corporate</option>
+                <option value="independent" {{ ($filters['type'] ?? '') === 'independent' ? 'selected' : '' }}>Independent</option>
             </select>
             <select name="status" class="form-input w-full lg:w-48">
                 <option value="">Action needed</option>
@@ -106,7 +107,15 @@
                                 </div>
                             </td>
                             <td class="py-4 px-4">
-                                <span class="badge {{ $profile->type === 'academic' ? 'bg-blue-600/20 text-blue-400 border-blue-500/30' : 'bg-teal-600/20 text-teal-400 border-teal-500/30' }}">
+                                @php
+                                    $typeClass = match($profile->type) {
+                                        'academic' => 'bg-blue-600/20 text-blue-400 border-blue-500/30',
+                                        'corporate' => 'bg-teal-600/20 text-teal-400 border-teal-500/30',
+                                        'independent' => 'bg-amber-600/20 text-amber-400 border-amber-500/30',
+                                        default => 'bg-dark-600/40 text-dark-300 border-dark-500/30',
+                                    };
+                                @endphp
+                                <span class="badge {{ $typeClass }}">
                                     {{ ucfirst($profile->type) }}
                                 </span>
                             </td>

@@ -245,10 +245,10 @@
                 </section>
             @endif
 
-            {{-- ── §3 Institution ── --}}
+            {{-- ── §3 Institution / Project ── --}}
             <section class="card p-6">
                 <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <span>🏛️</span> Institution
+                    <span>{{ $profile->type === 'independent' ? '🚀 Project / Focus Area' : '🏛️ Institution' }}</span>
                 </h3>
                 <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
                     <div>
@@ -261,7 +261,7 @@
                     </div>
                     @if($profile->department)
                         <div>
-                            <dt class="text-dark-500 text-xs uppercase tracking-wide">Department / Faculty</dt>
+                            <dt class="text-dark-500 text-xs uppercase tracking-wide">{{ $profile->type === 'independent' ? 'Specific Field / Niche' : 'Department / Faculty' }}</dt>
                             <dd class="text-dark-200 mt-1">{{ $profile->department }}</dd>
                         </div>
                     @endif
@@ -280,10 +280,10 @@
                 </dl>
             </section>
 
-            {{-- ── §4 Supervisor ── --}}
+            {{-- ── §4 Supervisor / Mentor ── --}}
             <section class="card p-6">
                 <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <span>👤</span> Supervisor
+                    <span>{{ $profile->type === 'independent' ? '🤝 Accountability Partner / Mentor' : '👤 Supervisor' }}</span>
                 </h3>
                 <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
                     <div>
@@ -375,7 +375,7 @@
             {{-- ── §6 Documentation ── --}}
             <section class="card p-6">
                 <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <span>📎</span> Internship letter / convention
+                    <span>📎</span> {{ $profile->type === 'independent' ? 'Project Plan / Proposal' : 'Internship letter / convention' }}
                 </h3>
                 @if($profile->internship_letter_path)
                     <div class="flex gap-2">
@@ -396,7 +396,11 @@
                         </a>
                     </div>
                 @else
-                    <p class="text-amber-400 text-sm">⚠️ No letter uploaded. Consider requesting revision.</p>
+                    @if($profile->type === 'independent')
+                        <p class="text-dark-400 text-sm">No project plan uploaded (optional for independent fellows).</p>
+                    @else
+                        <p class="text-amber-400 text-sm">⚠️ No letter uploaded. Consider requesting revision.</p>
+                    @endif
                 @endif
             </section>
         </div>

@@ -269,6 +269,43 @@ class InternshipAttestationTest extends TestCase
         $this->assertSame('Douala', $issued->snapshot['award']['place']);
     }
 
+    public function test_independent_fellow_application_reaches_the_admin_internship_list(): void
+    {
+        $independent = User::factory()->create([
+            'name' => 'Indie Fellow',
+            'role' => 'fellow',
+            'fellow_type' => 'independent',
+            'onboarding_completed_at' => now(),
+        ]);
+        $independent->assignRole('fellow');
+
+        $this->actingAs($independent)
+            ->get(route('fellow.onboarding'))
+            ->assertOk()
+            ->assertSee('Independent Fellowship Details');
+
+        $this->actingAs($independent)
+            ->postJson(route('fellow.onboarding.save-internship'), [
+                'institution_name' => 'Building my own product',
+                'supervisor_name' => 'Mentor Person',
+                'duration_type' => 'predefined',
+                'predefined_duration_months' => 3,
+            ])
+            ->assertOk()
+            ->assertJson(['success' => true]);
+
+        $this->assertDatabaseHas('internship_profiles', [
+            'user_id' => $independent->id,
+            'type' => 'independent',
+            'status' => InternshipProfile::STATUS_PENDING,
+        ]);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.internships.index', ['type' => 'independent']))
+            ->assertOk()
+            ->assertSee('Indie Fellow');
+    }
+
     public function test_fellow_sees_own_status_and_cannot_reach_admin_screens(): void
     {
         $this->unpaidFee();
