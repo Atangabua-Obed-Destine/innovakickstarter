@@ -519,11 +519,40 @@
         <p class="text-dark-400 text-sm mb-4">These resources will help you complete this activity:</p>
         <div class="space-y-2">
             @foreach($activity->resources as $resource)
-            <a href="{{ $resource }}" target="_blank" rel="noopener"
-               class="flex items-center gap-3 text-primary-400 hover:text-primary-300 text-sm bg-dark-800 rounded-lg px-4 py-3 border border-dark-700 hover:border-primary-500/30 transition group">
-                <svg class="w-4 h-4 flex-shrink-0 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                <span class="truncate">{{ $resource }}</span>
-            </a>
+                @php
+                    // Resources are stored as {title, type, content}; older rows may still be plain URLs.
+                    $res = is_array($resource) ? $resource : ['type' => 'link', 'title' => null, 'content' => $resource];
+                    $resType = $res['type'] ?? 'link';
+                    $resUrl = (string) ($res['content'] ?? '');
+                    $resTitle = $res['title'] ?? null;
+                    if ($resType === 'link' && (str_contains($resUrl, 'youtube.com') || str_contains($resUrl, 'youtu.be'))) {
+                        $resType = 'youtube';
+                    }
+                    $videoId = $resType === 'youtube' && preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $resUrl, $m) ? $m[1] : null;
+                @endphp
+                @continue($resUrl === '')
+
+                @if($videoId)
+                    <div class="bg-dark-800 rounded-lg border border-dark-700 overflow-hidden">
+                        @if($resTitle)
+                            <p class="text-white text-sm font-medium px-4 py-3">{{ $resTitle }}</p>
+                        @endif
+                        <div class="relative w-full bg-black" style="padding-top: 56.25%;">
+                            <iframe src="https://www.youtube.com/embed/{{ $videoId }}?rel=0" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="absolute top-0 left-0 w-full h-full"></iframe>
+                        </div>
+                    </div>
+                @else
+                    <a href="{{ $resUrl }}" target="_blank" rel="noopener"
+                       class="flex items-center gap-3 text-primary-400 hover:text-primary-300 text-sm bg-dark-800 rounded-lg px-4 py-3 border border-dark-700 hover:border-primary-500/30 transition group">
+                        <span class="flex-shrink-0">{{ $resType === 'file' ? '📄' : '🔗' }}</span>
+                        <span class="min-w-0">
+                            <span class="block truncate {{ $resTitle ? 'text-white font-medium' : '' }}">{{ $resTitle ?? $resUrl }}</span>
+                            @if($resTitle && $resType !== 'file')
+                                <span class="block truncate text-dark-500 text-xs">{{ $resUrl }}</span>
+                            @endif
+                        </span>
+                    </a>
+                @endif
             @endforeach
         </div>
     </div>
