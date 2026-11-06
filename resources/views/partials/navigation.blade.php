@@ -244,6 +244,18 @@
             <span>Recruiters</span>
         </a>
 
+        <a href="{{ route('admin.subscriptions.index') }}"
+           class="nav-link {{ str_starts_with($currentRoute, 'admin.subscriptions') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+            </svg>
+            <span>Plan Requests</span>
+            @php $pendingPlanRequests = \App\Models\Subscription::pending()->whereHas('recruiter')->count(); @endphp
+            @if($pendingPlanRequests > 0)
+                <span class="ml-auto badge badge-warning">{{ $pendingPlanRequests }}</span>
+            @endif
+        </a>
+
         <a href="{{ route('admin.mentors.index') }}" 
            class="nav-link {{ str_starts_with($currentRoute, 'admin.mentors') ? 'nav-link-active' : '' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

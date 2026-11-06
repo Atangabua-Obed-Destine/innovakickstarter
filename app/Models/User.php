@@ -362,6 +362,29 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Skill names only. The skills column also holds onboarding goal data
+     * under string keys (goals, primary_goal, ...), which is not a skill.
+     */
+    public function getSkillListAttribute(): array
+    {
+        $skills = is_array($this->skills) ? $this->skills : [];
+
+        return array_values(array_filter(
+            $skills,
+            fn ($skill, $key) => is_int($key) && is_string($skill) && trim($skill) !== '',
+            ARRAY_FILTER_USE_BOTH
+        ));
+    }
+
+    /**
+     * All subscriptions and plan requests of this recruiter.
+     */
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class, 'recruiter_id');
+    }
+
+    /**
      * Get audit logs for this user.
      */
     public function auditLogs(): HasMany
@@ -732,12 +755,22 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function activeSubscription(): ?Subscription
     {
-        return $this->subscription()
+        return $this->subscriptions()
             ->whereIn('status', [
                 \App\Enums\SubscriptionStatus::ACTIVE,
                 \App\Enums\SubscriptionStatus::TRIAL,
             ])
+            ->current()
+            ->latest('started_at')
             ->first();
+    }
+
+    /**
+     * The paid plan request awaiting payment confirmation, if any.
+     */
+    public function pendingSubscription(): ?Subscription
+    {
+        return $this->subscriptions()->pending()->latest()->first();
     }
 
     /**

@@ -12,6 +12,14 @@
         </div>
     </div>
 
+    @php $pendingRequests = \App\Models\Subscription::pending()->whereHas('recruiter')->count(); @endphp
+    @if($pendingRequests > 0)
+        <a href="{{ route('admin.subscriptions.index') }}" class="card p-4 flex items-center justify-between border border-amber-500/40 hover:border-amber-500 transition-colors">
+            <span class="text-amber-300 text-sm font-medium">{{ $pendingRequests }} paid plan request{{ $pendingRequests > 1 ? 's' : '' }} awaiting payment confirmation</span>
+            <span class="text-amber-400 text-sm">Review &rarr;</span>
+        </a>
+    @endif
+
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div class="card p-4">
@@ -152,21 +160,16 @@
                                 <div class="text-sm text-dark-400">{{ $recruiter->job_title ?? '' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if($recruiter->subscription)
-                                    @php
-                                        $tier = $recruiter->subscription->tier;
-                                        $colors = [
-                                            'trial' => 'bg-dark-600 text-dark-300',
-                                            'free' => 'bg-gray-500/20 text-gray-400',
-                                            'partner' => 'bg-blue-500/20 text-blue-400',
-                                            'premium' => 'bg-amber-500/20 text-amber-400',
-                                        ];
-                                    @endphp
-                                    <span class="inline-flex px-2.5 py-1 text-xs font-semibold rounded-full {{ $colors[$tier] ?? 'bg-dark-600 text-dark-300' }}">
-                                        {{ ucfirst($tier) }}
+                                @php $plan = $recruiter->activeSubscription(); @endphp
+                                @if($plan)
+                                    <span class="inline-flex px-2.5 py-1 text-xs font-semibold rounded-full {{ $plan->tier->badgeClass() }}">
+                                        {{ $plan->tier->label() }}{{ $plan->status->value === 'trial' ? ' (trial)' : '' }}
                                     </span>
                                 @else
-                                    <span class="text-dark-500 text-sm">No subscription</span>
+                                    <span class="text-dark-500 text-sm">No active plan</span>
+                                @endif
+                                @if($recruiter->pendingSubscription())
+                                    <span class="block text-xs text-amber-400 mt-1">Request pending</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -203,7 +206,7 @@
                                     @endif
                                     
                                     @if($recruiter->is_active)
-                                        <button type="button" onclick="openSuspendModal({{ $recruiter->id }}, '{{ $recruiter->name }}')"
+                                        <button type="button" onclick="openSuspendModal(@js(route('admin.recruiters.suspend', $recruiter)), @js($recruiter->name))"
                                             class="text-red-400 hover:text-red-300 transition">Suspend</button>
                                     @elseif($recruiter->suspended_at)
                                         <form action="{{ route('admin.recruiters.activate', $recruiter) }}" method="POST" class="inline">
@@ -268,9 +271,9 @@
 
 @push('scripts')
 <script>
-    function openSuspendModal(id, name) {
+    function openSuspendModal(action, name) {
         document.getElementById('suspendName').textContent = name;
-        document.getElementById('suspendForm').action = `/innovakickstarter/public/admin/recruiters/${id}/suspend`;
+        document.getElementById('suspendForm').action = action;
         document.getElementById('suspendModal').classList.remove('hidden');
         document.getElementById('suspendModal').classList.add('flex');
     }

@@ -113,7 +113,7 @@ class RecruiterController extends Controller
     /**
      * View a talent profile.
      */
-    public function viewProfile(Request $request, User $user): View
+    public function viewProfile(Request $request, User $user): View|RedirectResponse
     {
         $recruiter = $request->user();
         
@@ -233,18 +233,30 @@ class RecruiterController extends Controller
     }
 
     /**
-     * Display subscription options.
+     * Payment methods a recruiter can declare for a plan request.
+     */
+    public const PAYMENT_METHODS = [
+        'mtn_momo' => 'MTN Mobile Money',
+        'orange_money' => 'Orange Money',
+        'bank_transfer' => 'Bank transfer',
+        'cash' => 'Cash (at the office)',
+    ];
+
+    /**
+     * Plans, the current plan, and any request awaiting payment confirmation.
      */
     public function subscriptionIndex(Request $request): View
     {
         $user = $request->user();
-        $currentSubscription = $user->activeSubscription();
-        
-        $pricing = app(\App\Services\AdminSettingsService::class)->getSubscriptionPricing();
+        $settings = app(\App\Services\AdminSettingsService::class);
 
         return view('recruiter.subscription.index', [
-            'currentSubscription' => $currentSubscription,
-            'pricing' => $pricing,
+            'currentSubscription' => $user->activeSubscription(),
+            'pendingSubscription' => $user->pendingSubscription(),
+            'lastRejected' => $user->subscriptions()->whereNotNull('rejection_reason')->latest('verified_at')->first(),
+            'trialUsed' => $user->subscriptions()->whereNotNull('trial_ends_at')->exists(),
+            'pricing' => $settings->getSubscriptionPricing(),
+            'paymentMethods' => self::PAYMENT_METHODS,
         ]);
     }
 
@@ -253,84 +265,102 @@ class RecruiterController extends Controller
      */
     public function startTrial(Request $request): RedirectResponse
     {
-        $user = $request->user();
-
         try {
-            $this->recruiterService->startTrial($user);
-            
+            $this->recruiterService->startTrial($request->user());
+
             return redirect()->route('recruiter.dashboard')
                 ->with('success', 'Your free trial has started! Explore our talent marketplace.');
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
     /**
-     * Subscribe to a plan.
+     * Choose a plan. The free plan starts at once; a paid plan is sent for
+     * payment confirmation with the recruiter's payment reference.
      */
     public function subscribe(Request $request): RedirectResponse
     {
-        $user = $request->user();
+        $paid = in_array($request->input('tier'), ['partner', 'premium'], true);
 
         $validated = $request->validate([
             'tier' => ['required', 'in:free,partner,premium'],
-            'months' => ['required', 'integer', 'in:1,6,12'],
-            'payment_reference' => ['nullable', 'string'],
+            'months' => [$paid ? 'required' : 'nullable', 'integer', 'in:1,6,12'],
+            'payment_method' => [$paid ? 'required' : 'nullable', 'in:' . implode(',', array_keys(self::PAYMENT_METHODS))],
+            'payment_reference' => [$paid ? 'required' : 'nullable', 'string', 'max:120'],
+        ], [
+            'payment_reference.required' => 'Enter the transaction reference of your payment.',
         ]);
 
         try {
             $tier = \App\Enums\SubscriptionTier::from($validated['tier']);
-            
+
             $this->recruiterService->subscribe(
-                $user,
+                $request->user(),
                 $tier,
-                $validated['months'],
-                $validated['payment_reference'] ?? null
+                (int) ($validated['months'] ?? 12),
+                $validated['payment_reference'] ?? null,
+                $validated['payment_method'] ?? null
             );
-            
-            return redirect()->route('recruiter.dashboard')
-                ->with('success', 'Subscription activated successfully!');
+
+            return $paid
+                ? redirect()->route('recruiter.subscription.index')
+                    ->with('success', "Request received. Your {$tier->label()} plan starts as soon as we confirm your payment.")
+                : redirect()->route('recruiter.dashboard')->with('success', 'You are on the Free plan.');
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', $e->getMessage());
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
     }
 
     /**
-     * Upgrade subscription.
+     * Request an upgrade of the current paid plan.
      */
     public function upgrade(Request $request): RedirectResponse
     {
-        $user = $request->user();
-
         $validated = $request->validate([
             'tier' => ['required', 'in:partner,premium'],
+            'payment_method' => ['required', 'in:' . implode(',', array_keys(self::PAYMENT_METHODS))],
+            'payment_reference' => ['required', 'string', 'max:120'],
+        ], [
+            'payment_reference.required' => 'Enter the transaction reference of your payment.',
         ]);
 
         try {
             $tier = \App\Enums\SubscriptionTier::from($validated['tier']);
-            
-            $this->recruiterService->upgrade($user, $tier);
-            
+
+            $this->recruiterService->upgrade(
+                $request->user(),
+                $tier,
+                $validated['payment_reference'],
+                $validated['payment_method']
+            );
+
             return redirect()->route('recruiter.subscription.index')
-                ->with('success', 'Subscription upgraded successfully!');
+                ->with('success', "Upgrade requested. Your {$tier->label()} plan starts as soon as we confirm your payment.");
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', $e->getMessage());
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
     }
 
     /**
-     * Cancel subscription.
+     * Cancel the current plan.
      */
     public function cancelSubscription(Request $request): RedirectResponse
     {
-        $user = $request->user();
-
-        $this->recruiterService->cancelActive($user);
+        $this->recruiterService->cancelActive($request->user());
 
         return redirect()->route('recruiter.subscription.index')
             ->with('success', 'Subscription cancelled.');
+    }
+
+    /**
+     * Withdraw a plan request that is awaiting payment confirmation.
+     */
+    public function cancelRequest(Request $request): RedirectResponse
+    {
+        $this->recruiterService->cancelPending($request->user());
+
+        return redirect()->route('recruiter.subscription.index')
+            ->with('success', 'Plan request withdrawn.');
     }
 }

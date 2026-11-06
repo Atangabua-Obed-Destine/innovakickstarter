@@ -34,6 +34,7 @@ class UpdateAdminSettingsRequest extends FormRequest
         return match ($group) {
             'tiers' => $this->tierRules(),
             'weights' => $this->weightRules(),
+            'scoring_curve' => $this->scoringCurveRules(),
             'interviews' => $this->interviewRules(),
             'subscriptions' => $this->subscriptionRules(),
             'points' => $this->pointsRules(),
@@ -88,15 +89,30 @@ class UpdateAdminSettingsRequest extends FormRequest
     protected function subscriptionRules(): array
     {
         return [
-            'starter_monthly_price' => ['required', 'numeric', 'min:0'],
-            'starter_profile_views' => ['required', 'integer', 'min:1'],
-            'professional_monthly_price' => ['required', 'numeric', 'min:0'],
-            'professional_profile_views' => ['required', 'integer', 'min:1'],
-            'professional_contacts' => ['required', 'integer', 'min:0'],
-            'enterprise_monthly_price' => ['required', 'numeric', 'min:0'],
-            'enterprise_profile_views' => ['required', 'integer', 'min:1'],
-            'enterprise_contacts' => ['required', 'integer', 'min:0'],
+            // Field names as posted by the Subscriptions tab of the settings page.
+            // -1 means unlimited.
+            'free_profile_views' => ['required', 'integer', 'min:0'],
+            'free_downloads' => ['required', 'integer', 'min:0'],
+            'partner_price' => ['required', 'integer', 'min:0'],
+            'partner_profile_views' => ['required', 'integer', 'min:-1'],
+            'partner_intros' => ['required', 'integer', 'min:-1'],
+            'premium_price' => ['required', 'integer', 'min:0'],
+            'premium_profile_views' => ['required', 'integer', 'min:-1'],
+            'premium_intros' => ['required', 'integer', 'min:-1'],
             'recruiter_trial_days' => ['required', 'integer', 'min:0', 'max:90'],
+            'subscription_payment_instructions' => ['nullable', 'string', 'max:2000'],
+        ];
+    }
+
+    /**
+     * Career Capital score formula rules.
+     */
+    protected function scoringCurveRules(): array
+    {
+        return [
+            'score_curve_steepness' => ['required', 'numeric', 'min:0.1', 'max:5'],
+            'score_interview_full_volume' => ['required', 'integer', 'min:1', 'max:100'],
+            'score_interview_session_share' => ['required', 'integer', 'min:0', 'max:100'],
         ];
     }
 

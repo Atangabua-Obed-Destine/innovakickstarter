@@ -71,6 +71,11 @@ class Subscription extends Model
         'currency',
         'billing_cycle',
         'payment_method',
+        'payment_reference',
+        'requested_months',
+        'verified_by',
+        'verified_at',
+        'rejection_reason',
         'stripe_subscription_id',
         'stripe_customer_id',
         'paystack_subscription_id',
@@ -106,6 +111,8 @@ class Subscription extends Model
             'current_period_end' => 'datetime',
             'cancelled_at' => 'datetime',
             'expires_at' => 'datetime',
+            'verified_at' => 'datetime',
+            'requested_months' => 'integer',
             'usage_reset_date' => 'date',
             'amount' => 'integer',
             'profiles_viewed_this_month' => 'integer',
@@ -164,6 +171,14 @@ class Subscription extends Model
     // ==========================================
     // RELATIONSHIPS
     // ==========================================
+
+    /**
+     * Admin who confirmed or rejected the payment.
+     */
+    public function verifier(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'verified_by');
+    }
 
     /**
      * Get the recruiter who owns this subscription.
@@ -474,6 +489,22 @@ class Subscription extends Model
             SubscriptionStatus::ACTIVE,
             SubscriptionStatus::TRIAL,
         ]);
+    }
+
+    /**
+     * Scope to paid plan requests awaiting payment confirmation.
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status', SubscriptionStatus::PENDING);
+    }
+
+    /**
+     * Scope to subscriptions whose period has not ended.
+     */
+    public function scopeCurrent($query)
+    {
+        return $query->where(fn ($q) => $q->whereNull('expires_at')->orWhere('expires_at', '>', now()));
     }
 
     /**

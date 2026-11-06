@@ -561,7 +561,43 @@
                 </div>
             @else
                 <div class="card p-6 text-dark-400 text-sm no-print">
-                    This profile has already been {{ $profile->status }}. No further review actions available.
+                    <p>This profile has already been {{ $profile->status }}.</p>
+
+                    @if(in_array($profile->status, ['approved', 'active', 'completed']))
+                        @php $issuedAttestation = $profile->issuedAttestation(); @endphp
+                        <div x-data="{ editingDuration: {{ $errors->has('approved_end_date') || $errors->has('approved_start_date') ? 'true' : 'false' }} }" class="mt-4 border-t border-dark-700 pt-4">
+                            <button type="button" @click="editingDuration = !editingDuration" class="btn btn-outline text-primary-400 border-primary-500/40 hover:bg-primary-500/10 w-full">
+                                {{ $profile->status === 'completed' ? 'Extend / edit duration' : 'Edit duration' }}
+                            </button>
+
+                            <form x-show="editingDuration" x-cloak method="POST" action="{{ route('admin.internships.update-duration', $profile) }}" class="mt-4 space-y-3"
+                                  onsubmit="return confirm('Change the approved internship dates? The fellow is notified.')">
+                                @csrf
+                                <div class="grid grid-cols-2 gap-3">
+                                    <label class="block">
+                                        <span class="text-dark-300 text-xs">Start date <span class="text-red-400">*</span></span>
+                                        <input type="date" name="approved_start_date" required value="{{ old('approved_start_date', $profile->approved_start_date?->toDateString()) }}" class="form-input w-full mt-1 text-sm">
+                                    </label>
+                                    <label class="block">
+                                        <span class="text-dark-300 text-xs">End date <span class="text-red-400">*</span></span>
+                                        <input type="date" name="approved_end_date" required value="{{ old('approved_end_date', $profile->approved_end_date?->toDateString()) }}" class="form-input w-full mt-1 text-sm">
+                                    </label>
+                                </div>
+                                @error('approved_end_date')<p class="text-red-400 text-xs">{{ $message }}</p>@enderror
+                                <label class="block">
+                                    <span class="text-dark-300 text-xs">Reason (optional, kept in the audit log)</span>
+                                    <input type="text" name="reason" maxlength="1000" value="{{ old('reason') }}" class="form-input w-full mt-1 text-sm" placeholder="e.g. Extension requested by supervisor">
+                                </label>
+                                @if($profile->status === 'completed')
+                                    <p class="text-dark-500 text-xs">An end date from today onwards reopens the internship and restores the fellow's access.</p>
+                                @endif
+                                @if($issuedAttestation)
+                                    <p class="text-amber-400 text-xs">Attestation {{ $issuedAttestation->reference }} is already issued with the old dates. It is not changed; reissue it from the attestation page if needed.</p>
+                                @endif
+                                <button type="submit" class="btn btn-primary w-full">Save dates</button>
+                            </form>
+                        </div>
+                    @endif
                 </div>
             @endunless
         </aside>

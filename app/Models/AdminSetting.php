@@ -147,6 +147,14 @@ class AdminSetting extends Model
         'score_decay_weekly_percentage' => ['value' => 2, 'type' => 'float', 'group' => 'scoring', 'label' => 'Weekly Score Decay Percentage'],
         'score_decay_max_weeks_inactive' => ['value' => 4, 'type' => 'integer', 'group' => 'scoring', 'label' => 'Max Weeks Inactive Before Decay'],
 
+        // Score Curve: category score = 100 x (1 - e^(-steepness x earned / curriculum points))
+        'score_curve_steepness' => ['value' => 1.0, 'type' => 'float', 'group' => 'scoring', 'label' => 'Score Curve Steepness'],
+        'score_interview_full_volume' => ['value' => 10, 'type' => 'integer', 'group' => 'scoring', 'label' => 'Mock Interviews Needed for Full Interview Credit'],
+        'score_interview_session_share' => ['value' => 50, 'type' => 'integer', 'group' => 'scoring', 'label' => 'Share of Interview Score From Mock Interviews (%)'],
+
+        // Recruiter subscriptions
+        'subscription_payment_instructions' => ['value' => '', 'type' => 'string', 'group' => 'subscriptions', 'label' => 'Subscription Payment Instructions'],
+
         // Platform Settings
         'maintenance_mode' => ['value' => false, 'type' => 'boolean', 'group' => 'platform', 'label' => 'Maintenance Mode'],
         'registration_enabled' => ['value' => true, 'type' => 'boolean', 'group' => 'platform', 'label' => 'Registration Enabled'],
@@ -442,6 +450,19 @@ class AdminSetting extends Model
             'professional' => static::get('tier_professional_min', 50),
             'elite' => static::get('tier_elite_min', 75),
         ];
+    }
+
+    /**
+     * Career Capital category weights (percent) as edited on the settings page.
+     */
+    public static function getCategoryWeights(): array
+    {
+        $weights = [];
+        foreach (\App\Enums\CareerCapitalCategory::cases() as $category) {
+            $weights[$category->value] = (float) static::get('weight_' . $category->value, $category->defaultWeight());
+        }
+
+        return $weights;
     }
 
     /**

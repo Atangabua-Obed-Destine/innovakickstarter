@@ -174,7 +174,7 @@
             @php
                 $primaryTrack = $fellow->primaryTrack;
                 $score = $primaryTrack?->score ?? 0;
-                $skills = is_array($fellow->skills) ? array_slice($fellow->skills, 0, 5) : [];
+                $skills = array_slice($fellow->skill_list, 0, 5);
             @endphp
             <div class="card overflow-hidden hover:border-primary-500/50 transition-all group">
                 <!-- Header with Score -->

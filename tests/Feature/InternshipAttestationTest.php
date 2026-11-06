@@ -306,6 +306,57 @@ class InternshipAttestationTest extends TestCase
             ->assertSee('Indie Fellow');
     }
 
+    public function test_admin_can_extend_a_completed_independent_internship(): void
+    {
+        $this->profile->update(['type' => 'independent']);
+        $this->fellow->update(['fellow_type' => 'independent']);
+        $this->service()->ensureDraft($this->profile);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.internships.show', $this->profile))
+            ->assertOk()
+            ->assertSee('Extend / edit duration');
+
+        $newEnd = now()->addMonth()->toDateString();
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.internships.update-duration', $this->profile), [
+                'approved_start_date' => $this->profile->approved_start_date->toDateString(),
+                'approved_end_date' => $newEnd,
+                'reason' => 'Supervisor asked for one more month.',
+            ])
+            ->assertRedirect(route('admin.internships.show', $this->profile))
+            ->assertSessionHasNoErrors();
+
+        $profile = $this->profile->fresh();
+        $this->assertSame(InternshipProfile::STATUS_ACTIVE, $profile->status);
+        $this->assertSame($newEnd, $profile->approved_end_date->toDateString());
+        $this->assertNull($profile->completed_at);
+        $this->assertDatabaseCount('internship_attestations', 0);
+        $this->assertDatabaseHas('audit_logs', ['action' => 'internship_duration_updated', 'auditable_id' => $profile->uuid]);
+
+        // Ending it again opens a fresh draft with the new dates.
+        $profile->update(['approved_end_date' => now()->subDay()->toDateString()]);
+        $this->service()->syncCompleted();
+        $this->assertSame(InternshipProfile::STATUS_COMPLETED, $profile->fresh()->status);
+        $this->assertSame(1, $profile->attestations()->draft()->count());
+    }
+
+    public function test_extending_keeps_an_issued_attestation_unchanged(): void
+    {
+        $issued = $this->issue();
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.internships.update-duration', $this->profile), [
+                'approved_start_date' => $this->profile->approved_start_date->toDateString(),
+                'approved_end_date' => now()->addWeeks(2)->toDateString(),
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertTrue($issued->fresh()->isIssued());
+        $this->assertSame($issued->snapshot, $issued->fresh()->snapshot);
+    }
+
     public function test_fellow_sees_own_status_and_cannot_reach_admin_screens(): void
     {
         $this->unpaidFee();

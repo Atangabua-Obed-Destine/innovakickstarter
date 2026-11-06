@@ -204,6 +204,91 @@ class InternshipController extends Controller
     }
 
     /**
+     * Change the approved window of an approved, active or completed internship,
+     * for example to extend it. The status follows the new dates, so extending a
+     * completed internship reopens it and restores the fellow's access.
+     */
+    public function updateDuration(Request $request, InternshipProfile $internship, AttestationService $attestations): RedirectResponse
+    {
+        abort_unless(in_array($internship->status, [
+            InternshipProfile::STATUS_APPROVED,
+            InternshipProfile::STATUS_ACTIVE,
+            InternshipProfile::STATUS_COMPLETED,
+        ], true), 403, 'Duration can only be changed for approved, active or completed internships.');
+
+        $validated = $request->validate([
+            'approved_start_date' => ['required', 'date'],
+            'approved_end_date' => ['required', 'date', 'after:approved_start_date'],
+            'reason' => ['nullable', 'string', 'max:1000'],
+        ], [
+            'approved_end_date.after' => 'End date must be after start date.',
+        ]);
+
+        $start = \Carbon\Carbon::parse($validated['approved_start_date'])->startOfDay();
+        $end = \Carbon\Carbon::parse($validated['approved_end_date'])->startOfDay();
+        $today = now()->startOfDay();
+
+        $status = match (true) {
+            $today->gt($end) => InternshipProfile::STATUS_COMPLETED,
+            $today->gte($start) => InternshipProfile::STATUS_ACTIVE,
+            default => InternshipProfile::STATUS_APPROVED,
+        };
+
+        $old = [
+            'status' => $internship->status,
+            'approved_start_date' => $internship->approved_start_date?->toDateString(),
+            'approved_end_date' => $internship->approved_end_date?->toDateString(),
+        ];
+
+        $internship->update([
+            'approved_start_date' => $start,
+            'approved_end_date' => $end,
+            'status' => $status,
+            'completed_at' => $status === InternshipProfile::STATUS_COMPLETED ? ($internship->completed_at ?? now()) : null,
+        ]);
+
+        // A draft attestation describes the old window: drop it while the internship
+        // is running again (it is recompiled when it ends), or refresh it if still ended.
+        // Issued attestations are never touched; the admin reissues them if needed.
+        $draft = $internship->attestations()->draft()->first();
+        if ($draft && $status !== InternshipProfile::STATUS_COMPLETED) {
+            $draft->delete();
+        } elseif ($draft) {
+            $attestations->refresh($draft);
+        }
+
+        AuditLog::create([
+            'fellow_id' => $internship->user_id,
+            'admin_id' => $request->user()->id,
+            'action' => 'internship_duration_updated',
+            'auditable_type' => InternshipProfile::class,
+            'auditable_id' => $internship->uuid,
+            'justification' => "Internship window changed from {$old['approved_start_date']} → {$old['approved_end_date']} to {$start->toDateString()} → {$end->toDateString()}"
+                . (!empty($validated['reason']) ? ": {$validated['reason']}" : ''),
+            'old_values' => $old,
+            'new_values' => [
+                'status' => $status,
+                'approved_start_date' => $start->toDateString(),
+                'approved_end_date' => $end->toDateString(),
+            ],
+        ]);
+
+        $reopened = $old['status'] === InternshipProfile::STATUS_COMPLETED && $status !== InternshipProfile::STATUS_COMPLETED;
+
+        Notification::create([
+            'user_id' => $internship->user_id,
+            'type' => 'internship_status',
+            'title' => 'Internship dates updated',
+            'message' => "Your internship now runs from {$start->format('M j, Y')} to {$end->format('M j, Y')}."
+                . ($reopened ? ' Your platform access has been restored.' : ''),
+            'action_url' => route('fellow.onboarding'),
+        ]);
+
+        return redirect()->route('admin.internships.show', $internship)
+            ->with('success', 'Internship dates updated' . ($status !== $old['status'] ? " (status is now {$status})." : '.'));
+    }
+
+    /**
      * Request changes from the fellow.
      */
     public function requestChanges(Request $request, InternshipProfile $internship): RedirectResponse

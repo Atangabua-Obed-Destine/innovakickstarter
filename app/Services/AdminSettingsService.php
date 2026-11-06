@@ -182,6 +182,7 @@ class AdminSettingsService
                 'intros' => (int) $this->get('premium_intros', -1),
             ],
             'trial_days' => (int) $this->get('recruiter_trial_days', 14),
+            'payment_instructions' => (string) $this->get('subscription_payment_instructions', ''),
         ];
     }
 

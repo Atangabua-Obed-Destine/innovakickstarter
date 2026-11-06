@@ -198,6 +198,50 @@
                     </div>
                 </form>
 
+                <!-- Score Formula -->
+                <form action="{{ route('admin.settings.update', 'scoring_curve') }}" method="POST" class="card p-6">
+                    @csrf
+                    @method('PATCH')
+
+                    <h3 class="text-lg font-semibold text-white mb-4">Score Formula</h3>
+                    <p class="text-dark-400 text-sm mb-6">
+                        Each category score is 100 × (1 − e<sup>−steepness × earned ÷ curriculum points</sup>), where earned points from curriculum work are weighted by the review's rubric score.
+                        At steepness 1, completing a category's curriculum at full quality gives 63%, and twice that work gives 86%.
+                        After changing these values, run <code class="text-primary-400">php artisan career-capital:recalculate</code> to update existing scores.
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-dark-300 mb-2">Curve Steepness</label>
+                            <input type="number" name="score_curve_steepness" step="0.1" min="0.1" max="5"
+                                   value="{{ \App\Models\AdminSetting::get('score_curve_steepness', 1.0) }}"
+                                   class="input-field w-full">
+                            <p class="text-dark-500 text-xs mt-1">Higher = scores rise faster</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-dark-300 mb-2">Mock Interviews for Full Credit</label>
+                            <input type="number" name="score_interview_full_volume" min="1" max="100"
+                                   value="{{ \App\Models\AdminSetting::get('score_interview_full_volume', 10) }}"
+                                   class="input-field w-full">
+                            <p class="text-dark-500 text-xs mt-1">Fewer interviews scale the average down</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-dark-300 mb-2">Interview Score From Mock Interviews</label>
+                            <div class="relative">
+                                <input type="number" name="score_interview_session_share" min="0" max="100"
+                                       value="{{ \App\Models\AdminSetting::get('score_interview_session_share', 50) }}"
+                                       class="input-field w-full pr-8">
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400">%</span>
+                            </div>
+                            <p class="text-dark-500 text-xs mt-1">The rest comes from interview-related work</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-end">
+                        <button type="submit" class="btn-primary">Save Score Formula</button>
+                    </div>
+                </form>
+
                 <!-- Category Weights -->
                 <form action="{{ route('admin.settings.update', 'weights') }}" method="POST" class="card p-6">
                     @csrf
@@ -411,6 +455,14 @@
                            value="{{ $subscriptionPricing['trial_days'] ?? 14 }}"
                            min="0" max="90"
                            class="input-field w-48">
+                </div>
+
+                <div class="mt-6">
+                    <label class="block text-sm font-medium text-dark-300 mb-2">Payment Instructions</label>
+                    <textarea name="subscription_payment_instructions" rows="4" maxlength="2000"
+                              class="input-field w-full"
+                              placeholder="e.g. MTN MoMo: 6XX XXX XXX (I-NNOVA CMR). Orange Money: 6XX XXX XXX. Bank: ...">{{ $subscriptionPricing['payment_instructions'] ?? '' }}</textarea>
+                    <p class="text-dark-500 text-xs mt-1">Shown to recruiters when they request a paid plan. Paid plans start only after an admin confirms the payment under Recruiters.</p>
                 </div>
                 
                 <div class="mt-6 flex justify-end">

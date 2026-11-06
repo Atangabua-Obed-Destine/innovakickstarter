@@ -330,6 +330,7 @@ class InterviewRepository extends BaseRepository implements InterviewRepositoryI
             'status' => InterviewStatus::COMPLETED,
             'completed_at' => now(),
             'rubric_scores' => $scores,
+            'score' => round($overallScore, 1),
             'overall_score' => round($overallScore, 1),
             'feedback' => $feedback,
         ]);

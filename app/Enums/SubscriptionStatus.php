@@ -18,6 +18,7 @@ enum SubscriptionStatus: string
     case EXPIRED = 'expired';
     case PAST_DUE = 'past_due';
     case PAUSED = 'paused';
+    case PENDING = 'pending';
 
     /**
      * Get human-readable label
@@ -31,6 +32,7 @@ enum SubscriptionStatus: string
             self::EXPIRED => 'Expired',
             self::PAST_DUE => 'Past Due',
             self::PAUSED => 'Paused',
+            self::PENDING => 'Awaiting payment confirmation',
         };
     }
 
@@ -46,6 +48,7 @@ enum SubscriptionStatus: string
             self::EXPIRED => 'red',
             self::PAST_DUE => 'orange',
             self::PAUSED => 'yellow',
+            self::PENDING => 'amber',
         };
     }
 
@@ -61,6 +64,7 @@ enum SubscriptionStatus: string
             self::EXPIRED => 'bg-red-500/20 text-red-400',
             self::PAST_DUE => 'bg-orange-500/20 text-orange-400',
             self::PAUSED => 'bg-yellow-500/20 text-yellow-400',
+            self::PENDING => 'bg-amber-500/20 text-amber-400',
         };
     }
 

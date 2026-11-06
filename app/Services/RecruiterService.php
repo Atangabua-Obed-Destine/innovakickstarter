@@ -14,6 +14,7 @@ use App\Models\AdminSetting;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Recruiter Service
@@ -30,13 +31,21 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class RecruiterService
 {
     /**
-     * Start a trial subscription.
+     * Plan order, for upgrade checks.
+     */
+    protected const TIER_RANK = ['free' => 0, 'partner' => 1, 'premium' => 2];
+
+    /**
+     * Start a trial subscription (once per account).
      */
     public function startTrial(User $recruiter): Subscription
     {
-        // Check if recruiter already had a trial
-        if ($recruiter->subscriptions()->where('is_trial', true)->exists()) {
+        if ($recruiter->subscriptions()->whereNotNull('trial_ends_at')->exists()) {
             throw new \Exception('Trial already used for this account.');
+        }
+
+        if ($recruiter->activeSubscription()) {
+            throw new \Exception('You already have an active plan.');
         }
 
         $trialDays = (int) AdminSetting::get('recruiter_trial_days', 14);
@@ -45,7 +54,6 @@ class RecruiterService
             'recruiter_id' => $recruiter->id,
             'tier' => SubscriptionTier::FREE,
             'status' => SubscriptionStatus::TRIAL,
-            'is_trial' => true,
             'trial_ends_at' => now()->addDays($trialDays),
             'started_at' => now(),
             'expires_at' => now()->addDays($trialDays),
@@ -54,7 +62,6 @@ class RecruiterService
             'intro_request_limit' => $this->getTierLimit(SubscriptionTier::FREE, 'intros'),
         ]);
 
-        // Log action
         AuditLog::create([
             'admin_id' => $recruiter->id,
             'action' => 'subscription_trial',
@@ -64,7 +71,6 @@ class RecruiterService
             'new_values' => ['trial_days' => $trialDays],
         ]);
 
-        // Notify fellow
         Notification::create([
             'user_id' => $recruiter->id,
             'type' => 'subscription_started',
@@ -76,107 +82,267 @@ class RecruiterService
     }
 
     /**
-     * Create or renew a subscription.
+     * Choose a plan.
+     *
+     * The free plan starts at once. A paid plan becomes a pending request
+     * carrying the recruiter's payment reference; it starts only when an
+     * admin confirms the payment (approvePending).
      */
     public function subscribe(
         User $recruiter,
         SubscriptionTier $tier,
-        int $months = 1,
-        ?string $paymentReference = null
+        int $months = 12,
+        ?string $paymentReference = null,
+        ?string $paymentMethod = null
     ): Subscription {
-        // Cancel any active subscription
-        $this->cancelActive($recruiter);
+        if ($tier === SubscriptionTier::FREE) {
+            return $this->activateFreePlan($recruiter);
+        }
 
-        $price = $this->calculatePrice($tier, $months);
+        if (blank($paymentReference)) {
+            throw new \Exception('Enter the reference of your payment so we can confirm it.');
+        }
+
+        return $this->createPendingRequest($recruiter, $tier, [
+            'amount' => (int) round($this->calculatePrice($tier, $months)),
+            'billing_cycle' => $months >= 12 ? 'annual' : ($months >= 6 ? 'semi-annual' : 'monthly'),
+            'requested_months' => $months,
+            'payment_reference' => trim($paymentReference),
+            'payment_method' => $paymentMethod,
+        ], "Requested the {$tier->label()} plan for {$months} month(s)");
+    }
+
+    /**
+     * Request an upgrade of the current paid plan for the rest of its period.
+     * Like a new plan, it starts when an admin confirms the payment.
+     */
+    public function upgrade(
+        User $recruiter,
+        SubscriptionTier $newTier,
+        ?string $paymentReference = null,
+        ?string $paymentMethod = null
+    ): Subscription {
+        $currentSub = $recruiter->activeSubscription();
+
+        if (!$currentSub || $currentSub->tier === SubscriptionTier::FREE || $currentSub->status === SubscriptionStatus::TRIAL) {
+            throw new \Exception('Upgrades apply to a paid plan. Choose a plan below instead.');
+        }
+
+        if (self::TIER_RANK[$newTier->value] <= self::TIER_RANK[$currentSub->tier->value]) {
+            throw new \Exception('Can only upgrade to a higher tier.');
+        }
+
+        if (blank($paymentReference)) {
+            throw new \Exception('Enter the reference of your payment so we can confirm it.');
+        }
+
+        $daysRemaining = $currentSub->expires_at ? max(0, (int) now()->diffInDays($currentSub->expires_at, false)) : 0;
+        $proratedPrice = $this->calculateProratedUpgrade($currentSub->tier, $newTier, $daysRemaining);
+
+        return $this->createPendingRequest($recruiter, $newTier, [
+            'amount' => (int) round($proratedPrice),
+            'billing_cycle' => $currentSub->billing_cycle,
+            'requested_months' => null,
+            'expires_at' => $currentSub->expires_at,
+            'payment_reference' => trim($paymentReference),
+            'payment_method' => $paymentMethod,
+            'notes' => "Upgrade from {$currentSub->tier->label()} for the remaining {$daysRemaining} day(s)",
+        ], "Requested an upgrade from {$currentSub->tier->label()} to {$newTier->label()}");
+    }
+
+    /**
+     * Confirm the payment of a pending request and start the plan.
+     * The plan it replaces is closed.
+     */
+    public function approvePending(Subscription $subscription, User $admin): Subscription
+    {
+        return DB::transaction(function () use ($subscription, $admin) {
+            $subscription = Subscription::whereKey($subscription->getKey())->lockForUpdate()->firstOrFail();
+
+            if ($subscription->status !== SubscriptionStatus::PENDING) {
+                throw new \Exception('This request has already been handled.');
+            }
+
+            $recruiter = $subscription->recruiter;
+
+            $recruiter->subscriptions()
+                ->whereIn('status', [SubscriptionStatus::ACTIVE, SubscriptionStatus::TRIAL])
+                ->update([
+                    'status' => SubscriptionStatus::CANCELLED,
+                    'cancelled_at' => now(),
+                    'cancellation_reason' => 'Replaced by the ' . $subscription->tier->label() . ' plan',
+                ]);
+
+            $expiresAt = $subscription->requested_months
+                ? now()->addMonths($subscription->requested_months)
+                : ($subscription->expires_at && $subscription->expires_at->isFuture() ? $subscription->expires_at : now()->addMonth());
+
+            $subscription->update([
+                'status' => SubscriptionStatus::ACTIVE,
+                'started_at' => now(),
+                'current_period_start' => now(),
+                'current_period_end' => $expiresAt,
+                'expires_at' => $expiresAt,
+                'verified_by' => $admin->id,
+                'verified_at' => now(),
+            ]);
+
+            AuditLog::create([
+                'admin_id' => $admin->id,
+                'action' => 'subscription_payment_confirmed',
+                'auditable_type' => Subscription::class,
+                'auditable_id' => $subscription->id,
+                'justification' => "Confirmed payment {$subscription->payment_reference} for the {$subscription->tier->label()} plan of {$recruiter->name}",
+                'new_values' => [
+                    'tier' => $subscription->tier->value,
+                    'amount' => $subscription->amount,
+                    'expires_at' => $expiresAt->toDateString(),
+                ],
+            ]);
+
+            Notification::create([
+                'user_id' => $recruiter->id,
+                'type' => 'subscription_activated',
+                'title' => 'Subscription activated',
+                'message' => "Payment confirmed. Your {$subscription->tier->label()} plan is active until {$expiresAt->format('M j, Y')}.",
+                'action_url' => route('recruiter.marketplace.index'),
+            ]);
+
+            return $subscription->fresh();
+        });
+    }
+
+    /**
+     * Turn down a pending request (payment not found, wrong amount, ...).
+     */
+    public function rejectPending(Subscription $subscription, User $admin, string $reason): Subscription
+    {
+        if ($subscription->status !== SubscriptionStatus::PENDING) {
+            throw new \Exception('This request has already been handled.');
+        }
+
+        $subscription->update([
+            'status' => SubscriptionStatus::CANCELLED,
+            'cancelled_at' => now(),
+            'rejection_reason' => $reason,
+            'verified_by' => $admin->id,
+            'verified_at' => now(),
+        ]);
+
+        AuditLog::create([
+            'admin_id' => $admin->id,
+            'action' => 'subscription_payment_rejected',
+            'auditable_type' => Subscription::class,
+            'auditable_id' => $subscription->id,
+            'justification' => "Rejected the {$subscription->tier->label()} plan request of {$subscription->recruiter?->name}: {$reason}",
+        ]);
+
+        Notification::create([
+            'user_id' => $subscription->recruiter_id,
+            'type' => 'subscription_rejected',
+            'title' => 'Plan request not approved',
+            'message' => "We could not confirm the payment for your {$subscription->tier->label()} plan: {$reason}",
+            'action_url' => route('recruiter.subscription.index'),
+        ]);
+
+        return $subscription->fresh();
+    }
+
+    /**
+     * Withdraw the recruiter's own pending request.
+     */
+    public function cancelPending(User $recruiter): void
+    {
+        $pending = $recruiter->pendingSubscription();
+
+        if ($pending) {
+            $pending->update([
+                'status' => SubscriptionStatus::CANCELLED,
+                'cancelled_at' => now(),
+                'cancellation_reason' => 'Withdrawn by recruiter',
+            ]);
+        }
+    }
+
+    /**
+     * Start the free plan, closing any current plan.
+     */
+    protected function activateFreePlan(User $recruiter): Subscription
+    {
+        $this->cancelActive($recruiter);
 
         $subscription = Subscription::create([
             'recruiter_id' => $recruiter->id,
-            'tier' => $tier,
+            'tier' => SubscriptionTier::FREE,
             'status' => SubscriptionStatus::ACTIVE,
-            'is_trial' => false,
             'started_at' => now(),
-            'expires_at' => now()->addMonths($months),
-            'amount' => $price,
-            'billing_cycle' => $months >= 12 ? 'annual' : ($months >= 6 ? 'semi-annual' : 'monthly'),
-            'profile_view_limit' => $this->getTierLimit($tier, 'profile_views'),
-            'intro_request_limit' => $this->getTierLimit($tier, 'intros'),
-            'notes' => $paymentReference ? "Payment ref: {$paymentReference}" : null,
+            'expires_at' => null,
+            'amount' => 0,
+            'profile_view_limit' => $this->getTierLimit(SubscriptionTier::FREE, 'profile_views'),
+            'intro_request_limit' => $this->getTierLimit(SubscriptionTier::FREE, 'intros'),
         ]);
 
-        // Log action
         AuditLog::create([
             'admin_id' => $recruiter->id,
             'action' => 'subscription_create',
             'auditable_type' => Subscription::class,
             'auditable_id' => $subscription->id,
-            'justification' => "Subscribed to {$tier->value} plan for {$months} month(s)",
-            'new_values' => [
-                'tier' => $tier->value,
-                'months' => $months,
-                'price' => $price,
-            ],
-        ]);
-
-        // Notify
-        Notification::create([
-            'user_id' => $recruiter->id,
-            'type' => 'subscription_activated',
-            'title' => 'Subscription Activated!',
-            'message' => "Your {$tier->value} subscription is now active. Happy recruiting!",
+            'justification' => 'Started the Free plan',
+            'new_values' => ['tier' => SubscriptionTier::FREE->value],
         ]);
 
         return $subscription;
     }
 
     /**
-     * Upgrade subscription tier.
+     * Record a paid plan request awaiting payment confirmation. A newer
+     * request replaces an older one. Admins are notified.
      */
-    public function upgrade(User $recruiter, SubscriptionTier $newTier): Subscription
+    protected function createPendingRequest(User $recruiter, SubscriptionTier $tier, array $attributes, string $summary): Subscription
     {
-        $currentSub = $recruiter->activeSubscription();
-        
-        if (!$currentSub) {
-            throw new \Exception('No active subscription to upgrade.');
-        }
+        $this->cancelPending($recruiter);
 
-        if ($newTier->value <= $currentSub->tier->value) {
-            throw new \Exception('Can only upgrade to a higher tier.');
-        }
+        $subscription = Subscription::create(array_merge([
+            'recruiter_id' => $recruiter->id,
+            'tier' => $tier,
+            'status' => SubscriptionStatus::PENDING,
+            'started_at' => now(),
+            'expires_at' => null,
+            'profile_view_limit' => $this->getTierLimit($tier, 'profile_views'),
+            'intro_request_limit' => $this->getTierLimit($tier, 'intros'),
+        ], $attributes));
 
-        $oldTier = $currentSub->tier;
-
-        // Calculate prorated price
-        $daysRemaining = now()->diffInDays($currentSub->expires_at);
-        $proratedPrice = $this->calculateProratedUpgrade($oldTier, $newTier, $daysRemaining);
-
-        // Update subscription
-        $currentSub->update([
-            'tier' => $newTier,
-            'profile_view_limit' => $this->getTierLimit($newTier, 'profile_views'),
-            'intro_request_limit' => $this->getTierLimit($newTier, 'intros'),
-            'notes' => "Upgraded from {$oldTier->value} at " . now()->toISOString() . ". Prorated: {$proratedPrice} XAF",
-        ]);
-
-        // Log action
         AuditLog::create([
             'admin_id' => $recruiter->id,
-            'action' => 'subscription_upgrade',
+            'action' => 'subscription_requested',
             'auditable_type' => Subscription::class,
-            'auditable_id' => $currentSub->id,
-            'justification' => "Upgraded from {$oldTier->value} to {$newTier->value}",
-            'old_values' => ['tier' => $oldTier->value],
-            'new_values' => ['tier' => $newTier->value],
+            'auditable_id' => $subscription->id,
+            'justification' => "{$summary}. Payment reference: {$subscription->payment_reference}",
+            'new_values' => [
+                'tier' => $tier->value,
+                'amount' => $subscription->amount,
+                'months' => $subscription->requested_months,
+            ],
         ]);
 
-        // Notify
         Notification::create([
             'user_id' => $recruiter->id,
-            'type' => 'subscription_upgraded',
-            'title' => 'Subscription Upgraded!',
-            'message' => "Welcome to {$newTier->value}! Enjoy enhanced features.",
+            'type' => 'subscription_requested',
+            'title' => 'Plan request received',
+            'message' => "We received your request for the {$tier->label()} plan. It starts as soon as we confirm your payment.",
+            'action_url' => route('recruiter.subscription.index'),
         ]);
 
-        return $currentSub->fresh();
+        $amount = number_format((int) $subscription->amount, 0, '.', ' ');
+        User::role(UserRole::ADMIN->value)->get(['id'])->each(fn (User $admin) => Notification::create([
+            'user_id' => $admin->id,
+            'type' => 'subscription_payment_review',
+            'title' => 'Recruiter payment to confirm',
+            'message' => "{$recruiter->name} requested the {$tier->label()} plan ({$amount} XAF, ref. {$subscription->payment_reference}).",
+            'action_url' => route('admin.subscriptions.index'),
+        ]));
+
+        return $subscription;
     }
 
     /**
@@ -399,22 +565,14 @@ class RecruiterService
      */
     protected function calculatePrice(SubscriptionTier $tier, int $months): float
     {
-        $monthlyPrices = [
-            SubscriptionTier::FREE->value => 0.0,
-            SubscriptionTier::PARTNER->value => (float) AdminSetting::get('partner_yearly_price', 300000) / 12, // XAF 300,000/year
-            SubscriptionTier::PREMIUM->value => (float) AdminSetting::get('premium_yearly_price', 1200000) / 12, // XAF 1,200,000/year
-        ];
+        // Annual prices as set on the admin settings page; shorter periods are pro rata.
+        $annual = match ($tier) {
+            SubscriptionTier::FREE => 0.0,
+            SubscriptionTier::PARTNER => (float) AdminSetting::get('partner_price', 300000),
+            SubscriptionTier::PREMIUM => (float) AdminSetting::get('premium_price', 1200000),
+        };
 
-        $basePrice = $monthlyPrices[$tier->value] * $months;
-
-        // Apply discounts for longer subscriptions
-        if ($months >= 12) {
-            return $basePrice * 0.8; // 20% off annual
-        } elseif ($months >= 6) {
-            return $basePrice * 0.9; // 10% off semi-annual
-        }
-
-        return $basePrice;
+        return round($annual * $months / 12 / 100) * 100;
     }
 
     /**
@@ -456,14 +614,14 @@ class RecruiterService
                     'used' => $subscription?->profiles_viewed_this_month ?? 0,
                     'limit' => $subscription?->profile_view_limit ?? 0,
                     'remaining' => $subscription 
-                        ? max(0, ($subscription->profile_view_limit ?? 999999) - $subscription->profiles_viewed_this_month)
+                        ? $this->remaining($subscription->profile_view_limit, (int) $subscription->profiles_viewed_this_month)
                         : 0,
                 ],
                 'intros' => [
                     'used' => $subscription?->intros_requested_this_month ?? 0,
                     'limit' => $subscription?->intro_request_limit ?? 0,
                     'remaining' => $subscription 
-                        ? max(0, ($subscription->intro_request_limit ?? 999999) - $subscription->intros_requested_this_month)
+                        ? $this->remaining($subscription->intro_request_limit, (int) $subscription->intros_requested_this_month)
                         : 0,
                 ],
             ],
@@ -483,6 +641,18 @@ class RecruiterService
                     ->count(),
             ],
         ];
+    }
+
+    /**
+     * What is left of a monthly limit; null means unlimited (limit -1 or not set).
+     */
+    protected function remaining(?int $limit, int $used): ?int
+    {
+        if ($limit === null || $limit < 0) {
+            return null;
+        }
+
+        return max(0, $limit - $used);
     }
 
     /**
@@ -509,7 +679,7 @@ class RecruiterService
         $stats = $this->getDashboardStats($recruiter);
 
         if ($action === 'view_profile') {
-            if ($stats['usage']['profile_views']['remaining'] <= 0) {
+            if ($stats['usage']['profile_views']['remaining'] !== null && $stats['usage']['profile_views']['remaining'] <= 0) {
                 return [
                     'allowed' => false,
                     'reason' => 'You have reached your monthly profile view limit. Upgrade your plan for more views.',
@@ -525,7 +695,7 @@ class RecruiterService
                     'reason' => 'Direct contact is available on Partner and Premium plans.',
                 ];
             }
-            if ($stats['usage']['intros']['remaining'] <= 0) {
+            if ($stats['usage']['intros']['remaining'] !== null && $stats['usage']['intros']['remaining'] <= 0) {
                 return [
                     'allowed' => false,
                     'reason' => 'You have reached your monthly contact limit. Upgrade for more contacts.',

@@ -274,6 +274,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/subscription/subscribe', [RecruiterController::class, 'subscribe'])->name('subscription.subscribe');
         Route::post('/subscription/upgrade', [RecruiterController::class, 'upgrade'])->name('subscription.upgrade');
         Route::post('/subscription/cancel', [RecruiterController::class, 'cancelSubscription'])->name('subscription.cancel');
+        Route::post('/subscription/request/cancel', [RecruiterController::class, 'cancelRequest'])->name('subscription.cancel-request');
     });
 
     /*
@@ -340,6 +341,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/internships/{internship}/letter/preview', [\App\Http\Controllers\Admin\InternshipController::class, 'previewLetter'])->name('internships.letter.preview');
         Route::get('/internships/{internship}/letter', [\App\Http\Controllers\Admin\InternshipController::class, 'downloadLetter'])->name('internships.letter');
         Route::post('/internships/{internship}/approve', [\App\Http\Controllers\Admin\InternshipController::class, 'approve'])->name('internships.approve');
+        Route::post('/internships/{internship}/update-duration', [\App\Http\Controllers\Admin\InternshipController::class, 'updateDuration'])->name('internships.update-duration');
         Route::post('/internships/{internship}/request-changes', [\App\Http\Controllers\Admin\InternshipController::class, 'requestChanges'])->name('internships.request-changes');
         Route::post('/internships/{internship}/reject', [\App\Http\Controllers\Admin\InternshipController::class, 'reject'])->name('internships.reject');
 
@@ -404,6 +406,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/recruiters/{user}/approve', [AdminController::class, 'approveRecruiter'])->name('recruiters.approve');
         Route::post('/recruiters/{user}/suspend', [AdminController::class, 'suspendRecruiter'])->name('recruiters.suspend');
         Route::post('/recruiters/{user}/activate', [AdminController::class, 'activateRecruiter'])->name('recruiters.activate');
+
+        // Recruiter plan requests awaiting payment confirmation
+        Route::get('/subscriptions', [\App\Http\Controllers\Admin\SubscriptionController::class, 'index'])->name('subscriptions.index');
+        Route::post('/subscriptions/{subscription}/approve', [\App\Http\Controllers\Admin\SubscriptionController::class, 'approve'])->name('subscriptions.approve');
+        Route::post('/subscriptions/{subscription}/reject', [\App\Http\Controllers\Admin\SubscriptionController::class, 'reject'])->name('subscriptions.reject');
         
         // Mentor Management
         Route::get('/mentors', [AdminController::class, 'mentors'])->name('mentors.index');

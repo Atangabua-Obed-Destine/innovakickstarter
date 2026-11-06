@@ -126,13 +126,13 @@
                                 @endif
                             </div>
                             <p class="text-dark-400 text-sm truncate">{{ $talent->headline ?? $talent->primaryTrack?->track?->name ?? 'Fellow' }}</p>
-                            @if($talent->skills ?? false)
+                            @if(!empty($talent->skill_list))
                             <div class="flex items-center gap-2 mt-2">
-                                @foreach(array_slice($talent->skills ?? [], 0, 3) as $skill)
+                                @foreach(array_slice($talent->skill_list, 0, 3) as $skill)
                                     <span class="px-2 py-0.5 bg-dark-700 text-dark-400 rounded text-xs">{{ $skill }}</span>
                                 @endforeach
-                                @if(count($talent->skills ?? []) > 3)
-                                    <span class="text-dark-500 text-xs">+{{ count($talent->skills) - 3 }}</span>
+                                @if(count($talent->skill_list) > 3)
+                                    <span class="text-dark-500 text-xs">+{{ count($talent->skill_list) - 3 }}</span>
                                 @endif
                             </div>
                             @endif

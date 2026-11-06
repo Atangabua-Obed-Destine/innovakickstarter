@@ -101,6 +101,20 @@ enum Tier: string
     }
 
     /**
+     * Position in the progression (Rookie = 0 … Elite = 3). Use this to compare
+     * tiers; the string values are not ordered.
+     */
+    public function rank(): int
+    {
+        return match($this) {
+            self::ROOKIE => 0,
+            self::INTERN => 1,
+            self::PROFESSIONAL => 2,
+            self::ELITE => 3,
+        };
+    }
+
+    /**
      * Get default score range (can be overridden by admin settings)
      */
     public function defaultRange(): array

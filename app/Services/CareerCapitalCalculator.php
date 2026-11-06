@@ -2,35 +2,45 @@
 
 namespace App\Services;
 
+use App\Enums\ActivityStatus;
+use App\Enums\ActivityType;
 use App\Enums\CareerCapitalCategory;
+use App\Enums\CurriculumStatus;
 use App\Enums\Tier;
 use App\Models\Activity;
 use App\Models\AdminSetting;
+use App\Models\FellowCurriculumProgress;
 use App\Models\FellowTrack;
-use App\Models\InterviewSession;
+use App\Models\Notification;
 use App\Models\Track;
+use App\Models\TrackCurriculumActivity;
 use App\Models\User;
 use App\Models\WeeklyProgress;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
  * Career Capital Calculator Service
- * 
- * The brain of the IKS platform. Calculates and updates Career Capital scores
- * based on activities, interviews, and the 4-pillar weekly accountability system.
- * 
- * Scoring Formula:
- * Career Capital = Σ (Category Score × Category Weight)
- * 
- * Categories (default weights):
- * - Technical Skills: 25%
- * - Interview Performance: 25%
- * - Portfolio Quality: 20%
- * - Collaboration: 15%
- * - Continuous Learning: 15%
- * 
- * @author IKS Engineering Team
- * @version 1.0
+ *
+ * Calculates a fellow's Career Capital score (0-100) in a track.
+ *
+ *   Career Capital = Σ (category score × category weight) / Σ weights
+ *
+ * Each category score compares the verified points a fellow has earned in
+ * that category (approved activities + reviewed curriculum work, weighted by
+ * the review's rubric score) with the points the track's curriculum offers
+ * in that category:
+ *
+ *   category score = 100 × (1 − e^(−k × earned / curriculum points))
+ *
+ * With the default steepness k = 1, completing a category's curriculum at
+ * full quality gives 63%, at 75% quality 53%, and twice the curriculum 86%.
+ * So finishing the curriculum well lands a fellow in Professional, and
+ * Elite takes extra verified work on top. k is admin-configurable.
+ *
+ * Interview readiness also counts mock interview results (see
+ * calculateInterviewScore). Decay for frozen weeks and inactivity is
+ * applied to the total.
  */
 class CareerCapitalCalculator
 {
@@ -45,26 +55,50 @@ class CareerCapitalCalculator
     public const MIN_SCORE = 0.0;
 
     /**
-     * Applies a strict difficulty curve to make score progression highly rewarding but difficult.
-     * The true theoretical ceiling requires significant "above and beyond" work.
+     * Reference points used when a track's curriculum offers fewer in a
+     * category (or has no curriculum), so a couple of freestyle activities
+     * cannot max out a category. Roughly 7-8 activities at default points
+     * (e.g. 8 projects × 25) reach the same 63% as completing a curriculum.
      */
-    protected function calculateHardScaledScore(float $earnedPoints, float $curriculumMaxPoints): float
+    public const MIN_EXPECTED_POINTS = [
+        'technical' => 200,
+        'interview' => 100,
+        'portfolio' => 150,
+        'collaboration' => 100,
+        'learning' => 100,
+    ];
+
+    /**
+     * Turn earned points into a 0-100 category score.
+     */
+    public function scaleScore(float $earnedPoints, float $expectedPoints): float
     {
-        // Require an astronomical 10,000 baseline points minimum
-        $absoluteMinCeiling = 10000;
-        
-        // True ceiling is 10x the curriculum size
-        $ceiling = max($absoluteMinCeiling, $curriculumMaxPoints * 10.0);
-        
-        $ratio = $earnedPoints / $ceiling;
-        
-        // Unbelievably slow logarithmic decay curve: 100 * (1 - e^(-0.1 * ratio))
-        // ratio 0.5 (finished curriculum) -> ~4.8%
-        // ratio 1.0 (10x curriculum) -> ~9.5%
-        // ratio 10.0 (100x curriculum) -> ~63.2%
-        $score = 100 * (1 - exp(-0.1 * $ratio));
-        
-        return round(min(100.0, max(0.0, $score)), 3);
+        if ($earnedPoints <= 0 || $expectedPoints <= 0) {
+            return 0.0;
+        }
+
+        $steepness = (float) AdminSetting::get('score_curve_steepness', 1.0);
+        if ($steepness <= 0) {
+            $steepness = 1.0;
+        }
+
+        $score = 100 * (1 - exp(-$steepness * $earnedPoints / $expectedPoints));
+
+        return round(min(self::MAX_SCORE, max(self::MIN_SCORE, $score)), 3);
+    }
+
+    /**
+     * Points a reviewed curriculum submission contributes: the awarded points
+     * scaled by the rubric score (0-100). Work approved without a rubric score
+     * gets full credit.
+     */
+    public function qualityWeightedPoints(float $points, mixed $scoreAwarded): float
+    {
+        if ($scoreAwarded === null || (float) $scoreAwarded <= 0) {
+            return $points;
+        }
+
+        return $points * min(100.0, (float) $scoreAwarded) / 100;
     }
 
     /**
@@ -72,329 +106,277 @@ class CareerCapitalCalculator
      */
     public function calculateScore(User $fellow, Track $track): float
     {
-        $fellowTrack = $fellow->fellowTracks()
-            ->where('track_id', $track->id)
-            ->first();
+        $enrolled = $fellow->fellowTracks()->where('track_id', $track->id)->exists();
 
-        if (!$fellowTrack) {
+        if (!$enrolled) {
             return 0.0;
         }
 
-        // Get rubric weights from track or use defaults
-        $rubric = $track->scoring_rubric ?? CareerCapitalCategory::defaultRubric();
-
-        // Calculate each category score
-        $technicalScore = $this->calculateTechnicalScore($fellow, $track);
-        $interviewScore = $this->calculateInterviewScore($fellow, $track);
-        $portfolioScore = $this->calculatePortfolioScore($fellow, $track);
-        $collaborationScore = $this->calculateCollaborationScore($fellow, $track);
-        $learningScore = $this->calculateLearningScore($fellow, $track);
-
-        // Apply weights
-        $weightedScore = 
-            ($technicalScore * ($rubric['technical']['weight'] ?? 25) / 100) +
-            ($interviewScore * ($rubric['interview']['weight'] ?? 25) / 100) +
-            ($portfolioScore * ($rubric['portfolio']['weight'] ?? 20) / 100) +
-            ($collaborationScore * ($rubric['collaboration']['weight'] ?? 15) / 100) +
-            ($learningScore * ($rubric['learning']['weight'] ?? 15) / 100);
-
-        // Apply any decay if weekly progress is incomplete
-        $weightedScore = $this->applyDecay($fellow, $track, $weightedScore);
-
-        // Clamp score between 0 and 100
-        return round(max(self::MIN_SCORE, min(self::MAX_SCORE, $weightedScore)), 3);
+        return $this->totalFromCategories($fellow, $track, $this->calculateCategoryScores($fellow, $track));
     }
 
     /**
-     * Calculate technical skills score based on projects and contributions.
+     * All five category scores, keyed by category value.
+     */
+    public function calculateCategoryScores(User $fellow, Track $track): array
+    {
+        return [
+            'technical' => $this->calculateTechnicalScore($fellow, $track),
+            'interview' => $this->calculateInterviewScore($fellow, $track),
+            'portfolio' => $this->calculatePortfolioScore($fellow, $track),
+            'collaboration' => $this->calculateCollaborationScore($fellow, $track),
+            'learning' => $this->calculateLearningScore($fellow, $track),
+        ];
+    }
+
+    /**
+     * Category weights (percent) for a track. A track rubric keyed by the five
+     * categories wins; otherwise the weights from the admin settings page.
+     */
+    public function categoryWeights(Track $track): array
+    {
+        $rubric = is_array($track->scoring_rubric) ? $track->scoring_rubric : [];
+        $settings = AdminSetting::getCategoryWeights();
+        $weights = [];
+
+        foreach (CareerCapitalCategory::cases() as $category) {
+            $key = $category->value;
+            $value = $rubric[$key] ?? null;
+
+            if (is_array($value)) {
+                $value = $value['weight'] ?? null;
+            }
+
+            $weights[$key] = is_numeric($value)
+                ? (float) $value
+                : (float) ($settings[$key] ?? $category->defaultWeight());
+        }
+
+        return $weights;
+    }
+
+    /**
+     * Weighted total of the category scores, with decay applied.
+     */
+    protected function totalFromCategories(User $fellow, Track $track, array $categories): float
+    {
+        $weights = $this->categoryWeights($track);
+        $totalWeight = array_sum($weights);
+
+        if ($totalWeight <= 0) {
+            return 0.0;
+        }
+
+        $weighted = 0.0;
+        foreach ($weights as $key => $weight) {
+            $weighted += ($categories[$key] ?? 0) * $weight;
+        }
+
+        $score = $this->applyDecay($fellow, $track, $weighted / $totalWeight);
+
+        return round(max(self::MIN_SCORE, min(self::MAX_SCORE, $score)), 3);
+    }
+
+    /**
+     * Technical skills: projects, contributions and technical curriculum work.
      */
     public function calculateTechnicalScore(User $fellow, Track $track): float
     {
-        $technicalTypes = \App\Enums\ActivityType::getValuesByCategory(\App\Enums\CareerCapitalCategory::TECHNICAL);
+        $types = ActivityType::getValuesByCategory(CareerCapitalCategory::TECHNICAL);
+        $activities = $this->approvedActivities($fellow, $track, $types);
 
-        $activities = $fellow->activities()
-            ->where('track_id', $track->id)
-            ->approved()
-            ->whereIn('type', $technicalTypes)
-            ->get();
+        $earned = $activities->sum('points_earned') + $this->curriculumPoints($fellow, $track, $types);
+        $score = $this->scaleScore($earned, $this->expectedPoints($track, $types, 'technical'));
 
-        if ($activities->isEmpty()) {
-            // Don't return 0 yet, might have curriculum progress
+        // Variety bonus
+        if ($activities->pluck('type')->unique()->count() >= 3) {
+            $score *= 1.05;
         }
 
-        $totalPoints = $activities->sum('points_earned');
-
-        $curriculumPoints = \App\Models\FellowCurriculumProgress::where('fellow_id', $fellow->id)
-            ->where('status', \App\Enums\CurriculumStatus::COMPLETED)
-            ->whereHas('curriculumActivity', function ($q) use ($track, $technicalTypes) {
-                $q->where('track_id', $track->id)
-                  ->whereIn('type', $technicalTypes);
-            })
-            ->sum('points_awarded');
-            
-        $totalPoints += $curriculumPoints;
-        
-
-        // Dynamically calculate max expected points from curriculum
-        $maxExpectedPoints = \App\Models\TrackCurriculumActivity::where('track_id', $track->id)
-            ->where('is_active', true)
-            ->whereIn('type', $technicalTypes)
-            ->sum('points');
-            
-        // Fallback if curriculum has no technical activities
-        if ($maxExpectedPoints < 100) {
-            $maxExpectedPoints = 100;
-        }
-
-        // Scale the points using the new strict difficulty curve
-        $score = $this->calculateHardScaledScore($totalPoints, $maxExpectedPoints);
-
-        // Bonus for variety in activity types
-        $typeCount = $activities->pluck('type')->unique()->count();
-        if ($typeCount >= 3) {
-            $score = min(100, $score * 1.05); // Reduced bonus to 5% to keep it strict
-        }
-
-        return round($score, 3);
+        return round(min(self::MAX_SCORE, $score), 3);
     }
 
     /**
-     * Calculate interview performance score.
+     * Interview readiness.
+     *
+     * A blend of two sources (score_interview_session_share %, default 50/50):
+     *  - mock interview results: recency-weighted average of the last 10 scored
+     *    interviews, scaled by volume (full credit from score_interview_full_volume
+     *    interviews); practice sessions do not count;
+     *  - interview-related work (certifications, research, logged mock interviews,
+     *    interview curriculum activities), scaled like other categories.
      */
     public function calculateInterviewScore(User $fellow, Track $track): float
     {
-        // 1. Calculate score from actual recorded interview sessions
+        $sessionScore = $this->mockInterviewScore($fellow, $track);
+
+        $types = ActivityType::getValuesByCategory(CareerCapitalCategory::INTERVIEW);
+        $activities = $this->approvedActivities($fellow, $track, $types);
+        $earned = $activities->sum('points_earned') + $this->curriculumPoints($fellow, $track, $types);
+        $activityScore = $this->scaleScore($earned, $this->expectedPoints($track, $types, 'interview'));
+
+        $share = min(100, max(0, (float) AdminSetting::get('score_interview_session_share', 50))) / 100;
+        $score = $share * $sessionScore + (1 - $share) * $activityScore;
+
+        return round(min(self::MAX_SCORE, $score), 3);
+    }
+
+    /**
+     * Score from completed, scored, non-practice mock interviews (0-100).
+     */
+    public function mockInterviewScore(User $fellow, Track $track): float
+    {
         $interviews = $fellow->interviewSessions()
             ->where('track_id', $track->id)
             ->completed()
+            ->whereNotNull('score')
+            ->where(fn ($q) => $q->where('is_practice', false)->orWhereNull('is_practice'))
             ->orderByDesc('completed_at')
-            ->limit(10) // Use last 10 interviews
-            ->get();
+            ->get(['id', 'score', 'completed_at']);
 
-        $sessionScore = 0.0;
-        
-        if ($interviews->isNotEmpty()) {
-            // Weighted average: recent interviews matter more
-            $weightedSum = 0;
-            $weightTotal = 0;
-            $weight = 1.0;
-
-            foreach ($interviews as $interview) {
-                $weightedSum += $interview->overall_score * $weight;
-                $weightTotal += $weight;
-                $weight *= 0.9; // Each older interview has 10% less weight
-            }
-
-            $sessionScore = $weightTotal > 0 ? $weightedSum / $weightTotal : 0;
-
-            // Strict Volume Penalty: An average is meaningless with low volume.
-            // They must do at least 20 interviews to unlock their full score.
-            $volumeMultiplier = min(1.0, $interviews->count() / 20);
-            $sessionScore *= $volumeMultiplier;
-
-            // Bonus for interview consistency (low variance)
-            $variance = $this->calculateVariance($interviews->pluck('overall_score')->toArray());
-            if ($variance < 10 && $interviews->count() >= 3) {
-                $sessionScore = min(100, $sessionScore * 1.05); // 5% consistency bonus
-            }
+        if ($interviews->isEmpty()) {
+            return 0.0;
         }
 
-        // 2. Calculate score from curriculum and manual activities
-        $interviewTypes = \App\Enums\ActivityType::getValuesByCategory(\App\Enums\CareerCapitalCategory::INTERVIEW);
+        // Recency-weighted average of the last 10: each older interview counts 10% less.
+        $recent = $interviews->take(10)->pluck('score')->map(fn ($s) => (float) $s)->values()->all();
+        $weightedSum = 0.0;
+        $weightTotal = 0.0;
+        $weight = 1.0;
 
-        $activities = $fellow->activities()
-            ->where('track_id', $track->id)
-            ->approved()
-            ->whereIn('type', $interviewTypes)
-            ->get();
-
-        $totalPoints = $activities->sum('points_earned');
-
-        $curriculumPoints = \App\Models\FellowCurriculumProgress::where('fellow_id', $fellow->id)
-            ->where('status', \App\Enums\CurriculumStatus::COMPLETED)
-            ->whereHas('curriculumActivity', function ($q) use ($track, $interviewTypes) {
-                $q->where('track_id', $track->id)
-                  ->whereIn('type', $interviewTypes);
-            })
-            ->sum('points_awarded');
-            
-        $totalPoints += $curriculumPoints;
-
-        $maxExpectedPoints = \App\Models\TrackCurriculumActivity::where('track_id', $track->id)
-            ->where('is_active', true)
-            ->whereIn('type', $interviewTypes)
-            ->sum('points');
-            
-        if ($maxExpectedPoints < 50) {
-            $maxExpectedPoints = 50;
+        foreach ($recent as $score) {
+            $weightedSum += $score * $weight;
+            $weightTotal += $weight;
+            $weight *= 0.9;
         }
 
-        $activityScore = $this->calculateHardScaledScore($totalPoints, $maxExpectedPoints);
+        $average = $weightedSum / $weightTotal;
 
-        // Combine both scores. Since hard scaling is very strict, we can safely add them.
-        $finalScore = min(100, $sessionScore + $activityScore);
+        // An average means little on a few interviews: full credit needs the configured volume.
+        $fullVolume = max(1, (int) AdminSetting::get('score_interview_full_volume', 10));
+        $score = $average * min(1.0, $interviews->count() / $fullVolume);
 
-        return round($finalScore, 3);
+        // Consistency bonus
+        if (count($recent) >= 3 && $this->calculateVariance($recent) < 10) {
+            $score *= 1.05;
+        }
+
+        return round(min(self::MAX_SCORE, $score), 3);
     }
 
     /**
-     * Calculate portfolio quality score.
+     * Portfolio quality: deployed projects, case studies, content.
      */
     public function calculatePortfolioScore(User $fellow, Track $track): float
     {
-        $portfolioTypes = \App\Enums\ActivityType::getValuesByCategory(\App\Enums\CareerCapitalCategory::PORTFOLIO);
+        $types = ActivityType::getValuesByCategory(CareerCapitalCategory::PORTFOLIO);
+        $activities = $this->approvedActivities($fellow, $track, $types);
 
-        // Portfolio items: blog posts, projects with demos, open source
-        $portfolioActivities = $fellow->activities()
-            ->where('track_id', $track->id)
-            ->approved()
-            ->whereIn('type', $portfolioTypes)
-            ->get();
+        $earned = $activities->sum('points_earned') + $this->curriculumPoints($fellow, $track, $types);
+        $score = $this->scaleScore($earned, $this->expectedPoints($track, $types, 'portfolio'));
 
-        if ($portfolioActivities->isEmpty()) {
-            // Don't return 0 yet
+        // Projects with proof links
+        if ($activities->where('type', 'project')->filter(fn ($a) => !empty($a->proof_url))->isNotEmpty()) {
+            $score *= 1.05;
         }
 
-        $totalPoints = $portfolioActivities->sum('points_earned');
-
-        $curriculumPoints = \App\Models\FellowCurriculumProgress::where('fellow_id', $fellow->id)
-            ->where('status', \App\Enums\CurriculumStatus::COMPLETED)
-            ->whereHas('curriculumActivity', function ($q) use ($track, $portfolioTypes) {
-                $q->where('track_id', $track->id)
-                  ->whereIn('type', $portfolioTypes);
-            })
-            ->sum('points_awarded');
-            
-        $totalPoints += $curriculumPoints;
-        
-        // Dynamically calculate max expected points from curriculum
-        $maxExpectedPoints = \App\Models\TrackCurriculumActivity::where('track_id', $track->id)
-            ->where('is_active', true)
-            ->whereIn('type', $portfolioTypes)
-            ->sum('points');
-            
-        // Fallback if curriculum has no portfolio activities
-        if ($maxExpectedPoints < 50) {
-            $maxExpectedPoints = 50;
-        }
-        
-        // Scale using the new strict difficulty curve
-        $score = $this->calculateHardScaledScore($totalPoints, $maxExpectedPoints);
-
-        // Quality bonus: Projects with proof links score higher
-        $projectsWithProof = $portfolioActivities
-            ->where('type', 'project')
-            ->filter(fn ($a) => !empty($a->proof_url));
-            
-        if ($projectsWithProof->count() > 0) {
-            $score = min(100, $score * 1.05); // Reduced bonus to 5%
+        // Substantial pieces of work
+        if (($activities->avg('points_earned') ?? 0) > 15) {
+            $score *= 1.05;
         }
 
-        // Quality bonus based on average points earned
-        $avgPoints = $portfolioActivities->avg('points_earned') ?? 0;
-        if ($avgPoints > 15) {
-            $score = min(100, $score * 1.05); // Reduced bonus to 5%
-        }
-
-        return round(min(100, $score), 3);
+        return round(min(self::MAX_SCORE, $score), 3);
     }
 
     /**
-     * Calculate collaboration score.
+     * Collaboration: peer reviews, pair work, mentoring.
      */
     public function calculateCollaborationScore(User $fellow, Track $track): float
     {
-        $collaborationTypes = \App\Enums\ActivityType::getValuesByCategory(\App\Enums\CareerCapitalCategory::COLLABORATION);
+        $types = ActivityType::getValuesByCategory(CareerCapitalCategory::COLLABORATION);
+        $activities = $this->approvedActivities($fellow, $track, $types);
 
-        $collaborationActivities = $fellow->activities()
-            ->where('track_id', $track->id)
-            ->approved()
-            ->whereIn('type', $collaborationTypes)
-            ->get();
+        $earned = $activities->sum('points_earned') + $this->curriculumPoints($fellow, $track, $types);
+        $score = $this->scaleScore($earned, $this->expectedPoints($track, $types, 'collaboration'));
 
-        if ($collaborationActivities->isEmpty()) {
-            // Don't return 0 yet
+        // Mentoring is highly valued
+        if ($activities->where('type', 'mentoring')->isNotEmpty()) {
+            $score *= 1.10;
         }
 
-        $score = 0;
-
-        $curriculumPoints = \App\Models\FellowCurriculumProgress::where('fellow_id', $fellow->id)
-            ->where('status', \App\Enums\CurriculumStatus::COMPLETED)
-            ->whereHas('curriculumActivity', function ($q) use ($track, $collaborationTypes) {
-                $q->where('track_id', $track->id)
-                  ->whereIn('type', $collaborationTypes);
-            })
-            ->sum('points_awarded');
-            
-        $totalPoints = $collaborationActivities->sum('points_earned') + $curriculumPoints;
-
-        // Calculate max expected points from curriculum
-        $maxExpectedPoints = \App\Models\TrackCurriculumActivity::where('track_id', $track->id)
-            ->where('is_active', true)
-            ->whereIn('type', $collaborationTypes)
-            ->sum('points');
-
-        // Scale using the new strict difficulty curve
-        $score = $this->calculateHardScaledScore($totalPoints, $maxExpectedPoints);
-
-        // Extra weight/bonus for highly valued mentoring
-        $mentoring = $collaborationActivities->where('type', 'mentoring');
-        if ($mentoring->count() > 0) {
-            $score = min(100, $score * 1.10);
-        }
-
-        return round(min(100, $score), 3);
+        return round(min(self::MAX_SCORE, $score), 3);
     }
 
     /**
-     * Calculate continuous learning score.
+     * Continuous learning: courses, certifications, workshops.
      */
     public function calculateLearningScore(User $fellow, Track $track): float
     {
-        $learningTypes = \App\Enums\ActivityType::getValuesByCategory(\App\Enums\CareerCapitalCategory::LEARNING);
+        $types = ActivityType::getValuesByCategory(CareerCapitalCategory::LEARNING);
+        $activities = $this->approvedActivities($fellow, $track, $types);
 
-        $learningActivities = $fellow->activities()
-            ->where('track_id', $track->id)
-            ->approved()
-            ->whereIn('type', $learningTypes)
-            ->get();
+        $earned = $activities->sum('points_earned') + $this->curriculumPoints($fellow, $track, $types);
+        $score = $this->scaleScore($earned, $this->expectedPoints($track, $types, 'learning'));
 
-        // Also consider recent activity (learning never stops)
+        // Consistent recent activity (any type) in the last 30 days
         $recentActivities = $fellow->activities()
             ->where('track_id', $track->id)
             ->approved()
             ->where('reviewed_at', '>=', now()->subDays(30))
             ->count();
 
-        $score = 0;
-
-        $curriculumPoints = \App\Models\FellowCurriculumProgress::where('fellow_id', $fellow->id)
-            ->where('status', \App\Enums\CurriculumStatus::COMPLETED)
-            ->whereHas('curriculumActivity', function ($q) use ($track, $learningTypes) {
-                $q->where('track_id', $track->id)
-                  ->whereIn('type', $learningTypes);
-            })
-            ->sum('points_awarded');
-            
-        $totalPoints = $learningActivities->sum('points_earned') + $curriculumPoints;
-
-        // Calculate max expected points from curriculum
-        $maxExpectedPoints = \App\Models\TrackCurriculumActivity::where('track_id', $track->id)
-            ->where('is_active', true)
-            ->whereIn('type', $learningTypes)
-            ->sum('points');
-
-        // Scale using the new strict difficulty curve
-        $score = $this->calculateHardScaledScore($totalPoints, $maxExpectedPoints);
-
-        // Bonus for consistent recent activity
         if ($recentActivities >= 4) {
-            $score = min(100, $score * 1.10);
+            $score *= 1.10;
         } elseif ($recentActivities >= 2) {
-            $score = min(100, $score * 1.05);
+            $score *= 1.05;
         }
 
-        return round(min(100, $score), 3);
+        return round(min(self::MAX_SCORE, $score), 3);
+    }
+
+    /**
+     * Approved freestyle activities of the given types.
+     */
+    protected function approvedActivities(User $fellow, Track $track, array $types): Collection
+    {
+        return $fellow->activities()
+            ->where('track_id', $track->id)
+            ->approved()
+            ->whereIn('type', $types)
+            ->get();
+    }
+
+    /**
+     * Quality-weighted points from completed curriculum activities of the given types.
+     */
+    protected function curriculumPoints(User $fellow, Track $track, array $types): float
+    {
+        return (float) FellowCurriculumProgress::where('fellow_id', $fellow->id)
+            ->where('status', CurriculumStatus::COMPLETED)
+            ->whereHas('curriculumActivity', function ($q) use ($track, $types) {
+                $q->where('track_id', $track->id)->whereIn('type', $types);
+            })
+            ->get(['id', 'points_awarded', 'score_awarded'])
+            ->sum(fn ($p) => $this->qualityWeightedPoints((float) $p->points_awarded, $p->score_awarded));
+    }
+
+    /**
+     * Points the track's active curriculum offers for the given types.
+     */
+    protected function curriculumPointsAvailable(Track $track, array $types): float
+    {
+        return (float) TrackCurriculumActivity::where('track_id', $track->id)
+            ->where('is_active', true)
+            ->whereIn('type', $types)
+            ->sum('points');
+    }
+
+    /**
+     * Reference points for a category: the curriculum's points, with a floor.
+     */
+    protected function expectedPoints(Track $track, array $types, string $category): float
+    {
+        return max($this->curriculumPointsAvailable($track, $types), (float) self::MIN_EXPECTED_POINTS[$category]);
     }
 
     /**
@@ -424,10 +406,10 @@ class CareerCapitalCalculator
             ->orderByDesc('reviewed_at')
             ->first();
 
-        if ($lastActivity) {
+        if ($lastActivity && $lastActivity->reviewed_at) {
             $weeksSinceActivity = $lastActivity->reviewed_at->diffInWeeks(now());
             $maxWeeksInactive = AdminSetting::get('score_decay_max_weeks_inactive', 4);
-            
+
             if ($weeksSinceActivity > $maxWeeksInactive) {
                 $additionalDecay = min(50, ($weeksSinceActivity - $maxWeeksInactive) * 5);
                 $score = $score * (1 - ($additionalDecay / 100));
@@ -439,10 +421,14 @@ class CareerCapitalCalculator
 
     /**
      * Update and save the Career Capital score for a fellow track.
+     *
+     * @param bool $notify       Send a notification on tier promotion.
+     * @param bool $markActivity Treat the update as fellow activity (last_active_at).
+     *                           Bulk recalculations pass false.
      */
-    public function updateScore(User $fellow, Track $track): FellowTrack
+    public function updateScore(User $fellow, Track $track, bool $notify = true, bool $markActivity = true): FellowTrack
     {
-        return DB::transaction(function () use ($fellow, $track) {
+        return DB::transaction(function () use ($fellow, $track, $notify, $markActivity) {
             $fellowTrack = $fellow->fellowTracks()
                 ->where('track_id', $track->id)
                 ->lockForUpdate()
@@ -452,76 +438,45 @@ class CareerCapitalCalculator
                 throw new \Exception("Fellow is not enrolled in this track.");
             }
 
-            $previousScore = $fellowTrack->score;
-            $previousTier = Tier::tryFrom($fellowTrack->tier) ?? Tier::ROOKIE;
+            $previousTier = Tier::tryFrom((string) $fellowTrack->tier) ?? Tier::ROOKIE;
 
-            // Calculate new scores
-            $newScore = $this->calculateScore($fellow, $track);
+            $categories = $this->calculateCategoryScores($fellow, $track);
+            $newScore = $this->totalFromCategories($fellow, $track, $categories);
             $newTier = Tier::fromScore($newScore);
 
-            // Calculate category scores
-            $technicalScore = $this->calculateTechnicalScore($fellow, $track);
-            $interviewScore = $this->calculateInterviewScore($fellow, $track);
-            $portfolioScore = $this->calculatePortfolioScore($fellow, $track);
-            $collaborationScore = $this->calculateCollaborationScore($fellow, $track);
-            $learningScore = $this->calculateLearningScore($fellow, $track);
+            // Raw points earned (not quality-weighted), for display
+            $totalPointsEarned = FellowCurriculumProgress::where('fellow_id', $fellow->id)
+                ->where('status', CurriculumStatus::COMPLETED)
+                ->whereHas('curriculumActivity', fn ($q) => $q->where('track_id', $track->id))
+                ->sum('points_awarded')
+                + Activity::where('fellow_id', $fellow->id)
+                    ->where('track_id', $track->id)
+                    ->where('status', ActivityStatus::APPROVED)
+                    ->sum('points_earned');
 
-            // Calculate total raw points earned
-            $totalPointsEarned = \App\Models\FellowCurriculumProgress::where('fellow_id', $fellow->id)
-                ->where('status', \App\Enums\CurriculumStatus::COMPLETED)
-                ->whereHas('curriculumActivity', function ($q) use ($track) {
-                    $q->where('track_id', $track->id);
-                })
-                ->sum('points_awarded') + 
-                \App\Models\Activity::where('fellow_id', $fellow->id)
-                ->where('track_id', $track->id)
-                ->where('status', \App\Enums\ActivityStatus::APPROVED)
-                ->sum('points_earned');
-
-            // Update fellow track
-            $fellowTrack->update([
+            $attributes = [
                 'score' => $newScore,
                 'tier' => $newTier->value,
-                'technical_score' => $technicalScore,
-                'interview_score' => $interviewScore,
-                'portfolio_score' => $portfolioScore,
-                'collaboration_score' => $collaborationScore,
-                'learning_score' => $learningScore,
+                'technical_score' => $categories['technical'],
+                'interview_score' => $categories['interview'],
+                'portfolio_score' => $categories['portfolio'],
+                'collaboration_score' => $categories['collaboration'],
+                'learning_score' => $categories['learning'],
                 'total_points_earned' => $totalPointsEarned,
-                'last_active_at' => now(),
-            ]);
+            ];
 
-            // Check for tier change and notify
-            if ($previousTier !== $newTier) {
-                $this->handleTierChange($fellow, $track, $previousTier, $newTier, $newScore);
+            if ($markActivity) {
+                $attributes['last_active_at'] = now();
+            }
+
+            $fellowTrack->update($attributes);
+
+            if ($notify && $newTier->rank() > $previousTier->rank()) {
+                Notification::sendTierPromotion($fellow, $previousTier->label(), $newTier->label(), $newScore);
             }
 
             return $fellowTrack->fresh();
         });
-    }
-
-    /**
-     * Handle tier promotion/demotion.
-     */
-    protected function handleTierChange(
-        User $fellow,
-        Track $track,
-        Tier $previousTier,
-        Tier $newTier,
-        float $newScore
-    ): void {
-        // Tier promotion
-        if ($newTier->value > $previousTier->value) {
-            \App\Models\Notification::sendTierPromotion(
-                $fellow,
-                $previousTier->label(),
-                $newTier->label(),
-                $newScore
-            );
-        }
-
-        // Log tier change in audit
-        // This will be handled by the AuditService
     }
 
     /**
@@ -532,7 +487,7 @@ class CareerCapitalCalculator
         $count = 0;
 
         $track->fellows->each(function ($fellow) use ($track, &$count) {
-            $this->updateScore($fellow, $track);
+            $this->updateScore($fellow, $track, markActivity: false);
             $count++;
         });
 
@@ -544,47 +499,25 @@ class CareerCapitalCalculator
      */
     public function getScoreBreakdown(User $fellow, Track $track): array
     {
-        $rubric = $track->scoring_rubric ?? CareerCapitalCategory::defaultRubric();
+        $categories = $this->calculateCategoryScores($fellow, $track);
+        $weights = $this->categoryWeights($track);
+
+        $meta = [
+            'technical' => ['label' => 'Technical Skills', 'icon' => 'code', 'color' => 'blue'],
+            'interview' => ['label' => 'Interview Performance', 'icon' => 'video-camera', 'color' => 'purple'],
+            'portfolio' => ['label' => 'Portfolio Quality', 'icon' => 'briefcase', 'color' => 'green'],
+            'collaboration' => ['label' => 'Collaboration', 'icon' => 'users', 'color' => 'teal'],
+            'learning' => ['label' => 'Continuous Learning', 'icon' => 'academic-cap', 'color' => 'yellow'],
+        ];
+
+        $breakdown = [];
+        foreach ($meta as $key => $info) {
+            $breakdown[$key] = ['score' => $categories[$key], 'weight' => $weights[$key]] + $info;
+        }
 
         return [
-            'total' => $this->calculateScore($fellow, $track),
-            'categories' => [
-                'technical' => [
-                    'score' => $this->calculateTechnicalScore($fellow, $track),
-                    'weight' => $rubric['technical']['weight'] ?? 25,
-                    'label' => 'Technical Skills',
-                    'icon' => 'code',
-                    'color' => 'blue',
-                ],
-                'interview' => [
-                    'score' => $this->calculateInterviewScore($fellow, $track),
-                    'weight' => $rubric['interview']['weight'] ?? 25,
-                    'label' => 'Interview Performance',
-                    'icon' => 'video-camera',
-                    'color' => 'purple',
-                ],
-                'portfolio' => [
-                    'score' => $this->calculatePortfolioScore($fellow, $track),
-                    'weight' => $rubric['portfolio']['weight'] ?? 20,
-                    'label' => 'Portfolio Quality',
-                    'icon' => 'briefcase',
-                    'color' => 'green',
-                ],
-                'collaboration' => [
-                    'score' => $this->calculateCollaborationScore($fellow, $track),
-                    'weight' => $rubric['collaboration']['weight'] ?? 15,
-                    'label' => 'Collaboration',
-                    'icon' => 'users',
-                    'color' => 'teal',
-                ],
-                'learning' => [
-                    'score' => $this->calculateLearningScore($fellow, $track),
-                    'weight' => $rubric['learning']['weight'] ?? 15,
-                    'label' => 'Continuous Learning',
-                    'icon' => 'academic-cap',
-                    'color' => 'yellow',
-                ],
-            ],
+            'total' => $this->totalFromCategories($fellow, $track, $categories),
+            'categories' => $breakdown,
         ];
     }
 
@@ -599,7 +532,7 @@ class CareerCapitalCalculator
 
         $mean = array_sum($scores) / count($scores);
         $squaredDiffs = array_map(fn ($score) => pow($score - $mean, 2), $scores);
-        
+
         return array_sum($squaredDiffs) / count($squaredDiffs);
     }
 
@@ -616,8 +549,8 @@ class CareerCapitalCalculator
             return ['tier' => null, 'points_needed' => 0];
         }
 
-        $currentScore = $fellowTrack->score;
-        $currentTier = Tier::from($fellowTrack->tier);
+        $currentScore = (float) $fellowTrack->score;
+        $currentTier = Tier::tryFrom((string) $fellowTrack->tier) ?? Tier::fromScore($currentScore);
         $thresholds = AdminSetting::getTierThresholds();
 
         // Find next tier threshold
@@ -632,7 +565,7 @@ class CareerCapitalCalculator
             return ['tier' => null, 'points_needed' => 0, 'message' => 'Maximum tier reached!'];
         }
 
-        $nextThreshold = $thresholds[$nextTier->value] ?? $nextTier->defaultRange()['min'];
+        $nextThreshold = (float) ($thresholds[$nextTier->value] ?? $nextTier->defaultRange()['min']);
         $pointsNeeded = max(0, $nextThreshold - $currentScore);
 
         return [
@@ -641,7 +574,7 @@ class CareerCapitalCalculator
             'points_needed' => round($pointsNeeded, 3),
             'current_score' => $currentScore,
             'threshold' => $nextThreshold,
-            'progress_percentage' => min(100, ($currentScore / $nextThreshold) * 100),
+            'progress_percentage' => $nextThreshold > 0 ? min(100, ($currentScore / $nextThreshold) * 100) : 100,
         ];
     }
 }

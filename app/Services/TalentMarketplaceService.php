@@ -353,8 +353,8 @@ class TalentMarketplaceService
 
         $skills = [];
         foreach ($fellows as $fellow) {
-            if (is_array($fellow->skills)) {
-                foreach ($fellow->skills as $skill) {
+            if (!empty($fellow->skill_list)) {
+                foreach ($fellow->skill_list as $skill) {
                     $key = strtolower(trim($skill));
                     if (!isset($skills[$key])) {
                         $skills[$key] = [
@@ -452,7 +452,7 @@ class TalentMarketplaceService
         $primaryTrack = $fellow->primaryTrack;
         
         if (!$primaryTrack) {
-            return collect();
+            return new Collection();
         }
 
         return User::role('fellow')
@@ -462,7 +462,7 @@ class TalentMarketplaceService
             ->whereHas('fellowTracks', fn($q) => $q->where('track_id', $primaryTrack->track_id))
             ->whereHas('primaryTrack', function ($q) use ($primaryTrack) {
                 // Similar tier (+/- 1 tier level)
-                $q->whereIn('tier', $this->getAdjacentTiers(Tier::from($primaryTrack->tier)));
+                $q->whereIn('tier', $this->getAdjacentTiers(Tier::tryFrom((string) $primaryTrack->tier) ?? Tier::ROOKIE));
             })
             ->with(['primaryTrack.track'])
             ->orderByRaw('ABS((

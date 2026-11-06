@@ -135,50 +135,57 @@
             <div class="card p-6">
                 <h3 class="text-lg font-medium text-white mb-4">Subscription</h3>
                 
-                @if($recruiter->subscription)
-                    @php $sub = $recruiter->subscription; @endphp
-                    
+                @php
+                    $sub = $recruiter->activeSubscription();
+                    $pendingSub = $recruiter->pendingSubscription();
+                    $fmtLimit = fn ($limit) => ($limit === null || (int) $limit < 0) ? '∞' : (int) $limit;
+                @endphp
+
+                @if($pendingSub)
+                    <a href="{{ route('admin.subscriptions.index') }}" class="block mb-4 rounded-lg border border-amber-500/40 p-3 text-sm hover:border-amber-500">
+                        <span class="text-amber-300 font-medium">{{ $pendingSub->tier->label() }} plan requested</span>
+                        <span class="text-dark-400">· {{ number_format((int) $pendingSub->amount, 0, '.', ' ') }} XAF · ref. <span class="font-mono">{{ $pendingSub->payment_reference }}</span></span>
+                        <span class="block text-amber-400 mt-1">Confirm or reject the payment &rarr;</span>
+                    </a>
+                @endif
+
+                @if($sub)
                     <div class="flex items-center justify-between mb-4">
                         <div>
-                            <span class="text-lg font-medium text-white">{{ ucfirst($sub->tier) }} Plan</span>
-                            @if($sub->status === 'active')
-                                <span class="ml-2 inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 mr-1"></span>Active
-                                </span>
-                            @elseif($sub->status === 'trial')
-                                <span class="ml-2 inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-blue-500/20 text-blue-400">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-400 mr-1"></span>Trial
-                                </span>
-                            @else
-                                <span class="ml-2 inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-dark-600 text-dark-300">
-                                    {{ ucfirst($sub->status) }}
-                                </span>
-                            @endif
+                            <span class="text-lg font-medium text-white">{{ $sub->tier->label() }} Plan</span>
+                            <span class="ml-2 inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full {{ $sub->status->badgeClass() }}">{{ $sub->status->label() }}</span>
                         </div>
                     </div>
-                    
+
                     <dl class="grid grid-cols-2 gap-4">
                         <div>
                             <dt class="text-sm font-medium text-dark-400">Started</dt>
-                            <dd class="mt-1 text-sm text-white">{{ $sub->created_at->format('M d, Y') }}</dd>
+                            <dd class="mt-1 text-sm text-white">{{ ($sub->started_at ?? $sub->created_at)->format('M d, Y') }}</dd>
                         </div>
-                        
-                        @if($sub->expires_at)
-                            <div>
-                                <dt class="text-sm font-medium text-dark-400">Expires</dt>
-                                <dd class="mt-1 text-sm text-white">{{ $sub->expires_at->format('M d, Y') }}</dd>
+
+                        <div>
+                            <dt class="text-sm font-medium text-dark-400">Expires</dt>
+                            <dd class="mt-1 text-sm text-white">{{ $sub->expires_at?->format('M d, Y') ?? 'No end date' }}</dd>
+                        </div>
+
+                        <div>
+                            <dt class="text-sm font-medium text-dark-400">Profile Views This Month</dt>
+                            <dd class="mt-1 text-sm text-white">{{ (int) $sub->profiles_viewed_this_month }} / {{ $fmtLimit($sub->profile_view_limit) }}</dd>
+                        </div>
+
+                        <div>
+                            <dt class="text-sm font-medium text-dark-400">Intro Requests This Month</dt>
+                            <dd class="mt-1 text-sm text-white">{{ (int) $sub->intros_requested_this_month }} / {{ $fmtLimit($sub->intro_request_limit) }}</dd>
+                        </div>
+
+                        @if($sub->payment_reference)
+                            <div class="col-span-2">
+                                <dt class="text-sm font-medium text-dark-400">Payment</dt>
+                                <dd class="mt-1 text-sm text-white">{{ number_format((int) $sub->amount, 0, '.', ' ') }} XAF · ref. <span class="font-mono">{{ $sub->payment_reference }}</span>
+                                    @if($sub->verified_at) <span class="text-dark-400">· confirmed {{ $sub->verified_at->format('M d, Y') }} by {{ $sub->verifier?->name ?? '—' }}</span> @endif
+                                </dd>
                             </div>
                         @endif
-                        
-                        <div>
-                            <dt class="text-sm font-medium text-dark-400">Profile Views Used</dt>
-                            <dd class="mt-1 text-sm text-white">{{ $sub->profile_views_used }} / {{ $sub->profile_views_limit ?? '∞' }}</dd>
-                        </div>
-                        
-                        <div>
-                            <dt class="text-sm font-medium text-dark-400">Contacts Used</dt>
-                            <dd class="mt-1 text-sm text-white">{{ $sub->direct_contacts_used }} / {{ $sub->direct_contacts_limit ?? '∞' }}</dd>
-                        </div>
                     </dl>
                 @else
                     <div class="text-center py-8">

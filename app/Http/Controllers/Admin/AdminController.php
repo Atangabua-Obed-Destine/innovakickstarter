@@ -748,13 +748,12 @@ class AdminController extends Controller
     {
         abort_unless($user->hasRole('recruiter'), 404);
 
-        $user->load(['subscription', 'shortlistedFellows']);
-
-        // Get recruiter activity
+        // Recruiter activity, from the recruiter action log
+        $actions = \App\Models\RecruiterAction::where('recruiter_id', $user->id);
         $activity = [
-            'profile_views' => $user->subscription?->profile_views_used ?? 0,
-            'contacts_made' => $user->subscription?->direct_contacts_used ?? 0,
-            'shortlisted' => $user->shortlistedFellows()->count(),
+            'profile_views' => (clone $actions)->where('action', 'profile_view')->count(),
+            'contacts_made' => (clone $actions)->where('action', 'contact_request')->count(),
+            'shortlisted' => (clone $actions)->where('action', 'shortlist')->count(),
         ];
 
         return view('admin.recruiters.show', [
