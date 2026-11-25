@@ -40,10 +40,16 @@ class SupportService
         $out = [];
 
         // 1. Gone quiet.
+        // Any learning trace counts (activity days only started being recorded at launch).
         $last = collect([
             $this->activity->lastActiveDay($fellow),
-            $progress->max('submitted_at'), $progress->max('started_at'),
-            MentorMessage::where('fellow_id', $fellow->id)->max('created_at'),
+            $progress->max('submitted_at'), $progress->max('started_at'), $progress->max('completed_at'),
+            MentorMessage::where('fellow_id', $fellow->id)->where('role', 'user')->max('created_at'),
+            FlashAnswer::where('fellow_id', $fellow->id)->max('created_at'),
+            \App\Models\PracticeAttempt::where('fellow_id', $fellow->id)->max('created_at'),
+            \App\Models\DetectiveAnswer::where('fellow_id', $fellow->id)->max('created_at'),
+            \App\Models\Explanation::where('fellow_id', $fellow->id)->max('created_at'),
+            \App\Models\TypingSession::where('fellow_id', $fellow->id)->max('created_at'),
         ])->filter()->map(fn ($d) => Carbon::parse($d))->max();
         $quietDays = $last ? (int) $last->startOfDay()->diffInDays(now()->startOfDay()) : null;
         if ($quietDays === null || $quietDays >= 5) {
