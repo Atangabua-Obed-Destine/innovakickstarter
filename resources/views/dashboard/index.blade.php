@@ -721,6 +721,26 @@
         </div>
     </div>
 
+    @if($user->hasRole('fellow'))
+        @php $portfolioCerts = \App\Models\SkillCertificate::where('fellow_id', $user->id)->whereNull('revoked_at')->count(); @endphp
+        <div class="card p-5 flex flex-col md:flex-row md:items-center justify-between gap-4" x-data="{ copied: false }">
+            <div>
+                <p class="text-white font-semibold">My portfolio{{ $portfolioCerts ? ' · 🎓 ' . $portfolioCerts . ' ' . Str::plural('certificate', $portfolioCerts) : '' }}</p>
+                <p class="text-dark-400 text-sm">{{ $user->is_public ? 'Public: share it on LinkedIn and with recruiters. It shows only work the I-NNOVA team approved.' : 'Private: only you can see it. Make it public to share it with recruiters.' }}</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                @if($user->is_public)
+                    <a href="{{ route('public.profile.show', $user) }}" target="_blank" class="btn btn-secondary btn-sm">View</a>
+                    <button type="button" class="btn btn-primary btn-sm" @click="navigator.clipboard.writeText('{{ route('public.profile.show', $user) }}').then(() => { copied = true; setTimeout(() => copied = false, 2000) })" x-text="copied ? 'Link copied!' : 'Copy link'"></button>
+                @endif
+                <form method="POST" action="{{ route('profile.toggle-visibility') }}">
+                    @csrf
+                    <button type="submit" class="text-primary-400 hover:text-primary-300 text-sm underline">{{ $user->is_public ? 'Make private' : 'Make public' }}</button>
+                </form>
+            </div>
+        </div>
+    @endif
+
     @php
         $practiceDaily = $trackExperience ? app(\App\Services\PracticeService::class)->dailyChallenge($trackExperience->track) : null;
         $practiceStats = $practiceDaily ? app(\App\Services\PracticeService::class)->stats($user, $trackExperience->track) : null;

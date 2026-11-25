@@ -16,6 +16,9 @@ class TrackFeedEvent extends Model
         'presentation' => '🎤',
         'level_up' => '🚀',
         'practice_streak' => '🔥',
+        'certificate' => '🎓',
+        'detective' => '🕵️',
+        'brief' => '💼',
     ];
 
     protected $fillable = ['track_id', 'fellow_id', 'type', 'title', 'body', 'url', 'subject_key'];

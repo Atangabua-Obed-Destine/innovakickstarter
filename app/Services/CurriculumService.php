@@ -540,6 +540,9 @@ class CurriculumService
                 // Share projects and Brand posts with the track's community feed
                 app(TrackFeedService::class)->workApproved($progress->fresh(['curriculumActivity', 'fellow']));
 
+                // A skill whose required activities are all approved earns a certificate
+                app(SkillCertificateService::class)->checkAndAward($progress->fellow, $progress->curriculumActivity->track);
+
             } elseif ($decision === 'reject') {
                 $progress->reject($reviewer, $data['feedback'] ?? 'Submission does not meet requirements.');
             }

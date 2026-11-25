@@ -18,10 +18,10 @@
 <div class="card p-6">
     <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
         <div>
-            <h3 class="text-white font-semibold text-lg">My {{ $experience->role() }} skills</h3>
-            <p class="text-dark-400 text-sm">Each skill fills up as your work on it is approved.</p>
+            <h3 class="text-white font-semibold text-lg">{{ $heading ?? 'My ' . $experience->role() . ' skills' }}</h3>
+            <p class="text-dark-400 text-sm">{{ $subheading ?? 'Each skill fills up as your work on it is approved.' }}</p>
         </div>
-        @if($next)
+        @if($next && empty($heading))
             <span class="tx-chip">Next to grow: {{ $next['label'] }}</span>
         @endif
     </div>

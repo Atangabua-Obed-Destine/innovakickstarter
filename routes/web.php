@@ -39,6 +39,11 @@ Route::get('/talent/{user:username}', [ProfileController::class, 'public'])->nam
 Route::get('/profile/{user}', [ProfileController::class, 'publicById'])->name('public.profile.show');
 
 // Public Receipt Verification (no auth needed)
+Route::get('/certificates/{certificate}', function (\App\Models\SkillCertificate $certificate) {
+    $certificate->load(['fellow', 'track']);
+
+    return view('public.certificate', ['certificate' => $certificate, 'experience' => \App\Support\TrackExperience::for($certificate->track)]);
+})->name('certificates.show');
 Route::get('/receipt/verify/{uuid}', [AdminFeeController::class, 'publicVerify'])->name('receipt.verify');
 
 // Public Internship Attestation Verification (no auth needed; QR code target)

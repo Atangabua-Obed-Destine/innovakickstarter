@@ -34,6 +34,6 @@ class LessonMarkdown
     /** Plain-text preview (for cards and lists). */
     public static function plain(?string $text, int $limit = 120): string
     {
-        return Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags(Str::markdown((string) $text, ['html_input' => 'strip'])))), $limit);
+        return Str::limit(trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags(Str::markdown((string) $text, ['html_input' => 'strip'])), ENT_QUOTES | ENT_HTML5))), $limit);
     }
 }

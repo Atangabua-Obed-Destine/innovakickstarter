@@ -259,6 +259,13 @@ class ProfileController extends Controller
             abort(404);
         }
 
+        // The portfolio: reviewed curriculum work, certificates, skills and presentations.
+        return view('public.portfolio', app(\App\Services\PortfolioService::class)->build($user));
+    }
+
+    /** Previous profile page (kept for reference; replaced by the portfolio above). */
+    protected function legacyPublicById(User $user): View
+    {
         $user->load([
             'fellowTracks.track',
             'activities' => fn($q) => $q->where('status', 'approved')
