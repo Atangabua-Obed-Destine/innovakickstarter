@@ -51,7 +51,7 @@ class LiveAIInterviewService
      */
     public function isConfigured(): bool
     {
-        return !empty($this->apiKey);
+        return \App\Services\Ai\AiProvider::configured(); // main or backup provider
     }
 
     /**
@@ -280,9 +280,30 @@ class LiveAIInterviewService
             ];
         }
 
-        // Calculate overall score
+        // Calculate overall score from the answers the AI really scored
         $validEvaluations = collect($state['evaluations'])->where('skipped', false);
-        $overallScore = $validEvaluations->avg('score') ?? 0;
+        $scored = $validEvaluations->filter(fn ($e) => is_numeric($e['score'] ?? null));
+
+        if ($scored->isEmpty() && $validEvaluations->isNotEmpty()) {
+            // The AI could not score any answer: no score, so it does not count toward Career Capital.
+            $this->clearState($interview->id);
+
+            return [
+                'overall_score' => null,
+                'not_scored' => true,
+                'summary' => "Your answers were saved, but they couldn't be scored because the AI service was busy or unavailable. "
+                    . "This interview won't count toward your Career Capital. Please try again later.",
+                'strengths' => [],
+                'improvements' => [],
+                'detailed_feedback' => $state['evaluations'],
+                'questions_answered' => $validEvaluations->count(),
+                'questions_skipped' => collect($state['evaluations'])->where('skipped', true)->count(),
+                'duration_minutes' => now()->diffInMinutes($state['started_at']),
+                'hints_used' => $state['hints_used'],
+            ];
+        }
+
+        $overallScore = $scored->avg('score') ?? 0; // all skipped: 0, as before
 
         // Generate comprehensive summary
         $summary = $this->generateFinalSummary($state, $overallScore, $interview);
@@ -292,6 +313,8 @@ class LiveAIInterviewService
 
         return [
             'overall_score' => round($overallScore, 1),
+            'not_scored' => false,
+            'answers_not_scored' => $validEvaluations->count() - $scored->count(),
             'summary' => $summary['summary'],
             'strengths' => $summary['strengths'],
             'improvements' => $summary['improvements'],
@@ -536,7 +559,7 @@ class LiveAIInterviewService
             if (!empty($response['evaluation'])) {
                 $state['evaluations'][] = [
                     'question_index' => $state['current_question'],
-                    'score' => $response['evaluation']['score'] ?? 70,
+                    'score' => is_numeric($response['evaluation']['score'] ?? null) ? max(0, min(100, (float) $response['evaluation']['score'])) : null,
                     'strengths' => $response['evaluation']['strengths'] ?? [],
                     'improvements' => $response['evaluation']['improvements'] ?? [],
                     'skipped' => false,
@@ -620,9 +643,7 @@ class LiveAIInterviewService
         ];
 
         $payload = [
-            'model' => $this->model,
             'messages' => $messages,
-            'max_tokens' => \App\Services\Ai\AiProvider::maxTokens(500),
             'temperature' => 0.8,
         ];
 
@@ -630,14 +651,8 @@ class LiveAIInterviewService
             $payload['response_format'] = ['type' => 'json_object'];
         }
 
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->apiKey,
-            'Content-Type' => 'application/json',
-        ])->timeout(30)->post(\App\Services\Ai\AiProvider::chatUrl(), $payload);
-
-        if (!$response->successful()) {
-            throw new \Exception('OpenAI API error: ' . $response->body());
-        }
+        // Main provider, then the backup; throws AiUnavailableException when none answers.
+        $response = app(\App\Services\Ai\AiClient::class)->chat('interview', $payload, 500)['response'];
 
         $content = $response->json('choices.0.message.content');
         
@@ -683,12 +698,13 @@ class LiveAIInterviewService
             'evaluate_and_next' => [
                 'message' => "Thank you for sharing that experience. I can see you've given this thought. " .
                     "Now, let me ask you something different: " . $this->getFallbackQuestion($type, $state['difficulty'], $state['questions_asked'] + 1),
-                'evaluation' => ['score' => 70, 'strengths' => ['Provided relevant example'], 'improvements' => ['Add more specific metrics']],
+                // The AI was unavailable: this answer is not scored (never an invented score).
+                'evaluation' => ['score' => null, 'not_scored' => true, 'strengths' => [], 'improvements' => []],
             ],
             'final_evaluation' => [
                 'message' => "That was a great answer to end on! Thank you for your thoughtful responses throughout this interview. " .
                     "You've shown good communication skills and self-awareness. The interview is now complete.",
-                'evaluation' => ['score' => 75, 'strengths' => ['Good communication'], 'improvements' => ['Continue practicing']],
+                'evaluation' => ['score' => null, 'not_scored' => true, 'strengths' => [], 'improvements' => []],
             ],
         ];
 

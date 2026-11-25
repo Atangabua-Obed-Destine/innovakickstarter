@@ -116,12 +116,14 @@ class AiReviewService
             $integrity = $this->integrity($progress, $package);
 
             if (!$this->grader->isConfigured()) {
-                throw new \RuntimeException('OpenAI is not configured (OPENAI_API_KEY).');
+                throw new \RuntimeException('No AI provider key is set (Admin → Integrations).');
             }
 
             $graded = $this->grader->grade($package, $integrity);
             $result = $graded['result'];
             $usage = ['input_tokens' => $graded['input_tokens'], 'output_tokens' => $graded['output_tokens']];
+            // The backup provider may have answered.
+            $review->model = $graded['model'] ?? $review->model;
         } catch (\Throwable $e) {
             $error = mb_substr($e->getMessage(), 0, 2000);
             Log::warning('AI review failed', ['ai_review' => $review->id, 'error' => $error]);
@@ -154,6 +156,7 @@ class AiReviewService
             'notes_for_reviewer' => $result['notes_for_reviewer'] ?? null,
             'recommended_decision' => $decision['decision'],
             'decision_reasons' => $decision['reasons'],
+            'model' => $review->model,
             'input_tokens' => $usage['input_tokens'],
             'output_tokens' => $usage['output_tokens'],
             'duration_ms' => (int) ((microtime(true) - $started) * 1000),

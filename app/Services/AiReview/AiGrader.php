@@ -2,8 +2,9 @@
 
 namespace App\Services\AiReview;
 
+use App\Services\Ai\AiClient;
 use App\Services\Ai\AiProvider;
-use Illuminate\Support\Facades\Http;
+use App\Services\Ai\AiUnavailableException;
 
 /**
  * Grades one submission against its rubric with the active AI provider
@@ -38,32 +39,33 @@ class AiGrader
     }
 
     /**
-     * @return array{result: array, input_tokens: ?int, output_tokens: ?int}
+     * @return array{result: array, input_tokens: ?int, output_tokens: ?int, model: string}
      */
     public function grade(array $package, array $integrity): array
     {
-        if (!$this->isConfigured()) {
-            throw new \RuntimeException('No AI provider key is set (Admin → Integrations).');
-        }
-
         $rubric = $package['activity']['rubric'];
 
-        $efforts = AiProvider::reasoningEfforts();
-        foreach ($efforts as $i => $effort) {
-            try {
-                $response = $this->request($rubric, $package, $integrity, $effort);
-                break;
-            } catch (\Illuminate\Http\Client\RequestException $e) {
-                // Groq checks the JSON after generation; a model that stops early
-                // (missing fields) gets json_validate_failed. Thinking harder fixes it.
-                if ($e->response?->json('error.code') === 'json_validate_failed' && isset($efforts[$i + 1])) {
-                    continue;
-                }
-                $message = $e->response?->json('error.message') ?? $e->getMessage();
-                throw new \RuntimeException(AiProvider::label() . ' (HTTP ' . $e->response?->status() . '): ' . mb_substr((string) $message, 0, 300));
-            }
+        try {
+            $call = app(AiClient::class)->chat('review', fn (string $provider) => [
+                'temperature' => 0,
+                'messages' => [
+                    ['role' => 'system', 'content' => $this->systemPrompt()],
+                    ['role' => 'user', 'content' => $this->userPrompt($package, $integrity, AiProvider::reviewPromptChars($provider))],
+                ],
+                'response_format' => [
+                    'type' => 'json_schema',
+                    'json_schema' => [
+                        'name' => 'submission_review',
+                        'strict' => true,
+                        'schema' => $this->schema(count($rubric)),
+                    ],
+                ],
+            ], 2500, ['timeout' => 120, 'try_efforts' => true, 'wait_on_rate_limit' => true]);
+        } catch (AiUnavailableException $e) {
+            throw new \RuntimeException($e->getMessage(), 0, $e);
         }
 
+        $response = $call['response'];
         $choice = $response->json('choices.0');
         if (($choice['message']['refusal'] ?? null) !== null) {
             throw new \RuntimeException('The model refused to review: ' . $choice['message']['refusal']);
@@ -79,51 +81,8 @@ class AiGrader
             'result' => $result,
             'input_tokens' => $response->json('usage.prompt_tokens'),
             'output_tokens' => $response->json('usage.completion_tokens'),
+            'model' => $call['model'],
         ];
-    }
-
-    protected function request(array $rubric, array $package, array $integrity, ?string $reasoningEffort = null): \Illuminate\Http\Client\Response
-    {
-        return Http::withToken(AiProvider::key())
-            ->withHeaders(AiProvider::headers())
-            ->timeout(120)
-            ->retry(3, function (int $attempt, ?\Throwable $e = null) {
-                // A per-minute limit says how long to wait (Groq free tier: 8,000 tokens a minute).
-                $after = $e instanceof \Illuminate\Http\Client\RequestException ? (float) $e->response?->header('retry-after') : 0;
-
-                return $after > 0 ? (int) min(65000, ceil($after * 1000) + 500) : $attempt * 2000;
-            }, function (\Throwable $e) {
-                $response = $e instanceof \Illuminate\Http\Client\RequestException ? $e->response : null;
-                if (!$response) {
-                    return true; // connection problem
-                }
-                // Out of credits is not temporary; rate limits and server errors are.
-                // OpenAI reports it as type insufficient_quota (code credit_balance_exhausted or insufficient_quota).
-                if (in_array('insufficient_quota', [$response->json('error.code'), $response->json('error.type')], true)
-                    || $response->json('error.code') === 'credit_balance_exhausted') {
-                    return false;
-                }
-
-                return $response->status() === 429 || $response->status() >= 500;
-            }, throw: true)
-            ->post(AiProvider::chatUrl(), array_filter([
-                'model' => $this->model(),
-                'temperature' => 0,
-                'max_tokens' => AiProvider::maxTokens(2500),
-                'reasoning_effort' => $reasoningEffort,
-                'messages' => [
-                    ['role' => 'system', 'content' => $this->systemPrompt()],
-                    ['role' => 'user', 'content' => $this->userPrompt($package, $integrity)],
-                ],
-                'response_format' => [
-                    'type' => 'json_schema',
-                    'json_schema' => [
-                        'name' => 'submission_review',
-                        'strict' => true,
-                        'schema' => $this->schema(count($rubric)),
-                    ],
-                ],
-            ], fn ($value) => $value !== null));
     }
 
     public function systemPrompt(): string
@@ -161,7 +120,6 @@ PROMPT;
      */
     public function userPrompt(array $package, array $integrity, ?int $maxChars = null): string
     {
-        $maxChars ??= AiProvider::reviewPromptChars();
         $a = $package['activity'];
         $s = $package['submission'];
         $lines = [];

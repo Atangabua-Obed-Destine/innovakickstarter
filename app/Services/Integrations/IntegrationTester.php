@@ -28,26 +28,61 @@ class IntegrationTester
     }
 
     /**
-     * Two tiny requests to the provider chosen in the form, shaped like the
-     * real ones: the interview call (JSON mode, temperature 0.7) and the
-     * review call (strict JSON schema, temperature 0). On OpenAI they cost a
-     * fraction of a cent; on Groq's free tier, nothing.
+     * Tests the main provider chosen in the form and, when one is chosen, the
+     * backup. Two tiny requests each, shaped like the real ones: the
+     * interview call (JSON mode, temperature 0.7) and the review call (strict
+     * JSON schema, temperature 0). On OpenAI they cost a fraction of a cent;
+     * on the free tiers, nothing.
      */
     public function openai(array $v): array
     {
-        $provider = isset(AiProvider::PROVIDERS[$v['ai_provider'] ?? '']) ? $v['ai_provider'] : 'openai';
+        $main = isset(AiProvider::PROVIDERS[$v['ai_provider'] ?? '']) ? $v['ai_provider'] : 'openai';
+        $backup = $v['ai_backup_provider'] ?? null;
+        $backup = isset(AiProvider::PROVIDERS[$backup ?? '']) && $backup !== $main ? $backup : null;
+
+        $result = $this->testProvider($main, $v);
+        if ($backup === null) {
+            if ($result['status'] === 'ok' && AiProvider::name() !== $main) {
+                $result['message'] .= ' Save to switch the platform to ' . AiProvider::label($main) . '.';
+            }
+
+            return $result;
+        }
+
+        $second = $this->testProvider($backup, $v);
+        $mainLabel = AiProvider::label($main);
+        $backupLabel = AiProvider::label($backup);
+        $details = array_merge(
+            array_map(fn ($d) => "Main ({$mainLabel}): {$d}", $result['details']),
+            array_map(fn ($d) => "Backup ({$backupLabel}): {$d}", $second['details']),
+        );
+
+        if ($result['status'] === 'ok' && $second['status'] === 'ok') {
+            return $this->result('ok', "Both work: {$mainLabel} as the main provider, {$backupLabel} as the backup.", $details);
+        }
+        if ($result['status'] !== 'ok' && $second['status'] !== 'ok') {
+            return $this->result('error', "Main ({$mainLabel}): {$result['message']} Backup ({$backupLabel}): {$second['message']}", $details);
+        }
+
+        return $result['status'] !== 'ok'
+            ? $this->result('warning', "The main provider failed, so everything would run on the backup. {$mainLabel}: {$result['message']}", $details)
+            : $this->result('warning', "The main provider works, but the backup failed. {$backupLabel}: {$second['message']}", $details);
+    }
+
+    protected function testProvider(string $provider, array $v): array
+    {
         $label = AiProvider::label($provider);
         $key = $v["{$provider}_api_key"] ?? null;
         if (blank($key)) {
             return $this->result('error', "No {$label} API key. Paste one above, then test again.");
         }
 
-        if ($provider === 'groq') {
-            $interviewModel = $v['groq_model'] ?: AiProvider::model('groq');
-            $reviewModel = $v['groq_review_model'] ?: AiProvider::reviewModel('groq');
-        } else {
+        if ($provider === 'openai') {
             $interviewModel = $v['openai_model'] ?: 'gpt-4o';
             $reviewModel = $v['openai_review_model'] ?: $interviewModel;
+        } else {
+            $interviewModel = ($v["{$provider}_model"] ?? null) ?: AiProvider::model($provider);
+            $reviewModel = ($v["{$provider}_review_model"] ?? null) ?: AiProvider::reviewModel($provider);
         }
         // Tiny answers, plus thinking room for reasoning models.
         $maxTokens = AiProvider::maxTokens(10, $provider);
@@ -84,6 +119,7 @@ class IntegrationTester
         ]];
 
         $details = [];
+        $response = null;
         foreach ($calls as [$purpose, $model, $payload]) {
             $started = microtime(true);
             try {
@@ -103,7 +139,7 @@ class IntegrationTester
             $details[] = sprintf('%s answered for %s (%d ms)', $model, $purpose, (microtime(true) - $started) * 1000);
         }
 
-        if ($provider === 'groq' && isset($response)) {
+        if ($provider === 'groq' && $response) {
             $limits = $response->header('x-ratelimit-limit-tokens');
             if ($limits) {
                 $details[] = "Limits on this key: {$limits} tokens a minute, " . $response->header('x-ratelimit-limit-requests') . ' requests a day per model';
@@ -113,9 +149,6 @@ class IntegrationTester
         $message = $provider === 'openai'
             ? 'The key works, the account has credits and the models answer.'
             : 'The key works and the models answer.';
-        if (AiProvider::name() !== $provider) {
-            $message .= " Save to switch the platform to {$label}.";
-        }
 
         return $this->result('ok', $message, $details);
     }
@@ -217,11 +250,16 @@ class IntegrationTester
     {
         $label = AiProvider::label($provider);
         $status = $response->status();
-        $code = $response->json('error.code');
+        // Gemini sometimes answers errors as a list: [{"error": {...}}]
+        $code = $response->json('error.code') ?? $response->json('0.error.status');
         $type = $response->json('error.type');
-        $message = (string) ($response->json('error.message') ?? '');
+        $message = (string) ($response->json('error.message') ?? $response->json('0.error.message') ?? '');
         $noCredits = $type === 'insufficient_quota' || in_array($code, ['insufficient_quota', 'credit_balance_exhausted'], true);
-        $suggest = $provider === 'groq' ? 'openai/gpt-oss-120b or openai/gpt-oss-20b' : 'gpt-4o or gpt-4o-mini';
+        $suggest = match ($provider) {
+            'groq' => 'openai/gpt-oss-120b or openai/gpt-oss-20b',
+            'gemini' => 'gemini-3.5-flash',
+            default => 'gpt-4o or gpt-4o-mini',
+        };
 
         return match (true) {
             $status === 401 => "{$label} rejected the key (401). Check it was copied in full and has not been revoked.",

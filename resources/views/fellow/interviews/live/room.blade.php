@@ -424,9 +424,15 @@
                 <div class="text-center">
                     <p class="text-dark-400 text-sm uppercase tracking-wide mb-2">Overall Score</p>
                     <p class="text-5xl font-bold"
-                       :class="results.overall_score >= 80 ? 'text-green-400' : 
+                       :class="results.overall_score === null ? 'text-dark-300' :
+                               results.overall_score >= 80 ? 'text-green-400' :
                                results.overall_score >= 60 ? 'text-yellow-400' : 'text-red-400'"
-                       x-text="results.overall_score + '%'"></p>
+                       x-text="results.overall_score === null ? 'Not scored' : results.overall_score + '%'"></p>
+                    <p x-show="results.overall_score === null" class="text-dark-400 text-sm mt-2">
+                        The AI service was unavailable, so this interview doesn't count toward your Career Capital. Please try again later.
+                    </p>
+                    <p x-show="results.answers_not_scored > 0" class="text-dark-400 text-sm mt-2"
+                       x-text="results.answers_not_scored + ' answer(s) could not be scored and were left out of this score.'"></p>
                 </div>
                 <div class="grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-dark-600">
                     <div class="text-center">

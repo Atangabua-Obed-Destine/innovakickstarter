@@ -699,7 +699,7 @@
                                     </svg>
                                     <span class="absolute inset-0 flex items-center justify-center text-lg font-bold"
                                           :class="lastEvaluation?.score >= 80 ? 'text-green-400' : (lastEvaluation?.score >= 60 ? 'text-amber-400' : 'text-red-400')"
-                                          x-text="lastEvaluation?.score + '%'"></span>
+                                          x-text="lastEvaluation?.not_scored ? '—' : lastEvaluation?.score + '%'"></span>
                                 </div>
                             </div>
                         </div>
@@ -747,7 +747,7 @@
             <!-- Continue Button -->
             <div class="flex justify-center gap-4">
                 <!-- Retry Button -->
-                <button x-show="retriesRemaining > 0 && lastEvaluation?.score < 70"
+                <button x-show="retriesRemaining > 0 && (lastEvaluation?.not_scored || lastEvaluation?.score < 70)"
                         @click="retryQuestion()" 
                         class="btn btn-outline">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -797,7 +797,7 @@
                     <div class="absolute inset-0 flex flex-col items-center justify-center">
                         <span class="text-5xl font-bold"
                               :class="overallScore >= 80 ? 'text-green-400' : (overallScore >= 60 ? 'text-amber-400' : 'text-red-400')"
-                              x-text="overallScore + '%'"></span>
+                              x-text="overallScore === null ? '—' : overallScore + '%'"></span>
                         <span class="text-dark-400 text-sm" x-text="scoreGrade"></span>
                     </div>
                 </div>
@@ -1377,20 +1377,24 @@ function enhancedAIInterview() {
                 });
                 
                 const data = await response.json();
+                if (!response.ok) throw new Error('HTTP ' + response.status);
                 this.lastEvaluation = data;
                 this.evaluations.push(data);
-                this.questionScores.push(data.score || 0);
+                // null = the AI could not score it: left out of the overall score
+                this.questionScores.push(data.not_scored ? null : (data.score || 0));
                 
             } catch (error) {
                 console.error('Evaluation failed:', error);
+                // Never invent a score.
                 this.lastEvaluation = {
-                    score: 70,
-                    feedback: 'Your response has been recorded. Detailed feedback will be provided.',
-                    strengths: ['Response provided'],
-                    improvements: ['Await detailed review'],
+                    score: null,
+                    not_scored: true,
+                    feedback: "Your answer couldn't be scored right now. It won't count toward your Career Capital; you can retry or try again later.",
+                    strengths: [],
+                    improvements: [],
                 };
                 this.evaluations.push(this.lastEvaluation);
-                this.questionScores.push(70);
+                this.questionScores.push(null);
             }
             
             this.isSubmitting = false;
@@ -1456,13 +1460,16 @@ function enhancedAIInterview() {
             }
             
             // Calculate overall score
-            const validScores = this.questionScores.filter(s => s > 0);
+            const validScores = this.questionScores.filter(s => s !== null && s > 0);
+            const notScored = this.questionScores.filter(s => s === null).length;
             this.overallScore = validScores.length > 0 
                 ? Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length)
-                : 0;
+                : (notScored > 0 ? null : 0);
             
             // Determine grade
-            if (this.overallScore >= 90) {
+            if (this.overallScore === null) {
+                this.scoreGrade = 'Not scored: the AI service was unavailable';
+            } else if (this.overallScore >= 90) {
                 this.scoreGrade = 'Excellent Performance! 🌟';
             } else if (this.overallScore >= 80) {
                 this.scoreGrade = 'Great Job! 🎉';
@@ -1477,10 +1484,14 @@ function enhancedAIInterview() {
             // Generate summary
             const attempted = this.evaluations.filter(e => !e.skipped).length;
             const skipped = this.evaluations.filter(e => e.skipped).length;
-            this.performanceSummary = `You completed ${attempted} out of ${this.totalQuestions} questions` +
-                (skipped > 0 ? ` (${skipped} skipped)` : '') +
-                ` with an average score of ${this.overallScore}%. ` +
-                `Focus on the improvement areas identified to boost your performance in future interviews.`;
+            this.performanceSummary = this.overallScore === null
+                ? `Your answers were saved, but they couldn't be scored because the AI service was unavailable. ` +
+                  `This interview won't count toward your Career Capital. Please try again later.`
+                : `You completed ${attempted} out of ${this.totalQuestions} questions` +
+                  (skipped > 0 ? ` (${skipped} skipped)` : '') +
+                  ` with an average score of ${this.overallScore}%. ` +
+                  (notScored > 0 ? `${notScored} answer(s) could not be scored and were left out. ` : '') +
+                  `Focus on the improvement areas identified to boost your performance in future interviews.`;
             
             // Save results to server
             try {

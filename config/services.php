@@ -53,9 +53,18 @@ return [
         'organization' => env('OPENAI_ORGANIZATION'),
     ],
 
-    // Which AI provider the platform uses: openai or groq (see App\Services\Ai\AiProvider).
+    // Which AI provider the platform uses: openai, groq or gemini, and an optional
+    // backup used automatically when the main one fails (see App\Services\Ai\AiProvider).
     'ai' => [
         'provider' => env('AI_PROVIDER', 'openai'),
+        'backup' => env('AI_BACKUP_PROVIDER'),
+    ],
+
+    // Google Gemini (OpenAI-compatible endpoint).
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-3.5-flash'),
+        'review_model' => env('GEMINI_REVIEW_MODEL', 'gemini-3.5-flash'),
     ],
 
     // Groq (OpenAI-compatible API, free tier). Separate models for interviews

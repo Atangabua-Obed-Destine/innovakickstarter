@@ -146,6 +146,20 @@ class CareerCapitalScoringTest extends TestCase
         $this->assertEqualsWithDelta(42.0, $this->calculator()->mockInterviewScore($this->fellow, $this->track), 0.01);
     }
 
+    public function test_interviews_the_ai_could_not_score_do_not_count(): void
+    {
+        $this->mockInterviews(10, 80);
+        // Newer interviews the AI could not score: they must not pull the average to 0.
+        for ($i = 0; $i < 3; $i++) {
+            InterviewSession::create([
+                'fellow_id' => $this->fellow->id, 'track_id' => $this->track->id, 'type' => 'behavioral', 'mode' => 'ai',
+                'status' => 'completed', 'score' => null, 'overall_score' => null, 'is_practice' => false, 'completed_at' => now()->addHour(),
+            ]);
+        }
+
+        $this->assertEqualsWithDelta(42.0, $this->calculator()->mockInterviewScore($this->fellow, $this->track), 0.01);
+    }
+
     public function test_practice_interviews_count(): void
     {
         // 5 / 20 volume x 80, consistent (+5%) = 21.

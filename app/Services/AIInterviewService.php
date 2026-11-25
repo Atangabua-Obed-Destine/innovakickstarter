@@ -39,7 +39,7 @@ class AIInterviewService
      */
     public function isConfigured(): bool
     {
-        return !empty($this->apiKey);
+        return \App\Services\Ai\AiProvider::configured(); // main or backup provider
     }
 
     /**
@@ -78,23 +78,33 @@ class AIInterviewService
         string $difficulty = 'intermediate'
     ): array {
         if (!$this->isConfigured()) {
-            return $this->getPlaceholderEvaluation($response);
+            return $this->notScoredEvaluation();
         }
 
         try {
             $prompt = $this->buildEvaluationPrompt($question, $response, $type, $difficulty);
             $result = $this->callOpenAI($prompt, true);
-            
+
+            // No real score from the AI means no score: never invent one.
+            $score = $result['score'] ?? null;
+            if (!is_numeric($score)) {
+                Log::warning('AI Evaluation returned no score', ['keys' => array_keys($result)]);
+
+                return $this->notScoredEvaluation();
+            }
+
             return [
-                'score' => $result['score'] ?? 70,
+                'score' => max(0, min(100, (int) round((float) $score))),
+                'not_scored' => false,
                 'feedback' => $result['feedback'] ?? 'Good attempt. Consider providing more specific examples.',
-                'strengths' => $result['strengths'] ?? ['Clear communication'],
-                'improvements' => $result['improvements'] ?? ['Add more technical depth'],
+                'strengths' => $result['strengths'] ?? [],
+                'improvements' => $result['improvements'] ?? [],
                 'follow_up_question' => $result['follow_up_question'] ?? null,
             ];
         } catch (\Exception $e) {
             Log::error('AI Evaluation Error: ' . $e->getMessage());
-            return $this->getPlaceholderEvaluation($response);
+
+            return $this->notScoredEvaluation();
         }
     }
 
@@ -182,11 +192,8 @@ class AIInterviewService
      */
     protected function callOpenAI(string $prompt, bool $jsonMode = false): array
     {
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->apiKey,
-            'Content-Type' => 'application/json',
-        ])->timeout(30)->post(\App\Services\Ai\AiProvider::chatUrl(), [
-            'model' => $this->model,
+        // Main provider, then the backup; throws AiUnavailableException when none answers.
+        $response = app(\App\Services\Ai\AiClient::class)->chat('interview', array_filter([
             'messages' => [
                 [
                     'role' => 'system',
@@ -198,13 +205,8 @@ class AIInterviewService
                 ],
             ],
             'temperature' => 0.7,
-            'max_tokens' => \App\Services\Ai\AiProvider::maxTokens(2000),
             'response_format' => $jsonMode ? ['type' => 'json_object'] : null,
-        ]);
-
-        if (!$response->successful()) {
-            throw new \Exception('OpenAI API Error: ' . $response->body());
-        }
+        ]), 2000)['response'];
 
         $content = $response->json('choices.0.message.content');
         
@@ -558,16 +560,18 @@ PROMPT;
     /**
      * Get placeholder evaluation when AI is not available.
      */
-    protected function getPlaceholderEvaluation(string $response): array
+    /**
+     * When the AI could not evaluate an answer: no score (never an invented
+     * one), so it does not count toward Career Capital.
+     */
+    public function notScoredEvaluation(): array
     {
-        $wordCount = str_word_count($response);
-        $baseScore = min(70, max(40, $wordCount * 2));
-        
         return [
-            'score' => $baseScore,
-            'feedback' => 'Your response has been recorded. A mentor will review and provide detailed feedback.',
-            'strengths' => ['Response provided'],
-            'improvements' => ['Await mentor review for detailed feedback'],
+            'score' => null,
+            'not_scored' => true,
+            'feedback' => "Your answer was saved, but it couldn't be scored right now because the AI service is busy or unavailable. It won't count toward your Career Capital. Please try the interview again later.",
+            'strengths' => [],
+            'improvements' => [],
             'follow_up_question' => null,
         ];
     }
