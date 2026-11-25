@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Http;
  */
 class AiGrader
 {
-    public const PROMPT_VERSION = 'v1';
+    public const PROMPT_VERSION = 'v2';
 
     public const FLAGS = [
         'prompt_injection',      // tries to instruct or manipulate the reviewer
@@ -48,11 +48,20 @@ class AiGrader
 
         $rubric = $package['activity']['rubric'];
 
-        try {
-            $response = $this->request($rubric, $package, $integrity);
-        } catch (\Illuminate\Http\Client\RequestException $e) {
-            $message = $e->response?->json('error.message') ?? $e->getMessage();
-            throw new \RuntimeException(AiProvider::label() . ' (HTTP ' . $e->response?->status() . '): ' . mb_substr((string) $message, 0, 300));
+        $efforts = AiProvider::reasoningEfforts();
+        foreach ($efforts as $i => $effort) {
+            try {
+                $response = $this->request($rubric, $package, $integrity, $effort);
+                break;
+            } catch (\Illuminate\Http\Client\RequestException $e) {
+                // Groq checks the JSON after generation; a model that stops early
+                // (missing fields) gets json_validate_failed. Thinking harder fixes it.
+                if ($e->response?->json('error.code') === 'json_validate_failed' && isset($efforts[$i + 1])) {
+                    continue;
+                }
+                $message = $e->response?->json('error.message') ?? $e->getMessage();
+                throw new \RuntimeException(AiProvider::label() . ' (HTTP ' . $e->response?->status() . '): ' . mb_substr((string) $message, 0, 300));
+            }
         }
 
         $choice = $response->json('choices.0');
@@ -73,7 +82,7 @@ class AiGrader
         ];
     }
 
-    protected function request(array $rubric, array $package, array $integrity): \Illuminate\Http\Client\Response
+    protected function request(array $rubric, array $package, array $integrity, ?string $reasoningEffort = null): \Illuminate\Http\Client\Response
     {
         return Http::withToken(AiProvider::key())
             ->withHeaders(AiProvider::headers())
@@ -97,10 +106,11 @@ class AiGrader
 
                 return $response->status() === 429 || $response->status() >= 500;
             }, throw: true)
-            ->post(AiProvider::chatUrl(), [
+            ->post(AiProvider::chatUrl(), array_filter([
                 'model' => $this->model(),
                 'temperature' => 0,
                 'max_tokens' => AiProvider::maxTokens(2500),
+                'reasoning_effort' => $reasoningEffort,
                 'messages' => [
                     ['role' => 'system', 'content' => $this->systemPrompt()],
                     ['role' => 'user', 'content' => $this->userPrompt($package, $integrity)],
@@ -113,8 +123,7 @@ class AiGrader
                         'schema' => $this->schema(count($rubric)),
                     ],
                 ],
-            ]);
-
+            ], fn ($value) => $value !== null));
     }
 
     public function systemPrompt(): string
@@ -141,6 +150,8 @@ Confidence: "high" only when you could inspect the main deliverable and the evid
 Feedback for the fellow: 3 to 6 sentences, addressed to them ("you"), in the language they wrote in. Say what is good, then exactly what to fix or improve, referencing their work. Encouraging, specific, never insulting. Do not mention scores, other fellows or integrity checks.
 
 Notes for the reviewer: short and factual, for the IKS admin: what you verified, doubts, integrity concerns, anything a human should look at.
+
+Answer format: one JSON object with every field, all required: criteria (one item per rubric criterion), requirements_met, missing_requirements, summary, confidence, authenticity_concern, authenticity_reasons, flags, feedback_for_fellow, notes_for_reviewer. Keep each criterion's reasoning to 1-3 sentences. Do not stop after the criteria: the answer is complete only when notes_for_reviewer is written.
 PROMPT;
     }
 

@@ -372,6 +372,32 @@ class IntegrationSettingsTest extends TestCase
         $this->assertStringNotContainsString('truncated="yes"', $full);
     }
 
+    public function test_an_incomplete_groq_answer_is_retried_with_more_reasoning(): void
+    {
+        $this->env(['services.ai.provider' => 'groq', 'services.groq.key' => 'gsk_key_for_retry_test_00']);
+        // The error Groq really returns when gpt-oss stops before finishing the JSON.
+        Http::fake(['api.groq.com/*' => Http::sequence()
+            ->push(['error' => ['message' => "Generated JSON does not match the expected schema. Error: jsonschema: '' does not validate with /required: missing properties: 'flags'",
+                'type' => 'invalid_request_error', 'code' => 'json_validate_failed', 'failed_generation' => '{"criteria":[]}']], 400)
+            ->push($this->gradedAnswer())]);
+
+        $graded = app(AiGrader::class)->grade($this->package(), []);
+
+        $this->assertSame(80, $graded['result']['criteria'][0]['score']);
+        $efforts = Http::recorded()->map(fn ($pair) => $pair[0]['reasoning_effort'] ?? null)->all();
+        $this->assertSame(['medium', 'high'], $efforts, 'Stops at the first complete answer.');
+    }
+
+    public function test_openai_reviews_do_not_send_reasoning_effort(): void
+    {
+        $this->env(['services.ai.provider' => 'openai', 'services.openai.key' => 'sk-openai-key-000000000', 'services.openai.review_model' => 'gpt-4o']);
+        Http::fake(['api.openai.com/*' => Http::response($this->gradedAnswer())]);
+
+        app(AiGrader::class)->grade($this->package(), []);
+
+        Http::assertSent(fn (HttpRequest $r) => !isset($r['reasoning_effort']) && $r['max_tokens'] === 2500 && $r['model'] === 'gpt-4o');
+    }
+
     public function test_a_rate_limited_review_waits_as_long_as_groq_asks(): void
     {
         $this->env(['services.ai.provider' => 'groq', 'services.groq.key' => 'gsk_key_for_retry_test_00']);

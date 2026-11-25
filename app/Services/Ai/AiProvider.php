@@ -96,6 +96,17 @@ class AiProvider
         return self::PROVIDERS[$provider ?? self::name()]['reasoning'] ? $answerTokens + 2000 : $answerTokens;
     }
 
+    /**
+     * reasoning_effort values to try for a review, in order. Groq's gpt-oss
+     * sometimes stops before finishing the JSON at its default effort; an
+     * explicit "medium", then "high" on retries, completes it.
+     * [null] = do not send the parameter (OpenAI GPT-4o).
+     */
+    public static function reasoningEfforts(?string $provider = null): array
+    {
+        return self::PROVIDERS[$provider ?? self::name()]['reasoning'] ? ['medium', 'high', 'high'] : [null];
+    }
+
     /** Character budget for a review prompt, or null for no limit. */
     public static function reviewPromptChars(?string $provider = null): ?int
     {
