@@ -721,6 +721,21 @@
         </div>
     </div>
 
+    @php
+        $practiceDaily = $trackExperience ? app(\App\Services\PracticeService::class)->dailyChallenge($trackExperience->track) : null;
+        $practiceStats = $practiceDaily ? app(\App\Services\PracticeService::class)->stats($user, $trackExperience->track) : null;
+    @endphp
+    @if($practiceDaily)
+        <div class="card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <p class="text-dark-400 text-xs uppercase tracking-wider">Practice Lab · today's challenge</p>
+                <p class="text-white font-semibold mt-1">{{ $practiceDaily->title }}</p>
+                <p class="text-dark-400 text-sm">{{ $practiceDaily->kindLabel() }} · {{ (int) round($practiceDaily->xp * 1.5) }} XP today · 🔥 {{ $practiceStats['streak'] }}-day practice streak</p>
+            </div>
+            <a href="{{ route('practice.show', $practiceDaily) }}" class="btn btn-primary whitespace-nowrap">{{ $practiceStats['practiced_today'] ? 'Practice more' : "Solve today's challenge" }}</a>
+        </div>
+    @endif
+
     @if(count($trackSkills ?? []) >= 3)
         @include('partials.track.skill-map', ['skills' => $trackSkills, 'experience' => $trackExperience])
     @endif

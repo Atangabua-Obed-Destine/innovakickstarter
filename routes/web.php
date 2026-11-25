@@ -230,6 +230,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/badges/{badge}/share', [FellowCurriculumController::class, 'shareBadge'])->name('badges.share');
         });
 
+        // Practice Lab (self-checking challenges; XP is separate from Career Capital)
+        Route::get('/practice', [\App\Http\Controllers\Fellow\PracticeController::class, 'index'])->name('practice.index');
+        Route::get('/practice/{challenge}', [\App\Http\Controllers\Fellow\PracticeController::class, 'show'])->name('practice.show');
+        Route::post('/practice/{challenge}/check', [\App\Http\Controllers\Fellow\PracticeController::class, 'check'])->name('practice.check')->middleware('throttle:40,1');
+        Route::post('/practice/{challenge}/reveal', [\App\Http\Controllers\Fellow\PracticeController::class, 'reveal'])->name('practice.reveal')->middleware('throttle:20,1');
+
         // Presentations (demos, workshops, talks) reviewed by the I-NNOVA team
         Route::get('/presentations', [\App\Http\Controllers\Fellow\PresentationController::class, 'index'])->name('presentations.index');
         Route::get('/presentations/create', [\App\Http\Controllers\Fellow\PresentationController::class, 'create'])->name('presentations.create');
