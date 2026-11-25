@@ -55,6 +55,7 @@ class PortfolioService
             'skills' => $track ? $this->skills->forFellow($fellow, $track) : [],
             'certificates' => $this->certificates->forFellow($fellow),
             'projects' => $completed->reject($isPost)->take(12)->map($item)->values(),
+            'videos' => $completed->filter(fn ($p) => $p->show_tell_video)->take(8)->map(fn ($p) => $item($p) + ['video' => $p->show_tell_video])->values(),
             'posts' => $completed->filter($isPost)->filter(fn ($p) => $this->safeUrl($p->evidence_url))->take(8)->map($item)->values(),
             'presentations' => Presentation::with('track')->where('fellow_id', $fellow->id)->where('status', Presentation::STATUS_APPROVED)->latest('presented_at')->get(),
             'practice' => $track ? $this->practice->stats($fellow, $track) : null,

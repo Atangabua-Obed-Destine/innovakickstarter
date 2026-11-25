@@ -9,6 +9,7 @@ use App\Models\FlashCard;
 use App\Models\TrackCurriculumActivity;
 use App\Services\FlashReviewService;
 use App\Services\PreSubmitCheckService;
+use App\Services\YouTubeVideoService;
 use App\Support\LessonSteps;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -74,6 +75,7 @@ class LessonController extends Controller
             'reflection' => ['nullable', 'string', 'max:2000'],
             'files' => ['nullable', 'array', 'max:5'],
             'files.*' => ['string', 'max:200'],
+            'video' => ['nullable', 'string', 'max:500'],
         ]);
         if (trim(($data['url'] ?? '') . ($data['text'] ?? '')) === '' && empty($data['files'])) {
             return response()->json(['ok' => false, 'error' => 'Add your link, files or written evidence first, then check.'], 422);
@@ -81,5 +83,15 @@ class LessonController extends Controller
         $progress->loadMissing('curriculumActivity.track', 'fellow');
 
         return response()->json($checker->check($progress, $data));
+    }
+
+    /** Show & Tell: check a YouTube link with YouTube before the fellow submits. */
+    public function videoCheck(Request $request, FellowCurriculumProgress $progress, YouTubeVideoService $youtube)
+    {
+        abort_unless($progress->fellow_id === $request->user()->id, 403);
+        $data = $request->validate(['url' => ['required', 'string', 'max:500']]);
+        $r = $youtube->check($data['url']);
+
+        return response()->json($r + ($r['ok'] ? ['embed' => $youtube->embedUrl($r['id'])] : []), $r['ok'] ? 200 : 422);
     }
 }

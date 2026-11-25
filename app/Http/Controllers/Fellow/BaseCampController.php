@@ -19,6 +19,7 @@ class BaseCampController extends Controller
             'targets' => $this->foundations->targets(),
             'checkTaken' => $this->foundations->checkTaken($request->user()),
             'areas' => $this->foundations->areas()->keyBy('key'),
+            'upcoming' => ($track = $request->user()->primaryTrack?->track) ? app(\App\Services\FoundationLinkService::class)->upcoming($request->user(), $track) : [],
         ]);
     }
 

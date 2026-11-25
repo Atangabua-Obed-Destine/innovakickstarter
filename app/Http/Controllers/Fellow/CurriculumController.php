@@ -231,7 +231,24 @@ class CurriculumController extends Controller
             && \App\Support\TrackExperience::for($activity->track)?->hasStory()
             ? app(\App\Services\StakeholderService::class)->stakeholder($activity) : null;
 
-        return view('fellow.curriculum.activity-show', compact('activity', 'progress', 'linkedInterviews', 'reviewPartner', 'lessonSections', 'quickChecks', 'orientationRequired', 'colabUrl', 'sandbox', 'isOpen', 'why', 'stakeholder'));
+        // Base Camp: the foundations this lesson leans on that the fellow has not made ready yet.
+        $foundationNeeds = $isOpen && ($progress?->status !== \App\Enums\CurriculumStatus::COMPLETED)
+            ? app(\App\Services\FoundationLinkService::class)->forFellow($fellow, $activity) : [];
+
+        // Key words: plain-English meanings of the technical words this lesson uses.
+        $glossary = $isOpen ? app(\App\Services\GlossaryService::class)->forActivity($activity) : [];
+
+        return view('fellow.curriculum.activity-show', compact('activity', 'progress', 'linkedInterviews', 'reviewPartner', 'lessonSections', 'quickChecks', 'orientationRequired', 'colabUrl', 'sandbox', 'isOpen', 'why', 'stakeholder', 'foundationNeeds', 'glossary'));
+    }
+
+    /** All key words of the fellow's track, grouped by the chapter that introduces them. */
+    public function keyWords()
+    {
+        $track = Auth::user()->primaryTrack?->track;
+        $terms = app(\App\Services\GlossaryService::class)->terms($track);
+        $chapters = $track ? $track->milestones()->where('is_active', true)->orderBy('sequence_order')->pluck('title')->values() : collect();
+
+        return view('fellow.curriculum.key-words', compact('track', 'terms', 'chapters'));
     }
 
     /**
@@ -350,6 +367,32 @@ class CurriculumController extends Controller
             'ai_used_how.required_if' => 'Briefly describe how you used AI tools.',
         ]);
 
+        // Show & Tell: a public YouTube video explaining the work (on the fellow's own channel).
+        $video = null;
+        if ($progress->curriculumActivity->requires_video) {
+            $request->validate([
+                'video_url' => 'required|string|max:500',
+                'video_public' => 'accepted',
+            ], [
+                'video_url.required' => 'This project needs your Show & Tell video: publish it on YouTube and paste the link.',
+                'video_public.accepted' => 'Confirm that your video is Public and that it is you explaining your own work.',
+            ]);
+            $check = app(\App\Services\YouTubeVideoService::class)->check($request->input('video_url'));
+            if (!$check['ok']) {
+                return redirect()->back()->withErrors(['video_url' => $check['error']])->withInput();
+            }
+            $video = [
+                'id' => $check['id'],
+                'url' => $check['url'],
+                'title' => $check['title'],
+                'channel' => $check['channel'],
+                'channel_url' => $check['channel_url'],
+                'verified' => $check['verified'],
+                'checked_at' => now()->toIso8601String(),
+                'public_confirmed' => true,
+            ];
+        }
+
         // Handle file uploads
         $uploadedFiles = [];
         if ($request->hasFile('evidence_files')) {
@@ -369,6 +412,9 @@ class CurriculumController extends Controller
                 'how' => $validated['ai_used'] === 'yes' ? trim((string) ($validated['ai_used_how'] ?? '')) : null,
             ],
         ];
+        if ($video) {
+            $data['video'] = $video;
+        }
 
         try {
             $this->curriculumService->submitActivity($fellow, $progress->id, $data);

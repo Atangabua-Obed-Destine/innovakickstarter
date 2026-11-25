@@ -51,6 +51,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $chain_parent_id FK to self
  * @property bool $is_required
  * @property bool $is_collaborative
+ * @property bool $requires_video
  * @property bool $requires_cross_track
  * @property bool $requires_peer_review
  * @property array|null $interview_config
@@ -110,6 +111,7 @@ class TrackCurriculumActivity extends Model
         'chain_parent_id',
         'is_required',
         'is_collaborative',
+        'requires_video',
         'requires_cross_track',
         'requires_peer_review',
         'ai_review_mode',
@@ -141,6 +143,7 @@ class TrackCurriculumActivity extends Model
             'points' => 'integer',
             'is_required' => 'boolean',
             'is_collaborative' => 'boolean',
+            'requires_video' => 'boolean',
             'requires_cross_track' => 'boolean',
             'requires_peer_review' => 'boolean',
             'is_active' => 'boolean',
@@ -159,6 +162,7 @@ class TrackCurriculumActivity extends Model
         'points' => 10,
         'is_required' => true,
         'is_collaborative' => false,
+        'requires_video' => false,
         'requires_cross_track' => false,
         'requires_peer_review' => false,
         'is_active' => true,

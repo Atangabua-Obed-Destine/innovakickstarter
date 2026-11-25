@@ -217,6 +217,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', [FellowCurriculumController::class, 'index'])->name('index');
             Route::get('/{track}', [FellowCurriculumController::class, 'track'])->name('track')->where('track', '[0-9a-f\-]{36}');
 
+            Route::get('/key-words', [FellowCurriculumController::class, 'keyWords'])->name('key-words');
+
             // Track orientation ("Chapter 0")
             Route::get('/orientation', [\App\Http\Controllers\Fellow\OrientationController::class, 'show'])->name('orientation');
             Route::post('/orientation/section', [\App\Http\Controllers\Fellow\OrientationController::class, 'section'])->name('orientation.section')->middleware('throttle:60,1,orientation');
@@ -227,7 +229,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             // Interactive lessons
             Route::post('/activities/{activity}/steps', [\App\Http\Controllers\Fellow\LessonController::class, 'step'])->name('activity.steps')->middleware('throttle:120,1,steps');
             Route::post('/quick-checks/{card}', [\App\Http\Controllers\Fellow\LessonController::class, 'quickCheck'])->name('quick-check')->middleware('throttle:30,1,quick-check');
-            Route::post('/progress/{progress}/precheck', [\App\Http\Controllers\Fellow\LessonController::class, 'precheck'])->name('precheck')->middleware('throttle:5,1');
+            Route::post('/progress/{progress}/precheck', [\App\Http\Controllers\Fellow\LessonController::class, 'precheck'])->name('precheck')->middleware('throttle:5,1,precheck');
+            Route::post('/progress/{progress}/video-check', [\App\Http\Controllers\Fellow\LessonController::class, 'videoCheck'])->name('video-check')->middleware('throttle:20,1,video-check');
 
             // Activity interactions
             Route::get('/activities/{activity}', [FellowCurriculumController::class, 'showActivity'])->name('activity.show');

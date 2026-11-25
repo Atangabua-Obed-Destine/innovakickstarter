@@ -53,6 +53,8 @@ class TrackFeedService
         match (true) {
             $type === 'blog_post' => $this->record($progress->fellow, $activity->track_id, 'brand_post', "{$name} published a Brand post: {$activity->title}",
                 $url ? 'Read it and leave a comment to support them.' : null, $url, "activity:{$activity->id}"),
+            in_array($type, ['project', 'case_study'], true) && $progress->show_tell_video => $this->record($progress->fellow, $activity->track_id, 'project', "{$name} completed {$activity->title}",
+                '🎬 Watch the Show & Tell video and leave a comment to support them.', $progress->show_tell_video['watch'], "activity:{$activity->id}"),
             in_array($type, ['project', 'case_study'], true) => $this->record($progress->fellow, $activity->track_id, 'project', "{$name} completed {$activity->title}",
                 null, $this->isPortfolioLink($url) ? $url : null, "activity:{$activity->id}"),
             default => null,

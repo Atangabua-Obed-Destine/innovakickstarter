@@ -431,6 +431,10 @@ class CurriculumService
                 "Best score: {$bestScore}%. Sessions: {$completedInterviews->count()}/{$requiredCount}.";
         }
 
+        if ($activity->requires_video && empty($data['video']['id'])) {
+            throw new \Exception('This project needs your Show & Tell video: publish it on YouTube as Public and paste the link.');
+        }
+
         return DB::transaction(function () use ($progress, $data, $activity, $fellow) {
             $notes = $data['reflection'] ?? $data['submission_notes'] ?? null;
             unset($data['reflection'], $data['submission_notes']);

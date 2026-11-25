@@ -53,6 +53,11 @@
                     @if($a['best'])Your best: <strong class="text-white">{{ $a['best'] }}</strong> · @endif
                     Target: {{ $a['target'] }}
                 </p>
+                @if(!empty($upcoming[$a['key']]))
+                    <a href="{{ route('curriculum.activity.show', $upcoming[$a['key']]['id']) }}" class="block text-sm mt-2 {{ $a['ready'] ? 'text-dark-400' : 'text-amber-200' }} hover:text-white">
+                        📍 Needed in Chapter {{ $upcoming[$a['key']]['chapter'] }}: {{ \Illuminate\Support\Str::limit($upcoming[$a['key']]['title'], 60) }}
+                    </a>
+                @endif
                 @if($a['key'] === 'typing')
                     <div class="flex flex-wrap gap-2 mt-3">
                         <a href="{{ route('typing.index') }}" class="btn-primary text-sm">Typing trainer →</a>

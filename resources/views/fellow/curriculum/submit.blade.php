@@ -72,8 +72,21 @@
         {{-- Text Evidence --}}
         @if(empty($evidenceTypes) || in_array('text', $evidenceTypes))
         <div class="card p-6">
-            <h3 class="text-white font-semibold mb-3">📝 Written Evidence</h3>
-            <textarea name="evidence_text" rows="6" placeholder="Describe your work, approach, and what you learned..."
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <h3 class="text-white font-semibold">📝 Written Evidence</h3>
+                <button type="button" class="btn-secondary text-xs" style="padding: .35rem .7rem;" onclick="useStructure()">✍️ Use the 4-part structure</button>
+            </div>
+            <details class="mb-3 text-sm">
+                <summary class="cursor-pointer text-primary-300">How to explain your work so anyone understands it</summary>
+                <ul class="mt-2 space-y-1 text-dark-300" style="list-style: disc; padding-left: 1.1rem;">
+                    <li><b class="text-white">Start with the answer.</b> "Profit was highest in Q2" comes before how you found it.</li>
+                    <li><b class="text-white">Use numbers with units.</b> "Sales rose 12% (from 1.2M to 1.35M FCFA)", not "sales rose a lot".</li>
+                    <li><b class="text-white">Explain each technical word once,</b> in a short sentence: "the median (the middle value when sorted)".</li>
+                    <li><b class="text-white">Short sentences.</b> One idea per sentence. If you would not say it aloud, rewrite it.</li>
+                    <li><b class="text-white">Say what it means.</b> Finish with a decision someone could make, and what you would check next.</li>
+                </ul>
+            </details>
+            <textarea name="evidence_text" id="evidence_text" rows="8" placeholder="Describe your work, approach, and what you learned..."
                       class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2.5 text-white placeholder-dark-500 focus:border-primary-500 focus:ring-1 focus:ring-primary-500">{{ old('evidence_text') }}</textarea>
             <p class="text-dark-500 text-xs mt-1">Explain your approach, challenges faced, and key learnings (max 5000 chars)</p>
         </div>
@@ -93,6 +106,45 @@
                 </label>
             </div>
             <div id="file-list" class="mt-3 space-y-1"></div>
+        </div>
+        @endif
+
+        {{-- Show & Tell video (public YouTube link) --}}
+        @if($progress->curriculumActivity->requires_video)
+        <div class="card p-6" id="show-tell" style="border-color: rgba(239,68,68,.35);" x-data="showTell('{{ route('curriculum.video-check', $progress) }}', '{{ csrf_token() }}', @js(old('video_url', '')))" x-init="if (url) check()">
+            <h3 class="text-white font-semibold mb-1">🎬 Show &amp; Tell video <span class="text-red-400">*</span></h3>
+            <p class="text-dark-400 text-sm mb-4">This is a chapter project, so explain it on video: record your screen and your voice, publish it <b class="text-white">Public</b> on your own YouTube channel, then paste the link. There are no video uploads on the IKS portal.</p>
+
+            <details class="mb-4 rounded-lg bg-dark-800/60 p-4" {{ old('video_url') ? '' : 'open' }}>
+                <summary class="cursor-pointer text-white font-medium">How to make and publish your video</summary>
+                <div class="mt-4">@include('partials.lesson.show-tell-guide', ['activity' => $progress->curriculumActivity])</div>
+            </details>
+
+            <label class="block text-dark-300 text-sm mb-1" for="video_url">YouTube link</label>
+            <div class="flex gap-2">
+                <input type="url" name="video_url" id="video_url" x-model="url" @change="check()" required maxlength="500"
+                       placeholder="https://youtu.be/... or https://www.youtube.com/watch?v=..."
+                       class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2.5 text-white placeholder-dark-500 focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
+                <button type="button" class="btn-secondary flex-shrink-0" @click="check()" :disabled="busy || !url" x-text="busy ? 'Checking...' : 'Check link'"></button>
+            </div>
+            @error('video_url')<p class="text-red-400 text-xs mt-2">{{ $message }}</p>@enderror
+            <p class="text-amber-300 text-sm mt-2" x-show="error" x-text="error" x-cloak></p>
+            <template x-if="info">
+                <div class="mt-3 flex gap-3 items-center p-3 rounded-lg bg-dark-800">
+                    <img :src="'https://i.ytimg.com/vi/' + info.id + '/mqdefault.jpg'" alt="" style="width: 120px; border-radius: .4rem; flex-shrink: 0;">
+                    <div class="min-w-0 text-sm">
+                        <p class="text-green-400 font-semibold" x-text="info.verified ? '✅ YouTube found your video' : '✅ Link looks right (YouTube could not be reached to confirm; your reviewer will open it)'"></p>
+                        <p class="text-white truncate" x-show="info.title" x-text="info.title"></p>
+                        <p class="text-dark-400 text-xs" x-show="info.channel" x-text="'Channel: ' + info.channel"></p>
+                    </div>
+                </div>
+            </template>
+
+            <label class="flex items-start gap-2 mt-4 cursor-pointer">
+                <input type="checkbox" name="video_public" value="1" required {{ old('video_public') ? 'checked' : '' }} class="mt-1 accent-primary-500">
+                <span class="text-dark-200 text-sm">My video is <b class="text-white">Public</b> on my own YouTube channel, it is my voice, and it explains my own work. (YouTube treats Public and Unlisted links the same, so your reviewer will check.)</span>
+            </label>
+            @error('video_public')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
         @endif
 
@@ -137,7 +189,7 @@
             <div class="flex flex-wrap items-start justify-between gap-3">
                 <div>
                     <h3 class="text-white font-semibold">🔍 Check my work first</h3>
-                    <p class="text-dark-400 text-sm mt-1 max-w-xl">Before you submit, the AI compares what you're about to send with this activity's "What to submit", self-check and grading criteria, and points out anything missing. It doesn't grade you, and it can't open links, so it only checks that a link looks right.</p>
+                    <p class="text-dark-400 text-sm mt-1 max-w-xl">Before you submit, the AI compares what you're about to send with this activity's "What to submit", self-check and grading criteria, points out anything missing, and tells you how clearly you explain your work. It doesn't grade you, and it can't open links, so it only checks that a link looks right.</p>
                 </div>
                 <button type="button" class="btn-secondary flex-shrink-0" @click="run()" :disabled="busy" x-text="busy ? 'Checking...' : 'Check my work'"></button>
             </div>
@@ -155,6 +207,17 @@
                         </template>
                     </ul>
                     <p class="text-sm text-dark-200" x-show="result.tip"><span class="text-primary-300">Next step:</span> <span x-text="result.tip"></span></p>
+                    <template x-if="result.clarity">
+                        <div class="mt-3 pt-3 border-t border-dark-700 text-sm">
+                            <p class="font-semibold" :class="{ 'text-green-400': result.clarity.rating === 'clear', 'text-amber-300': result.clarity.rating === 'okay', 'text-red-400': result.clarity.rating === 'unclear' }"
+                               x-text="'🗣️ How clearly you explain it: ' + ({ clear: 'Clear', okay: 'Getting there', unclear: 'Hard to follow' }[result.clarity.rating] || 'Getting there')"></p>
+                            <p class="text-dark-300 mt-1" x-show="result.clarity.jargon && result.clarity.jargon.length">
+                                Words to explain in plain English the first time you use them:
+                                <template x-for="w in result.clarity.jargon" :key="w"><span class="inline-block px-2 py-0.5 rounded-full bg-dark-700 text-dark-100 text-xs mr-1 mt-1" x-text="w"></span></template>
+                            </p>
+                            <p class="text-dark-200 mt-1" x-show="result.clarity.tip"><span class="text-primary-300">Say it better:</span> <span x-text="result.clarity.tip"></span></p>
+                        </div>
+                    </template>
                     <p class="text-dark-500 text-xs" x-text="'This check is only a helper: the team makes the real review. ' + (result.remaining ?? '') + ' checks left today.'"></p>
                 </div>
             </template>
@@ -191,7 +254,7 @@ function precheck(url, csrf) {
             this.busy = true; this.error = '';
             try {
                 const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf },
-                    body: JSON.stringify({ url: val('evidence_url'), text: val('evidence_text'), reflection: val('reflection'), files }) });
+                    body: JSON.stringify({ url: val('evidence_url'), text: val('evidence_text'), reflection: val('reflection'), video: val('video_url'), files }) });
                 const d = await res.json().catch(() => ({}));
                 if (res.ok && d.ok) { this.result = d; }
                 else { this.error = d.error || (res.status === 429 ? 'Too many checks in a minute. Wait a moment.' : 'Could not check right now. Try again.'); }
@@ -199,6 +262,39 @@ function precheck(url, csrf) {
             this.busy = false;
         },
     };
+}
+function showTell(checkUrl, csrf, initial) {
+    return {
+        url: initial || '', busy: false, error: '', info: null, last: '',
+        async check() {
+            const u = (this.url || '').trim();
+            if (!u || u === this.last) return;
+            this.busy = true; this.error = ''; this.info = null;
+            try {
+                const res = await fetch(checkUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf }, body: JSON.stringify({ url: u }) });
+                const d = await res.json().catch(() => ({}));
+                if (res.ok && d.ok) { this.info = d; this.last = u; }
+                else { this.error = d.error || (res.status === 429 ? 'Too many checks in a minute. Wait a moment.' : 'Could not check the link right now.'); }
+            } catch (e) { this.error = 'No connection. Try again.'; }
+            this.busy = false;
+        },
+    };
+}
+function useStructure() {
+    const t = document.getElementById('evidence_text');
+    if (!t) return;
+    const parts = [
+        ['WHAT I DID', '(The steps you took, in plain words. Name the tools you used.)'],
+        ['WHAT I FOUND', '(Two or three findings, each with a real number and its unit.)'],
+        ['WHAT IT MEANS', '(Who should care and what they could decide because of it. Explain any technical word the first time.)'],
+        ['WHAT I WOULD DO NEXT', '(One improvement, or one question you would check with more time or data.)'],
+    ];
+    const missing = parts.filter(p => !t.value.includes(p[0]));
+    if (!missing.length) { t.focus(); return; }
+    t.value = (t.value.trim() ? t.value.trim() + '\n\n' : '') + missing.map(p => p[0] + '\n' + p[1] + '\n').join('\n');
+    const start = t.value.indexOf(missing[0][1]);
+    t.focus();
+    t.setSelectionRange(start, start + missing[0][1].length);
 }
 document.getElementById('evidence_files')?.addEventListener('change', function(e) {
     const list = document.getElementById('file-list');

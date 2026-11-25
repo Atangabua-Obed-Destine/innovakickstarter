@@ -320,6 +320,21 @@ class FellowCurriculumProgress extends Model
         return is_array($this->evidence) ? ($this->evidence['evidence_text'] ?? null) : null;
     }
 
+    /** Show & Tell video (public YouTube link on the fellow's own channel), with a privacy-friendly embed URL. */
+    public function getShowTellVideoAttribute(): ?array
+    {
+        $v = is_array($this->evidence) ? ($this->evidence['video'] ?? null) : null;
+        if (!is_array($v) || !preg_match('/^[A-Za-z0-9_-]{11}$/', (string) ($v['id'] ?? ''))) {
+            return null;
+        }
+
+        return $v + [
+            'watch' => "https://www.youtube.com/watch?v={$v['id']}",
+            'embed' => "https://www.youtube-nocookie.com/embed/{$v['id']}?rel=0",
+            'thumb' => "https://i.ytimg.com/vi/{$v['id']}/hqdefault.jpg",
+        ];
+    }
+
     public function getEvidenceFilesAttribute()
     {
         return is_array($this->evidence) ? ($this->evidence['evidence_files'] ?? []) : [];

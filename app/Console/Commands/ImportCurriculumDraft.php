@@ -119,6 +119,7 @@ class ImportCurriculumDraft extends Command
                         'career_capital_category' => $a['career_capital_category'],
                         'is_required' => (bool) $a['is_required'],
                         'is_collaborative' => (bool) ($a['is_collaborative'] ?? false),
+                        'requires_video' => array_key_exists('requires_video', $a) ? (bool) $a['requires_video'] : (bool) $activity->requires_video,
                         'skills' => array_key_exists('skills', $a) ? array_values((array) $a['skills']) : $activity->skills,
                         'is_active' => true,
                         'is_sequential' => false,

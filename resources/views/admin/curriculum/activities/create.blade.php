@@ -277,6 +277,12 @@
                            class="w-4 h-4 rounded bg-dark-800 border-dark-600 text-primary-500 focus:ring-primary-500">
                     <span class="text-dark-300 text-sm">Collaborative Activity</span>
                 </label>
+                <label class="flex items-center gap-2 cursor-pointer" title="The fellow must publish a public YouTube video explaining the work and share the link when submitting.">
+                    <input type="hidden" name="requires_video" value="0">
+                    <input type="checkbox" name="requires_video" value="1" {{ old('requires_video') ? 'checked' : '' }}
+                           class="w-4 h-4 rounded bg-dark-800 border-dark-600 text-primary-500 focus:ring-primary-500">
+                    <span class="text-dark-300 text-sm">Requires Show &amp; Tell video (YouTube link)</span>
+                </label>
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="hidden" name="requires_cross_track" value="0">
                     <input type="checkbox" name="requires_cross_track" value="1" {{ old('requires_cross_track') ? 'checked' : '' }}

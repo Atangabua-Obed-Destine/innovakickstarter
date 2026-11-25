@@ -89,6 +89,11 @@
                             👥 Collaborative
                         </span>
                     @endif
+                    @if($activity->requires_video)
+                        <a href="#show-tell" class="inline-flex items-center gap-1 px-2.5 py-1 bg-red-500/10 rounded-lg text-sm text-red-400 hover:bg-red-500/20">
+                            🎬 Show &amp; Tell video
+                        </a>
+                    @endif
                     @if($activity->requires_peer_review)
                         <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-purple-500/10 rounded-lg text-sm text-purple-400">
                             🔍 Peer Review
@@ -501,6 +506,12 @@
         </div>
     </div>
 
+    @if(!empty($foundationNeeds))
+        @include('partials.lesson.before-you-start', ['needs' => $foundationNeeds])
+    @endif
+    @if(!empty($glossary))
+        @include('partials.lesson.key-words', ['glossary' => $glossary])
+    @endif
     @if($stakeholder)
         @include('partials.lesson.ticket', ['activity' => $activity, 'progress' => $progress, 'stakeholder' => $stakeholder])
     @endif
@@ -532,6 +543,23 @@
         <div class="lesson-md">
             {{ \App\Support\LessonMarkdown::render($activity->instructions) }}
         </div>
+    </div>
+    @endif
+
+    {{-- SHOW & TELL VIDEO (chapter projects) --}}
+    @if($activity->requires_video)
+    <div class="card p-6" id="show-tell" style="border-color: rgba(239,68,68,.3);">
+        <h3 class="text-white font-semibold text-lg mb-1 flex items-center gap-2">🎬 Show &amp; Tell video</h3>
+        @if($progress?->show_tell_video)
+            <p class="text-dark-400 text-sm mb-4">Your video for this project. Recruiters and classmates can watch you explain real work.</p>
+            <div style="max-width: 560px;">@include('partials.lesson.show-tell-video', ['video' => $progress->show_tell_video])</div>
+        @else
+            <p class="text-dark-400 text-sm mb-4">This is the chapter project, so you will also <b class="text-white">explain it on video</b>: 2 to 4 minutes, your screen and your voice (face optional), published <b class="text-white">Public</b> on your own YouTube channel. You paste the link when you submit. Plan it while you work: it is much easier to explain something you understood step by step.</p>
+            <details class="rounded-lg bg-dark-800/60 p-4">
+                <summary class="cursor-pointer text-white font-medium">How to make and publish your video</summary>
+                <div class="mt-4">@include('partials.lesson.show-tell-guide', ['activity' => $activity])</div>
+            </details>
+        @endif
     </div>
     @endif
 

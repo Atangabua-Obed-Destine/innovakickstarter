@@ -45,12 +45,14 @@ class PreSubmitCheckService
             $toSubmit ? "What to submit:\n" . Str::limit($sectionText($toSubmit), 1500) : null,
             $selfCheck ? "Self-check:\n- " . Str::limit(collect($selfCheck['items'])->pluck('plain')->implode("\n- "), 1200) : null,
             $activity->evidence_requirements ? 'Evidence types expected: ' . collect($activity->evidence_requirements)->map(fn ($e) => \App\Enums\EvidenceType::tryFrom($e)?->label() ?? $e)->implode(', ') : null,
+            $activity->requires_video ? "Show & Tell video: a PUBLIC YouTube video on the fellow's own channel (screen + voice, 2-4 minutes) explaining the problem, what they did, what they found and what it means. The link is required." : null,
             $activity->evaluation_rubric ? "Grading criteria:\n" . collect($activity->evaluation_rubric)->map(fn ($c) => '- ' . ($c['criterion'] ?? '') . ' (' . ($c['weight'] ?? '?') . '%): ' . ($c['description'] ?? ''))->implode("\n") : null,
         ]);
 
         $files = array_values(array_filter((array) ($draft['files'] ?? []), 'is_string'));
         $submission = implode("\n", array_filter([
             'Link: ' . (trim((string) ($draft['url'] ?? '')) ?: '(none)'),
+            $activity->requires_video ? 'Show & Tell video link: ' . (trim((string) ($draft['video'] ?? '')) ?: '(none yet)') : null,
             "Written evidence:\n" . (trim((string) ($draft['text'] ?? '')) ?: '(empty)'),
             $files ? 'Files attached: ' . implode(', ', array_map(fn ($f) => Str::limit($f, 80), array_slice($files, 0, 5))) : 'Files attached: (none)',
             "Reflection:\n" . (trim((string) ($draft['reflection'] ?? '')) ?: '(empty)'),
@@ -62,13 +64,14 @@ class PreSubmitCheckService
             'Compare the submission with the requirements. List each requirement as covered ("ok"), missing ("missing") or unclear/needs a closer look ("check").',
             'You cannot open links: judge a link only by its shape (e.g. is it a GitHub link to a notebook file in the folder the lesson names?). Say so when it matters.',
             'Do not grade, do not give a score or predict marks, and never write the work for them. Be kind, specific and short. Simple English.',
-            'Reply with JSON only: {"ready": true|false, "summary": "one sentence", "items": [{"status": "ok|missing|check", "text": "..."}], "tip": "the single most useful next step"}. At most 7 items.',
+            'Also judge how CLEARLY the written evidence and reflection explain the work to a busy, non-technical manager: does it start with the answer, give numbers with units, explain technical words the first time, use short sentences, and say what the result means? Rate it "clear", "okay" or "unclear". List up to 5 technical words or abbreviations they used WITHOUT explaining (exact words from their text; empty list if none). Give one concrete tip that shows how to say one of their own sentences more clearly (never invent findings).',
+            'Reply with JSON only: {"ready": true|false, "summary": "one sentence", "items": [{"status": "ok|missing|check", "text": "..."}], "tip": "the single most useful next step", "clarity": {"rating": "clear|okay|unclear", "jargon": ["..."], "tip": "..."}}. At most 7 items.',
         ]);
         $user = "REQUIREMENTS\n" . implode("\n\n", $requirements) . "\n\nSUBMISSION\n\"\"\"\n" . Str::limit($submission, 6000) . "\n\"\"\"";
 
         try {
             $result = $this->ai->chat('mentor', ['messages' => [['role' => 'system', 'content' => $system], ['role' => 'user', 'content' => $user]],
-                'temperature' => 0.2, 'response_format' => ['type' => 'json_object']], 700, ['timeout' => 45]);
+                'temperature' => 0.2, 'response_format' => ['type' => 'json_object']], 900, ['timeout' => 45]);
         } catch (AiUnavailableException $e) {
             report($e);
 
@@ -92,7 +95,22 @@ class PreSubmitCheckService
             'summary' => Str::limit((string) ($json['summary'] ?? ''), 300),
             'items' => $items,
             'tip' => Str::limit((string) ($json['tip'] ?? ''), 300),
+            'clarity' => $this->clarity($json['clarity'] ?? null, (string) ($draft['text'] ?? '') . ' ' . (string) ($draft['reflection'] ?? '')),
             'remaining' => self::DAILY_LIMIT - $used - 1,
         ];
+    }
+
+    /** Keep only a well-formed clarity verdict; listed jargon must be words the fellow actually wrote. */
+    public function clarity($c, string $written): ?array
+    {
+        if (!is_array($c) || trim($written) === '') {
+            return null;
+        }
+        $rating = in_array($c['rating'] ?? '', ['clear', 'okay', 'unclear'], true) ? $c['rating'] : 'okay';
+        $jargon = collect(is_array($c['jargon'] ?? null) ? $c['jargon'] : [])
+            ->filter(fn ($w) => is_string($w) && trim($w) !== '' && mb_strlen($w) <= 40 && mb_stripos($written, trim($w)) !== false)
+            ->map(fn ($w) => trim($w))->unique()->take(5)->values()->all();
+
+        return ['rating' => $rating, 'jargon' => $jargon, 'tip' => Str::limit((string) ($c['tip'] ?? ''), 300)];
     }
 }

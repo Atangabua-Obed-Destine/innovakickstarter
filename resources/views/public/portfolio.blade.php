@@ -15,6 +15,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     {{ $experience?->themeStyle() }}
     <style>
         .pf-section h2 { color: #fff; font-weight: 600; font-size: 1.1rem; margin-bottom: 12px; }
@@ -91,6 +92,21 @@
                             <p class="text-dark-500 text-xs mt-0.5">{{ $p['chapter'] }} · {{ $p['date']?->format('M Y') }}</p>
                             <p class="text-dark-300 text-sm mt-2">{{ $p['summary'] }}</p>
                             @if($p['url'])<a href="{{ $p['url'] }}" target="_blank" rel="noopener noreferrer nofollow" class="text-primary-400 hover:text-primary-300 text-sm mt-2 inline-block">View the work →</a>@endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        @if(($videos ?? collect())->isNotEmpty())
+            <div class="pf-section">
+                <h2>🎬 Show &amp; Tell videos</h2>
+                <p class="text-dark-400 text-sm -mt-2 mb-3">{{ $firstName }} explains reviewed projects in their own words.</p>
+                <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+                    @foreach($videos as $v)
+                        <div>
+                            @include('partials.lesson.show-tell-video', ['video' => $v['video']])
+                            <p class="text-dark-400 text-xs mt-1 px-1">Project: {{ $v['title'] }}</p>
                         </div>
                     @endforeach
                 </div>

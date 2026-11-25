@@ -110,6 +110,15 @@
             <div class="card p-6">
                 <h3 class="text-white font-semibold mb-4">Submission Evidence</h3>
 
+                @if($progress->show_tell_video)
+                <div class="mb-4">
+                    <p class="text-dark-500 text-xs font-medium uppercase tracking-wider mb-1">Show &amp; Tell video</p>
+                    <div style="max-width: 560px;">@include('partials.lesson.show-tell-video', ['video' => $progress->show_tell_video, 'reviewer' => true])</div>
+                </div>
+                @elseif($progress->curriculumActivity->requires_video)
+                <p class="mb-4 text-amber-300 text-sm">This project now needs a Show &amp; Tell video, but this submission has none (it was sent before the rule, or by another route).</p>
+                @endif
+
                 @if($progress->evidence_url)
                 <div class="mb-4">
                     <p class="text-dark-500 text-xs font-medium uppercase tracking-wider mb-1">URL</p>

@@ -24,6 +24,7 @@
 
     <!-- Additional Head Content -->
     @stack('head')
+    <style>[x-cloak] { display: none !important; }</style>
 </head>
 <body class="antialiased" x-data="{ sidebarOpen: false }">
     <!-- Impersonation Banner -->

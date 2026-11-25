@@ -38,6 +38,13 @@
                 <div class="flex-1 min-w-0">
                     <p class="text-white">{{ $event->title }}</p>
                     @if($event->body)<p class="text-dark-400 text-sm mt-0.5">{{ $event->body }}</p>@endif
+                    @php $ytId = app(\App\Services\YouTubeVideoService::class)->videoId($event->url); @endphp
+                    @if($ytId)
+                        <div class="mt-2" style="max-width: 420px;">
+                            @include('partials.lesson.show-tell-video', ['video' => ['id' => $ytId, 'title' => null,
+                                'watch' => "https://www.youtube.com/watch?v={$ytId}", 'embed' => "https://www.youtube-nocookie.com/embed/{$ytId}?rel=0", 'thumb' => "https://i.ytimg.com/vi/{$ytId}/hqdefault.jpg"]])
+                        </div>
+                    @endif
                     <div class="flex flex-wrap items-center gap-3 mt-2">
                         <span class="text-dark-500 text-xs">{{ $event->created_at->diffForHumans() }}</span>
                         @if($event->url)

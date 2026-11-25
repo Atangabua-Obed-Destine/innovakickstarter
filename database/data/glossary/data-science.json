@@ -1,0 +1,1362 @@
+{
+  "track": "data-science",
+  "terms": [
+    {
+      "term": "dataset",
+      "aliases": [
+        "datasets"
+      ],
+      "definition": "A collection of data about one topic, usually stored as a table with rows and columns.",
+      "example": "The Nkwen Traders dataset holds every sale from all four branches, from January to June 2026.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "row",
+      "aliases": [
+        "rows"
+      ],
+      "definition": "One line across a table. In a sales table, each row is usually one sale.",
+      "example": "One row shows a single sale: Mile 4 branch, Rice 50kg, 35,000 FCFA, paid with Mobile Money.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "column",
+      "aliases": [
+        "columns"
+      ],
+      "definition": "One line down a table. Each column holds one kind of information, such as date or price, for every row.",
+      "example": "The Branch column tells you where each sale happened: Nkwen, Mile 4, Commercial Avenue or Bafoussam Centre.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "table",
+      "aliases": [
+        "tables"
+      ],
+      "definition": "Data arranged in rows and columns, like a page of boxes in an exercise book.",
+      "example": "A products table lists each item's name, category and unit price in FCFA.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "variable",
+      "aliases": [
+        "variables"
+      ],
+      "definition": "In Python, a name that stores a value. In statistics, a column whose value changes from row to row.",
+      "example": "price = 35000 stores the price of Rice 50kg; Quantity is a variable in the sales data.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "CSV",
+      "aliases": [],
+      "definition": "Comma-separated values: a simple text file where each line is a row and commas separate the columns.",
+      "example": "nkwen_traders_sales.csv opens in Google Sheets or pandas; each line is one sale.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "raw data",
+      "aliases": [],
+      "definition": "Data exactly as it was collected, before anyone has checked, fixed or cleaned it.",
+      "example": "In the raw data from the till, 'nkwen ', 'NKWEN' and 'Nkwen' appear as three different branches.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "data cleaning",
+      "aliases": [
+        "cleaning"
+      ],
+      "definition": "Finding and fixing problems in data, such as wrong spellings, missing values and duplicates, before you analyse it.",
+      "example": "Data cleaning turned 'Rice 50Kg' and 'rice 50kg' into one product name: 'Rice 50kg'.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "missing value",
+      "aliases": [
+        "missing values"
+      ],
+      "definition": "An empty place in the data where a value should be. pandas shows it as NaN.",
+      "example": "Some Mile 4 sales have a missing value in PaymentMethod, so we do not know how the customer paid.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "data type",
+      "aliases": [
+        "data types"
+      ],
+      "definition": "The kind of value something is: a whole number, a decimal number, text, True/False or a date.",
+      "example": "TotalSale_FCFA needs a number data type; stored as text, the sales cannot be added up.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "duplicate",
+      "aliases": [
+        "duplicates",
+        "duplicated"
+      ],
+      "definition": "A row or value that appears more than once when it should appear only once.",
+      "example": "The till sent one Mile 4 sale twice. The duplicate makes June revenue look higher than it really was.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "data wrangling",
+      "aliases": [
+        "wrangling"
+      ],
+      "definition": "Getting messy data into a useful shape: cleaning it, combining tables, changing its layout and adding columns.",
+      "example": "Data wrangling joined the Nkwen Traders sales and branches files and fixed their date formats.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "bias",
+      "aliases": [],
+      "definition": "When data or a method is unfair to some group, or pushes results away from the truth in one direction.",
+      "example": "Asking only Nkwen branch customers about prices gives bias: Bafoussam Centre customers are not heard.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "personal data",
+      "aliases": [],
+      "definition": "Any information that can identify a real person, such as a name, phone number or Mobile Money number.",
+      "example": "Customers' phone numbers are personal data, so Nkwen Traders must protect them under Cameroon's 2024 law.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "data visualization",
+      "aliases": [
+        "visualization",
+        "visualisation"
+      ],
+      "definition": "Showing data as a picture, such as a chart or map, so people can see patterns quickly.",
+      "example": "A bar chart of sales by branch is a simple data visualization for Nkwen Traders managers.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "dashboard",
+      "aliases": [
+        "dashboards"
+      ],
+      "definition": "One screen of charts and key numbers, often updated automatically, that gives a quick view of performance.",
+      "example": "The Nkwen Traders dashboard shows total revenue, number of transactions and sales for each branch.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "SQL",
+      "aliases": [],
+      "definition": "Structured Query Language: a language for asking questions of data stored in a database.",
+      "example": "With SQL, you can get total sales for each Nkwen Traders branch in three short lines.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "spreadsheet",
+      "aliases": [
+        "spreadsheets"
+      ],
+      "definition": "A file made of rows and columns of cells, such as Google Sheets or Excel, where you type data and formulas.",
+      "example": "The Mile 4 manager records daily stock of Rice 50kg in a spreadsheet.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "Google Sheets",
+      "aliases": [],
+      "definition": "Google's free online spreadsheet tool. It works in a web browser and is easy to share.",
+      "example": "Open the Nkwen Traders sales file in Google Sheets and build a pivot table of sales by branch.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "notebook",
+      "aliases": [
+        "notebooks"
+      ],
+      "definition": "A document that mixes code, its results, charts and text, so you can run and explain an analysis in one place.",
+      "example": "Your notebook loads the Nkwen Traders sales, calculates totals and explains them in short notes.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "Colab",
+      "aliases": [
+        "Google Colab"
+      ],
+      "definition": "Google Colab: a free website that runs Python notebooks in your web browser, with nothing to install.",
+      "example": "Open the Nkwen Traders starter notebook in Colab and run the first cell.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "cell",
+      "aliases": [
+        "cells"
+      ],
+      "definition": "One box in a notebook that holds code or text. In a spreadsheet, the box where a row and a column meet.",
+      "example": "Run the cell that loads the Nkwen Traders sales by pressing Shift + Enter.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "runtime",
+      "aliases": [],
+      "definition": "In Colab, the computer that runs your code. Restarting it clears everything in memory.",
+      "example": "Choose Runtime > Restart session and run all to check the Nkwen Traders notebook works from top to bottom.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "GitHub",
+      "aliases": [],
+      "definition": "A website that stores your code and notebooks online, keeps the history of every change and lets others see them.",
+      "example": "You submit the GitHub link to your notebook on Nkwen Traders sales.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "repository",
+      "aliases": [
+        "repo"
+      ],
+      "definition": "A project folder on GitHub that holds your files and the history of all their changes.",
+      "example": "Your repository has one folder for each chapter, including your Nkwen Traders notebooks.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "commit",
+      "aliases": [],
+      "definition": "A saved snapshot of changes to files in a repository, with a short message that says what changed.",
+      "example": "Make a commit with the message 'Add Mile 4 sales summary' after you upload the notebook.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "README",
+      "aliases": [],
+      "definition": "The front-page file of a repository, usually README.md, that explains what the project is and what is inside.",
+      "example": "Your README says the project studies Nkwen Traders sales and lists the folders in the repository.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "Markdown",
+      "aliases": [],
+      "definition": "A simple way to format text with symbols, such as # for a heading and ** for bold words.",
+      "example": "In a text cell, type ## Sales by branch to make a heading above your Nkwen Traders chart.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "Python",
+      "aliases": [],
+      "definition": "A popular programming language that is easy to read. Data scientists use it to clean, study and chart data.",
+      "example": "With Python, you can add up thousands of Nkwen Traders sales in one line of code.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "integer",
+      "aliases": [
+        "integers",
+        "int"
+      ],
+      "definition": "A whole number with no decimal part, such as 0, 25 or -3. In Python its type is int.",
+      "example": "Store FCFA amounts as integers: price = 35000 for Rice 50kg, not 35000.0.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "float",
+      "aliases": [
+        "floats"
+      ],
+      "definition": "A number with a decimal point, such as 2.5 or 0.15. In Python its type is float.",
+      "example": "A 10% discount at Commercial Avenue is stored as a float: discount = 0.10.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "string",
+      "aliases": [
+        "strings",
+        "str"
+      ],
+      "definition": "Text data written inside quotes, such as \"Nkwen\". In Python its type is str.",
+      "example": "branch = \"Bafoussam Centre\" stores the branch name as a string.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "boolean",
+      "aliases": [
+        "bool"
+      ],
+      "definition": "A value that can only be True or False. In Python its type is bool.",
+      "example": "paid_with_momo = True records that a Nkwen customer paid with Mobile Money.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "True",
+      "aliases": [],
+      "definition": "Python's boolean value for 'yes' or 'correct'. It must start with a capital T.",
+      "example": "35000 > 20000 gives True, because a Rice 50kg sale is bigger than 20,000 FCFA.",
+      "chapter": 2,
+      "case_sensitive": true
+    },
+    {
+      "term": "False",
+      "aliases": [],
+      "definition": "Python's boolean value for 'no' or 'not correct'. It must start with a capital F.",
+      "example": "\"Mile 4\" == \"Nkwen\" gives False, because the two branch names are different.",
+      "chapter": 1,
+      "case_sensitive": true
+    },
+    {
+      "term": "None",
+      "aliases": [],
+      "definition": "Python's value for 'nothing here yet'. It is not zero and not empty text.",
+      "example": "bill = None means the customer's bill at the Nkwen branch has not been calculated yet.",
+      "chapter": 1,
+      "case_sensitive": true
+    },
+    {
+      "term": "f-string",
+      "aliases": [],
+      "definition": "A Python string that starts with f and puts values inside { }, such as f\"Total: {total} FCFA\".",
+      "example": "print(f\"{branch} sold {total} FCFA\") prints a sentence like 'Mile 4 sold 85000 FCFA'.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "list",
+      "aliases": [
+        "lists"
+      ],
+      "definition": "A Python collection of values in order, written inside square brackets [ ]. You can change it.",
+      "example": "daily_sales = [12000, 15500, 9800] is a list of three days of Nkwen branch sales.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "index",
+      "aliases": [],
+      "definition": "The position or label used to find an item. Python lists start at index 0; pandas rows have an index too.",
+      "example": "In branches = [\"Nkwen\", \"Mile 4\"], branches[0] gives \"Nkwen\", the item at index 0.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "tuple",
+      "aliases": [
+        "tuples"
+      ],
+      "definition": "Like a list, but written in round brackets ( ), and it cannot be changed after you create it.",
+      "example": "(\"Sugar 1kg\", 900) is a tuple that pairs a product with its price in FCFA.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "loop",
+      "aliases": [
+        "loops"
+      ],
+      "definition": "Code that repeats the same steps for each item in a collection, or until a condition stops it.",
+      "example": "A for loop goes through daily_sales and adds each day's Nkwen sales to the total.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "conditional",
+      "aliases": [
+        "conditionals"
+      ],
+      "definition": "Code that makes a choice: it runs only when a condition is True, using if, elif and else.",
+      "example": "If a sale is above 50,000 FCFA, label it \"large\"; else label it \"normal\".",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "dictionary",
+      "aliases": [
+        "dictionaries"
+      ],
+      "definition": "A Python collection of key-value pairs inside curly brackets { }. You find a value by its key.",
+      "example": "product = {\"name\": \"Soap\", \"price\": 500}; product[\"price\"] gives 500.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "function",
+      "aliases": [
+        "functions"
+      ],
+      "definition": "A named block of code you can reuse. It takes inputs, does one job and can return a result.",
+      "example": "def stock_value(price, qty): return price * qty works for any product at any branch.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "argument",
+      "aliases": [
+        "arguments"
+      ],
+      "definition": "A value you give to a function when you call it.",
+      "example": "In stock_value(35000, 4), the arguments are 35000 (price of Rice 50kg) and 4 (bags in stock).",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "parameter",
+      "aliases": [
+        "parameters"
+      ],
+      "definition": "A name in a function's definition that receives a value when the function is called.",
+      "example": "In def stock_value(price, qty):, price and qty are parameters.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "method",
+      "aliases": [
+        "methods"
+      ],
+      "definition": "A function that belongs to a value and is called with a dot, such as name.strip() or df.head().",
+      "example": "\" nkwen \".strip().title() uses two string methods to give \"Nkwen\".",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "list comprehension",
+      "aliases": [
+        "list comprehensions"
+      ],
+      "definition": "A short, one-line way to build a new list from another list, often keeping only items that pass a test.",
+      "example": "[s for s in daily_sales if s > 15000] keeps only the good sales days at Nkwen.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "exception",
+      "aliases": [
+        "exceptions"
+      ],
+      "definition": "An error that happens while code runs. You can catch it with try and except so the program does not crash.",
+      "example": "Dividing Mile 4's total sales by zero days raises a ZeroDivisionError exception.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "bug",
+      "aliases": [
+        "bugs"
+      ],
+      "definition": "A mistake in code that makes it give a wrong result or stop with an error.",
+      "example": "A bug counted Nkwen sales twice, so the monthly total looked too high.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "debugging",
+      "aliases": [
+        "debug"
+      ],
+      "definition": "Finding and fixing bugs in code, one step at a time.",
+      "example": "While debugging, print each branch total to see where the Nkwen Traders numbers go wrong.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "assert",
+      "aliases": [],
+      "definition": "A Python line that checks something is True. If it is not, the code stops with an error message.",
+      "example": "assert total > 0, \"Total should be positive\" checks the Bafoussam Centre sales total.",
+      "chapter": 1,
+      "case_sensitive": true
+    },
+    {
+      "term": "import",
+      "aliases": [],
+      "definition": "The Python command that loads a library so you can use its tools.",
+      "example": "import pandas as pd loads pandas before you read the Nkwen Traders sales file.",
+      "chapter": 1,
+      "case_sensitive": true
+    },
+    {
+      "term": "library",
+      "aliases": [
+        "libraries"
+      ],
+      "definition": "A ready-made collection of code that you import and reuse, such as pandas or Matplotlib.",
+      "example": "Use the Matplotlib library to draw a chart of sales by branch instead of writing chart code yourself.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "indentation",
+      "aliases": [],
+      "definition": "The spaces at the start of a line. Python uses them to show which lines belong inside a loop, if or function.",
+      "example": "Lines inside for sale in daily_sales: need indentation of four spaces, or Python gives an error.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "pandas",
+      "aliases": [],
+      "definition": "The main Python library for tables of data: loading, cleaning, grouping and summarising them.",
+      "example": "With pandas, you load six months of Nkwen Traders sales and total them by branch.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "NumPy",
+      "aliases": [],
+      "definition": "A Python library for fast maths on arrays of numbers. pandas is built on top of it.",
+      "example": "np.mean(sales) gives the average daily sale at Mile 4.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "array",
+      "aliases": [
+        "arrays"
+      ],
+      "definition": "A NumPy collection of values that all have the same data type, used for fast maths.",
+      "example": "sales = np.array([12000, 15500, 9800]) holds three days of Nkwen sales.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "DataFrame",
+      "aliases": [
+        "DataFrames"
+      ],
+      "definition": "A pandas table with named columns and an index for the rows, like a spreadsheet inside Python.",
+      "example": "df = pd.read_csv(\"nkwen_traders_sales.csv\") loads all the sales into a DataFrame called df.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "Series",
+      "aliases": [],
+      "definition": "One column of data in pandas: values in order, each with an index label.",
+      "example": "df[\"Branch\"] is a Series that holds the branch of every Nkwen Traders sale.",
+      "chapter": 4,
+      "case_sensitive": true
+    },
+    {
+      "term": "df",
+      "aliases": [],
+      "definition": "The usual short name programmers give to a pandas DataFrame in their code.",
+      "example": "df.head() shows the first five Nkwen Traders sales.",
+      "chapter": 1,
+      "case_sensitive": true
+    },
+    {
+      "term": "dtype",
+      "aliases": [
+        "dtypes"
+      ],
+      "definition": "Short for data type in pandas or NumPy, for example int64 (whole numbers), float64 (decimals) or object (text).",
+      "example": "df.dtypes shows Date as object, so convert it with to_datetime before grouping sales by month.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "NaN",
+      "aliases": [],
+      "definition": "'Not a Number': the way pandas shows a missing value.",
+      "example": "A NaN in PaymentMethod means the till did not record how the Mile 4 customer paid.",
+      "chapter": 4,
+      "case_sensitive": true
+    },
+    {
+      "term": "mask",
+      "aliases": [
+        "boolean mask"
+      ],
+      "definition": "A list or column of True/False values used to keep only the rows where the value is True.",
+      "example": "mask = df[\"Branch\"] == \"Nkwen\"; then df[mask] keeps only the Nkwen branch sales.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "loc",
+      "aliases": [],
+      "definition": "The pandas way to choose rows and columns by their labels, or by a True/False condition.",
+      "example": "df.loc[df[\"Branch\"] == \"Mile 4\", \"TotalSale_FCFA\"] gives the amounts of all Mile 4 sales.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "groupby",
+      "aliases": [],
+      "definition": "A pandas tool that splits rows into groups, calculates something for each group and puts the results together.",
+      "example": "df.groupby(\"Branch\")[\"TotalSale_FCFA\"].sum() gives total sales for each of the four branches.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "merge",
+      "aliases": [
+        "merging"
+      ],
+      "definition": "To join two tables into one by matching the values in a shared column.",
+      "example": "Merge the sales table with the branches table on Branch to add each branch's manager to every sale.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "left join",
+      "aliases": [],
+      "definition": "A join that keeps every row of the left table and adds matching data from the right table. No match gives a missing value.",
+      "example": "A left join keeps all sales, even from a branch that is missing in the branches table.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "inner join",
+      "aliases": [],
+      "definition": "A join that keeps only the rows whose matching value appears in both tables.",
+      "example": "An inner join drops any sale whose branch is not listed in the branches table.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "outer join",
+      "aliases": [],
+      "definition": "A join that keeps all rows from both tables and fills the gaps with missing values.",
+      "example": "An outer join shows branches with no sales and also sales with an unknown branch.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "datetime",
+      "aliases": [],
+      "definition": "A data type for dates and times, so you can sort them, compare them and take out the month or weekday.",
+      "example": "After converting Date to datetime, df[\"Date\"].dt.month gives the month of each sale.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "to_datetime",
+      "aliases": [],
+      "definition": "A pandas function that turns text like \"2026-03-15\" into real datetime values.",
+      "example": "df[\"Date\"] = pd.to_datetime(df[\"Date\"]) lets you group Nkwen Traders sales by month.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "read_csv",
+      "aliases": [],
+      "definition": "A pandas function (pd.read_csv) that loads a CSV file into a DataFrame.",
+      "example": "pd.read_csv(\"nkwen_traders_branches.csv\") loads the list of the four branches.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "value_counts",
+      "aliases": [],
+      "definition": "A pandas method that counts how many times each value appears in a column.",
+      "example": "df[\"PaymentMethod\"].value_counts() shows how many sales were Cash and how many were Mobile Money.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "isna",
+      "aliases": [],
+      "definition": "A pandas method that marks each missing value as True. Add .sum() to count them in each column.",
+      "example": "df.isna().sum() shows how many sales have no PaymentMethod recorded.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "fillna",
+      "aliases": [],
+      "definition": "A pandas method that fills missing values with a value you choose.",
+      "example": "df[\"PaymentMethod\"].fillna(\"Unknown\") labels sales with no payment method as Unknown.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "mean",
+      "aliases": [
+        "average"
+      ],
+      "definition": "The total of all values divided by how many values there are. Also called the average.",
+      "example": "Sales of 2,000, 3,000 and 7,000 FCFA have a mean of 4,000 FCFA.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "median",
+      "aliases": [],
+      "definition": "The middle value when the values are sorted from smallest to largest. Half are below it, half above.",
+      "example": "Sales of 2,000, 3,000 and 7,000 FCFA have a median of 3,000 FCFA.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "mode",
+      "aliases": [],
+      "definition": "The value that appears most often in the data.",
+      "example": "If most Nkwen customers buy one bag of rice, the mode of Quantity is 1.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "central tendency",
+      "aliases": [],
+      "definition": "The centre, or typical value, of data. It is usually measured with the mean, median or mode.",
+      "example": "To describe a typical day at Mile 4, compare the three measures of central tendency.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "spread",
+      "aliases": [],
+      "definition": "How far apart the values are. It is measured with the range, IQR, variance or standard deviation.",
+      "example": "Two branches both average 50,000 FCFA a day, but Bafoussam Centre's daily sales have a much bigger spread.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "range",
+      "aliases": [],
+      "definition": "In statistics, the largest value minus the smallest value.",
+      "example": "If Nkwen's daily sales go from 30,000 to 90,000 FCFA, the range is 60,000 FCFA.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "variance",
+      "aliases": [],
+      "definition": "Roughly the average of the squared distances from the mean. It measures spread; its square root is the standard deviation.",
+      "example": "Bafoussam Centre has a higher variance in daily sales than Nkwen, so its days are harder to predict.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "standard deviation",
+      "aliases": [
+        "SD",
+        "std"
+      ],
+      "definition": "A measure of spread: roughly the usual distance of values from the mean, in the same unit as the data.",
+      "example": "A standard deviation of 5,000 FCFA means Nkwen's daily sales are usually about 5,000 FCFA from the mean.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "sample",
+      "aliases": [
+        "samples"
+      ],
+      "definition": "A smaller group taken from a bigger group (the population) and used to learn about it.",
+      "example": "200 sales picked from June are a sample of all Nkwen Traders sales.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "population",
+      "aliases": [],
+      "definition": "The whole group you want to know about, not only the part you measured.",
+      "example": "All Nkwen Traders sales in 2026 are the population; one week of sales is a sample.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "distribution",
+      "aliases": [
+        "distributions"
+      ],
+      "definition": "How the values of a variable are spread out: which values appear and how often.",
+      "example": "A histogram shows the distribution of sale amounts: most are small, and a few are very large.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "normal distribution",
+      "aliases": [],
+      "definition": "A symmetric, bell-shaped distribution: most values are near the mean, and fewer appear far from it.",
+      "example": "Daily sales of Palm Oil 5L at Nkwen roughly follow a normal distribution around 40 bottles.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "skewed",
+      "aliases": [
+        "skew"
+      ],
+      "definition": "Not symmetric: one side of the distribution has a long tail of very large or very small values.",
+      "example": "Sale amounts are right-skewed: most are under 10,000 FCFA, but a few wholesale orders are much bigger.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "empirical rule",
+      "aliases": [],
+      "definition": "For a normal distribution, about 68%, 95% and 99.7% of values lie within 1, 2 and 3 standard deviations of the mean.",
+      "example": "With a mean of 50,000 and SD of 5,000 FCFA, about 95% of Nkwen's days fall between 40,000 and 60,000 FCFA.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "z-score",
+      "aliases": [
+        "z-scores"
+      ],
+      "definition": "How many standard deviations a value is above or below the mean: (value - mean) / SD.",
+      "example": "A 65,000 FCFA day at Mile 4, with mean 50,000 and SD 5,000, has a z-score of 3.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "outlier",
+      "aliases": [
+        "outliers"
+      ],
+      "definition": "A value far away from most of the other values. It may be a mistake or a real but rare event.",
+      "example": "A 900,000 FCFA sale at Mile 4 is an outlier: check if it is a typing error or a big wholesale order.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "quartiles",
+      "aliases": [],
+      "definition": "Three values that cut sorted data into four equal parts: Q1 (25%), the median (50%) and Q3 (75%).",
+      "example": "If Q1 is 3,000 FCFA, a quarter of Nkwen sales are 3,000 FCFA or less.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "percentiles",
+      "aliases": [],
+      "definition": "Values that show what percent of the data is below them. For example, 90% of values are below the 90th percentile.",
+      "example": "The 75th percentile of sale amounts at Commercial Avenue is the amount that 75% of sales are below.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "IQR",
+      "aliases": [],
+      "definition": "Interquartile range: Q3 minus Q1. It is the spread of the middle half of the data.",
+      "example": "If Q1 is 3,000 and Q3 is 9,000 FCFA, the IQR of Nkwen sale amounts is 6,000 FCFA.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "probability",
+      "aliases": [
+        "probabilities"
+      ],
+      "definition": "How likely something is to happen, from 0 (never) to 1 (always).",
+      "example": "If 300 of 1,000 sales used Mobile Money, the probability that a sale used Mobile Money is 0.3.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "conditional probability",
+      "aliases": [],
+      "definition": "The chance that A happens when we already know that B happened. It is written P(A | B).",
+      "example": "P(Mobile Money | Bafoussam Centre) is the share of Bafoussam Centre sales paid with Mobile Money.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "summary statistics",
+      "aliases": [],
+      "definition": "A few numbers that describe data, such as count, mean, median, standard deviation, minimum and maximum.",
+      "example": "df[\"TotalSale_FCFA\"].describe() gives the summary statistics of all Nkwen Traders sale amounts.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "bins",
+      "aliases": [
+        "bin"
+      ],
+      "definition": "The equal ranges that a histogram puts values into, such as 0-5,000 FCFA and 5,000-10,000 FCFA.",
+      "example": "With bins of 5,000 FCFA, each bar of the histogram counts the sales in one 5,000 FCFA range.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "correlation",
+      "aliases": [
+        "correlations"
+      ],
+      "definition": "A number from -1 to 1 that shows how strongly two number variables move together in a straight-line way.",
+      "example": "Quantity and TotalSale_FCFA have a strong positive correlation: more items means a bigger bill.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "causation",
+      "aliases": [],
+      "definition": "When one thing really makes another thing happen. A correlation alone does not prove causation.",
+      "example": "Umbrella and rice sales at Mile 4 may both rise in July, but one does not cause the other.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "chart",
+      "aliases": [
+        "charts"
+      ],
+      "definition": "A picture of data, such as a bar chart, line chart or histogram.",
+      "example": "A chart of monthly sales shows the June drop at Bafoussam Centre faster than a table of numbers.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "histogram",
+      "aliases": [
+        "histograms"
+      ],
+      "definition": "A chart that shows how many values fall into each range (bin). The bars touch each other.",
+      "example": "A histogram of sale amounts shows that most Nkwen sales are under 10,000 FCFA.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "bar chart",
+      "aliases": [
+        "bar charts"
+      ],
+      "definition": "A chart with bars whose length shows a number for each category.",
+      "example": "A bar chart compares total June sales of the four Nkwen Traders branches.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "line chart",
+      "aliases": [],
+      "definition": "A chart where points are joined by a line, usually to show change over time.",
+      "example": "A line chart shows monthly revenue at Commercial Avenue from January to June.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "scatter plot",
+      "aliases": [
+        "scatter plots"
+      ],
+      "definition": "A chart of dots that shows two number variables together, so you can see if they are related.",
+      "example": "A scatter plot of Quantity against TotalSale_FCFA shows that bigger orders cost more.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "box plot",
+      "aliases": [
+        "boxplot"
+      ],
+      "definition": "A chart that shows the median, quartiles and outliers of data as a box with lines and dots.",
+      "example": "Box plots of sale amounts for each branch show which branch has the most outliers.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "heatmap",
+      "aliases": [],
+      "definition": "A grid of coloured boxes where the colour shows how big each number is.",
+      "example": "A heatmap of branch by weekday shows which day is busiest at each Nkwen Traders branch.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "axis",
+      "aliases": [
+        "axes"
+      ],
+      "definition": "One of the lines along the edge of a chart, with a label and units, such as the x-axis or y-axis.",
+      "example": "Label the y-axis 'Sales (FCFA)' and the x-axis 'Month' on the Nkwen Traders chart.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "legend",
+      "aliases": [],
+      "definition": "The key on a chart that explains what each colour, line or symbol means.",
+      "example": "The legend shows blue for Retail customers and orange for Wholesale customers.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "Matplotlib",
+      "aliases": [
+        "pyplot"
+      ],
+      "definition": "The main Python library for drawing charts.",
+      "example": "import matplotlib.pyplot as plt lets you plot monthly sales for each Nkwen Traders branch.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "trend",
+      "aliases": [
+        "trends"
+      ],
+      "definition": "The general direction of data over time: going up, going down or staying flat.",
+      "example": "Mobile Money payments show an upward trend at all four branches from January to June.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "time series",
+      "aliases": [],
+      "definition": "Data recorded in time order, such as daily or monthly sales.",
+      "example": "Monthly revenue at Bafoussam Centre from January to June is a time series.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "database",
+      "aliases": [
+        "databases"
+      ],
+      "definition": "An organised store of tables that a program can search and update quickly.",
+      "example": "Nkwen Traders keeps its sales and branches tables in one database.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "query",
+      "aliases": [
+        "queries"
+      ],
+      "definition": "A question, usually written in SQL, that asks a database for data.",
+      "example": "A query can return the total Mobile Money sales of each branch for June.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "SELECT",
+      "aliases": [],
+      "definition": "The SQL keyword that chooses which columns to show in the result.",
+      "example": "SELECT Branch, TotalSale_FCFA FROM sales shows two columns for every sale.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "FROM",
+      "aliases": [],
+      "definition": "The SQL keyword that names the table to read data from.",
+      "example": "SELECT * FROM branches reads every column of the branches table.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "WHERE",
+      "aliases": [],
+      "definition": "The SQL keyword that keeps only the rows that meet a condition.",
+      "example": "WHERE Branch = 'Mile 4' keeps only the Mile 4 sales.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "GROUP BY",
+      "aliases": [],
+      "definition": "SQL words that make one row per group, so an aggregate like SUM is calculated for each group.",
+      "example": "SELECT Branch, SUM(TotalSale_FCFA) FROM sales GROUP BY Branch gives one total per branch.",
+      "chapter": 4,
+      "case_sensitive": true
+    },
+    {
+      "term": "ORDER BY",
+      "aliases": [],
+      "definition": "SQL words that sort the result, smallest first by default. Add DESC to put the largest first.",
+      "example": "ORDER BY total DESC puts the branch with the highest sales at the top.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "HAVING",
+      "aliases": [],
+      "definition": "The SQL keyword that filters groups after GROUP BY, usually with an aggregate like SUM.",
+      "example": "HAVING SUM(TotalSale_FCFA) > 1000000 keeps only branches that sold more than one million FCFA.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "JOIN",
+      "aliases": [
+        "JOINs"
+      ],
+      "definition": "The SQL keyword that combines rows from two tables by matching values in a shared column.",
+      "example": "sales JOIN branches ON sales.Branch = branches.Branch adds branch details to every sale.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "COUNT",
+      "aliases": [],
+      "definition": "An aggregate that counts rows or values. COUNT(*) counts every row.",
+      "example": "SELECT COUNT(*) FROM sales WHERE Branch = 'Nkwen' gives the number of Nkwen sales.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "SUM",
+      "aliases": [],
+      "definition": "Adds up all the values in a column, in SQL or in a spreadsheet.",
+      "example": "SUM(TotalSale_FCFA) gives the total revenue of all Nkwen Traders sales.",
+      "chapter": 1,
+      "case_sensitive": true
+    },
+    {
+      "term": "NULL",
+      "aliases": [],
+      "definition": "In SQL, the marker for a missing or unknown value. It is not the same as zero.",
+      "example": "A branch with no sales gets NULL for its total after a LEFT JOIN.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "CTE",
+      "aliases": [
+        "CTEs"
+      ],
+      "definition": "Common Table Expression: a named, temporary result made with WITH, then used inside a bigger SQL query.",
+      "example": "WITH monthly AS (...) first totals sales per month; the main query then compares the months.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "aggregate",
+      "aliases": [
+        "aggregation"
+      ],
+      "definition": "A calculation that turns many values into one, such as SUM or COUNT.",
+      "example": "SUM is the aggregate that turns all of Nkwen's June sales into one total.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "sanity check",
+      "aliases": [
+        "sanity checks"
+      ],
+      "definition": "A quick check that a result makes sense, such as comparing a total with a number you already know.",
+      "example": "Sanity check: the four branch totals should add up to the company total for June.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "formula",
+      "aliases": [
+        "formulas"
+      ],
+      "definition": "A calculation in a spreadsheet cell. It starts with =, for example =SUM(B2:B100).",
+      "example": "=SUM(F2:F500) adds up all Nkwen Traders sale amounts in column F.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "pivot table",
+      "aliases": [
+        "pivot tables",
+        "pivot_table"
+      ],
+      "definition": "A summary table that groups rows and calculates totals, for example sales by branch and month.",
+      "example": "A pivot table shows total sales with branches down the side and months across the top.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "VLOOKUP",
+      "aliases": [],
+      "definition": "A spreadsheet function that finds a value in the first column of a table and returns a value from the same row.",
+      "example": "=VLOOKUP(\"Mile 4\", A:C, 3, FALSE) finds Mile 4 in column A and returns its value from column C.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "XLOOKUP",
+      "aliases": [],
+      "definition": "A newer spreadsheet lookup that finds a value in one column and returns the matching value from another column.",
+      "example": "=XLOOKUP(\"Soap\", A:A, C:C) returns the price of Soap, 500 FCFA, if prices are in column C.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "Looker Studio",
+      "aliases": [],
+      "definition": "Google's free tool for making online reports and dashboards from data such as Google Sheets.",
+      "example": "In Looker Studio, connect the Nkwen Traders sales sheet and add a bar chart of sales by branch.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "KPI",
+      "aliases": [
+        "KPIs"
+      ],
+      "definition": "Key performance indicator: one of the main numbers a business watches to see if it is reaching its goals.",
+      "example": "Total monthly revenue per branch is a KPI for Nkwen Traders managers.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "metric",
+      "aliases": [
+        "metrics"
+      ],
+      "definition": "A number that you measure or calculate, such as total revenue or number of transactions.",
+      "example": "In the dashboard, TotalSale_FCFA (Sum) is the metric shown for each branch.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "dimension",
+      "aliases": [
+        "dimensions"
+      ],
+      "definition": "In a report, a category you group or split data by, such as branch, date or payment method.",
+      "example": "Use Branch as the dimension to show one bar for each Nkwen Traders branch.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "filter",
+      "aliases": [
+        "filters",
+        "filtering"
+      ],
+      "definition": "To keep only the rows that meet a condition and hide the rest. Also a dashboard control that does this.",
+      "example": "Filter the sales to show only Mobile Money payments at Commercial Avenue.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "scorecard",
+      "aliases": [
+        "scorecards"
+      ],
+      "definition": "A dashboard box that shows one big number, such as total revenue.",
+      "example": "A scorecard at the top of the dashboard shows total June revenue for all branches in FCFA.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "EDA",
+      "aliases": [
+        "exploratory data analysis"
+      ],
+      "definition": "Exploratory data analysis: studying a dataset with summaries and charts to understand it, find problems and see patterns.",
+      "example": "EDA on Nkwen Traders sales shows weekends are busiest and Mile 4 has many missing payment methods.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "univariate",
+      "aliases": [],
+      "definition": "About one variable at a time, for example a histogram of sale amounts.",
+      "example": "Univariate analysis: look at the distribution of TotalSale_FCFA on its own.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "bivariate",
+      "aliases": [],
+      "definition": "About the relationship between two variables, for example sales compared by branch.",
+      "example": "Bivariate analysis: compare sale amounts between Retail and Wholesale customers.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "categorical",
+      "aliases": [],
+      "definition": "Data that puts things into groups or labels, such as branch or payment method, not measured numbers.",
+      "example": "Branch and PaymentMethod are categorical columns in the Nkwen Traders sales data.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "numeric",
+      "aliases": [],
+      "definition": "Data made of numbers you can calculate with, such as price or quantity.",
+      "example": "Quantity and TotalSale_FCFA are numeric columns, so you can add them up or take the mean.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "grain",
+      "aliases": [],
+      "definition": "What one row of a dataset stands for, for example 'one row = one sale'.",
+      "example": "The grain of the Nkwen Traders sales table is one row per transaction.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "data dictionary",
+      "aliases": [],
+      "definition": "A table that explains each column of a dataset: its name, meaning, data type and example values.",
+      "example": "The data dictionary says TotalSale_FCFA is a whole number in FCFA: Quantity times UnitPrice_FCFA.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "insight",
+      "aliases": [
+        "insights"
+      ],
+      "definition": "A useful finding from data that helps someone make a decision or take action.",
+      "example": "Insight: Mobile Money sales at Bafoussam Centre doubled in six months, so add a second payment phone there.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "stakeholder",
+      "aliases": [],
+      "definition": "A person who cares about or is affected by your analysis, such as a manager or the owner.",
+      "example": "The Mile 4 branch manager is a stakeholder in your report on falling rice sales.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "executive summary",
+      "aliases": [],
+      "definition": "A short part at the start of a report that gives the main findings and advice for busy managers.",
+      "example": "The executive summary says: Mile 4 sales fell 20% in June; restock Rice 50kg before July.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "caveat",
+      "aliases": [
+        "caveats"
+      ],
+      "definition": "A warning about a limit of your analysis, so readers do not trust it more than they should.",
+      "example": "Caveat: one week of June data from Bafoussam Centre is missing, so its June total is too low.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "reproducible",
+      "aliases": [
+        "reproducibility"
+      ],
+      "definition": "Able to be run again by someone else, from top to bottom, giving the same results.",
+      "example": "Your Nkwen Traders notebook is reproducible if Restart session and run all gives the same totals.",
+      "chapter": 8,
+      "case_sensitive": false
+    }
+  ]
+}
