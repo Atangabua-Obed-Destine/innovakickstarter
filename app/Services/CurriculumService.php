@@ -155,6 +155,10 @@ class CurriculumService
                 }
 
                 foreach ($milestone->curriculumActivities as $activity) {
+                    // Role-specific work in a shared chapter (pathway tracks) only for fellows it applies to.
+                    if (!app(PathwayService::class)->activityApplies($fellow, $activity)) {
+                        continue;
+                    }
                     // Check prerequisites
                     if (!$activity->prerequisitesMet($fellow)) {
                         // Create locked progress record
@@ -662,13 +666,18 @@ class CurriculumService
      */
     protected function unlockNextMilestone(User $fellow, TrackMilestone $completedMilestone): void
     {
-        $dependentMilestones = TrackMilestone::where('unlock_after_milestone_id', $completedMilestone->id)
-            ->where('is_active', true)
-            ->get();
+        $pathways = app(PathwayService::class);
+        $dependentMilestones = $pathways->hasPathways($completedMilestone->track)
+            // Pathway tracks: any chapter of this fellow's that is now unlocked (core, major or minor).
+            ? $pathways->milestones($fellow, $completedMilestone->track)
+                ->filter(fn ($m) => $m->sequence_order > $completedMilestone->sequence_order && $m->isUnlockedFor($fellow))
+            : TrackMilestone::where('unlock_after_milestone_id', $completedMilestone->id)
+                ->where('is_active', true)
+                ->get();
 
         foreach ($dependentMilestones as $nextMilestone) {
             foreach ($nextMilestone->curriculumActivities as $activity) {
-                if ($activity->prerequisitesMet($fellow)) {
+                if ($activity->prerequisitesMet($fellow) && $pathways->activityApplies($fellow, $activity)) {
                     $progress = FellowCurriculumProgress::where('fellow_id', $fellow->id)
                         ->where('curriculum_activity_id', $activity->id)
                         ->first();
@@ -741,17 +750,13 @@ class CurriculumService
      */
     protected function checkTrackCompletion(User $fellow, Track $track): void
     {
-        $requiredActivities = TrackCurriculumActivity::where('track_id', $track->id)
-            ->where('is_active', true)
-            ->where('is_required', true)
-            ->count();
+        // Core + the fellow's own pathway (minors and catch-up lessons don't count) for pathway tracks.
+        $requiredIds = app(PathwayService::class)->requiredActivityIds($fellow, $track);
+        $requiredActivities = $requiredIds->count();
 
         $completedRequired = FellowCurriculumProgress::where('fellow_id', $fellow->id)
             ->where('status', CurriculumStatus::COMPLETED->value)
-            ->whereHas('curriculumActivity', function ($q) use ($track) {
-                $q->where('track_id', $track->id)
-                    ->where('is_required', true);
-            })
+            ->whereIn('curriculum_activity_id', $requiredIds)
             ->count();
 
         if ($requiredActivities > 0 && $completedRequired >= $requiredActivities) {
@@ -793,6 +798,22 @@ class CurriculumService
     public function getFellowCurriculumDashboard(User $fellow, Track $track): array
     {
         $milestones = $this->curriculumRepository->getMilestonesForTrack($track);
+
+        // Pathway tracks: show the core, the fellow's pathway and minors; other pathways are offered separately.
+        $pathways = app(PathwayService::class);
+        $pathwayInfo = null;
+        if ($pathways->hasPathways($track)) {
+            $all = $milestones;
+            $milestones = $all->each(fn ($m) => $m->setAttribute('pathway_role', $pathways->role($fellow, $m)))
+                ->filter(fn ($m) => $m->pathway_role !== null)->values();
+            $pathwayInfo = [
+                'definitions' => $pathways->definitions($track),
+                'major' => $pathways->major($fellow, $track),
+                'minors' => $pathways->minors($fellow, $track),
+                'core_complete' => $pathways->coreComplete($fellow, $track),
+                'other_chapters' => $all->filter(fn ($m) => $m->pathway_role === null)->values(),
+            ];
+        }
         $progress = $this->curriculumRepository->getFellowProgress($fellow, $track);
         $stats = $this->curriculumRepository->getFellowCurriculumStats($fellow, $track);
         $streak = $this->curriculumRepository->getOrCreateStreak($fellow, $track);
@@ -830,6 +851,7 @@ class CurriculumService
             'streak' => $streak,
             'badges' => $badges,
             'track' => $track,
+            'pathwayInfo' => $pathwayInfo,
         ];
     }
 

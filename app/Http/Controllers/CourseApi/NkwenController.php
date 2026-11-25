@@ -1,0 +1,170 @@
+<?php
+
+namespace App\Http\Controllers\CourseApi;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
+/**
+ * Nkwen Traders course API: a small public, read-only API that Software Engineering
+ * lessons call with fetch() (catalogue, branches, categories), plus a practice
+ * "orders" endpoint that validates and prices an order but never saves anything.
+ *
+ * Teaching switches on every endpoint: ?delay=1500 (milliseconds, max 3000) to see
+ * loading states, ?fail=404|500|503 to practise error handling.
+ * Data: database/data/se-course/nkwen.json (public practice data).
+ */
+class NkwenController extends Controller
+{
+    private function data(): array
+    {
+        $file = database_path('data/se-course/nkwen.json');
+
+        return Cache::remember('nkwen-course:' . filemtime($file), now()->addDay(), fn () => json_decode((string) file_get_contents($file), true));
+    }
+
+    /** Apply ?delay and ?fail. Returns an error response when ?fail is set. */
+    private function switches(Request $request): ?JsonResponse
+    {
+        $delay = (int) $request->query('delay', 0);
+        if ($delay > 0) {
+            usleep(min($delay, 3000) * 1000);
+        }
+        $fail = (int) $request->query('fail', 0);
+
+        return match ($fail) {
+            404 => response()->json(['message' => 'Not found (practice error from ?fail=404).'], 404),
+            500 => response()->json(['message' => 'Server error (practice error from ?fail=500).'], 500),
+            503 => response()->json(['message' => 'Service unavailable, try again later (practice error from ?fail=503).'], 503),
+            default => null,
+        };
+    }
+
+    public function index(Request $request): JsonResponse
+    {
+        if ($r = $this->switches($request)) {
+            return $r;
+        }
+        $base = url('/api/course/nkwen');
+
+        return response()->json([
+            'name' => 'Nkwen Traders practice API',
+            'about' => 'Practice data for I-NNOVA Kickstarter lessons. Read-only, except POST /orders, which checks and prices an order but never saves it.',
+            'endpoints' => [
+                'GET ' . $base . '/products' => 'All products. Filters: ?category=Grains, ?search=rice, ?branch=NKW (only products in stock there), ?sort=price|-price|name',
+                'GET ' . $base . '/products/{id}' => 'One product',
+                'GET ' . $base . '/categories' => 'Product categories',
+                'GET ' . $base . '/branches' => 'Branches (one is still planned)',
+                'GET ' . $base . '/legacy/price-list' => 'An old, messy price list (for cleaning practice)',
+                'POST ' . $base . '/orders' => 'Check and price an order: {"branch":"NKW","customer_name":"...","payment_method":"mtn_momo","items":[{"product_id":1,"quantity":2}]}',
+            ],
+            'switches' => ['?delay=1500' => 'wait 1.5 s before answering (max 3000)', '?fail=404|500|503' => 'answer with that error'],
+        ]);
+    }
+
+    public function products(Request $request): JsonResponse
+    {
+        if ($r = $this->switches($request)) {
+            return $r;
+        }
+        $d = $this->data();
+        $items = collect($d['products']);
+        if ($c = trim((string) $request->query('category', ''))) {
+            $items = $items->filter(fn ($p) => strcasecmp($p['category'], $c) === 0);
+        }
+        if ($s = trim((string) $request->query('search', ''))) {
+            $items = $items->filter(fn ($p) => str_contains(mb_strtolower($p['name']), mb_strtolower($s)));
+        }
+        if ($b = strtoupper(trim((string) $request->query('branch', '')))) {
+            if (!collect($d['branches'])->contains('code', $b)) {
+                return response()->json(['message' => "Unknown branch code \"{$b}\". See /branches."], 404);
+            }
+            $items = $items->filter(fn ($p) => ($p['stock'][$b] ?? 0) > 0);
+        }
+        $items = match ((string) $request->query('sort', '')) {
+            'price' => $items->sortBy('price_fcfa'),
+            '-price' => $items->sortByDesc('price_fcfa'),
+            'name' => $items->sortBy('name'),
+            default => $items,
+        };
+
+        return response()->json(['count' => $items->count(), 'currency' => 'FCFA', 'products' => $items->values()]);
+    }
+
+    public function product(Request $request, string $id): JsonResponse
+    {
+        if ($r = $this->switches($request)) {
+            return $r;
+        }
+        $p = collect($this->data()['products'])->firstWhere('id', (int) $id);
+
+        return $p && ctype_digit($id) ? response()->json($p) : response()->json(['message' => "No product with id {$id}."], 404);
+    }
+
+    public function categories(Request $request): JsonResponse
+    {
+        return $this->switches($request) ?? response()->json(['categories' => $this->data()['categories']]);
+    }
+
+    public function branches(Request $request): JsonResponse
+    {
+        return $this->switches($request) ?? response()->json(['branches' => $this->data()['branches']]);
+    }
+
+    public function legacyPriceList(Request $request): JsonResponse
+    {
+        return $this->switches($request) ?? response()->json(['exported_from' => 'old till system (2019)', 'rows' => $this->data()['legacy_price_list']]);
+    }
+
+    /** Validate and price an order. Nothing is stored and stock is not changed. */
+    public function order(Request $request): JsonResponse
+    {
+        if ($r = $this->switches($request)) {
+            return $r;
+        }
+        $d = $this->data();
+        $open = collect($d['branches'])->where('status', 'open')->pluck('code')->all();
+        $v = Validator::make($request->all(), [
+            'branch' => ['required', 'string', 'in:' . implode(',', $open)],
+            'customer_name' => ['required', 'string', 'min:2', 'max:80'],
+            'payment_method' => ['required', 'in:' . implode(',', $d['payment_methods'])],
+            'items' => ['required', 'array', 'min:1', 'max:20'],
+            'items.*.product_id' => ['required', 'integer'],
+            'items.*.quantity' => ['required', 'integer', 'min:1', 'max:100'],
+        ], [
+            'branch.in' => 'The branch must be one of the open branches: ' . implode(', ', $open) . '.',
+        ]);
+        if ($v->fails()) {
+            return response()->json(['message' => 'The order is not valid.', 'errors' => $v->errors()], 422);
+        }
+        $products = collect($d['products'])->keyBy('id');
+        $lines = [];
+        foreach ($request->input('items') as $i => $item) {
+            $p = $products->get((int) $item['product_id']);
+            if (!$p) {
+                return response()->json(['message' => 'The order is not valid.', 'errors' => ["items.{$i}.product_id" => ["No product with id {$item['product_id']}."]]], 422);
+            }
+            $available = $p['stock'][$request->input('branch')] ?? 0;
+            if ((int) $item['quantity'] > $available) {
+                return response()->json(['message' => "Not enough {$p['name']} at this branch.", 'product_id' => $p['id'], 'requested' => (int) $item['quantity'], 'available' => $available], 409);
+            }
+            $lines[] = ['product_id' => $p['id'], 'name' => $p['name'], 'quantity' => (int) $item['quantity'], 'unit_price_fcfa' => $p['price_fcfa'], 'line_total_fcfa' => $p['price_fcfa'] * (int) $item['quantity']];
+        }
+
+        return response()->json(['order' => [
+            'id' => 'ORD-' . strtoupper(Str::random(8)),
+            'branch' => $request->input('branch'),
+            'customer_name' => $request->input('customer_name'),
+            'items' => $lines,
+            'total_fcfa' => array_sum(array_column($lines, 'line_total_fcfa')),
+            'payment_method' => $request->input('payment_method'),
+            'status' => $request->input('payment_method') === 'cash' ? 'pay_at_counter' : 'awaiting_payment',
+            'created_at' => now()->toIso8601String(),
+            'saved' => false,
+        ], 'message' => 'Order checked and priced. This is a practice API: nothing was saved.'], 201);
+    }
+}

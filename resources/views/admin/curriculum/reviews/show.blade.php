@@ -110,6 +110,13 @@
             <div class="card p-6">
                 <h3 class="text-white font-semibold mb-4">Submission Evidence</h3>
 
+                @if(!empty($progress->evidence['contract']['results']))
+                <div class="mb-4">
+                    <p class="text-dark-500 text-xs font-medium uppercase tracking-wider mb-1">API contract</p>
+                    @include('partials.lesson.api-contract', ['result' => $progress->evidence['contract']])
+                </div>
+                @endif
+
                 @if($progress->show_tell_video)
                 <div class="mb-4">
                     <p class="text-dark-500 text-xs font-medium uppercase tracking-wider mb-1">Show &amp; Tell video</p>

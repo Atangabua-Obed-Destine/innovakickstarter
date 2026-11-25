@@ -219,10 +219,15 @@ class CurriculumController extends Controller
             }
         }
         $practice = $activity->track?->experience['practice'] ?? null;
-        $codeSkills = ['python', 'pandas', 'sql', 'statistics', 'cleaning', 'visualization'];
-        $sandbox = $isOpen && is_array($practice) && ($notebookPath || array_intersect((array) $activity->skills, $codeSkills))
+        // Sandbox languages come from the track (Data Science: Python + SQL; Software Engineering: Web + SQL).
+        $codeSkills = ['python', 'pandas', 'sql', 'statistics', 'cleaning', 'visualization', 'javascript', 'html_css', 'dom', 'http_apis', 'frontend', 'testing'];
+        $skills = (array) $activity->skills;
+        $languages = array_values((array) ($practice['languages'] ?? ['python']));
+        $sandbox = $isOpen && is_array($practice) && ($notebookPath || array_intersect($skills, $codeSkills))
             ? ['notebook' => $notebookPath, 'sqlTables' => $practice['sql_tables'] ?? [], 'pythonData' => array_values($practice['python_files'] ?? [])[0] ?? null,
-                'startWith' => in_array('sql', (array) $activity->skills, true) && !in_array('python', (array) $activity->skills, true) ? 'sql' : 'python']
+                'languages' => $languages,
+                'startWith' => in_array('sql', $skills, true) && !array_intersect($skills, ['python', 'javascript', 'dom', 'html_css', 'http_apis']) ? 'sql'
+                    : (in_array('python', $languages, true) && !in_array('web', $languages, true) ? 'python' : 'web')]
             : null;
 
         // Job market: why employers care about this lesson, and work tickets for projects/case studies.
@@ -402,6 +407,17 @@ class CurriculumController extends Controller
             }
         }
 
+        // Backend projects: check the deployed API against the activity's contract (any stack).
+        $contractResult = null;
+        $contract = $progress->curriculumActivity->api_contract;
+        if (is_array($contract) && !empty($contract['checks'])) {
+            $request->validate(['api_base_url' => 'required|string|max:300'], ['api_base_url.required' => 'Give the public https address of your deployed API, so it can be checked.']);
+            $contractResult = app(\App\Services\ApiContractService::class)->run($contract, $request->input('api_base_url'));
+            if (!$contractResult['ok']) {
+                return redirect()->back()->withErrors(['api_base_url' => $contractResult['error']])->withInput();
+            }
+        }
+
         $data = [
             'evidence_url' => $validated['evidence_url'] ?? null,
             'evidence_text' => $validated['evidence_text'] ?? null,
@@ -414,6 +430,9 @@ class CurriculumController extends Controller
         ];
         if ($video) {
             $data['video'] = $video;
+        }
+        if ($contractResult) {
+            $data['contract'] = $contractResult;
         }
 
         try {

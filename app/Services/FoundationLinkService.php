@@ -29,6 +29,17 @@ class FoundationLinkService
         'sql' => ['spreadsheets' => ['spreadsheets-rows-columns-cells', 'spreadsheets-sort-filter-freeze'], 'typing' => []],
         'bi' => ['spreadsheets' => ['spreadsheets-formulas-sum-average', 'spreadsheets-min-max-count', 'spreadsheets-sort-filter-freeze'], 'maths' => ['maths-percentages']],
         'communication' => ['english' => ['english-clear-answers', 'english-professional-messages']],
+        // Software Engineering
+        'javascript' => ['computer' => ['computer-files-and-folders', 'computer-shortcuts-and-browser'], 'typing' => [], 'maths' => ['maths-percentages']],
+        'html_css' => ['computer' => ['computer-files-and-folders', 'computer-shortcuts-and-browser'], 'typing' => []],
+        'dom' => ['computer' => ['computer-shortcuts-and-browser'], 'typing' => []],
+        'http_apis' => ['english' => ['english-reading-instructions', 'english-instruction-words'], 'computer' => ['computer-shortcuts-and-browser']],
+        'git' => ['computer' => ['computer-files-and-folders', 'computer-downloads-and-zip'], 'english' => ['english-professional-messages']],
+        'testing' => ['english' => ['english-instruction-words'], 'typing' => []],
+        'backend' => ['computer' => ['computer-files-and-folders', 'computer-downloads-and-zip'], 'typing' => []],
+        'frontend' => ['computer' => ['computer-files-and-folders'], 'typing' => []],
+        'mobile' => ['computer' => ['computer-downloads-and-zip', 'computer-drive-and-safety'], 'typing' => []],
+        'security' => ['computer' => ['computer-drive-and-safety']],
     ];
 
     /** Words in a lesson => [area, lesson key, why]. */
@@ -52,6 +63,16 @@ class FoundationLinkService
         'sql' => ['spreadsheets' => 'SQL tables are rows and columns you sort and filter', 'typing' => 'you type queries'],
         'bi' => ['spreadsheets' => 'dashboards use sums, averages, sorting and filters', 'maths' => 'dashboards show percentages'],
         'communication' => ['english' => 'you explain your work in clear written English'],
+        'javascript' => ['computer' => 'you create, save and find code files', 'typing' => 'you type code all day', 'maths' => 'prices, discounts and totals use percentages'],
+        'html_css' => ['computer' => 'a website is a folder of files', 'typing' => 'you type a lot of markup'],
+        'dom' => ['computer' => 'you use the browser and its developer tools', 'typing' => 'you type code'],
+        'http_apis' => ['english' => 'API documentation must be read carefully', 'computer' => 'you test addresses in the browser'],
+        'git' => ['computer' => 'Git tracks the files and folders of your project', 'english' => 'commit messages and code reviews are short professional messages'],
+        'testing' => ['english' => 'tests are written as precise instructions', 'typing' => 'you type code'],
+        'backend' => ['computer' => 'you install tools and work with project folders', 'typing' => 'you type code'],
+        'frontend' => ['computer' => 'a React app is a folder of files', 'typing' => 'you type code'],
+        'mobile' => ['computer' => 'you download SDKs and install apps safely', 'typing' => 'you type code'],
+        'security' => ['computer' => 'safe habits with passwords and accounts'],
     ];
 
     public function __construct(protected FoundationService $foundations) {}

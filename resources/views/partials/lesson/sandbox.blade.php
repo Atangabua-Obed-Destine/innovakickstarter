@@ -6,6 +6,7 @@
     @param string|null $colabUrl
 --}}
 @php
+    $langs = $sandbox['languages'] ?? ['python'];
     $pyStart = $sandbox['pythonData']
         ? "import pandas as pd\n\nsales = pd.read_csv(\"" . url($sandbox['pythonData']) . "\")\nsales.head()"
         : "print(\"Hello from Python!\")";
@@ -14,7 +15,10 @@
         'workerUrl' => asset('course-files/practice/python-worker.js'),
         'notebook' => $sandbox['notebook'] ? url($sandbox['notebook']) : null,
         'tables' => collect($sandbox['sqlTables'])->map(fn ($u) => url($u))->all(),
-        'tab' => $sandbox['sqlTables'] && $sandbox['startWith'] === 'sql' ? 'sql' : 'python',
+        'langs' => $langs,
+        'tab' => $sandbox['sqlTables'] && $sandbox['startWith'] === 'sql' ? 'sql' : (in_array('web', $langs, true) && $sandbox['startWith'] !== 'python' ? 'web' : 'python'),
+        'web' => ['html' => "<h1>Nkwen Traders</h1>\n<p id=\"msg\">Loading products...</p>", 'css' => "body { font-family: system-ui, sans-serif; padding: 12px; }\nh1 { color: #0f766e; }",
+            'js' => "const res = await fetch('" . url('/api/course/nkwen/products?category=Grains') . "');\nconst data = await res.json();\nconsole.log(data.count, 'products');\ndocument.getElementById('msg').textContent = data.products.map(p => p.name).join(', ');"],
         'py' => $pyStart, 'sql' => $sqlStart,
     ];
 @endphp
@@ -27,6 +31,7 @@
     .sb-editor:focus { outline: none; border-color: var(--color-primary-500); }
     .sb-out { background: #0b0f16; border: 1px solid rgba(148,163,184,.15); border-radius: 10px; padding: 10px 12px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px;
         color: #cbd5e1; white-space: pre; overflow-x: auto; max-height: 360px; overflow-y: auto; }
+    .sb-preview { width: 100%; height: 320px; background: #fff; border-radius: 10px; border: 1px solid rgba(148,163,184,.25); }
     .sb-cells { max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
     .sb-cell { text-align: left; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(148,163,184,.18); background: rgba(15,20,29,.6); font-size: 13px; color: rgb(203 213 225); }
     .sb-cell:hover { border-color: var(--color-primary-400); color: #fff; }
@@ -38,19 +43,42 @@
 </style>
 @endonce
 <div id="try-it" class="card p-6" x-data="lessonSandbox(@js($cfg))" @sandbox-load.window="load($event.detail)">
+    <span hidden data-langs="{{ implode(',', $langs) }}"></span>
     <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
             <h3 class="text-white font-semibold text-lg flex items-center gap-2"><span>🧪</span> Try it here</h3>
             <p class="text-dark-400 text-sm">Run code right in the lesson, on the course data. Nothing to install; your work isn't graded here.</p>
         </div>
         <div class="sb-tabs flex gap-1">
-            <button type="button" :class="tab === 'python' && 'on'" @click="tab = 'python'">🐍 Python</button>
+            @if(in_array('web', $langs, true))<button type="button" :class="tab === 'web' && 'on'" @click="tab = 'web'">🌐 Web (HTML · CSS · JS)</button>@endif
+            @if(in_array('python', $langs, true))<button type="button" :class="tab === 'python' && 'on'" @click="tab = 'python'">🐍 Python</button>@endif
             @if($sandbox['sqlTables'])<button type="button" :class="tab === 'sql' && 'on'" @click="tab = 'sql'">🗄️ SQL</button>@endif
         </div>
     </div>
 
+    {{-- WEB: HTML/CSS/JS with live preview (sandboxed iframe) and console --}}
+    @if(in_array('web', $langs, true))
+    <div x-show="tab === 'web'" x-cloak class="mt-4 space-y-3">
+        <div class="sb-tabs flex gap-1">
+            <button type="button" :class="webPane === 'html' && 'on'" @click="webPane = 'html'">HTML</button>
+            <button type="button" :class="webPane === 'css' && 'on'" @click="webPane = 'css'">CSS</button>
+            <button type="button" :class="webPane === 'js' && 'on'" @click="webPane = 'js'">JavaScript</button>
+        </div>
+        <textarea class="sb-editor" x-show="webPane === 'html'" x-model="web.html" spellcheck="false" aria-label="HTML" @keydown.tab.prevent="indent($event)" @keydown.ctrl.enter.prevent="runWeb()" @keydown.meta.enter.prevent="runWeb()"></textarea>
+        <textarea class="sb-editor" x-show="webPane === 'css'" x-cloak x-model="web.css" spellcheck="false" aria-label="CSS" @keydown.tab.prevent="indent($event)" @keydown.ctrl.enter.prevent="runWeb()" @keydown.meta.enter.prevent="runWeb()"></textarea>
+        <textarea class="sb-editor" x-show="webPane === 'js'" x-cloak x-model="web.js" spellcheck="false" aria-label="JavaScript" @keydown.tab.prevent="indent($event)" @keydown.ctrl.enter.prevent="runWeb()" @keydown.meta.enter.prevent="runWeb()"></textarea>
+        <div class="flex flex-wrap items-center gap-2">
+            <button type="button" class="btn-primary text-sm px-4 py-2" @click="runWeb()">▶ Run <span class="opacity-60 text-xs">(Ctrl+Enter)</span></button>
+            <span class="text-dark-400 text-xs">Your page runs in a safe box. <code>await</code> works at the top level of your JavaScript. Practice API: <code>{{ url('/api/course/nkwen') }}</code></span>
+        </div>
+        <iframe x-ref="preview" class="sb-preview" title="Preview of your page" sandbox="allow-scripts allow-modals" x-show="ranWeb"></iframe>
+        <div class="sb-out" x-show="logs.length" x-cloak><template x-for="(l, i) in logs" :key="i"><div :style="l.kind === 'error' ? 'color:#fca5a5' : (l.kind === 'warn' ? 'color:#fcd34d' : '')" x-text="(l.kind === 'error' ? '✖ ' : '› ') + l.text"></div></template></div>
+        <div x-show="logs.some(l => l.kind === 'error')" x-cloak><button type="button" class="ls-stuck-btn" @click="explainWebError()">🆘 Explain this error</button></div>
+    </div>
+    @endif
+
     {{-- PYTHON --}}
-    <div x-show="tab === 'python'" class="mt-4 space-y-3">
+    <div x-show="tab === 'python'" @if(!in_array('python', $langs, true)) x-cloak @endif class="mt-4 space-y-3">
         @if($sandbox['notebook'])
             <div class="rounded-xl border border-dark-700 p-3">
                 <div class="flex flex-wrap items-center justify-between gap-2">
@@ -127,6 +155,28 @@ function lessonSandbox(cfg) {
     const pending = {};
     return {
         tab: cfg.tab, py: cfg.py, sql: cfg.sql, running: false, status: '', out: null, sqlOut: null,
+        web: cfg.web, webPane: 'js', ranWeb: false, logs: [], frameWin: null,
+        init() {
+            window.addEventListener('message', (e) => {
+                if (!this.frameWin || e.source !== this.frameWin || !e.data || !e.data.__sb) return;
+                if (this.logs.length < 200) this.logs.push({ kind: e.data.kind, text: String(e.data.text).slice(0, 2000) });
+            });
+        },
+        runWeb() {
+            const esc = (s) => String(s || '').replace(/<\/script/gi, '<\\/script');
+            const capture = "<script>(function(){var send=function(k,a){try{parent.postMessage({__sb:1,kind:k,text:Array.prototype.map.call(a,function(x){if(x instanceof Error)return x.name+': '+x.message;if(typeof x==='object'){try{return JSON.stringify(x,null,1)}catch(e){return String(x)}}return String(x)}).join(' ')},'*')}catch(e){}};"
+                + "['log','info','warn','error'].forEach(function(k){var o=console[k];console[k]=function(){send(k==='info'?'log':k,arguments);o.apply(console,arguments)}});"
+                + "window.addEventListener('error',function(e){send('error',[e.message+(e.lineno?' (line '+e.lineno+')':'')])});"
+                + "window.addEventListener('unhandledrejection',function(e){send('error',[e.reason&&e.reason.message?e.reason.name+': '+e.reason.message:String(e.reason)])});})();<\/script>";
+            const doc = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + capture
+                + '<style>' + String(this.web.css || '').replace(/<\/style/gi, '') + '</style></head><body>' + this.web.html + '<script type="module">' + esc(this.web.js) + '<\/script></body></html>';
+            this.logs = []; this.ranWeb = true;
+            this.$nextTick(() => { this.$refs.preview.srcdoc = doc; this.frameWin = this.$refs.preview.contentWindow; });
+        },
+        explainWebError() {
+            const err = this.logs.filter(l => l.kind === 'error').map(l => l.text).join('\n').slice(0, 500);
+            this.$dispatch('mentor-ask', { message: 'I ran this JavaScript in the lesson sandbox:\n' + String(this.web.js).slice(0, 700) + '\n\nand got this error:\n' + err + '\n\nWhat does the error mean, and what should I check? Please give me a hint, not the fixed code.' });
+        },
         cells: [], showCells: false, cellsError: '',
         startWorker() {
             if (worker) return worker;
@@ -187,7 +237,9 @@ function lessonSandbox(cfg) {
         loadCell(i) { this.py = this.cells[i].code; this.tab = 'python'; this.status = 'Cell ' + (i + 1) + ' loaded. Press Run.'; },
         load(d) {
             if (!d || !d.code) return;
-            if (d.lang === 'sql' && cfg.tables && Object.keys(cfg.tables).length) { this.tab = 'sql'; this.sql = d.code; } else { this.tab = 'python'; this.py = d.code; }
+            if (d.lang === 'sql' && cfg.tables && Object.keys(cfg.tables).length) { this.tab = 'sql'; this.sql = d.code; }
+            else if (['js', 'html', 'css'].includes(d.lang) && cfg.langs.includes('web')) { this.tab = 'web'; this.webPane = d.lang; this.web[d.lang] = d.code; }
+            else { this.tab = 'python'; this.py = d.code; }
             this.$el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         },
         explainError() {
@@ -206,8 +258,12 @@ function lessonSandbox(cfg) {
 document.addEventListener('DOMContentLoaded', () => {
     if (!document.getElementById('try-it')) return;
     document.querySelectorAll('.lesson-md pre > code').forEach((code) => {
-        const lang = /language-sql/.test(code.className) ? 'sql' : (/language-(python|py)/.test(code.className) || !code.className ? 'python' : null);
-        if (!lang) return;
+        const cls = code.className;
+        const langs = (document.querySelector('#try-it [data-langs]')?.dataset.langs || 'python').split(',');
+        const lang = /language-sql/.test(cls) ? 'sql'
+            : /language-(js|javascript)\b/.test(cls) ? 'js' : /language-html\b/.test(cls) ? 'html' : /language-css\b/.test(cls) ? 'css'
+            : (/language-(python|py)\b/.test(cls) || !cls) ? 'python' : null;
+        if (!lang || (['js', 'html', 'css'].includes(lang) && !langs.includes('web')) || (lang === 'python' && !langs.includes('python'))) return;
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.textContent = '▶ Try it';

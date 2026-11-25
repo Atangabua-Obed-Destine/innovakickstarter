@@ -1,0 +1,3576 @@
+{
+  "track": "software-engineering",
+  "researched_on": "2026-11-25",
+  "summary": {
+    "postings": 64,
+    "by_market": {
+      "US": 16,
+      "UK": 15,
+      "Remote": 6,
+      "Africa": 27
+    },
+    "employers": [
+      "ACE3i Africa",
+      "Acre",
+      "Acturis",
+      "Advansys",
+      "Advansys (for Vodafone products and services)",
+      "Affirm",
+      "Allica Bank",
+      "AmaliTech",
+      "Amazon UK Services Ltd.",
+      "Ardent Universe",
+      "BBC",
+      "Bollard Consulting Limited",
+      "Canonical",
+      "City of Cape Town",
+      "Cnexia",
+      "Datafin Recruitment (client: international gaming, leisure and entertainment group)",
+      "Datafin Recruitment (client: specialist cybersecurity organisation)",
+      "Deliveroo",
+      "Discovery Limited",
+      "ESCM PIGIER Cameroun",
+      "Electronic Services",
+      "Electrum Software",
+      "Finova",
+      "Freetrade",
+      "Government Digital Service (DSIT)",
+      "Grayce",
+      "HIVED",
+      "Hello Group",
+      "Jaza Energy",
+      "Jump Trading",
+      "Klatch AI",
+      "Kozao Africa",
+      "Lyft",
+      "MECI (Medium Consulting & Infosoft)",
+      "MasterKey",
+      "Met Office",
+      "Mezza Kenya",
+      "Mimi Dental Clinic",
+      "Minimal Viable Launch",
+      "Notion",
+      "Oscar Health",
+      "PA Consulting",
+      "Quora",
+      "Ramp",
+      "Riana Group",
+      "Ritual",
+      "Social Security Administration",
+      "Stripe",
+      "TPP",
+      "Target",
+      "Tinder (Match Group)",
+      "Trainline",
+      "UNCTAD (United Nations Trade and Development)",
+      "Virtu Financial",
+      "West Coast Personnel (client in Milnerton)",
+      "littlefish"
+    ]
+  },
+  "roles": [
+    {
+      "key": "graduate-software-engineer",
+      "title": "Graduate / Junior Software Engineer",
+      "level": 1,
+      "description": "General programmes that hire for potential and teach their own stack: problem solving, testing and teamwork matter most.",
+      "postings": 14,
+      "skills": {
+        "testing": 0.5,
+        "teamwork": 0.643,
+        "java_backend": 0.286,
+        "html_css": 0.143,
+        "python_backend": 0.286,
+        "go": 0.214,
+        "javascript": 0.286,
+        "dsa": 0.071,
+        "problem_solving": 0.643,
+        "ruby_rails": 0.143,
+        "communication": 0.643,
+        "ai_tools": 0.214,
+        "system_design": 0.071,
+        "security": 0.214,
+        "nosql": 0.143,
+        "cloud": 0.214,
+        "csharp_dotnet": 0.214,
+        "agile": 0.214,
+        "swift_ios": 0.071,
+        "typescript": 0.071,
+        "react": 0.143,
+        "kotlin_android": 0.071,
+        "git": 0.286,
+        "sql": 0.286,
+        "rest_apis": 0.143,
+        "other_frontend": 0.071,
+        "accessibility": 0.071,
+        "node": 0.071,
+        "ci_cd": 0.143,
+        "linux": 0.214,
+        "degree": 0.143,
+        "other": 0.214,
+        "flutter": 0.071
+      }
+    },
+    {
+      "key": "junior-frontend-developer",
+      "title": "Junior Frontend Developer",
+      "level": 1,
+      "description": "Builds the screens customers use: React, TypeScript, accessibility and performance.",
+      "postings": 10,
+      "skills": {
+        "testing": 0.6,
+        "teamwork": 0.7,
+        "ci_cd": 0.2,
+        "python_backend": 0.2,
+        "typescript": 0.7,
+        "agile": 0.2,
+        "ai_tools": 0.2,
+        "linux": 0.2,
+        "dsa": 0.1,
+        "problem_solving": 0.4,
+        "performance": 0.9,
+        "react": 0.7,
+        "accessibility": 0.3,
+        "degree": 0.5,
+        "communication": 0.4,
+        "javascript": 0.6,
+        "java_backend": 0.2,
+        "node": 0.1,
+        "security": 0.2,
+        "graphql": 0.2,
+        "html_css": 0.4,
+        "other_frontend": 0.4,
+        "rest_apis": 0.2,
+        "french": 0.1,
+        "git": 0.2,
+        "docker": 0.1,
+        "flutter": 0.1,
+        "other": 0.1
+      }
+    },
+    {
+      "key": "junior-backend-developer",
+      "title": "Junior Backend Developer",
+      "level": 1,
+      "description": "Builds the APIs and databases behind the app: data, security and tests.",
+      "postings": 12,
+      "skills": {
+        "other": 0.5,
+        "testing": 0.667,
+        "teamwork": 0.5,
+        "docker": 0.25,
+        "ci_cd": 0.333,
+        "sql": 0.583,
+        "python_backend": 0.333,
+        "cloud": 0.417,
+        "system_design": 0.167,
+        "problem_solving": 0.5,
+        "communication": 0.417,
+        "dsa": 0.167,
+        "degree": 0.583,
+        "java_backend": 0.5,
+        "nosql": 0.167,
+        "typescript": 0.083,
+        "ai_tools": 0.083,
+        "node": 0.25,
+        "ruby_rails": 0.083,
+        "go": 0.167,
+        "performance": 0.167,
+        "rest_apis": 0.25,
+        "security": 0.25,
+        "agile": 0.333,
+        "git": 0.167,
+        "other_frontend": 0.167,
+        "html_css": 0.083,
+        "javascript": 0.083,
+        "react": 0.083,
+        "mobile_money": 0.083,
+        "french": 0.083,
+        "graphql": 0.083
+      }
+    },
+    {
+      "key": "junior-fullstack-developer",
+      "title": "Junior Full-stack Developer",
+      "level": 1,
+      "description": "Works on both sides: the most common junior advert in Africa.",
+      "postings": 18,
+      "skills": {
+        "other": 0.222,
+        "testing": 0.667,
+        "teamwork": 0.611,
+        "python_backend": 0.333,
+        "typescript": 0.333,
+        "javascript": 0.444,
+        "problem_solving": 0.667,
+        "communication": 0.611,
+        "sql": 0.667,
+        "system_design": 0.167,
+        "ai_tools": 0.333,
+        "react": 0.556,
+        "dsa": 0.056,
+        "degree": 0.389,
+        "rest_apis": 0.611,
+        "nosql": 0.278,
+        "node": 0.167,
+        "performance": 0.333,
+        "csharp_dotnet": 0.222,
+        "accessibility": 0.056,
+        "docker": 0.333,
+        "ci_cd": 0.278,
+        "java_backend": 0.111,
+        "cloud": 0.278,
+        "security": 0.278,
+        "html_css": 0.333,
+        "php_laravel": 0.278,
+        "git": 0.556,
+        "other_frontend": 0.5,
+        "swift_ios": 0.111,
+        "kotlin_android": 0.111,
+        "agile": 0.167,
+        "flutter": 0.056,
+        "linux": 0.111
+      }
+    },
+    {
+      "key": "junior-mobile-developer",
+      "title": "Junior Mobile Developer",
+      "level": 1,
+      "description": "Builds phone apps that work on cheap devices and bad networks.",
+      "postings": 10,
+      "skills": {
+        "testing": 0.8,
+        "teamwork": 0.6,
+        "ci_cd": 0.5,
+        "python_backend": 0.2,
+        "swift_ios": 0.5,
+        "typescript": 0.1,
+        "ai_tools": 0.2,
+        "react": 0.2,
+        "problem_solving": 0.6,
+        "degree": 0.4,
+        "communication": 0.4,
+        "kotlin_android": 0.3,
+        "dsa": 0.1,
+        "accessibility": 0.1,
+        "rest_apis": 0.7,
+        "graphql": 0.1,
+        "agile": 0.3,
+        "performance": 0.2,
+        "git": 0.5,
+        "java_backend": 0.1,
+        "react_native": 0.2,
+        "flutter": 0.3,
+        "other": 0.1,
+        "sql": 0.1,
+        "mobile_money": 0.1,
+        "node": 0.1
+      }
+    }
+  ],
+  "insights": [
+    {
+      "icon": "🧪",
+      "title": "Testing is expected from day one",
+      "text": "64% of the adverts asked for testing, including every backend advert. That is why you write tests from Chapter 2."
+    },
+    {
+      "icon": "🤝",
+      "title": "Teamwork beats lone genius",
+      "text": "Teamwork (61%), problem solving (58%) and communication (52%) were the most common asks: pull requests, code review and explaining your work matter as much as code."
+    },
+    {
+      "icon": "🎓",
+      "title": "A degree helps, a portfolio proves",
+      "text": "Only 39% of adverts strictly required a technical degree; many said \"or equivalent experience\". Your reviewed projects and Show & Tell videos are your proof."
+    },
+    {
+      "icon": "🤖",
+      "title": "Use AI tools, and explain what they write",
+      "text": "22% of adverts mentioned AI coding tools, and a few require them. One South African employer asks juniors to explain AI-written code line by line."
+    },
+    {
+      "icon": "🔎",
+      "title": "Read the experience line, not just the title",
+      "text": "Several adverts titled \"junior\" still asked for 1-2 years. Look for intern, graduate, apprentice and trainee roles, and use \"You vs a job advert\" to check."
+    },
+    {
+      "icon": "🌍",
+      "title": "Africa hires full-stack, Laravel, Java and Flutter",
+      "text": "Full-stack was the most common junior advert in Africa; PHP/Laravel appeared in 19% of African adverts, Java led backend roles, and Flutter led mobile."
+    },
+    {
+      "icon": "🇨🇲",
+      "title": "Cameroon: few adverts, so look wider",
+      "text": "We found only a handful of entry-level developer adverts in Cameroon (Douala and Yaoundé), mostly short-lived. Regional employers, remote roles and French skills widen your options."
+    }
+  ],
+  "skills": [
+    {
+      "key": "testing",
+      "label": "Automated testing",
+      "why": "Code that proves itself: tests catch mistakes before customers do. Asked for in almost two thirds of adverts.",
+      "frequency": 0.641,
+      "count": 41,
+      "quotes": [
+        {
+          "text": "You have mastered taking a simple problem or business scenario into a solution ... by writing clear, easily understood, well tested and extensible code.",
+          "company": "Affirm",
+          "market": "US",
+          "url": "https://job-boards.greenhouse.io/affirm/jobs/8181183003"
+        },
+        {
+          "text": "Have an understanding of automated testing platforms and unit tests.",
+          "company": "Acre",
+          "market": "UK",
+          "url": "https://targetjobs.co.uk/jobs/graduate-frontend-engineer-216318"
+        },
+        {
+          "text": "Design and implement well-tested and documented software in Web technologies or Flutter.",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/5150422"
+        },
+        {
+          "text": "Write clean, well-tested code that contributes to Mimi Dental Clinic's core platforms, patient-facing applications, and internal tooling.",
+          "company": "Mimi Dental Clinic",
+          "market": "Africa",
+          "url": "https://jobs.dover.com/mimidentalclinic/d5d25aa1-f116-4edb-9d7d-c7bafd275150"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "testing"
+        ]
+      }
+    },
+    {
+      "key": "teamwork",
+      "label": "Working in a team",
+      "why": "Sharing code through branches, pull requests and reviews, and helping each other ship.",
+      "frequency": 0.609,
+      "count": 39,
+      "quotes": [
+        {
+          "text": "Ability to work with a team in a fast-paced environment, deploying new software daily",
+          "company": "Jump Trading",
+          "market": "US",
+          "url": "https://www.jumptrading.com/hr/job?gh_jid=8003019"
+        },
+        {
+          "text": "have experience defining work focused on user needs and tasks, collaborating with user researchers and designers",
+          "company": "Government Digital Service (DSIT)",
+          "market": "UK",
+          "url": "https://www.manchesterdigital.com/job/gds/junior-frontend-developer-government-digital-service-seo"
+        },
+        {
+          "text": "Willingness to learn and work with a development team.",
+          "company": "Finova",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/junior-flutter-developer-finova-2"
+        },
+        {
+          "text": "Team player: ... You enjoy collaborating cross-functionally to accomplish shared goals ...",
+          "company": "Notion",
+          "market": "US",
+          "url": "https://jobs.ashbyhq.com/notion/43ffba97-b64a-4c6a-ac13-c803253c9413"
+        }
+      ],
+      "curriculum": {
+        "title_contains": [
+          "Pull Requests",
+          "Team",
+          "Squad",
+          "Collaborat"
+        ]
+      }
+    },
+    {
+      "key": "problem_solving",
+      "label": "Problem solving",
+      "why": "Breaking a vague request into small steps, and debugging calmly when things break.",
+      "frequency": 0.578,
+      "count": 37,
+      "quotes": [
+        {
+          "text": "Passion for solving complex problems and learning to build optimal solutions from scratch ... to produce extremely high-performance software",
+          "company": "Jump Trading",
+          "market": "US",
+          "url": "https://www.jumptrading.com/hr/job?gh_jid=8003019"
+        },
+        {
+          "text": "Problem Solving: A proven ability to break down complex logistical or technical problems into manageable software solutions.",
+          "company": "Deliveroo",
+          "market": "UK",
+          "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8202627"
+        },
+        {
+          "text": "Intellectually curious around intersections of interdisciplinary fields ranging from game theory to cryptography to machine learning",
+          "company": "Ritual",
+          "market": "Remote",
+          "url": "https://weworkremotely.com/remote-jobs/ritual-software-engineer-intern"
+        },
+        {
+          "text": "Strong problem-solving skills and willingness to learn.",
+          "company": "Ardent Universe",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/junior-javascript-developer-node-js-mongodb-ardent-universe"
+        }
+      ],
+      "curriculum": {
+        "types": [
+          "case_study",
+          "debug_challenge"
+        ]
+      }
+    },
+    {
+      "key": "communication",
+      "label": "Communication",
+      "why": "Explaining your work clearly to non-technical people, in writing and on video.",
+      "frequency": 0.516,
+      "count": 33,
+      "quotes": [
+        {
+          "text": "Empathetic communication: You communicate nuanced ideas clearly ...",
+          "company": "Notion",
+          "market": "US",
+          "url": "https://jobs.ashbyhq.com/notion/43ffba97-b64a-4c6a-ac13-c803253c9413"
+        },
+        {
+          "text": "are comfortable working as part of a multidisciplinary team and can communicate ideas, problems and progress clearly",
+          "company": "Government Digital Service (DSIT)",
+          "market": "UK",
+          "url": "https://www.manchesterdigital.com/job/gds/junior-frontend-developer-government-digital-service-seo"
+        },
+        {
+          "text": "Professional written and spoken English",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/8379825"
+        },
+        {
+          "text": "Strong communication skills and a collaborative disposition, comfortable working within a team and asking thoughtful questions.",
+          "company": "Mimi Dental Clinic",
+          "market": "Africa",
+          "url": "https://jobs.dover.com/mimidentalclinic/d5d25aa1-f116-4edb-9d7d-c7bafd275150"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "communication"
+        ]
+      }
+    },
+    {
+      "key": "rest_apis",
+      "label": "REST APIs",
+      "why": "How apps talk to servers: requests, JSON, status codes, documentation.",
+      "frequency": 0.391,
+      "count": 25,
+      "quotes": [
+        {
+          "text": "Experience assisting with web applications, such as using React.js or Node.js RESTful APis.",
+          "company": "Social Security Administration",
+          "market": "US",
+          "url": "https://www.usajobs.gov/job/881804700"
+        },
+        {
+          "text": "Good experience of consuming APIs, eg RESTful or using GraphQL",
+          "company": "BBC",
+          "market": "UK",
+          "url": "https://www.diversifying.io/jobs/579977036-junior-software-engineer-at-bbc"
+        },
+        {
+          "text": "REST API design, development and governance",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/5150422"
+        },
+        {
+          "text": "Savoir dialoguer avec une base de données et manier des API.",
+          "company": "ESCM PIGIER Cameroun",
+          "market": "Africa",
+          "url": "https://www.cameroondesks.com/2026/05/recrutement-escm-pigier-cameroun.html"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "http_apis"
+        ]
+      }
+    },
+    {
+      "key": "degree",
+      "label": "A degree",
+      "why": "Only about 4 in 10 adverts strictly require a technical degree; many accept equivalent experience. A strong, explained portfolio is your main proof.",
+      "frequency": 0.391,
+      "count": 25,
+      "quotes": [
+        {
+          "text": "Pursuing a bachelor's or master’s degree in computer science, engineering, or another related field. Must graduate before Summer 2028.",
+          "company": "Notion",
+          "market": "US",
+          "url": "https://jobs.ashbyhq.com/notion/43ffba97-b64a-4c6a-ac13-c803253c9413"
+        },
+        {
+          "text": "Foundational Knowledge: A degree in Computer Science or a related technical field (graduated within the last year).",
+          "company": "Deliveroo",
+          "market": "UK",
+          "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8202627"
+        },
+        {
+          "text": "Undergraduate degree in Computer Science, Business Informatics, Mathematics or another STEM discipline with programming courses",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/8379825"
+        },
+        {
+          "text": "Bachelor's Degree in Computer Science, Software Engineering, Information Technology, or a related field.",
+          "company": "Ardent Universe",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/junior-javascript-developer-node-js-mongodb-ardent-universe"
+        }
+      ],
+      "kind": "info"
+    },
+    {
+      "key": "sql",
+      "label": "SQL & databases",
+      "why": "Storing and querying the data every app depends on.",
+      "frequency": 0.375,
+      "count": 24,
+      "quotes": [
+        {
+          "text": "You are familiar with the building blocks of distributed systems, and the technologies like AWS, MySQL and Kubernetes.",
+          "company": "Affirm",
+          "market": "US",
+          "url": "https://job-boards.greenhouse.io/affirm/jobs/8181183003"
+        },
+        {
+          "text": "Data Fundamentals: Familiarity with relational databases (such as PostgreSQL or MySQL).",
+          "company": "Deliveroo",
+          "market": "UK",
+          "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8202627"
+        },
+        {
+          "text": "Hands-on experience working with databases such as PostgreSQL or MongoDB",
+          "company": "Klatch AI",
+          "market": "Remote",
+          "url": "https://jobs.dover.com/klatch/2be7e849-b97d-446c-9139-990bb8059664"
+        },
+        {
+          "text": "Maîtrise du SGBD relationnel MYSQL.",
+          "company": "ESCM PIGIER Cameroun",
+          "market": "Africa",
+          "url": "https://www.cameroondesks.com/2026/05/recrutement-escm-pigier-cameroun.html"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "sql"
+        ]
+      }
+    },
+    {
+      "key": "git",
+      "label": "Git & GitHub",
+      "why": "How every team saves, shares and reviews code.",
+      "frequency": 0.359,
+      "count": 23,
+      "quotes": [
+        {
+          "text": "Familiarity with Git and collaborative development workflows.",
+          "company": "Freetrade",
+          "market": "UK",
+          "url": "https://jobs.ashbyhq.com/freetrade/a9d99b17-bd4f-4151-bd36-b269e718bbc8"
+        },
+        {
+          "text": "Practical experience using Git in a collaborative development environment",
+          "company": "Klatch AI",
+          "market": "Remote",
+          "url": "https://jobs.dover.com/klatch/2be7e849-b97d-446c-9139-990bb8059664"
+        },
+        {
+          "text": "Bonne maîtrise du CD/CI (Git, GitHub et Gitlab).",
+          "company": "ESCM PIGIER Cameroun",
+          "market": "Africa",
+          "url": "https://www.cameroondesks.com/2026/05/recrutement-escm-pigier-cameroun.html"
+        },
+        {
+          "text": "Experience using Git or other version control tools.",
+          "company": "Grayce",
+          "market": "UK",
+          "url": "https://apply.workable.com/grayce/jobs/view/9D6835622E"
+        }
+      ],
+      "curriculum": {
+        "github": true
+      }
+    },
+    {
+      "key": "react",
+      "label": "React",
+      "why": "The most-requested library for building web interfaces.",
+      "frequency": 0.344,
+      "count": 22,
+      "quotes": [
+        {
+          "text": "Comfort in React",
+          "company": "Jump Trading",
+          "market": "US",
+          "url": "https://www.jumptrading.com/hr/job?gh_jid=8003019"
+        },
+        {
+          "text": "You will have the chance to deep dive into React to write our components, use Typescript to make sure we have strongly typed JavaScript, and Apollo and Context for our state management.",
+          "company": "Acre",
+          "market": "UK",
+          "url": "https://targetjobs.co.uk/jobs/graduate-frontend-engineer-216318"
+        },
+        {
+          "text": "Experience with and passion for Typescript, React, Svelte or Flutter",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/5150422"
+        },
+        {
+          "text": "Bonne maîtrise du Framework LARAVEL et de la librairie REACTJS.",
+          "company": "ESCM PIGIER Cameroun",
+          "market": "Africa",
+          "url": "https://www.cameroondesks.com/2026/05/recrutement-escm-pigier-cameroun.html"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "frontend"
+        ]
+      }
+    },
+    {
+      "key": "javascript",
+      "label": "JavaScript",
+      "why": "The language of the web, used in browsers, servers and mobile apps.",
+      "frequency": 0.297,
+      "count": 19,
+      "quotes": [
+        {
+          "text": "Strong JavaScript fundamentals and attention to visual and product details",
+          "company": "Ramp",
+          "market": "US",
+          "url": "https://jobs.ashbyhq.com/ramp/a13ae586-f4cb-4385-8822-c42b9b54ed74"
+        },
+        {
+          "text": "You will have the chance to deep dive into React to write our components, use Typescript to make sure we have strongly typed JavaScript, and Apollo and Context for our state management.",
+          "company": "Acre",
+          "market": "UK",
+          "url": "https://targetjobs.co.uk/jobs/graduate-frontend-engineer-216318"
+        },
+        {
+          "text": "Confidence to get started and deliver high quality code in one of Python, Rust, C/C++, Golang, JavaScript or Java",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/8379825"
+        },
+        {
+          "text": "Maîtrise du développement web (PHP, HTML, CSS, JavaScript).",
+          "company": "ESCM PIGIER Cameroun",
+          "market": "Africa",
+          "url": "https://www.cameroondesks.com/2026/05/recrutement-escm-pigier-cameroun.html"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "javascript"
+        ]
+      }
+    },
+    {
+      "key": "performance",
+      "label": "Performance",
+      "why": "Fast on a cheap phone and slow data: what customers in Cameroon notice first.",
+      "frequency": 0.297,
+      "count": 19,
+      "quotes": [
+        {
+          "text": "Ability to work with a team in a fast-paced environment, deploying new software daily",
+          "company": "Jump Trading",
+          "market": "US",
+          "url": "https://www.jumptrading.com/hr/job?gh_jid=8003019"
+        },
+        {
+          "text": "Proficiency in writing clean, performant, and testable code in a typed language (we use Go)",
+          "company": "HIVED",
+          "market": "UK",
+          "url": "https://jobs.elementalimpact.com/companies/hived/jobs/86464370-junior-backend-engineer-cx-squad"
+        },
+        {
+          "text": "An eye for accessibility and performance",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/5150422"
+        },
+        {
+          "text": "Optimiser les performances, le référencement (SEO) et l'expérience utilisateur ;",
+          "company": "ACE3i Africa",
+          "market": "Africa",
+          "url": "https://www.goafricaonline.com/tg/emploi/job-20821-developpeur-react-nextjs-debutant-hf-lome"
+        }
+      ],
+      "curriculum": {
+        "title_contains": [
+          "Performance"
+        ]
+      }
+    },
+    {
+      "key": "ci_cd",
+      "label": "CI/CD & deployment",
+      "why": "Tests that run on every change, and shipping safely to a live server.",
+      "frequency": 0.281,
+      "count": 18,
+      "quotes": [
+        {
+          "text": "Ability to work with a team in a fast-paced environment, deploying new software daily",
+          "company": "Jump Trading",
+          "market": "US",
+          "url": "https://www.jumptrading.com/hr/job?gh_jid=8003019"
+        },
+        {
+          "text": "Understanding of CI/CD pipelines and mobile app release processes.",
+          "company": "Freetrade",
+          "market": "UK",
+          "url": "https://jobs.ashbyhq.com/freetrade/a9d99b17-bd4f-4151-bd36-b269e718bbc8"
+        },
+        {
+          "text": "Familiarity with automation tooling and CI/CD systems",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/6707669"
+        },
+        {
+          "text": "Comfortable with Git, pull request workflow, and basic CI/CD concepts.",
+          "company": "littlefish",
+          "market": "Africa",
+          "url": "https://portfoliojobs.partechpartners.com/companies/littlefish-2/jobs/78227725-full-stack-engineer-platform-junior"
+        }
+      ],
+      "curriculum": {
+        "title_contains": [
+          "Continuous Integration",
+          "Deploy",
+          "Release",
+          "Ship"
+        ]
+      }
+    },
+    {
+      "key": "python_backend",
+      "label": "Python backends (Django, FastAPI)",
+      "why": "An allowed alternative to Laravel: the same API ideas in Python.",
+      "frequency": 0.281,
+      "count": 18,
+      "quotes": [
+        {
+          "text": "Hands-on experience and a high level of proficiency in one or more of the following: Web development using Python and Typescript; Python development on Linux platform",
+          "company": "Jump Trading",
+          "market": "US",
+          "url": "https://www.jumptrading.com/hr/job?gh_jid=8003019"
+        },
+        {
+          "text": "Technical Curiosity: Experience writing web-based applications in any language and a strong interest in learning our stack (Go, Ruby/Rails, Python, Scala, or Rust).",
+          "company": "Deliveroo",
+          "market": "UK",
+          "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8202627"
+        },
+        {
+          "text": "Confidence to get started and deliver high quality code in one of Python, Rust, C/C++, Golang, JavaScript or Java",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/8379825"
+        },
+        {
+          "text": "PHP/Python Combo: You’re versatile AF – we’re looking for someone who can jump from PHP to Python without breaking a sweat.",
+          "company": "Bollard Consulting Limited",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.ke/job/junior-full-stack-developer-bollard-consulting-limited"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "Django Girls tutorial (free)",
+          "url": "https://tutorial.djangogirls.org/"
+        },
+        {
+          "title": "FastAPI tutorial (free)",
+          "url": "https://fastapi.tiangolo.com/tutorial/"
+        }
+      ]
+    },
+    {
+      "key": "typescript",
+      "label": "TypeScript",
+      "why": "JavaScript with types: catches mistakes before the code runs.",
+      "frequency": 0.25,
+      "count": 16,
+      "quotes": [
+        {
+          "text": "Hands-on experience and a high level of proficiency in one or more of the following: Web development using Python and Typescript; Python development on Linux platform",
+          "company": "Jump Trading",
+          "market": "US",
+          "url": "https://www.jumptrading.com/hr/job?gh_jid=8003019"
+        },
+        {
+          "text": "You will have the chance to deep dive into React to write our components, use Typescript to make sure we have strongly typed JavaScript, and Apollo and Context for our state management.",
+          "company": "Acre",
+          "market": "UK",
+          "url": "https://targetjobs.co.uk/jobs/graduate-frontend-engineer-216318"
+        },
+        {
+          "text": "Experience with and passion for Typescript, React, Svelte or Flutter",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/5150422"
+        },
+        {
+          "text": "If you’re familiar with: JavaScript TypeScript SQL",
+          "company": "Mezza Kenya",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.ke/job/junior-developer-mezza-kenya"
+        }
+      ],
+      "curriculum": {
+        "title_contains": [
+          "TypeScript",
+          "Typing React"
+        ]
+      }
+    },
+    {
+      "key": "other_frontend",
+      "label": "Other web frameworks (Next.js, Angular, Vue)",
+      "why": "Next.js is taught in the Frontend pathway; Angular and Vue use the same ideas as React.",
+      "frequency": 0.25,
+      "count": 16,
+      "quotes": [
+        {
+          "text": "Experience with and passion for Typescript, React, Svelte or Flutter",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/5150422"
+        },
+        {
+          "text": "Développeur Frontend (React / Next.js)",
+          "company": "MasterKey",
+          "market": "Africa",
+          "url": "https://www.cameroondesks.com/2025/07/offre-de-stage-developpeurs-informatique-masterkey.html"
+        },
+        {
+          "text": "Knowledge of React, Vue.js, HTML, and CSS is an added advantage.",
+          "company": "Ardent Universe",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/junior-javascript-developer-node-js-mongodb-ardent-universe"
+        },
+        {
+          "text": "Bonus if you have experience with: React Next.js Supabase",
+          "company": "Mezza Kenya",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.ke/job/junior-developer-mezza-kenya"
+        }
+      ],
+      "curriculum": {
+        "title_contains": [
+          "Next.js"
+        ]
+      },
+      "beyond": [
+        {
+          "title": "Angular tutorial (free)",
+          "url": "https://angular.dev/tutorials"
+        },
+        {
+          "title": "Vue.js guide (free)",
+          "url": "https://vuejs.org/guide/introduction.html"
+        }
+      ]
+    },
+    {
+      "key": "agile",
+      "label": "Agile ways of working",
+      "why": "Planning work in short sprints with user stories and reviews.",
+      "frequency": 0.234,
+      "count": 15,
+      "quotes": [
+        {
+          "text": "Experience working within Agile development teams or collaborative engineering environments.",
+          "company": "Grayce",
+          "market": "UK",
+          "url": "https://apply.workable.com/grayce/jobs/view/9D6835622E"
+        },
+        {
+          "text": "Recyclage en Java / Apprentissage des technologies JavaEE ... Apprentissage des méthodologies de gestion de projets Agiles / Apprentissage de la revue de code informatique / Apprentissage des technologies de déploiement ",
+          "company": "Kozao Africa",
+          "market": "Africa",
+          "url": "https://africarrieres.com/cameroon/fr/jobs/kozao-africa-recherche-developpeur-web-java-ee"
+        },
+        {
+          "text": "Understand Agile/Scrum methodology",
+          "company": "Trainline",
+          "market": "UK",
+          "url": "https://jobs.ashbyhq.com/trainline/b0174860-8a94-4bd3-a307-373eeab586dd"
+        },
+        {
+          "text": "Exposure to Agile ways of working.",
+          "company": "Datafin Recruitment (client: international gaming, leisure and entertainment group)",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.za/job/junior-developer-flutter-dart-hybrid-cape-town-datafin-recruitment"
+        }
+      ],
+      "curriculum": {
+        "title_contains": [
+          "Sprint"
+        ]
+      }
+    },
+    {
+      "key": "java_backend",
+      "label": "Java backends (Spring Boot)",
+      "why": "The most common backend in African bank and telecom adverts.",
+      "frequency": 0.234,
+      "count": 15,
+      "quotes": [
+        {
+          "text": "Experience with TypeScript, Java, C++, Python is a plus",
+          "company": "Virtu Financial",
+          "market": "US",
+          "url": "https://job-boards.greenhouse.io/virtu/jobs/8657500002"
+        },
+        {
+          "text": "Working knowledge of at least one programming language, such as Java, C#, Python, JavaScript, TypeScript, Kotlin or Swift.",
+          "company": "Grayce",
+          "market": "UK",
+          "url": "https://apply.workable.com/grayce/jobs/view/9D6835622E"
+        },
+        {
+          "text": "Confidence to get started and deliver high quality code in one of Python, Rust, C/C++, Golang, JavaScript or Java",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/8379825"
+        },
+        {
+          "text": "Recyclage en Java / Apprentissage des technologies JavaEE ... Apprentissage des méthodologies de gestion de projets Agiles / Apprentissage de la revue de code informatique / Apprentissage des technologies de déploiement ",
+          "company": "Kozao Africa",
+          "market": "Africa",
+          "url": "https://africarrieres.com/cameroon/fr/jobs/kozao-africa-recherche-developpeur-web-java-ee"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "Spring guides: building a REST service (free)",
+          "url": "https://spring.io/guides/tutorials/rest"
+        }
+      ]
+    },
+    {
+      "key": "ai_tools",
+      "label": "Using AI tools well",
+      "why": "Using coding assistants openly, and checking and explaining what they produce.",
+      "frequency": 0.219,
+      "count": 14,
+      "quotes": [
+        {
+          "text": "Claude code in a real work environment",
+          "company": "Jump Trading",
+          "market": "US",
+          "url": "https://www.jumptrading.com/hr/job?gh_jid=8003019"
+        },
+        {
+          "text": "Experience using AI based coding assistants.",
+          "company": "Freetrade",
+          "market": "UK",
+          "url": "https://jobs.ashbyhq.com/freetrade/a9d99b17-bd4f-4151-bd36-b269e718bbc8"
+        },
+        {
+          "text": "Hands-on experience using AI coding tools (Claude, Copilot, Cursor, or similar) and able to articulate what you have learned about using them well.",
+          "company": "littlefish",
+          "market": "Africa",
+          "url": "https://portfoliojobs.partechpartners.com/companies/littlefish-2/jobs/78227725-full-stack-engineer-platform-junior"
+        },
+        {
+          "text": "AI enthusiast: You have built or prototyped features with AI technologies (LLMs, Embeddings, ML) and are interested in learning more.",
+          "company": "Notion",
+          "market": "US",
+          "url": "https://jobs.ashbyhq.com/notion/43ffba97-b64a-4c6a-ac13-c803253c9413"
+        }
+      ],
+      "curriculum": {
+        "title_contains": [
+          "AI Tools"
+        ]
+      }
+    },
+    {
+      "key": "html_css",
+      "label": "HTML & CSS",
+      "why": "The structure and style of every web page.",
+      "frequency": 0.203,
+      "count": 13,
+      "quotes": [
+        {
+          "text": "Have experience developing rich applications with HTML5, CSS3, and JavaScript, or",
+          "company": "Oscar Health",
+          "market": "US",
+          "url": "https://oscarhealth.com/careers/jobs?gh_jid=8407472"
+        },
+        {
+          "text": "have a working knowledge of HTML, CSS and JavaScript, and are keen to develop their frontend development skills in a production environment ...",
+          "company": "Government Digital Service (DSIT)",
+          "market": "UK",
+          "url": "https://www.manchesterdigital.com/job/gds/junior-frontend-developer-government-digital-service-seo"
+        },
+        {
+          "text": "Maîtrise du développement web (PHP, HTML, CSS, JavaScript).",
+          "company": "ESCM PIGIER Cameroun",
+          "market": "Africa",
+          "url": "https://www.cameroondesks.com/2026/05/recrutement-escm-pigier-cameroun.html"
+        },
+        {
+          "text": "Knowledge of React, Vue.js, HTML, and CSS is an added advantage.",
+          "company": "Ardent Universe",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/junior-javascript-developer-node-js-mongodb-ardent-universe"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "html_css"
+        ]
+      }
+    },
+    {
+      "key": "security",
+      "label": "Security",
+      "why": "Passwords, logins, roles and payments done safely.",
+      "frequency": 0.203,
+      "count": 13,
+      "quotes": [
+        {
+          "text": "Have an understanding of security and reliability concerns.",
+          "company": "Acre",
+          "market": "UK",
+          "url": "https://targetjobs.co.uk/jobs/graduate-frontend-engineer-216318"
+        },
+        {
+          "text": "Developing skills and awareness of security in software design and implementation",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/8379825"
+        },
+        {
+          "text": "Understanding of secure web development principles, including authentication, authorisation, session management, input validation and common web vulnerabilities.",
+          "company": "Datafin Recruitment (client: specialist cybersecurity organisation)",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.za/job/junior-full-stack-developer-python-react-jhb-onsite-datafin-recruitment"
+        },
+        {
+          "text": "Be aware of but not responsible for security.",
+          "company": "Met Office",
+          "market": "UK",
+          "url": "https://jobs.rmets.org/jobs/562131106-junior-software-developer-at-met-office"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "security"
+        ]
+      }
+    },
+    {
+      "key": "cloud",
+      "label": "Cloud platforms (AWS, Azure, GCP)",
+      "why": "Where most companies run their software.",
+      "frequency": 0.203,
+      "count": 13,
+      "quotes": [
+        {
+          "text": "You are familiar with the building blocks of distributed systems, and the technologies like AWS, MySQL and Kubernetes.",
+          "company": "Affirm",
+          "market": "US",
+          "url": "https://job-boards.greenhouse.io/affirm/jobs/8181183003"
+        },
+        {
+          "text": "Experience with building distributed systems and working with cloud platforms (we use AWS)",
+          "company": "HIVED",
+          "market": "UK",
+          "url": "https://jobs.elementalimpact.com/companies/hived/jobs/86464370-junior-backend-engineer-cx-squad"
+        },
+        {
+          "text": "Familiarity with cloud platforms (AWS, GCP, or Azure) and containerization (Docker)",
+          "company": "Klatch AI",
+          "market": "Remote",
+          "url": "https://jobs.dover.com/klatch/2be7e849-b97d-446c-9139-990bb8059664"
+        },
+        {
+          "text": "Minimum of one (1) to two (2) years’ relevant software development experience using the Microsoft stack (Visual Studio, Visual Studio Code, .NET, C#, SQL Server, Entity Framework, Git, Azure DevOps) within an IT environm",
+          "company": "City of Cape Town",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.za/job/assistant-professional-officer-junior-developer-business-applications-city-of-cape-town"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "AWS Skill Builder: Cloud Practitioner Essentials (free)",
+          "url": "https://explore.skillbuilder.aws/learn/course/external/view/elearning/134/aws-cloud-practitioner-essentials"
+        }
+      ]
+    },
+    {
+      "key": "docker",
+      "label": "Docker",
+      "why": "Packaging an app so it runs the same everywhere.",
+      "frequency": 0.156,
+      "count": 10,
+      "quotes": [
+        {
+          "text": "Build backend services as Kotlin/Java Spring Boot microservices, containerised on Azure Container Apps and exposing REST/OpenAPI APIs ...",
+          "company": "Allica Bank",
+          "market": "UK",
+          "url": "https://targetjobs.co.uk/jobs/graduate-fullstack-engineer-237173"
+        },
+        {
+          "text": "Experience with container tech such as LXD, Docker and Kubernetes",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/5150422"
+        },
+        {
+          "text": "Cloud awareness: conceptual understanding of cloud platforms and containers — depth welcome but not expected.",
+          "company": "littlefish",
+          "market": "Africa",
+          "url": "https://portfoliojobs.partechpartners.com/companies/littlefish-2/jobs/78227725-full-stack-engineer-platform-junior"
+        },
+        {
+          "text": "Practical experience with Linux, Docker and application deployment.",
+          "company": "Datafin Recruitment (client: specialist cybersecurity organisation)",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.za/job/junior-full-stack-developer-python-react-jhb-onsite-datafin-recruitment"
+        }
+      ],
+      "curriculum": {
+        "title_contains": [
+          "Deployment: Ship It Live"
+        ]
+      },
+      "beyond": [
+        {
+          "title": "Docker: Get started (free)",
+          "url": "https://docs.docker.com/get-started/"
+        }
+      ]
+    },
+    {
+      "key": "node",
+      "label": "Node.js backends",
+      "why": "JavaScript on the server: an allowed alternative to Laravel.",
+      "frequency": 0.141,
+      "count": 9,
+      "quotes": [
+        {
+          "text": "Strong programming skills in JavaScript, React, and Node",
+          "company": "Virtu Financial",
+          "market": "US",
+          "url": "https://job-boards.greenhouse.io/virtu/jobs/8657500002"
+        },
+        {
+          "text": "Solid backend experience with Node.js or Python frameworks (FastAPI, Django, or Flask)",
+          "company": "Klatch AI",
+          "market": "Remote",
+          "url": "https://jobs.dover.com/klatch/2be7e849-b97d-446c-9139-990bb8059664"
+        },
+        {
+          "text": "Proficiency in JavaScript (ES6+) and Node.js.",
+          "company": "Ardent Universe",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/junior-javascript-developer-node-js-mongodb-ardent-universe"
+        },
+        {
+          "text": "Proficiency in coding with at least one language (Java, Scala, Python,Typescript, Nodejs, etc.).",
+          "company": "Tinder (Match Group)",
+          "market": "US",
+          "url": "https://jobs.lever.co/matchgroup/54a814d1-9a73-43d7-a266-c933ffd99ce3"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "Express: getting started (free)",
+          "url": "https://expressjs.com/en/starter/installing.html"
+        }
+      ]
+    },
+    {
+      "key": "nosql",
+      "label": "NoSQL databases",
+      "why": "Document databases like MongoDB.",
+      "frequency": 0.141,
+      "count": 9,
+      "quotes": [
+        {
+          "text": "Experience working with SQL or NoSQL databases to help support business applications.",
+          "company": "Social Security Administration",
+          "market": "US",
+          "url": "https://www.usajobs.gov/job/881804700"
+        },
+        {
+          "text": "Hands-on experience working with databases such as PostgreSQL or MongoDB",
+          "company": "Klatch AI",
+          "market": "Remote",
+          "url": "https://jobs.dover.com/klatch/2be7e849-b97d-446c-9139-990bb8059664"
+        },
+        {
+          "text": "Strong knowledge of MongoDB, including CRUD operations, queries, and database management.",
+          "company": "Ardent Universe",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/junior-javascript-developer-node-js-mongodb-ardent-universe"
+        },
+        {
+          "text": "MongoDB: Databases aren’t scary. You can handle NoSQL like a pro ...",
+          "company": "Bollard Consulting Limited",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.ke/job/junior-full-stack-developer-bollard-consulting-limited"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "MongoDB University (free courses)",
+          "url": "https://learn.mongodb.com/"
+        }
+      ]
+    },
+    {
+      "key": "swift_ios",
+      "label": "iOS (Swift)",
+      "why": "Native iPhone apps: common in US/UK mobile adverts.",
+      "frequency": 0.125,
+      "count": 8,
+      "quotes": [
+        {
+          "text": "Working towards proficiency of one or more programming languages such as Swift, Typescript, and React.",
+          "company": "Notion",
+          "market": "US",
+          "url": "https://jobs.ashbyhq.com/notion/27090d0f-07d3-419b-adaa-837b5e22f947"
+        },
+        {
+          "text": "Good experience writing iOS apps using Xcode",
+          "company": "BBC",
+          "market": "UK",
+          "url": "https://www.diversifying.io/jobs/579977036-junior-software-engineer-at-bbc"
+        },
+        {
+          "text": "Android & iOS Dev: You’ve got some solid experience building and shipping mobile apps, or at least you're eager to flex those muscles.",
+          "company": "Bollard Consulting Limited",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.ke/job/junior-full-stack-developer-bollard-consulting-limited"
+        },
+        {
+          "text": "Aspiring iOS developer who’s excited to work on large scale challenges with cutting-edge technology.",
+          "company": "Tinder (Match Group)",
+          "market": "US",
+          "url": "https://jobs.lever.co/matchgroup/cda906dd-c02a-4bbc-b533-1636d58958ef"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "Apple: Develop in Swift tutorials (free)",
+          "url": "https://developer.apple.com/tutorials/develop-in-swift"
+        }
+      ]
+    },
+    {
+      "key": "csharp_dotnet",
+      "label": "C# and .NET",
+      "why": "Common in South African and corporate adverts.",
+      "frequency": 0.109,
+      "count": 7,
+      "quotes": [
+        {
+          "text": "Have (or expect) a 2:1+ in a STEM degree with strong A‑levels (AAB minimum, including an A in Maths), plus in‑depth experience with at least one major programming language and exposure to object‑oriented programming (e.g",
+          "company": "Acturis",
+          "market": "UK",
+          "url": "https://targetjobs.co.uk/jobs/graduate-web-developer-london-2026-250553"
+        },
+        {
+          "text": "Les principales technologies utilisées sont : .NET ; PostgreSQL",
+          "company": "MECI (Medium Consulting & Infosoft)",
+          "market": "Africa",
+          "url": "https://simoon-cv.com/emplois/offre/meci-recrute-03-stagiaires-dans-plusieurs-domaines-a-douala-54db690d-849b-4d7c-a324-da939680f85b"
+        },
+        {
+          "text": "Java, C#/.NET, or JavaScript.",
+          "company": "PA Consulting",
+          "market": "UK",
+          "url": "https://www.findapprenticeship.service.gov.uk/apprenticeship/VAC2000064626"
+        },
+        {
+          "text": "Have experience with some of the core programming languages we use such as C# .NET, React, Typescript, Kotlin (Android), Swift (iOS), or Ruby.",
+          "company": "Trainline",
+          "market": "UK",
+          "url": "https://jobs.ashbyhq.com/trainline/b0174860-8a94-4bd3-a307-373eeab586dd"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "Microsoft Learn: C# for beginners (free)",
+          "url": "https://learn.microsoft.com/en-us/training/paths/get-started-c-sharp-part-1/"
+        }
+      ]
+    },
+    {
+      "key": "linux",
+      "label": "Linux & the terminal",
+      "why": "Servers run Linux: comfort with the terminal helps every day.",
+      "frequency": 0.109,
+      "count": 7,
+      "quotes": [
+        {
+          "text": "Hands-on experience and a high level of proficiency in one or more of the following: Web development using Python and Typescript; Python development on Linux platform",
+          "company": "Jump Trading",
+          "market": "US",
+          "url": "https://www.jumptrading.com/hr/job?gh_jid=8003019"
+        },
+        {
+          "text": "Experience with Ubuntu or another Linux distribution",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/8379825"
+        },
+        {
+          "text": "Practical experience with Linux, Docker and application deployment.",
+          "company": "Datafin Recruitment (client: specialist cybersecurity organisation)",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.za/job/junior-full-stack-developer-python-react-jhb-onsite-datafin-recruitment"
+        },
+        {
+          "text": "Advantageous Experience: Laravel Framework. Vue.js or another JavaScript framework. Docker or Linux. AWS or other cloud platforms. Redis or caching technologies. API integrations. Automated testing. Agile development env",
+          "company": "West Coast Personnel (client in Milnerton)",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.za/job/junior-laravel-php-full-stack-developer-west-coast-personnel"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "Linux Journey (free)",
+          "url": "https://linuxjourney.com/"
+        }
+      ]
+    },
+    {
+      "key": "flutter",
+      "label": "Flutter",
+      "why": "The mobile framework most asked for in African adverts.",
+      "frequency": 0.094,
+      "count": 6,
+      "quotes": [
+        {
+          "text": "Exposure to Android, iOS or cross-platform mobile application development, including React Native or Flutter.",
+          "company": "Grayce",
+          "market": "UK",
+          "url": "https://apply.workable.com/grayce/jobs/view/9D6835622E"
+        },
+        {
+          "text": "Experience with and passion for Typescript, React, Svelte or Flutter",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/5150422"
+        },
+        {
+          "text": "Good Dart & Flutter fundamentals",
+          "company": "Finova",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/junior-flutter-developer-finova-2"
+        },
+        {
+          "text": "Mobile (welcome but not required): any prior Flutter / Dart, Kotlin, or Swift exposure is a bonus.",
+          "company": "littlefish",
+          "market": "Africa",
+          "url": "https://portfoliojobs.partechpartners.com/companies/littlefish-2/jobs/78227725-full-stack-engineer-platform-junior"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "mobile"
+        ]
+      }
+    },
+    {
+      "key": "accessibility",
+      "label": "Accessibility",
+      "why": "Websites everyone can use, including people with disabilities.",
+      "frequency": 0.094,
+      "count": 6,
+      "quotes": [
+        {
+          "text": "understand the importance of accessibility and inclusive design, and are able to apply accessibility guidance with support from others",
+          "company": "Government Digital Service (DSIT)",
+          "market": "UK",
+          "url": "https://www.manchesterdigital.com/job/gds/junior-frontend-developer-government-digital-service-seo"
+        },
+        {
+          "text": "An eye for accessibility and performance",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/5150422"
+        },
+        {
+          "text": "JavaScript Full Stack - Must Have: Solid knowledge of HTML5, CSS3, JavaScript (ES6+) and ability to build responsive static web pages / Familiarity with UI libraries (MUI, Bootstrap, Tailwind) and accessibility practices",
+          "company": "AmaliTech",
+          "market": "Africa",
+          "url": "https://jobs.smartrecruiters.com/AmaliTech/744000155221804-amalitech-apprenticeship-programme-january-cohort-2027"
+        },
+        {
+          "text": "An understanding of mobile accessibility standards",
+          "company": "BBC",
+          "market": "UK",
+          "url": "https://www.diversifying.io/jobs/579977036-junior-software-engineer-at-bbc"
+        }
+      ],
+      "curriculum": {
+        "title_contains": [
+          "Accessib"
+        ]
+      }
+    },
+    {
+      "key": "dsa",
+      "label": "Data structures & algorithms",
+      "why": "What online coding tests check: arrays, strings, hash maps.",
+      "frequency": 0.094,
+      "count": 6,
+      "quotes": [
+        {
+          "text": "Strong understanding of data structures, algorithms, and threading models",
+          "company": "Jump Trading",
+          "market": "US",
+          "url": "https://www.jumptrading.com/hr/job?gh_jid=8003019"
+        },
+        {
+          "text": "Foundational knowledge of basic Computer Science principles: data structures and algorithms.",
+          "company": "Tinder (Match Group)",
+          "market": "US",
+          "url": "https://jobs.lever.co/matchgroup/54a814d1-9a73-43d7-a266-c933ffd99ce3"
+        },
+        {
+          "text": "Foundational knowledge of basic Computer Science principles: data structures and algorithms.",
+          "company": "Tinder (Match Group)",
+          "market": "US",
+          "url": "https://jobs.lever.co/matchgroup/cda906dd-c02a-4bbc-b533-1636d58958ef"
+        },
+        {
+          "text": "Foundational understanding of data structures, algorithms, and software design through coursework or practical experience",
+          "company": "Quora",
+          "market": "US",
+          "url": "https://jobs.ashbyhq.com/quora/5494e6a1-a973-46af-b9f3-57208eb91b52"
+        }
+      ],
+      "curriculum": {
+        "title_contains": [
+          "Data Structures"
+        ]
+      }
+    },
+    {
+      "key": "system_design",
+      "label": "System design",
+      "why": "Planning how the parts of a system fit together.",
+      "frequency": 0.094,
+      "count": 6,
+      "quotes": [
+        {
+          "text": "You have previous work or internship experience designing, developing and launching backend systems at scale and are experienced using one of Python or Kotlin.",
+          "company": "Affirm",
+          "market": "US",
+          "url": "https://job-boards.greenhouse.io/affirm/jobs/8181183003"
+        },
+        {
+          "text": "Frontend: React with TypeScript, HTML5 / CSS3, component-driven architecture and state management basics.",
+          "company": "littlefish",
+          "market": "Africa",
+          "url": "https://portfoliojobs.partechpartners.com/companies/littlefish-2/jobs/78227725-full-stack-engineer-platform-junior"
+        },
+        {
+          "text": "Foundational understanding of data structures, algorithms, and software design through coursework or practical experience",
+          "company": "Quora",
+          "market": "US",
+          "url": "https://jobs.ashbyhq.com/quora/5494e6a1-a973-46af-b9f3-57208eb91b52"
+        },
+        {
+          "text": "Bonne compréhension des architectures web modernes.",
+          "company": "Cnexia",
+          "market": "Africa",
+          "url": "https://www.rekrute.com/fr/offre-emploi-stage-pfe-recrutement-cnexia-rabat-186208.html"
+        }
+      ],
+      "curriculum": {
+        "title_contains": [
+          "System Design"
+        ]
+      }
+    },
+    {
+      "key": "kotlin_android",
+      "label": "Android (Kotlin)",
+      "why": "Native Android apps: an allowed alternative to Flutter.",
+      "frequency": 0.094,
+      "count": 6,
+      "quotes": [
+        {
+          "text": "Experience with Kotlin and/or Android development through internships, coursework, or personal projects",
+          "company": "Ramp",
+          "market": "US",
+          "url": "https://jobs.ashbyhq.com/ramp/fcf118cc-521a-4a62-9d13-945e5b6e3cb8"
+        },
+        {
+          "text": "Working knowledge of at least one programming language, such as Java, C#, Python, JavaScript, TypeScript, Kotlin or Swift.",
+          "company": "Grayce",
+          "market": "UK",
+          "url": "https://apply.workable.com/grayce/jobs/view/9D6835622E"
+        },
+        {
+          "text": "Helpful technical skills : Familiarity with Kotlin, Jetpack Compose, Android Studio, Git, or automated testing is an advantage. A small Android project is one way to demonstrate your interest in mobile development.",
+          "company": "Jaza Energy",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/software-intern-mobile-jaza-energy"
+        },
+        {
+          "text": "Have experience with some of the core programming languages we use such as C# .NET, React, Typescript, Kotlin (Android), Swift (iOS), or Ruby.",
+          "company": "Trainline",
+          "market": "UK",
+          "url": "https://jobs.ashbyhq.com/trainline/b0174860-8a94-4bd3-a307-373eeab586dd"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "Android Basics with Compose (free)",
+          "url": "https://developer.android.com/courses/android-basics-compose/course"
+        }
+      ]
+    },
+    {
+      "key": "php_laravel",
+      "label": "PHP & Laravel",
+      "why": "A popular backend in African full-stack adverts, including Cameroon.",
+      "frequency": 0.078,
+      "count": 5,
+      "quotes": [
+        {
+          "text": "Maîtrise du développement web (PHP, HTML, CSS, JavaScript).",
+          "company": "ESCM PIGIER Cameroun",
+          "market": "Africa",
+          "url": "https://www.cameroondesks.com/2026/05/recrutement-escm-pigier-cameroun.html"
+        },
+        {
+          "text": "Web development fundamentals: You understand the basics of HTML, CSS, and JavaScript. You’ve had some exposure to PHP or another backend language and understand what databases and APIs are used for.",
+          "company": "Jaza Energy",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/software-intern-web-platform-jaza-energy"
+        },
+        {
+          "text": "PHP/Python Combo: You’re versatile AF – we’re looking for someone who can jump from PHP to Python without breaking a sweat.",
+          "company": "Bollard Consulting Limited",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.ke/job/junior-full-stack-developer-bollard-consulting-limited"
+        },
+        {
+          "text": "Proven experience with PHP Laravel, C#, React, and Next.jS",
+          "company": "Riana Group",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.ke/job/junior-software-developer-riana-group"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "backend"
+        ]
+      }
+    },
+    {
+      "key": "go",
+      "label": "Go",
+      "why": "A fast backend language used by some fintechs.",
+      "frequency": 0.078,
+      "count": 5,
+      "quotes": [
+        {
+          "text": "Have experience in a systems language like Java, C++, or Go, and a scripting language like Python or Ruby",
+          "company": "Oscar Health",
+          "market": "US",
+          "url": "https://oscarhealth.com/careers/jobs?gh_jid=8407472"
+        },
+        {
+          "text": "Technical Curiosity: Experience writing web-based applications in any language and a strong interest in learning our stack (Go, Ruby/Rails, Python, Scala, or Rust).",
+          "company": "Deliveroo",
+          "market": "UK",
+          "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8202627"
+        },
+        {
+          "text": "Confidence to get started and deliver high quality code in one of Python, Rust, C/C++, Golang, JavaScript or Java",
+          "company": "Canonical",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/canonical/jobs/8379825"
+        },
+        {
+          "text": "Proficiency in writing clean, performant, and testable code in a typed language (we use Go)",
+          "company": "HIVED",
+          "market": "UK",
+          "url": "https://jobs.elementalimpact.com/companies/hived/jobs/86464370-junior-backend-engineer-cx-squad"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "A Tour of Go (free)",
+          "url": "https://go.dev/tour/"
+        }
+      ]
+    },
+    {
+      "key": "graphql",
+      "label": "GraphQL",
+      "why": "Another way for apps to ask a server for data.",
+      "frequency": 0.062,
+      "count": 4,
+      "quotes": [
+        {
+          "text": "Good experience of consuming APIs, eg RESTful or using GraphQL",
+          "company": "BBC",
+          "market": "UK",
+          "url": "https://www.diversifying.io/jobs/579977036-junior-software-engineer-at-bbc"
+        },
+        {
+          "text": "Développer des applications web, microservices et API REST/GraphQL avec Spring Boot ;",
+          "company": "ACE3i Africa",
+          "market": "Africa",
+          "url": "https://www.goafricaonline.com/tg/emploi/job-20822-developpeur-java-spring-boot-debutant-hf-lome"
+        },
+        {
+          "text": "Développer et intégrer des API REST et GraphQL ;",
+          "company": "ACE3i Africa",
+          "market": "Africa",
+          "url": "https://www.goafricaonline.com/tg/emploi/job-20821-developpeur-react-nextjs-debutant-hf-lome"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "GraphQL: Learn (free)",
+          "url": "https://graphql.org/learn/"
+        }
+      ]
+    },
+    {
+      "key": "mobile_money",
+      "label": "Payments & mobile money",
+      "why": "Taking payments safely the way customers in Africa pay.",
+      "frequency": 0.031,
+      "count": 2,
+      "quotes": [
+        {
+          "text": "We’ll be growing you into someone that has the following skills which is why it’s beneficial to already have them: Full stack experience / SaaS development experience / Payments experience",
+          "company": "Electrum Software",
+          "market": "Africa",
+          "url": "https://jobs.workable.com/view/8tVnHVYKC6DYhxXUhKwmsv/2027-software-developer-graduate-programme-in-cape-town-at-electrum-software"
+        },
+        {
+          "text": "Intégration de services API (Wave, WhatsApp, OCR/KYC, Google Maps, Knox Guard).",
+          "company": "Electronic Services",
+          "market": "Africa",
+          "url": "https://www.goafricaonline.com/sn/emploi/job-10484-stage-developpeur-full-stackmobile"
+        }
+      ],
+      "curriculum": {
+        "title_contains": [
+          "Mobile Money",
+          "Payment"
+        ]
+      }
+    },
+    {
+      "key": "react_native",
+      "label": "React Native",
+      "why": "Mobile apps in JavaScript: an allowed alternative to Flutter.",
+      "frequency": 0.031,
+      "count": 2,
+      "quotes": [
+        {
+          "text": "Exposure to Android, iOS or cross-platform mobile application development, including React Native or Flutter.",
+          "company": "Grayce",
+          "market": "UK",
+          "url": "https://apply.workable.com/grayce/jobs/view/9D6835622E"
+        },
+        {
+          "text": "Connaissances de base en React / React Native (Expo) et/ou Node.js / Python.",
+          "company": "Electronic Services",
+          "market": "Africa",
+          "url": "https://www.goafricaonline.com/sn/emploi/job-10484-stage-developpeur-full-stackmobile"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "React Native: getting started (free)",
+          "url": "https://reactnative.dev/docs/getting-started"
+        }
+      ]
+    },
+    {
+      "key": "french",
+      "label": "French",
+      "why": "Some West African and international roles ask for French: if you speak it, say so on your CV.",
+      "frequency": 0.031,
+      "count": 2,
+      "quotes": [],
+      "kind": "info"
+    }
+  ],
+  "real_world": {
+    "html_css": [
+      {
+        "company": "GOV.UK / Home Office Digital",
+        "country": "United Kingdom",
+        "example": "UK government designers published six posters of accessibility dos and don'ts, one for each user group (for example screen reader users, low-vision users and people with dyslexia). For screen reader users they say to build for keyboard-only use and not to put information only in an image or video.",
+        "source_title": "Dos and don'ts on designing for accessibility (Accessibility in government blog, 2 September 2016)",
+        "source_url": "https://accessibility.blog.gov.uk/2016/09/02/dos-and-donts-on-designing-for-accessibility/"
+      },
+      {
+        "company": "GOV.UK (Government Digital Service)",
+        "country": "United Kingdom",
+        "example": "The GOV.UK Service Manual says government services must work using only HTML, because HTML is fault-tolerant, while CSS and especially JavaScript can fail (network errors, ad blockers, firewalls). JavaScript should only enhance a page that already works, so people can still finish their task when it breaks.",
+        "source_title": "Building a robust frontend using progressive enhancement (GOV.UK Service Manual)",
+        "source_url": "https://www.gov.uk/service-manual/technology/using-progressive-enhancement"
+      },
+      {
+        "company": "Nigerian banks and fintech apps (reported by TechCabal)",
+        "country": "Nigeria",
+        "example": "Blind Nigerian users told TechCabal that many websites and apps have unlabelled buttons, missing alt text, no keyboard navigation and placeholders used instead of form labels, so screen readers cannot read them; one user had to uninstall a bank app after an update made it unusable. OPay was named as an exception because blind users can set up an account on their own through screen reader support.",
+        "source_title": "Left behind: The millions of Nigerians whose use of technology is an afterthought (TechCabal, John Adoyi, 11 June 2025)",
+        "source_url": "https://techcabal.com/2025/06/11/the-millions-of-nigerians-whose-use-of-technology-is-an-afterthought/"
+      }
+    ],
+    "javascript": [
+      {
+        "company": "GOV.UK (Government Digital Service)",
+        "country": "United Kingdom",
+        "example": "GDS measured over 500,000 visits and found that 1.1% of people (about 1 in 93) did not get the site's JavaScript, and most of them had JavaScript switched on but the scripts still failed to run (for example because of network errors on mobile). This is why a page's core job should not depend on JavaScript working.",
+        "source_title": "How many people are missing out on JavaScript enhancement? (GDS blog, 21 October 2013)",
+        "source_url": "https://gds.blog.gov.uk/2013/10/21/how-many-people-are-missing-out-on-javascript-enhancement/"
+      },
+      {
+        "company": "Paystack",
+        "country": "Nigeria",
+        "example": "Paystack publishes a small sample checkout where plain HTML forms plus JavaScript files (main.js and app.js) take card details, talk to your backend to start a transaction, and ask the backend to verify the payment afterwards. It warns developers not to give the card fields a name attribute so card details are never sent to their own server by mistake.",
+        "source_title": "PaystackHQ/PaystackJS-Sample-code: Barebones Checkout using PaystackJS (GitHub README)",
+        "source_url": "https://github.com/PaystackHQ/PaystackJS-Sample-code"
+      },
+      {
+        "company": "Airbnb",
+        "country": "United States",
+        "example": "Airbnb publishes its JavaScript Style Guide, \"a mostly reasonable approach to JavaScript\", and matching ESLint rule packages so a whole team writes code the same way and tools can check it automatically. Many companies and learners reuse it as their own coding standard.",
+        "source_title": "Airbnb JavaScript Style Guide (GitHub)",
+        "source_url": "https://github.com/airbnb/javascript"
+      }
+    ],
+    "typescript": [
+      {
+        "company": "Stripe",
+        "country": "United States",
+        "example": "Stripe converted the code of its Dashboard, more than 3.7 million lines, from Flow to TypeScript in a single pull request in March 2022 after about a year of preparation. Engineers had asked for TypeScript because the old type checker was slow and used so much memory it could freeze their laptops.",
+        "source_title": "Migrating millions of lines of code to TypeScript (Stripe, 20 May 2022)",
+        "source_url": "https://stripe.dev/blog/migrating-to-typescript"
+      },
+      {
+        "company": "Slack",
+        "country": "United States",
+        "example": "Slack adopted TypeScript for its desktop app, where a small mistake can crash the whole application. While converting their code they were surprised by how many small bugs TypeScript found, such as misspelled property names and assuming a nested object always exists.",
+        "source_title": "TypeScript at Slack (Slack Engineering)",
+        "source_url": "https://slack.engineering/typescript-at-slack/"
+      },
+      {
+        "company": "Flutterwave",
+        "country": "Nigeria",
+        "example": "Flutterwave's official React library for accepting payments is written in TypeScript (files such as types.ts, useFW.tsx and FWButton.tsx), and its Angular, Vue and React Native libraries are also TypeScript. Types describe exactly which payment settings (amount, currency, customer) a developer must pass, so mistakes show up in the editor before customers see them.",
+        "source_title": "Flutterwave/React-v3: Flutterwave v3 React Library (GitHub)",
+        "source_url": "https://github.com/Flutterwave/React-v3"
+      }
+    ],
+    "react": [
+      {
+        "company": "Netflix",
+        "country": "United States",
+        "example": "In 2015 Netflix moved its website UI to React because it needed faster start-up, smooth runtime performance and modular code for running many A/B tests at once. React let it render the first screen on the server and then continue in the browser, and its virtual DOM reduced slow DOM updates.",
+        "source_title": "Netflix Likes React (Netflix TechBlog, 28 January 2015)",
+        "source_url": "https://netflixtechblog.com/netflix-likes-react-509675426db"
+      },
+      {
+        "company": "GitHub",
+        "country": "United States",
+        "example": "GitHub rebuilt its code view in React to change the interface faster, but very long files became slow: the first render of an 18,000-line file took nearly 27 seconds. By only rendering the lines visible on screen (virtualization) and avoiding unnecessary re-renders, they brought it under one second.",
+        "source_title": "Crafting a better, faster code view (GitHub Blog, 21 June 2023)",
+        "source_url": "https://github.blog/engineering/architecture-optimization/crafting-a-better-faster-code-view/"
+      },
+      {
+        "company": "Flutterwave",
+        "country": "Nigeria",
+        "example": "Flutterwave offers a React library with a useFlutterwave hook: a developer passes a config (amount, currency such as NGN, payment options like card, mobile money and USSD) and a button click opens the payment modal. It shows how African payment companies ship ready-made React components so web teams can take payments quickly.",
+        "source_title": "Flutterwave/React-v3: Flutterwave v3 React Library (GitHub README)",
+        "source_url": "https://github.com/Flutterwave/React-v3"
+      }
+    ],
+    "rest_apis": [
+      {
+        "company": "PayPal",
+        "country": "United States",
+        "example": "PayPal built its busy account overview page twice, in Java and in Node.js, and the Node.js version was built almost twice as fast by fewer people with 33% fewer lines of code. It also served double the requests per second and pages about 200 ms faster, so PayPal decided to build its consumer web apps on Node.js.",
+        "source_title": "Node.js at PayPal (PayPal Technology Blog, 22 November 2013)",
+        "source_url": "https://medium.com/paypal-tech/node-js-at-paypal-4e2d1d08ce4f"
+      },
+      {
+        "company": "Paystack",
+        "country": "Nigeria",
+        "example": "Paystack's team built a Node.js and Express bot that reads songs staff share in a Slack channel, builds a monthly Spotify playlist with custom cover art and saves it to a MongoDB database. It is a small, real backend that glues several APIs together, with secrets kept in a .env file.",
+        "source_title": "PaystackHQ/paystack-music-api: Paystack Music Slack Bot (GitHub)",
+        "source_url": "https://github.com/PaystackHQ/paystack-music-api"
+      },
+      {
+        "company": "Flutterwave",
+        "country": "Nigeria",
+        "example": "Flutterwave's docs show a Node.js server checking a payment with its official flutterwave-node-v3 package, reading the secret key from process.env. The server confirms the status, reference, currency and amount before giving the customer value, which is work that must happen on the backend, not in the browser.",
+        "source_title": "Transaction Verification (Flutterwave Docs)",
+        "source_url": "https://developer.flutterwave.com/docs/transaction-verification"
+      },
+      {
+        "company": "Stripe",
+        "country": "United States",
+        "example": "Stripe's API lets clients send an idempotency key with each POST request, so if the network fails the client can safely retry and the customer is charged only once. Stripe also advises waiting longer between each retry (exponential backoff) with some randomness so servers are not flooded.",
+        "source_title": "Designing robust and predictable APIs with idempotency (Stripe Blog)",
+        "source_url": "https://stripe.com/blog/idempotency"
+      },
+      {
+        "company": "MTN Mobile Money (MoMo)",
+        "country": "Africa (MTN markets)",
+        "example": "MTN's MoMo developer portal offers \"Get paid\" APIs (request payment, refund, payment status, account balance) and \"Pay\" APIs (transfer, transfer status) for businesses. A developer can build against a sandbox test environment before going live.",
+        "source_title": "MoMo Developer Portal (MTN)",
+        "source_url": "https://momodeveloper.mtn.com/"
+      },
+      {
+        "company": "Flutterwave",
+        "country": "Nigeria",
+        "example": "After a payment, Flutterwave tells developers to call its verify-transaction endpoint with the transaction ID in the URL and check the reference, status, currency and amount before giving value. The JSON response shows a typical REST pattern: a status, a message and a data object.",
+        "source_title": "Transaction Verification (Flutterwave Docs)",
+        "source_url": "https://developer.flutterwave.com/docs/transaction-verification"
+      }
+    ],
+    "sql": [
+      {
+        "company": "GitHub",
+        "country": "United States",
+        "example": "GitHub upgraded more than 1,200 MySQL database hosts (300+ TB of data, 5.5 million queries per second) from MySQL 5.7 to 8.0 over about a year. They ran both versions side by side in CI, upgraded replicas one at a time and kept a way to roll back without downtime.",
+        "source_title": "Upgrading GitHub.com to MySQL 8.0 (GitHub Blog, 7 December 2023)",
+        "source_url": "https://github.blog/engineering/infrastructure/upgrading-github-com-to-mysql-8-0/"
+      },
+      {
+        "company": "Figma",
+        "country": "United States",
+        "example": "Figma started in 2020 on a single Postgres database, and as it grew almost 100x it first moved groups of related tables into separate databases, then split very large tables (terabytes, billions of rows) across many databases (horizontal sharding). They chose to build on their existing Postgres because it was lower risk than adopting a new database.",
+        "source_title": "How Figma's Databases Team Lived to Tell the Scale (Figma Blog, 14 March 2024)",
+        "source_url": "https://www.figma.com/blog/how-figmas-databases-team-lived-to-tell-the-scale/"
+      },
+      {
+        "company": "Moniepoint",
+        "country": "Nigeria",
+        "example": "Moniepoint moved important business logic from a live system handling millions of transactions to a new service with its own Postgres database, and refused to switch over until the new data was proved 99.9% accurate. They compared records in both systems continuously and with batch jobs, and tracked an accuracy rate on dashboards.",
+        "source_title": "Building Trust During System Migration: How We Reached for 99.9% Data Accuracy (Moniepoint Engineering)",
+        "source_url": "https://engineering.moniepoint.com/system-migration-data-accuracy"
+      }
+    ],
+    "git": [
+      {
+        "company": "Google",
+        "country": "United States",
+        "example": "Google's public code review guide says reviewers should approve a change once it definitely improves the overall health of the code, even if it is not perfect, because \"there is no such thing as 'perfect' code\". Review is about steady improvement, not blocking people.",
+        "source_title": "The Standard of Code Review (Google eng-practices)",
+        "source_url": "https://google.github.io/eng-practices/review/reviewer/standard.html"
+      },
+      {
+        "company": "Government Digital Service (GDS)",
+        "country": "United Kingdom",
+        "example": "GDS uses GitHub pull requests so code is reviewed before it is merged, and reviewers check purpose, tests, security and documentation. They are told to give positive feedback, explain the reasons for suggestions, not rush reviews, and only approve changes they fully understand.",
+        "source_title": "How to review code (The GDS Way)",
+        "source_url": "https://gds-way.digital.cabinet-office.gov.uk/manuals/code-review-guidelines.html"
+      },
+      {
+        "company": "Ushahidi",
+        "country": "Kenya",
+        "example": "Ushahidi's open-source platform asks contributors to fork the repository, work on a feature branch, open a pull request and include a checklist explaining how to test the change. Admins then review the code and either merge it, with credit to the contributor, or ask for changes pushed to the same branch.",
+        "source_title": "Workflow for adding code (ushahidi/platform docs on GitHub)",
+        "source_url": "https://github.com/ushahidi/platform/blob/develop/docs/contributing-or-getting-involved/workflow-for-adding-code.md"
+      }
+    ],
+    "testing": [
+      {
+        "company": "GitHub",
+        "country": "United States",
+        "example": "At GitHub, 1 in 11 commits used to have a failed build caused by a flaky test (a test that passes and fails on the same code). They built a system that retries failures to detect flakiness and assigns fixes to the right people, cutting this to 1 in 200 commits.",
+        "source_title": "Reducing flaky builds by 18x (GitHub Blog, 16 December 2020)",
+        "source_url": "https://github.blog/engineering/reducing-flaky-builds-by-18x/"
+      },
+      {
+        "company": "Flutterwave",
+        "country": "Nigeria",
+        "example": "Flutterwave gives developers a test mode with test cards, mobile money details and special OTPs so they can simulate successful and failed payments before going live. For example, special OTP codes trigger errors like \"wrong OTP\" or \"insufficient funds\" so you can test how your app handles them.",
+        "source_title": "Testing (Flutterwave Docs)",
+        "source_url": "https://developer.flutterwave.com/docs/testing"
+      },
+      {
+        "company": "Moniepoint",
+        "country": "Nigeria",
+        "example": "Moniepoint, which serves over 10 million businesses and individuals, requires every non-trivial change to pass automated unit, integration and end-to-end tests before it is merged. Every new service must also pass a documented load test before going to production, because \"intuition is not evidence\".",
+        "source_title": "High Availability in Production: What Running at Scale Actually Requires (Moniepoint Engineering)",
+        "source_url": "https://engineering.moniepoint.com/high-availability-in-production-what-running-at-scale-actually-requires"
+      }
+    ],
+    "security": [
+      {
+        "company": "GitHub",
+        "country": "United States",
+        "example": "GitHub required everyone who contributes code on GitHub.com to turn on two-factor authentication (2FA), rolled out gradually from March 2023, to protect against account takeover. Nearly 95% of affected contributors enrolled and overall 2FA adoption rose 54%.",
+        "source_title": "Securing millions of developers through 2FA (GitHub Blog, 24 April 2024)",
+        "source_url": "https://github.blog/security/supply-chain-security/securing-millions-of-developers-through-2fa/"
+      },
+      {
+        "company": "Flutterwave",
+        "country": "Nigeria",
+        "example": "Webhook endpoints are public, so Flutterwave lets merchants set a secret hash, stored as an environment variable, and sends it in a verif-hash header. Your server must reject any request where the header is missing or does not match, so fake 'payment successful' messages cannot trick it.",
+        "source_title": "Webhooks (Flutterwave Docs)",
+        "source_url": "https://developer.flutterwave.com/docs/webhooks"
+      },
+      {
+        "company": "MTN Mobile Money (MoMo)",
+        "country": "Africa (MTN markets)",
+        "example": "MoMo API calls need a subscription key plus an OAuth 2.0 bearer token obtained with an API User and API Key. The token expires and \"must be treated as a credential and kept secret\", so apps request a new one before the old one expires.",
+        "source_title": "API User and Key Management (MTN MoMo Developer Portal)",
+        "source_url": "https://momodeveloper.mtn.com/content/html_widgets/ouv7x.html"
+      }
+    ],
+    "flutter": [
+      {
+        "company": "Shopify",
+        "country": "Canada",
+        "example": "In 2020 Shopify decided to build all new mobile apps with React Native, because its web developers already knew React and teams felt about twice as productive. Two apps shared 95% and 99% of their code between iOS and Android.",
+        "source_title": "React Native is the Future of Mobile at Shopify (Shopify Engineering, 29 January 2020)",
+        "source_url": "https://shopify.engineering/react-native-future-mobile-shopify"
+      },
+      {
+        "company": "Klasha",
+        "country": "Africa (pan-African startup)",
+        "example": "Klasha, a startup connecting Africans to global goods and services, built its app with Flutter. The Flutter showcase says this helped it grow to more than 300,000 active users.",
+        "source_title": "Klasha: Connecting Africa to the world with Flutter (flutter.dev showcase)",
+        "source_url": "https://flutter.dev/showcase/klasha"
+      },
+      {
+        "company": "Nubank",
+        "country": "Brazil",
+        "example": "Nubank, a digital bank with over 48 million customers, compared Kotlin Native, React Native and Flutter and chose Flutter so features could launch on iOS and Android together. Flutter pull requests merge in about 9.9 minutes on average versus 70 minutes across all platforms, and new engineers contribute within days.",
+        "source_title": "Scaling with integrity at Nubank with Flutter (flutter.dev showcase)",
+        "source_url": "https://flutter.dev/showcase/nubank"
+      }
+    ],
+    "performance": [
+      {
+        "company": "Konga",
+        "country": "Nigeria",
+        "example": "Nearly two-thirds of Nigerian users go online over 2G and data is expensive, so Konga built a Progressive Web App that works offline. It used 92% less data than the native app for the first load and 84% less than the old mobile site to complete a first purchase.",
+        "source_title": "Konga cuts data usage 92% with new Progressive Web App (web.dev case study)",
+        "source_url": "https://web.dev/case-studies/konga"
+      },
+      {
+        "company": "Jumia",
+        "country": "Africa (multi-country)",
+        "example": "Many Jumia users are on 2G, have data limits and basic phones, so Jumia built a lightweight Progressive Web App. Compared with its earlier mobile site it saw a 33% higher conversion rate and 50% lower bounce rate, and the PWA needed 25x less device storage.",
+        "source_title": "Jumia sees 33% increase in conversion rate, 12X more users on PWA (web.dev case study)",
+        "source_url": "https://web.dev/case-studies/jumia"
+      },
+      {
+        "company": "Meta (Facebook)",
+        "country": "United States",
+        "example": "Facebook started \"2G Tuesdays\": on Tuesdays staff are offered the chance to use the app on a simulated slow 2G connection, where a page can take minutes to load. This helps engineers feel what users in emerging markets experience and find problems to fix.",
+        "source_title": "Building for emerging markets: The story behind 2G Tuesdays (Engineering at Meta, 27 October 2015)",
+        "source_url": "https://engineering.fb.com/2015/10/27/networking-traffic/building-for-emerging-markets-the-story-behind-2g-tuesdays/"
+      }
+    ],
+    "ci_cd": [
+      {
+        "company": "GOV.UK (Government Digital Service)",
+        "country": "United Kingdom",
+        "example": "GOV.UK switched about 50 apps from manual deploys to continuous deployment: a reviewed change that passes automated tests goes to Integration, then Staging, then live, and stops if any test fails. The average time from test environment to live fell from 3 days to half a day, with no incidents caused by the change.",
+        "source_title": "How and why we switched to Continuous Deployment on GOV.UK (Inside GOV.UK, 5 August 2021)",
+        "source_url": "https://insidegovuk.blog.gov.uk/2021/08/05/how-and-why-we-switched-to-continuous-deployment-on-gov-uk/"
+      },
+      {
+        "company": "GitHub",
+        "country": "United States",
+        "example": "GitHub deploys tens of times a day, even on Fridays, to Kubernetes clusters and bare-metal servers. Deploys are automatically halted before problems reach customers, using checks such as Kubernetes readiness probes.",
+        "source_title": "Deployment reliability at GitHub (GitHub Blog, 3 February 2021)",
+        "source_url": "https://github.blog/engineering/infrastructure/deployment-reliability-at-github/"
+      },
+      {
+        "company": "Paystack",
+        "country": "Nigeria",
+        "example": "Paystack's open-source music bot has a CircleCI pipeline that, on every build, starts Node.js and a MongoDB test database, installs dependencies, runs the linter and runs the test suite. It is a small, readable example of continuous integration a beginner can copy.",
+        "source_title": "PaystackHQ/paystack-music-api: .circleci/config.yml (GitHub)",
+        "source_url": "https://github.com/PaystackHQ/paystack-music-api/blob/master/.circleci/config.yml"
+      }
+    ],
+    "problem_solving": [
+      {
+        "company": "GitLab",
+        "country": "United States (remote company)",
+        "example": "In January 2017 an engineer meant to wipe a broken backup database but ran the command on the main database, deleting about 300 GB; GitLab lost around 6 hours of data (about 5,000 projects) and was down for many hours. The regular backups had been silently failing because of a version mismatch and failure emails were being rejected, which taught them to test restores and give backups an owner.",
+        "source_title": "Postmortem of database outage of January 31 (GitLab Blog, 10 February 2017)",
+        "source_url": "https://about.gitlab.com/blog/2017/02/10/postmortem-of-database-outage-of-january-31/"
+      },
+      {
+        "company": "Cloudflare",
+        "country": "United States",
+        "example": "On 2 July 2019 a single badly written regular expression in a firewall rule used up the CPUs on Cloudflare's servers worldwide, causing 502 errors for 27 minutes. They fixed it by switching the feature off globally, then added CPU checks to their tests and staged rollouts so one change cannot reach every server at once.",
+        "source_title": "Details of the Cloudflare outage on July 2, 2019 (Cloudflare Blog)",
+        "source_url": "https://blog.cloudflare.com/details-of-the-cloudflare-outage-on-july-2-2019/"
+      },
+      {
+        "company": "MainOne (analysed by Cloudflare)",
+        "country": "Nigeria",
+        "example": "On 12 November 2018 a configuration mistake at Nigerian internet provider MainOne leaked network routes, sending Google traffic through Russia, China and Nigeria and making Google unreachable for many users for 74 minutes. The lesson was \"too much trust and not enough verification\": networks accepted the wrong routes without checking them.",
+        "source_title": "How a Nigerian ISP Accidentally Knocked Google Offline (Cloudflare Blog)",
+        "source_url": "https://blog.cloudflare.com/how-a-nigerian-isp-knocked-google-offline/"
+      }
+    ]
+  },
+  "interview_loop": {
+    "typical": [
+      {
+        "key": "screen",
+        "name": "Recruiter screen",
+        "what_happens": "A recruiter calls you for 20-30 minutes to check your background, motivation, availability and communication. They also explain the steps that follow.",
+        "how_to_prepare": "Practise a two-minute story of who you are, what you have built and why this company. Read the job advert and prepare one or two questions of your own."
+      },
+      {
+        "key": "online_test",
+        "name": "Online coding assessment",
+        "what_happens": "You solve one or more timed coding problems alone on a platform, sometimes with a short work-style questionnaire. Automated tests usually score your answers.",
+        "how_to_prepare": "Practise small timed problems on arrays, strings and objects in your main language, and read the platform's rules before starting. Find a quiet place, check your internet and leave extra time."
+      },
+      {
+        "key": "technical",
+        "name": "Live coding / pair programming",
+        "what_happens": "You write code with an engineer watching or pairing with you, often in a shared editor, on a small realistic task. They care about how you think, communicate and test, not only the final answer.",
+        "how_to_prepare": "Practise talking aloud while you code and asking clarifying questions before you start. Aim for a simple working solution first, then improve it and add tests or edge cases."
+      },
+      {
+        "key": "take_home",
+        "name": "Take-home exercise",
+        "what_happens": "You build a small program in your own time and tools, then submit it as a repository or pull request. A review call often follows where you walk through your choices.",
+        "how_to_prepare": "Keep it simple, readable and tested, and write a README explaining how to run it and what trade-offs you made. Stay within the suggested time and be ready to explain every line."
+      },
+      {
+        "key": "system_design_lite",
+        "name": "System design (lite)",
+        "what_happens": "You sketch how a simple app would work, for example its pages, API endpoints, database tables and what happens when many users arrive. For junior roles it is a conversation, not a test of expert knowledge.",
+        "how_to_prepare": "Practise drawing a browser-server-database diagram for an app you built and explaining each part. Learn the basic words: API, database, cache, queue and trade-off."
+      },
+      {
+        "key": "code_review_exercise",
+        "name": "Code review exercise",
+        "what_happens": "You read someone else's pull request or merge request, leave comments and sometimes fix it live with an interviewer. They look at whether you spot bugs, missing tests and unclear code, and how kindly you give feedback.",
+        "how_to_prepare": "Review classmates' pull requests on GitHub and practise writing clear, polite comments that explain why. Use a checklist: does it work, is it tested, is it readable, is it safe?"
+      },
+      {
+        "key": "behavioural",
+        "name": "Behavioural interview",
+        "what_happens": "Interviewers ask about real situations, such as working in a team, handling a mistake or learning something new. They want specific examples of what you did and what happened.",
+        "how_to_prepare": "Prepare four or five short stories from projects, using Situation, Task, Action, Result. Be clear about your own part versus the team's and what you learned."
+      },
+      {
+        "key": "final",
+        "name": "Final interview and decision",
+        "what_happens": "You may meet a hiring manager or senior leader for a final conversation about fit and expectations. A panel or hiring committee then reviews all the feedback and decides on an offer.",
+        "how_to_prepare": "Research the company's products and values and prepare questions about the team and how juniors are supported. Ask the recruiter for feedback whatever the outcome."
+      }
+    ],
+    "examples": [
+      {
+        "company": "Monzo",
+        "country": "United Kingdom",
+        "stages": [
+          "Recruiter call: the process and your questions",
+          "Initial call (1 hour) with engineers about a recent project you worked on; no whiteboard or code",
+          "Your choice: take-home exercise (small program in your own IDE and language, with a README) followed by a review call, OR a live pair coding session with pre-written unit tests",
+          "Systems design with an engineer on a hypothetical problem, using a sketching tool",
+          "Behavioural interview (1 hour, two interviewers): communication, learning, teamwork, project delivery",
+          "Hiring committee reviews all feedback and decides on an offer and team"
+        ],
+        "notes": "Backend engineering process. Monzo says the coding stage is not LeetCode-style and not a test of language trivia. No separate junior track is described.",
+        "source_url": "https://monzo.com/blog/2022/03/23/demystifying-the-backend-engineering-interview-process"
+      },
+      {
+        "company": "Shopify",
+        "country": "Canada",
+        "stages": [
+          "Life Story (1 hour, recruiter): conversation about your past personal and professional experiences",
+          "Coding exercise (40 minutes) on CoderPad in your chosen language, with a Shopify developer",
+          "Pair programming (75-90 minutes): you drive, a Shopify developer collaborates; front-end candidates use HTML, CSS, JavaScript/TypeScript/React",
+          "Technical deep dive (60 minutes): discussion of one or two projects, your decisions and trade-offs"
+        ],
+        "notes": "Published July 2022. Online documentation allowed, but not looking up existing solutions. Advice: aim for a working solution rather than a perfect one and think aloud.",
+        "source_url": "https://shopify.engineering/nail-your-technical-shopify-interview"
+      },
+      {
+        "company": "GitHub",
+        "country": "United States",
+        "stages": [
+          "Talent conversation with a recruiter: interests, experience, competency-based questions",
+          "Hiring manager conversation: deep dive into your skills for the role",
+          "Tool-based assessment (role-dependent): e.g. a timed take-home coding exercise in a private repository, submitted as a pull request and scored anonymously by engineers with automated tests",
+          "Interviews with a group of employees, including alignment with GitHub's values",
+          "Hiring decision from the recruiter"
+        ],
+        "notes": "Stages from GitHub's careers page; take-home details from the GitHub Blog post 'How GitHub does take home technical interviews' (31 March 2022): https://github.blog/developer-skills/career-growth/how-github-does-take-home-technical-interviews/",
+        "source_url": "https://github.careers/experienced-professionals"
+      },
+      {
+        "company": "GitLab",
+        "country": "United States (all-remote)",
+        "stages": [
+          "Application",
+          "Screening call",
+          "Assessment (certain roles)",
+          "Technical interview (certain roles): review a self-contained merge request at least 24 hours before, then a 90-minute video call to walk through your review and write code to improve it",
+          "Team interviews",
+          "References",
+          "Offer and background screening"
+        ],
+        "notes": "The technical interview is effectively a code review exercise. GitLab says it encourages use of AI in the interview process under its guidelines.",
+        "source_url": "https://handbook.gitlab.com/handbook/hiring/candidate-faq/"
+      },
+      {
+        "company": "Thoughtworks",
+        "country": "Global (founded in the United States)",
+        "stages": [
+          "Application review",
+          "Recruiter screening over Zoom or phone",
+          "Role-specific technical interviews, which may include pair programming, a case challenge or discussing how you approach problems",
+          "One or two leadership and cultural alignment interviews"
+        ],
+        "notes": "Average four to six weeks from application to offer. Thoughtworks' pair programming guide (2020) says communication is the most important thing assessed and knowing TDD helps: https://www.thoughtworks.com/insights/blog/what-expect-pair-programming-interview",
+        "source_url": "https://www.thoughtworks.com/en-ca/careers/our-process"
+      },
+      {
+        "company": "Government Digital Service (GDS)",
+        "country": "United Kingdom",
+        "stages": [
+          "Application with CV and covering letter, sifted by a three-person panel",
+          "Short telephone interview with simple technical questions",
+          "Programming test: sit with a GDS developer and a laptop to solve a simple task in your chosen language",
+          "Panel interview on civil service competencies and in-depth technical problems"
+        ],
+        "notes": "Official but dated (14 July 2015); the current process may differ. A current GOV.UK guidance page for technical architects confirms developer interviews still use a pair programming exercise: https://www.gov.uk/guidance/the-technical-architect-interview-process (not opened in full).",
+        "source_url": "https://technology.blog.gov.uk/2015/07/14/applying-for-a-job-at-gds-update"
+      },
+      {
+        "company": "Microsoft",
+        "country": "United States",
+        "stages": [
+          "Initial interview",
+          "If selected, a final round (Virtual Interview Day) of 1:1 interviews with Microsoft employees, with breaks",
+          "Recruiter explains timeline and outcome"
+        ],
+        "notes": "Student/new-grad page. Expect behavioural and technical questions. Microsoft's technical interviewing page says interviews assess problem solving, design, coding (no pseudocode, in a tool that compiles code) and testing, in rounds of about 45 minutes: https://careers.microsoft.com/v2/global/en/hiring-tips/technical-interviewing.html",
+        "source_url": "https://careers.microsoft.com/v2/global/en/hiring-tips/student-interviewing"
+      },
+      {
+        "company": "Amazon",
+        "country": "United States",
+        "stages": [
+          "Online assessment (OA) as the first step for university/new-grad SDE roles: coding assessment (~70 min), workstyles assessment (~15 min), work simulation (~60 min), feedback survey",
+          "If moved forward, Amazon contacts you directly for interviews"
+        ],
+        "notes": "Plan up to two hours. Public online resources allowed, but not sites requiring a login. The page does not describe the later interview format.",
+        "source_url": "https://atoz.amazon/en-us/jobs/hiring-process/online-assessment/university/software-development-engineer"
+      },
+      {
+        "company": "Andela",
+        "country": "Africa / global talent network",
+        "stages": [
+          "Evaluation of communication and tech skills: English proficiency test, technical assessment and live technical interview",
+          "Browse and apply for client opportunities",
+          "Talent matcher shortlists top profiles for clients",
+          "Client interview on technical and soft skills",
+          "Client feedback and hiring decision, then contract negotiation"
+        ],
+        "notes": "This is Andela's vetting for technologists joining its network for client contracts, not a classic employer loop.",
+        "source_url": "https://www.andela.com/our-talent-community"
+      },
+      {
+        "company": "Moniepoint",
+        "country": "Nigeria",
+        "stages": [
+          "Preliminary phone screen with recruitment team: profile, qualifications, communication",
+          "Technical assessment or case study (depending on role) applying your skills to a hypothetical scenario",
+          "Panel interview on your work experience and what you bring",
+          "Executive/final interview with a member of the executive team, then offer letter"
+        ],
+        "notes": "Company-wide process from Moniepoint's careers page, not specific to software engineers.",
+        "source_url": "https://moniepoint.com/careers"
+      }
+    ]
+  },
+  "postings": [
+    {
+      "id": "us-01",
+      "title": "Campus UI Software Engineer (Intern)",
+      "company": "Jump Trading",
+      "location": "Chicago, IL, US",
+      "market": "US",
+      "url": "https://www.jumptrading.com/hr/job?gh_jid=8003019",
+      "posted": "2026-07",
+      "role": "junior-frontend-developer",
+      "skills": [
+        "typescript",
+        "python_backend",
+        "linux",
+        "dsa",
+        "teamwork",
+        "problem_solving",
+        "performance",
+        "react",
+        "ai_tools",
+        "agile",
+        "testing",
+        "ci_cd"
+      ]
+    },
+    {
+      "id": "us-02",
+      "title": "Software Engineering Intern, Frontend (Summer 2027)",
+      "company": "Notion",
+      "location": "New York, NY / San Francisco, CA, US",
+      "market": "US",
+      "url": "https://jobs.ashbyhq.com/notion/43ffba97-b64a-4c6a-ac13-c803253c9413",
+      "posted": "2026-11",
+      "role": "junior-frontend-developer",
+      "skills": [
+        "react",
+        "typescript",
+        "degree",
+        "problem_solving",
+        "communication",
+        "teamwork",
+        "ai_tools",
+        "performance",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "us-03",
+      "title": "Software Engineering Intern, Frontend",
+      "company": "Ramp",
+      "location": "New York, NY, US",
+      "market": "US",
+      "url": "https://jobs.ashbyhq.com/ramp/a13ae586-f4cb-4385-8822-c42b9b54ed74",
+      "posted": "2026-09",
+      "role": "junior-frontend-developer",
+      "skills": [
+        "javascript",
+        "react",
+        "typescript",
+        "degree",
+        "problem_solving",
+        "performance",
+        "teamwork"
+      ]
+    },
+    {
+      "id": "us-04",
+      "title": "2027 Internship - Frontend Engineer (UI)",
+      "company": "Virtu Financial",
+      "location": "New York, NY, US",
+      "market": "US",
+      "url": "https://job-boards.greenhouse.io/virtu/jobs/8657500002",
+      "posted": "2026-07",
+      "role": "junior-frontend-developer",
+      "skills": [
+        "javascript",
+        "react",
+        "node",
+        "typescript",
+        "java_backend",
+        "python_backend",
+        "degree",
+        "problem_solving",
+        "teamwork",
+        "performance"
+      ]
+    },
+    {
+      "id": "us-05",
+      "title": "Software Engineer I, Backend (Continuous Delivery)",
+      "company": "Affirm",
+      "location": "Remote, US",
+      "market": "US",
+      "url": "https://job-boards.greenhouse.io/affirm/jobs/8181183003",
+      "posted": "2026-11",
+      "role": "junior-backend-developer",
+      "skills": [
+        "python_backend",
+        "cloud",
+        "sql",
+        "docker",
+        "system_design",
+        "testing",
+        "ci_cd",
+        "problem_solving",
+        "communication",
+        "teamwork",
+        "other"
+      ]
+    },
+    {
+      "id": "us-06",
+      "title": "Software Engineer Intern, Backend (Summer 2027 - SF)",
+      "company": "Lyft",
+      "location": "San Francisco, CA, US",
+      "market": "US",
+      "url": "https://app.careerpuck.com/job-board/lyft/job/8767726002?gh_jid=8767726002",
+      "posted": "2026-09",
+      "role": "junior-backend-developer",
+      "skills": [
+        "degree",
+        "dsa",
+        "testing",
+        "communication",
+        "sql",
+        "ci_cd"
+      ]
+    },
+    {
+      "id": "us-07",
+      "title": "Backend Engineer Intern",
+      "company": "Tinder (Match Group)",
+      "location": "Palo Alto / Los Angeles, CA, US",
+      "market": "US",
+      "url": "https://jobs.lever.co/matchgroup/54a814d1-9a73-43d7-a266-c933ffd99ce3",
+      "posted": "2026-11",
+      "role": "junior-backend-developer",
+      "skills": [
+        "java_backend",
+        "python_backend",
+        "typescript",
+        "node",
+        "dsa",
+        "ai_tools",
+        "degree",
+        "testing",
+        "cloud",
+        "nosql",
+        "other"
+      ]
+    },
+    {
+      "id": "us-08",
+      "title": "Software Engineering Intern, iOS (Summer 2027)",
+      "company": "Notion",
+      "location": "New York, NY, US",
+      "market": "US",
+      "url": "https://jobs.ashbyhq.com/notion/27090d0f-07d3-419b-adaa-837b5e22f947",
+      "posted": "2026-11",
+      "role": "junior-mobile-developer",
+      "skills": [
+        "swift_ios",
+        "typescript",
+        "react",
+        "python_backend",
+        "degree",
+        "problem_solving",
+        "communication",
+        "teamwork",
+        "ai_tools",
+        "testing",
+        "ci_cd"
+      ]
+    },
+    {
+      "id": "us-09",
+      "title": "Software Engineering Intern, Android",
+      "company": "Ramp",
+      "location": "New York, NY, US",
+      "market": "US",
+      "url": "https://jobs.ashbyhq.com/ramp/fcf118cc-521a-4a62-9d13-945e5b6e3cb8",
+      "posted": "2026-09",
+      "role": "junior-mobile-developer",
+      "skills": [
+        "kotlin_android",
+        "degree",
+        "problem_solving",
+        "teamwork"
+      ]
+    },
+    {
+      "id": "us-10",
+      "title": "iOS Engineer Intern",
+      "company": "Tinder (Match Group)",
+      "location": "Los Angeles, CA, US",
+      "market": "US",
+      "url": "https://jobs.lever.co/matchgroup/cda906dd-c02a-4bbc-b533-1636d58958ef",
+      "posted": "2026-11",
+      "role": "junior-mobile-developer",
+      "skills": [
+        "swift_ios",
+        "dsa",
+        "degree",
+        "testing"
+      ]
+    },
+    {
+      "id": "us-11",
+      "title": "Software Engineer I, Fullstack (Search)",
+      "company": "Affirm",
+      "location": "Remote, US",
+      "market": "US",
+      "url": "https://job-boards.greenhouse.io/affirm/jobs/8017340003",
+      "posted": "2026-10",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "javascript",
+        "typescript",
+        "python_backend",
+        "testing",
+        "problem_solving",
+        "communication",
+        "teamwork",
+        "other"
+      ]
+    },
+    {
+      "id": "us-12",
+      "title": "Full Stack Software Engineer, New Grad - Quora (Remote)",
+      "company": "Quora",
+      "location": "Remote, US (or Canada)",
+      "market": "US",
+      "url": "https://jobs.ashbyhq.com/quora/5494e6a1-a973-46af-b9f3-57208eb91b52",
+      "posted": "2026-10",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "python_backend",
+        "react",
+        "typescript",
+        "sql",
+        "dsa",
+        "system_design",
+        "degree",
+        "ai_tools",
+        "teamwork",
+        "communication"
+      ]
+    },
+    {
+      "id": "us-13",
+      "title": "IT Specialist (APPSW)",
+      "company": "Social Security Administration",
+      "location": "Woodlawn, Maryland, US",
+      "market": "US",
+      "url": "https://www.usajobs.gov/job/881804700",
+      "posted": "2026-08",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "react",
+        "node",
+        "rest_apis",
+        "sql",
+        "nosql",
+        "communication",
+        "problem_solving",
+        "teamwork",
+        "testing"
+      ]
+    },
+    {
+      "id": "us-14",
+      "title": "Software Engineering Intern",
+      "company": "Oscar Health",
+      "location": "New York, NY, US",
+      "market": "US",
+      "url": "https://oscarhealth.com/careers/jobs?gh_jid=8407472",
+      "posted": "2026-11",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "html_css",
+        "javascript",
+        "java_backend",
+        "go",
+        "python_backend",
+        "ruby_rails",
+        "dsa",
+        "testing",
+        "teamwork",
+        "problem_solving"
+      ]
+    },
+    {
+      "id": "us-15",
+      "title": "Software Engineer, New Grad",
+      "company": "Stripe",
+      "location": "San Francisco / Seattle / New York, US",
+      "market": "US",
+      "url": "https://stripe.com/jobs/search?gh_jid=8128744",
+      "posted": "2026-08",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "teamwork",
+        "communication",
+        "ai_tools",
+        "problem_solving"
+      ]
+    },
+    {
+      "id": "us-16",
+      "title": "Technology Leadership Program - Hybrid (Starting August 2027)",
+      "company": "Target",
+      "location": "Brooklyn Park (Minneapolis), MN, US",
+      "market": "US",
+      "url": "https://corporate.target.com/jobs/w23/14/technology-leadership-program-hybrid-starting-august-2027",
+      "posted": "2026-11",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "problem_solving",
+        "communication",
+        "teamwork",
+        "system_design",
+        "testing"
+      ]
+    },
+    {
+      "id": "uk-01",
+      "title": "Graduate Frontend Engineer",
+      "company": "Acre",
+      "location": "London, UK",
+      "market": "UK",
+      "url": "https://targetjobs.co.uk/jobs/graduate-frontend-engineer-216318",
+      "posted": "2026-02",
+      "role": "junior-frontend-developer",
+      "skills": [
+        "react",
+        "typescript",
+        "javascript",
+        "graphql",
+        "testing",
+        "security",
+        "performance"
+      ]
+    },
+    {
+      "id": "uk-02",
+      "title": "Junior Frontend Developer - Government Digital Service - SEO",
+      "company": "Government Digital Service (DSIT)",
+      "location": "Bristol / Manchester, UK",
+      "market": "UK",
+      "url": "https://www.manchesterdigital.com/job/gds/junior-frontend-developer-government-digital-service-seo",
+      "posted": "2026-04",
+      "role": "junior-frontend-developer",
+      "skills": [
+        "html_css",
+        "javascript",
+        "accessibility",
+        "testing",
+        "performance",
+        "teamwork",
+        "communication"
+      ]
+    },
+    {
+      "id": "uk-03",
+      "title": "Software Engineer, New Grad",
+      "company": "Deliveroo",
+      "location": "London, UK",
+      "market": "UK",
+      "url": "https://job-boards.greenhouse.io/deliveroo/jobs/8202627",
+      "posted": "2026-09",
+      "role": "junior-backend-developer",
+      "skills": [
+        "degree",
+        "testing",
+        "sql",
+        "problem_solving",
+        "teamwork",
+        "go",
+        "ruby_rails",
+        "python_backend"
+      ]
+    },
+    {
+      "id": "uk-04",
+      "title": "Junior Backend Engineer (CX Squad)",
+      "company": "HIVED",
+      "location": "London, UK",
+      "market": "UK",
+      "url": "https://jobs.elementalimpact.com/companies/hived/jobs/86464370-junior-backend-engineer-cx-squad",
+      "posted": "2026-07",
+      "role": "junior-backend-developer",
+      "skills": [
+        "go",
+        "testing",
+        "performance",
+        "communication",
+        "teamwork",
+        "cloud",
+        "system_design",
+        "sql"
+      ]
+    },
+    {
+      "id": "uk-05",
+      "title": "Junior Software Developer",
+      "company": "Met Office",
+      "location": "Exeter, UK",
+      "market": "UK",
+      "url": "https://jobs.rmets.org/jobs/562131106-junior-software-developer-at-met-office",
+      "posted": "2026-07",
+      "role": "junior-backend-developer",
+      "skills": [
+        "python_backend",
+        "cloud",
+        "rest_apis",
+        "testing",
+        "problem_solving",
+        "teamwork",
+        "agile",
+        "security",
+        "performance"
+      ]
+    },
+    {
+      "id": "uk-06",
+      "title": "Junior Software Engineer (iOS) – Mobile Apps",
+      "company": "BBC",
+      "location": "Any BBC UK base or remote, UK",
+      "market": "UK",
+      "url": "https://www.diversifying.io/jobs/579977036-junior-software-engineer-at-bbc",
+      "posted": "2026-08",
+      "role": "junior-mobile-developer",
+      "skills": [
+        "swift_ios",
+        "rest_apis",
+        "graphql",
+        "problem_solving",
+        "accessibility",
+        "testing",
+        "agile",
+        "ci_cd",
+        "teamwork"
+      ]
+    },
+    {
+      "id": "uk-07",
+      "title": "Junior iOS Engineer",
+      "company": "Freetrade",
+      "location": "London, UK",
+      "market": "UK",
+      "url": "https://jobs.ashbyhq.com/freetrade/a9d99b17-bd4f-4151-bd36-b269e718bbc8",
+      "posted": "2026-11",
+      "role": "junior-mobile-developer",
+      "skills": [
+        "swift_ios",
+        "git",
+        "ai_tools",
+        "problem_solving",
+        "communication",
+        "teamwork",
+        "testing",
+        "ci_cd",
+        "rest_apis",
+        "performance"
+      ]
+    },
+    {
+      "id": "uk-08",
+      "title": "Mobile Software Developer - Android / iOS",
+      "company": "Grayce",
+      "location": "Burgess Hill, West Sussex, UK",
+      "market": "UK",
+      "url": "https://apply.workable.com/grayce/jobs/view/9D6835622E",
+      "posted": "2026-10",
+      "role": "junior-mobile-developer",
+      "skills": [
+        "kotlin_android",
+        "java_backend",
+        "swift_ios",
+        "react_native",
+        "flutter",
+        "rest_apis",
+        "git",
+        "testing",
+        "ci_cd",
+        "agile",
+        "problem_solving",
+        "communication",
+        "teamwork",
+        "performance"
+      ]
+    },
+    {
+      "id": "uk-09",
+      "title": "Graduate Web Developer, London, 2026",
+      "company": "Acturis",
+      "location": "London, UK",
+      "market": "UK",
+      "url": "https://targetjobs.co.uk/jobs/graduate-web-developer-london-2026-250553",
+      "posted": "2026-10",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "degree",
+        "csharp_dotnet",
+        "javascript",
+        "testing",
+        "performance",
+        "problem_solving",
+        "communication",
+        "teamwork"
+      ]
+    },
+    {
+      "id": "uk-10",
+      "title": "Graduate Fullstack Engineer",
+      "company": "Allica Bank",
+      "location": "Milton Keynes, UK",
+      "market": "UK",
+      "url": "https://targetjobs.co.uk/jobs/graduate-fullstack-engineer-237173",
+      "posted": "2026-08",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "java_backend",
+        "react",
+        "typescript",
+        "rest_apis",
+        "docker",
+        "cloud",
+        "testing",
+        "ci_cd",
+        "security",
+        "accessibility",
+        "performance",
+        "ai_tools",
+        "degree",
+        "problem_solving",
+        "communication",
+        "teamwork"
+      ]
+    },
+    {
+      "id": "uk-11",
+      "title": "Junior Full Stack Developer",
+      "company": "Minimal Viable Launch",
+      "location": "Remote, UK",
+      "market": "UK",
+      "url": "https://targetjobs.co.uk/jobs/junior-full-stack-developer-258875",
+      "posted": null,
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "ai_tools",
+        "problem_solving",
+        "communication",
+        "teamwork",
+        "performance"
+      ]
+    },
+    {
+      "id": "uk-12",
+      "title": "Software Development Engineer Apprentice (42-Month Fixed Term Contract)",
+      "company": "Amazon UK Services Ltd.",
+      "location": "London, UK",
+      "market": "UK",
+      "url": "https://www.findapprenticeship.service.gov.uk/apprenticeship/VAC2000063426",
+      "posted": "2026-11",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "problem_solving",
+        "teamwork",
+        "communication",
+        "security"
+      ]
+    },
+    {
+      "id": "uk-13",
+      "title": "2027 Apprentice - Digital (Software Development)",
+      "company": "PA Consulting",
+      "location": "London / Manchester, UK",
+      "market": "UK",
+      "url": "https://www.findapprenticeship.service.gov.uk/apprenticeship/VAC2000064626",
+      "posted": "2026-11",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "java_backend",
+        "csharp_dotnet",
+        "javascript",
+        "nosql",
+        "cloud",
+        "communication",
+        "problem_solving",
+        "teamwork"
+      ]
+    },
+    {
+      "id": "uk-14",
+      "title": "Graduate Software Developer",
+      "company": "TPP",
+      "location": "Leeds, UK",
+      "market": "UK",
+      "url": "https://targetjobs.co.uk/jobs/graduate-software-developer-231152",
+      "posted": "2026-06",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "problem_solving",
+        "agile"
+      ]
+    },
+    {
+      "id": "uk-15",
+      "title": "Intern Engineer",
+      "company": "Trainline",
+      "location": "London, UK",
+      "market": "UK",
+      "url": "https://jobs.ashbyhq.com/trainline/b0174860-8a94-4bd3-a307-373eeab586dd",
+      "posted": "2026-11",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "git",
+        "agile",
+        "ai_tools",
+        "teamwork",
+        "csharp_dotnet",
+        "react",
+        "typescript",
+        "kotlin_android",
+        "swift_ios",
+        "ruby_rails",
+        "testing",
+        "cloud"
+      ]
+    },
+    {
+      "id": "af-01",
+      "title": "Développeur Fullstack au poste d'Assistant(e) des applications numériques",
+      "company": "ESCM PIGIER Cameroun",
+      "location": "Douala, Cameroon",
+      "market": "Africa",
+      "url": "https://www.cameroondesks.com/2026/05/recrutement-escm-pigier-cameroun.html",
+      "posted": "2026-05",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "php_laravel",
+        "react",
+        "javascript",
+        "html_css",
+        "sql",
+        "git",
+        "ci_cd",
+        "rest_apis",
+        "teamwork",
+        "problem_solving",
+        "degree",
+        "other"
+      ]
+    },
+    {
+      "id": "af-02",
+      "title": "Développeur web JAVA EE (Stage)",
+      "company": "Kozao Africa",
+      "location": "Douala, Cameroon",
+      "market": "Africa",
+      "url": "https://africarrieres.com/cameroon/fr/jobs/kozao-africa-recherche-developpeur-web-java-ee",
+      "posted": null,
+      "role": "junior-backend-developer",
+      "skills": [
+        "java_backend",
+        "agile",
+        "git",
+        "teamwork"
+      ]
+    },
+    {
+      "id": "af-03",
+      "title": "Stagiaire Assistant(e) Développeur Logiciel",
+      "company": "MECI (Medium Consulting & Infosoft)",
+      "location": "Douala, Cameroon",
+      "market": "Africa",
+      "url": "https://simoon-cv.com/emplois/offre/meci-recrute-03-stagiaires-dans-plusieurs-domaines-a-douala-54db690d-849b-4d7c-a324-da939680f85b",
+      "posted": "2026-10",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "csharp_dotnet",
+        "sql",
+        "testing"
+      ]
+    },
+    {
+      "id": "af-04",
+      "title": "Stagiaires Développeurs Informatique (Backend Spring Boot / Frontend React-Next.js / Frontend Ionic-Angular / Full Stack)",
+      "company": "MasterKey",
+      "location": "Yaoundé, Cameroon",
+      "market": "Africa",
+      "url": "https://www.cameroondesks.com/2025/07/offre-de-stage-developpeurs-informatique-masterkey.html",
+      "posted": "2025-07",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "java_backend",
+        "react",
+        "other_frontend"
+      ]
+    },
+    {
+      "id": "af-05",
+      "title": "Junior Flutter Developer",
+      "company": "Finova",
+      "location": "Lagos, Nigeria",
+      "market": "Africa",
+      "url": "https://www.myjobmag.com/job/junior-flutter-developer-finova-2",
+      "posted": "2026-10",
+      "role": "junior-mobile-developer",
+      "skills": [
+        "flutter",
+        "rest_apis",
+        "git",
+        "teamwork"
+      ]
+    },
+    {
+      "id": "af-06",
+      "title": "Junior JavaScript Developer (Node.js & MongoDB)",
+      "company": "Ardent Universe",
+      "location": "Remote: Nigeria",
+      "market": "Africa",
+      "url": "https://www.myjobmag.com/job/junior-javascript-developer-node-js-mongodb-ardent-universe",
+      "posted": "2026-10",
+      "role": "junior-backend-developer",
+      "skills": [
+        "javascript",
+        "node",
+        "nosql",
+        "rest_apis",
+        "git",
+        "react",
+        "other_frontend",
+        "html_css",
+        "problem_solving",
+        "degree",
+        "other"
+      ]
+    },
+    {
+      "id": "af-07",
+      "title": "Junior Software Engineer",
+      "company": "Mimi Dental Clinic",
+      "location": "Ibadan, Nigeria (fully remote)",
+      "market": "Africa",
+      "url": "https://jobs.dover.com/mimidentalclinic/d5d25aa1-f116-4edb-9d7d-c7bafd275150",
+      "posted": "2026-08",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "rest_apis",
+        "sql",
+        "git",
+        "testing",
+        "communication",
+        "teamwork"
+      ]
+    },
+    {
+      "id": "af-08",
+      "title": "Software Intern (Mobile)",
+      "company": "Jaza Energy",
+      "location": "Lagos, Nigeria",
+      "market": "Africa",
+      "url": "https://www.myjobmag.com/job/software-intern-mobile-jaza-energy",
+      "posted": "2026-11",
+      "role": "junior-mobile-developer",
+      "skills": [
+        "kotlin_android",
+        "rest_apis",
+        "git",
+        "testing",
+        "problem_solving",
+        "communication"
+      ]
+    },
+    {
+      "id": "af-09",
+      "title": "Software Intern (Web Platform)",
+      "company": "Jaza Energy",
+      "location": "Lagos, Nigeria",
+      "market": "Africa",
+      "url": "https://www.myjobmag.com/job/software-intern-web-platform-jaza-energy",
+      "posted": "2026-11",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "html_css",
+        "javascript",
+        "php_laravel",
+        "sql",
+        "rest_apis",
+        "git",
+        "testing",
+        "problem_solving",
+        "communication",
+        "other_frontend"
+      ]
+    },
+    {
+      "id": "af-10",
+      "title": "Junior Developer",
+      "company": "Mezza Kenya",
+      "location": "Nairobi, Kenya",
+      "market": "Africa",
+      "url": "https://www.myjobmag.co.ke/job/junior-developer-mezza-kenya",
+      "posted": "2026-11",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "javascript",
+        "typescript",
+        "sql",
+        "react",
+        "other_frontend",
+        "testing",
+        "other"
+      ]
+    },
+    {
+      "id": "af-11",
+      "title": "Junior Full Stack Developer",
+      "company": "Bollard Consulting Limited",
+      "location": "Nairobi, Kenya",
+      "market": "Africa",
+      "url": "https://www.myjobmag.co.ke/job/junior-full-stack-developer-bollard-consulting-limited",
+      "posted": "2026-10",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "node",
+        "other_frontend",
+        "nosql",
+        "php_laravel",
+        "python_backend",
+        "kotlin_android",
+        "swift_ios",
+        "git",
+        "rest_apis",
+        "problem_solving",
+        "teamwork"
+      ]
+    },
+    {
+      "id": "af-12",
+      "title": "Junior Software Developer",
+      "company": "Riana Group",
+      "location": "Nairobi, Kenya",
+      "market": "Africa",
+      "url": "https://www.myjobmag.co.ke/job/junior-software-developer-riana-group",
+      "posted": "2026-10",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "php_laravel",
+        "csharp_dotnet",
+        "react",
+        "other_frontend",
+        "sql",
+        "nosql",
+        "rest_apis",
+        "git",
+        "html_css",
+        "javascript",
+        "testing",
+        "problem_solving",
+        "teamwork",
+        "communication",
+        "degree",
+        "security"
+      ]
+    },
+    {
+      "id": "af-13",
+      "title": "2027 Software Developer Graduate Programme",
+      "company": "Electrum Software",
+      "location": "Cape Town, South Africa",
+      "market": "Africa",
+      "url": "https://jobs.workable.com/view/8tVnHVYKC6DYhxXUhKwmsv/2027-software-developer-graduate-programme-in-cape-town-at-electrum-software",
+      "posted": "2026-11",
+      "role": "junior-backend-developer",
+      "skills": [
+        "java_backend",
+        "degree",
+        "communication",
+        "mobile_money",
+        "other"
+      ]
+    },
+    {
+      "id": "af-14",
+      "title": "Assistant Professional Officer - Junior Developer - Business Applications",
+      "company": "City of Cape Town",
+      "location": "Cape Town, South Africa",
+      "market": "Africa",
+      "url": "https://www.myjobmag.co.za/job/assistant-professional-officer-junior-developer-business-applications-city-of-cape-town",
+      "posted": "2026-11",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "csharp_dotnet",
+        "sql",
+        "git",
+        "ci_cd",
+        "cloud",
+        "other_frontend",
+        "testing",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-15",
+      "title": "Developer (Junior)",
+      "company": "Discovery Limited",
+      "location": "South Africa",
+      "market": "Africa",
+      "url": "https://www.myjobmag.co.za/job/developer-junior-discovery-limited-2",
+      "posted": "2026-10",
+      "role": "junior-backend-developer",
+      "skills": [
+        "java_backend",
+        "sql",
+        "testing",
+        "problem_solving",
+        "other"
+      ]
+    },
+    {
+      "id": "af-16",
+      "title": "Full Stack Engineer - Platform (Junior)",
+      "company": "littlefish",
+      "location": "Johannesburg, South Africa",
+      "market": "Africa",
+      "url": "https://portfoliojobs.partechpartners.com/companies/littlefish-2/jobs/78227725-full-stack-engineer-platform-junior",
+      "posted": "2026-05",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "csharp_dotnet",
+        "react",
+        "typescript",
+        "html_css",
+        "rest_apis",
+        "sql",
+        "nosql",
+        "git",
+        "ci_cd",
+        "testing",
+        "ai_tools",
+        "flutter",
+        "kotlin_android",
+        "swift_ios",
+        "cloud",
+        "docker",
+        "security",
+        "system_design",
+        "agile",
+        "communication"
+      ]
+    },
+    {
+      "id": "af-17",
+      "title": "Junior Developer (Flutter/Dart) – Hybrid Cape Town",
+      "company": "Datafin Recruitment (client: international gaming, leisure and entertainment group)",
+      "location": "Cape Town, South Africa",
+      "market": "Africa",
+      "url": "https://www.myjobmag.co.za/job/junior-developer-flutter-dart-hybrid-cape-town-datafin-recruitment",
+      "posted": "2026-10",
+      "role": "junior-mobile-developer",
+      "skills": [
+        "flutter",
+        "rest_apis",
+        "git",
+        "agile",
+        "testing",
+        "ci_cd",
+        "other"
+      ]
+    },
+    {
+      "id": "af-18",
+      "title": "Junior Full Stack Developer (Python, React) – JHB – Onsite",
+      "company": "Datafin Recruitment (client: specialist cybersecurity organisation)",
+      "location": "Johannesburg, South Africa",
+      "market": "Africa",
+      "url": "https://www.myjobmag.co.za/job/junior-full-stack-developer-python-react-jhb-onsite-datafin-recruitment",
+      "posted": "2026-11",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "python_backend",
+        "html_css",
+        "javascript",
+        "rest_apis",
+        "sql",
+        "security",
+        "git",
+        "linux",
+        "docker",
+        "testing",
+        "ci_cd",
+        "communication",
+        "problem_solving",
+        "ai_tools"
+      ]
+    },
+    {
+      "id": "af-19",
+      "title": "Junior Laravel PHP Full Stack Developer",
+      "company": "West Coast Personnel (client in Milnerton)",
+      "location": "Milnerton, Cape Town, South Africa",
+      "market": "Africa",
+      "url": "https://www.myjobmag.co.za/job/junior-laravel-php-full-stack-developer-west-coast-personnel",
+      "posted": "2026-11",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "php_laravel",
+        "html_css",
+        "javascript",
+        "sql",
+        "rest_apis",
+        "git",
+        "problem_solving",
+        "teamwork",
+        "other_frontend",
+        "docker",
+        "linux",
+        "cloud",
+        "testing",
+        "agile",
+        "ai_tools",
+        "performance"
+      ]
+    },
+    {
+      "id": "af-20",
+      "title": "Junior Software Developer Intern",
+      "company": "Hello Group",
+      "location": "Centurion, Gauteng, South Africa",
+      "market": "Africa",
+      "url": "https://www.myjobmag.co.za/job/junior-software-developer-intern-hello-group",
+      "posted": "2026-05",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "sql",
+        "git",
+        "agile",
+        "ai_tools",
+        "communication",
+        "problem_solving",
+        "teamwork"
+      ]
+    },
+    {
+      "id": "af-21",
+      "title": "AmaliTech Apprenticeship Programme - January Cohort 2027",
+      "company": "AmaliTech",
+      "location": "Kigali, Rwanda",
+      "market": "Africa",
+      "url": "https://jobs.smartrecruiters.com/AmaliTech/744000155221804-amalitech-apprenticeship-programme-january-cohort-2027",
+      "posted": "2026-10",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "python_backend",
+        "java_backend",
+        "javascript",
+        "html_css",
+        "react",
+        "other_frontend",
+        "node",
+        "sql",
+        "nosql",
+        "rest_apis",
+        "git",
+        "accessibility",
+        "testing",
+        "security",
+        "ci_cd",
+        "linux",
+        "cloud",
+        "problem_solving",
+        "teamwork",
+        "communication",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-22",
+      "title": "STAGE Développeur full stack/Mobile",
+      "company": "Electronic Services",
+      "location": "Dakar, Senegal",
+      "market": "Africa",
+      "url": "https://www.goafricaonline.com/sn/emploi/job-10484-stage-developpeur-full-stackmobile",
+      "posted": "2025-08",
+      "role": "junior-mobile-developer",
+      "skills": [
+        "react",
+        "react_native",
+        "node",
+        "python_backend",
+        "rest_apis",
+        "sql",
+        "mobile_money",
+        "testing",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-23",
+      "title": "Développeur Java Spring Boot Débutant (H/F) - Lomé (stage rémunéré)",
+      "company": "ACE3i Africa",
+      "location": "Lomé, Togo",
+      "market": "Africa",
+      "url": "https://www.goafricaonline.com/tg/emploi/job-20822-developpeur-java-spring-boot-debutant-hf-lome",
+      "posted": "2026-07",
+      "role": "junior-backend-developer",
+      "skills": [
+        "java_backend",
+        "sql",
+        "docker",
+        "security",
+        "rest_apis",
+        "graphql",
+        "testing",
+        "ci_cd",
+        "agile",
+        "teamwork",
+        "degree",
+        "french"
+      ]
+    },
+    {
+      "id": "af-24",
+      "title": "Développeur React / Next.js Débutant (H/F) - Lomé (stage rémunéré)",
+      "company": "ACE3i Africa",
+      "location": "Lomé, Togo",
+      "market": "Africa",
+      "url": "https://www.goafricaonline.com/tg/emploi/job-20821-developpeur-react-nextjs-debutant-hf-lome",
+      "posted": "2026-07",
+      "role": "junior-frontend-developer",
+      "skills": [
+        "react",
+        "other_frontend",
+        "typescript",
+        "html_css",
+        "rest_apis",
+        "graphql",
+        "testing",
+        "agile",
+        "performance",
+        "git",
+        "ci_cd",
+        "teamwork",
+        "degree",
+        "french"
+      ]
+    },
+    {
+      "id": "af-25",
+      "title": "Junior Backend Developer (Java)",
+      "company": "Advansys (for Vodafone products and services)",
+      "location": "Cairo, Egypt",
+      "market": "Africa",
+      "url": "https://jobs.workable.com/view/fZYq6GzpMw18M4sEknwmT3/hybrid-junior-backend-developer-(java)-in-cairo-at-advansys",
+      "posted": "2026-10",
+      "role": "junior-backend-developer",
+      "skills": [
+        "java_backend",
+        "sql",
+        "cloud",
+        "docker",
+        "ci_cd",
+        "node",
+        "other_frontend",
+        "security",
+        "agile",
+        "communication",
+        "problem_solving",
+        "degree",
+        "other"
+      ]
+    },
+    {
+      "id": "af-26",
+      "title": "Junior Frontend Developer (Angular)",
+      "company": "Advansys",
+      "location": "Cairo, Egypt",
+      "market": "Africa",
+      "url": "https://jobs.workable.com/view/63Rw6f2aY7LnhBtrPhhuiY/hybrid-junior-frontend-developer-(angular)-in-cairo-at-advansys",
+      "posted": "2026-09",
+      "role": "junior-frontend-developer",
+      "skills": [
+        "html_css",
+        "javascript",
+        "other_frontend",
+        "git",
+        "testing",
+        "communication",
+        "teamwork"
+      ]
+    },
+    {
+      "id": "af-27",
+      "title": "Full Stack Developer Intern (Stage PFE)",
+      "company": "Cnexia",
+      "location": "Rabat, Morocco",
+      "market": "Africa",
+      "url": "https://www.rekrute.com/fr/offre-emploi-stage-pfe-recrutement-cnexia-rabat-186208.html",
+      "posted": "2026-09",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "react",
+        "typescript",
+        "other_frontend",
+        "python_backend",
+        "rest_apis",
+        "sql",
+        "git",
+        "docker",
+        "testing",
+        "performance",
+        "agile",
+        "system_design",
+        "problem_solving",
+        "communication",
+        "teamwork",
+        "degree"
+      ]
+    },
+    {
+      "id": "rm-01",
+      "title": "Graduate Software Engineer, Open Source and Linux, Canonical Ubuntu",
+      "company": "Canonical",
+      "location": "Remote: Worldwide (home based)",
+      "market": "Remote",
+      "url": "https://job-boards.greenhouse.io/canonical/jobs/8379825",
+      "posted": "2026-11",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "python_backend",
+        "go",
+        "java_backend",
+        "javascript",
+        "linux",
+        "security",
+        "communication",
+        "degree",
+        "other"
+      ]
+    },
+    {
+      "id": "rm-02",
+      "title": "Web Engineer - JS, TS, Flutter",
+      "company": "Canonical",
+      "location": "Remote: Worldwide (home based)",
+      "market": "Remote",
+      "url": "https://job-boards.greenhouse.io/canonical/jobs/5150422",
+      "posted": "2023-10",
+      "role": "junior-frontend-developer",
+      "skills": [
+        "typescript",
+        "react",
+        "other_frontend",
+        "flutter",
+        "html_css",
+        "accessibility",
+        "performance",
+        "linux",
+        "docker",
+        "rest_apis",
+        "security",
+        "testing",
+        "communication"
+      ]
+    },
+    {
+      "id": "rm-03",
+      "title": "Software Engineer Intern",
+      "company": "Ritual",
+      "location": "Remote: Anywhere in the World",
+      "market": "Remote",
+      "url": "https://weworkremotely.com/remote-jobs/ritual-software-engineer-intern",
+      "posted": "2026-11",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "problem_solving",
+        "other"
+      ]
+    },
+    {
+      "id": "rm-04",
+      "title": "ASYCUDA Intern, ASYPM UI Re-engineering & Data Visualization",
+      "company": "UNCTAD (United Nations Trade and Development)",
+      "location": "Remote or Geneva, Switzerland",
+      "market": "Remote",
+      "url": "https://untalent.org/jobs/asycuda-intern-asypm-ui-re-engineering-data-visualization",
+      "posted": null,
+      "role": "junior-frontend-developer",
+      "skills": [
+        "javascript",
+        "other_frontend",
+        "java_backend",
+        "performance",
+        "degree",
+        "other"
+      ]
+    },
+    {
+      "id": "rm-05",
+      "title": "Full Stack Engineer Intern",
+      "company": "Klatch AI",
+      "location": "Remote: International (open to qualified applicants worldwide)",
+      "market": "Remote",
+      "url": "https://jobs.dover.com/klatch/2be7e849-b97d-446c-9139-990bb8059664",
+      "posted": "2026-01",
+      "role": "junior-fullstack-developer",
+      "skills": [
+        "react",
+        "other_frontend",
+        "node",
+        "python_backend",
+        "sql",
+        "nosql",
+        "rest_apis",
+        "security",
+        "git",
+        "cloud",
+        "docker",
+        "performance",
+        "other"
+      ]
+    },
+    {
+      "id": "rm-06",
+      "title": "Junior Ubuntu Software Engineer",
+      "company": "Canonical",
+      "location": "Remote: Worldwide (home based)",
+      "market": "Remote",
+      "url": "https://job-boards.greenhouse.io/canonical/jobs/6707669",
+      "posted": "2025-11",
+      "role": "graduate-software-engineer",
+      "skills": [
+        "go",
+        "python_backend",
+        "flutter",
+        "linux",
+        "ci_cd",
+        "testing",
+        "communication",
+        "other"
+      ]
+    }
+  ]
+}

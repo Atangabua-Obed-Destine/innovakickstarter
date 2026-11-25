@@ -103,6 +103,7 @@ class FellowCurriculumProgress extends Model
         'linked_activity_id',
         'linked_interview_id',
         'checked_steps',
+        'catch_up',
     ];
 
     /**
@@ -122,6 +123,7 @@ class FellowCurriculumProgress extends Model
             'evidence' => 'array',
             'rubric_scores' => 'array',
             'checked_steps' => 'array',
+            'catch_up' => 'boolean',
             'score_awarded' => 'integer',
             'points_awarded' => 'integer',
             'late_penalty_applied' => 'boolean',

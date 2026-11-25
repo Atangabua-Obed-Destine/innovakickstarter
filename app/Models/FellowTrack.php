@@ -72,6 +72,10 @@ class FellowTrack extends Model
         'review_notes',
         'career_role',
         'offer_role',
+        'pathway',
+        'minors',
+        'stacks',
+        'pathway_chosen_at',
         'offer_unlocked_at',
     ];
 
@@ -88,6 +92,9 @@ class FellowTrack extends Model
             'collaboration_score' => 'decimal:2',
             'learning_score' => 'decimal:2',
             'is_primary' => 'boolean',
+            'minors' => 'array',
+            'stacks' => 'array',
+            'pathway_chosen_at' => 'datetime',
             'effort_allocation' => 'integer',
             'total_points_earned' => 'integer',
             'started_at' => 'datetime',

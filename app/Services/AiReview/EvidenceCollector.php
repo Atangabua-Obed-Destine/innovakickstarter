@@ -66,6 +66,12 @@ class EvidenceCollector
                 'reflection' => $progress->submission_notes,
                 'file_names' => array_map('basename', (array) ($evidence['evidence_files'] ?? [])),
                 'ai_assistance' => $evidence['ai_assistance'] ?? null,
+                // Backend projects: the automatic API contract check (IKS called the deployed API).
+                'api_contract_check' => !empty($evidence['contract']['results']) ? [
+                    'passed' => $evidence['contract']['passed'], 'total' => $evidence['contract']['total'],
+                    'failed' => array_values(array_map(fn ($r) => $r['name'] . ': ' . $r['message'], array_filter($evidence['contract']['results'], fn ($r) => !$r['ok']))),
+                ] : null,
+                'show_tell_video' => !empty($evidence['video']['url']) ? ['url' => $evidence['video']['url'], 'title' => $evidence['video']['title'] ?? null] : null,
             ],
             'github' => [],
             'links' => [],

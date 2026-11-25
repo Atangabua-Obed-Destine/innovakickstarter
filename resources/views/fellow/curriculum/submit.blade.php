@@ -109,6 +109,11 @@
         </div>
         @endif
 
+        {{-- Backend projects: API contract check --}}
+        @if(!empty($progress->curriculumActivity->api_contract['checks']))
+            @include('partials.lesson.api-contract', ['progress' => $progress])
+        @endif
+
         {{-- Show & Tell video (public YouTube link) --}}
         @if($progress->curriculumActivity->requires_video)
         <div class="card p-6" id="show-tell" style="border-color: rgba(239,68,68,.35);" x-data="showTell('{{ route('curriculum.video-check', $progress) }}', '{{ csrf_token() }}', @js(old('video_url', '')))" x-init="if (url) check()">

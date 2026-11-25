@@ -65,6 +65,7 @@ class TrackMilestone extends Model
      */
     protected $fillable = [
         'story',
+        'pathways',
         'track_id',
         'title',
         'description',
@@ -93,6 +94,7 @@ class TrackMilestone extends Model
             'is_active' => 'boolean',
             'bonus_points' => 'integer',
             'story' => 'array',
+            'pathways' => 'array',
         ];
     }
 
@@ -240,10 +242,13 @@ class TrackMilestone extends Model
      */
     public function isCompletedBy(User $fellow): bool
     {
-        $requiredActivities = $this->curriculumActivities()
-            ->where('is_required', true)
-            ->where('is_active', true)
-            ->pluck('id');
+        $pathways = app(\App\Services\PathwayService::class);
+        $requiredActivities = $pathways->hasPathways($this->track)
+            ? $pathways->requiredIdsIn($fellow, $this)
+            : $this->curriculumActivities()
+                ->where('is_required', true)
+                ->where('is_active', true)
+                ->pluck('id');
 
         if ($requiredActivities->isEmpty()) {
             return false;
@@ -262,6 +267,12 @@ class TrackMilestone extends Model
      */
     public function isUnlockedFor(User $fellow): bool
     {
+        // Tracks with pathways: core + the fellow's own pathway, in order (see PathwayService).
+        $pathways = app(\App\Services\PathwayService::class);
+        if ($pathways->hasPathways($this->track)) {
+            return $pathways->isUnlocked($fellow, $this);
+        }
+
         // First milestone is always unlocked
         if ($this->isFirst()) {
             return true;

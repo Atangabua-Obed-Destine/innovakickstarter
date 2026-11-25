@@ -30,7 +30,8 @@ class ImportCurriculumDraft extends Command
 {
     protected $signature = 'curriculum:import-draft {file : Path to the approved draft JSON}
         {--track=data-science : Track slug}
-        {--dry-run : Validate and show what would change, without saving}';
+        {--dry-run : Validate and show what would change, without saving}
+        {--no-catch-up : Make new lessons in chapters a fellow already finished required (default: recommended catch-up that never blocks)}';
 
     protected $description = 'Publish an approved curriculum draft to a track';
 
@@ -70,6 +71,15 @@ class ImportCurriculumDraft extends Command
 
         $admin = User::role('admin')->orderBy('id')->value('id');
 
+        // Which chapters each fellow had finished BEFORE the import: lessons added to them become catch-up.
+        $finishedBefore = [];
+        foreach (FellowTrack::where('track_id', $track->id)->pluck('fellow_id') as $fid) {
+            $u = User::find($fid);
+            if ($u) {
+                $finishedBefore[$fid] = TrackMilestone::where('track_id', $track->id)->get()->filter(fn ($m) => $m->isCompletedBy($u))->pluck('id')->all();
+            }
+        }
+
         DB::transaction(function () use ($track, $draft, $admin) {
             if (is_array($draft['track_experience'] ?? null)) {
                 $track->update(['experience' => $draft['track_experience']]);
@@ -90,6 +100,7 @@ class ImportCurriculumDraft extends Command
                     'sequence_order' => (int) $m['sequence_order'],
                     'estimated_duration_days' => (int) ($m['estimated_duration_days'] ?? 14),
                     'story' => $m['story'] ?? $milestone->story,
+                    'pathways' => array_key_exists('pathways', $m) ? ($m['pathways'] ?: null) : $milestone->pathways,
                     'is_active' => true,
                     'is_required' => true,
                 ])->save();
@@ -133,12 +144,37 @@ class ImportCurriculumDraft extends Command
                         ], $a['evaluation_rubric'] ?? []),
                         'resources' => array_map(fn ($r) => ['type' => $r['type'], 'title' => $r['title'], 'content' => $r['content']], $a['resources'] ?? []),
                         'interview_config' => $a['interview_config'] ?? null,
+                        'pathways' => array_key_exists('pathways', $a) ? ($a['pathways'] ?: null) : $activity->pathways,
+                        'api_contract' => array_key_exists('api_contract', $a) ? ($a['api_contract'] ?: null) : $activity->api_contract,
                         'prerequisites' => array_values(array_map(fn ($k) => $activityIds[$k], $a['prerequisites'] ?? [])),
                         'chain_parent_id' => null,
                     ])->save();
                 }
             }
         });
+
+        // Catch-up: required lessons now in a chapter the fellow had already finished never block it.
+        $catchUp = 0;
+        if (!$this->option('no-catch-up')) {
+            foreach ($finishedBefore as $fid => $milestoneIds) {
+                if (!$milestoneIds) {
+                    continue;
+                }
+                $done = FellowCurriculumProgress::where('fellow_id', $fid)->where('status', CurriculumStatus::COMPLETED->value)->pluck('curriculum_activity_id')->flip();
+                foreach (TrackCurriculumActivity::whereIn('milestone_id', $milestoneIds)->where('is_active', true)->where('is_required', true)->get() as $act) {
+                    if (isset($done[$act->id])) {
+                        continue;
+                    }
+                    $row = FellowCurriculumProgress::firstOrNew(['fellow_id' => $fid, 'curriculum_activity_id' => $act->id]);
+                    if (!$row->exists) {
+                        $row->status = CurriculumStatus::AVAILABLE;
+                    }
+                    $row->catch_up = true;
+                    $row->save();
+                    $catchUp++;
+                }
+            }
+        }
 
         // Fellows: create progress for new activities and open what is now reachable.
         $opened = 0;
@@ -164,7 +200,7 @@ class ImportCurriculumDraft extends Command
             $calculator->updateScore($fellow, $track, notify: false, markActivity: false);
         }
 
-        $this->info("Imported. {$fellows->count()} fellows resynced, {$opened} activities opened, scores recalculated.");
+        $this->info("Imported. {$fellows->count()} fellows resynced, {$opened} activities opened, {$catchUp} catch-up lessons marked, scores recalculated.");
 
         return self::SUCCESS;
     }

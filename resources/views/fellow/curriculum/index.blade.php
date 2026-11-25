@@ -223,6 +223,23 @@
     </div>
     @endif
 
+    {{-- Pathways (tracks with a shared core and several pathways) --}}
+    @if(!empty($pathwayInfo))
+        @php $pwDef = collect($pathwayInfo['definitions'])->firstWhere('key', $pathwayInfo['major']); @endphp
+        <div class="card p-5 flex flex-wrap items-center justify-between gap-4" style="border-color: rgba(99,102,241,.4);">
+            <div>
+                @if($pwDef)
+                    <p class="text-white font-semibold">{{ $pwDef['icon'] ?? '🧭' }} Your pathway: {{ $pwDef['title'] }}</p>
+                    <p class="text-dark-400 text-sm">Building with {{ $pwDef['stack'] ?? '' }}@if(count($pathwayInfo['minors'])) · {{ count($pathwayInfo['minors']) }} minor {{ \Illuminate\Support\Str::plural('chapter', count($pathwayInfo['minors'])) }}@endif. Finished work is kept if you change.</p>
+                @else
+                    <p class="text-white font-semibold">🧭 Choose your pathway</p>
+                    <p class="text-dark-400 text-sm">After the shared core you go deep in one direction: {{ collect($pathwayInfo['definitions'])->pluck('title')->implode(', ') }}. {{ $pathwayInfo['core_complete'] ? 'Your core is done: choose now to open your next chapter.' : 'You can choose now; your pathway opens when the core is done.' }}</p>
+                @endif
+            </div>
+            <a href="{{ route('curriculum.pathway') }}" class="{{ $pwDef ? 'btn-secondary' : 'btn-primary' }} text-sm px-4 py-2">{{ $pwDef ? 'Change or add a minor' : 'Choose your pathway' }} →</a>
+        </div>
+    @endif
+
     <!-- Milestones -->
     @foreach($milestones as $milestone)
     @php
@@ -328,7 +345,9 @@
                     <div class="flex items-center gap-2">
                         <span class="text-dark-500 text-xs font-mono">#{{ $activity->sequence_order }}</span>
                         <a href="{{ route('curriculum.activity.show', $activity) }}" class="text-white text-sm font-medium truncate hover:text-primary-300">{{ $activity->title }}</a>
-                        @if($activity->is_required)
+                        @if($actProgress?->catch_up && $actStatus !== 'completed')
+                            <span class="px-1.5 py-0.5 rounded text-xs flex-shrink-0" style="background: rgba(245,158,11,.15); color: #fcd34d;" title="Added after you finished this chapter. Recommended, and it never blocks you.">🆕 Catch-up</span>
+                        @elseif($activity->is_required)
                             <span class="text-red-400 text-xs">*</span>
                         @endif
                     </div>
@@ -394,6 +413,19 @@
         @endif
     </div>
     @endforeach
+
+    @if(!empty($pathwayInfo) && $pathwayInfo['other_chapters']->isNotEmpty())
+        <div class="card p-5">
+            <p class="text-white font-semibold">🔭 Other pathways</p>
+            <p class="text-dark-400 text-sm mt-1">Curious about another direction? Add any of these chapters as a minor: they count for your Career Capital and job readiness, and never block your own pathway.</p>
+            <div class="flex flex-wrap gap-2 mt-3">
+                @foreach($pathwayInfo['other_chapters'] as $oc)
+                    <span class="px-3 py-1 rounded-lg text-sm text-dark-200" style="background: rgba(255,255,255,.05);">{{ $oc->title }} <span class="text-dark-500 text-xs">· {{ collect($pathwayInfo['definitions'])->whereIn('key', (array) $oc->pathways)->pluck('title')->implode(', ') }}</span></span>
+                @endforeach
+            </div>
+            <a href="{{ route('curriculum.pathway') }}" class="text-primary-400 hover:text-primary-300 text-sm inline-block mt-3">Add a minor →</a>
+        </div>
+    @endif
 
     @if(!empty($classmates['finished']))
         <div class="card p-4 flex items-center gap-3">

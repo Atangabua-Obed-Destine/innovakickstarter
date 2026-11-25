@@ -90,7 +90,14 @@ class JobMarketService
     {
         $data = $this->data($track) ?? [];
         $activities = TrackCurriculumActivity::where('track_id', $track->id)->where('is_active', true)->where('is_required', true)
-            ->with('milestone:id,sequence_order')->get(['id', 'title', 'type', 'skills', 'milestone_id', 'sequence_order']);
+            ->with('milestone:id,sequence_order')->get(['id', 'title', 'type', 'skills', 'milestone_id', 'sequence_order', 'pathways', 'track_id']);
+        // Pathway tracks: only the fellow's own chapters count (core, major and minors), so a backend
+        // fellow can fully prove "testing" without the frontend and mobile testing lessons.
+        $pathways = app(PathwayService::class);
+        if ($pathways->hasPathways($track)) {
+            $mine = $pathways->milestones($fellow, $track)->pluck('id')->flip();
+            $activities = $activities->filter(fn ($a) => $mine->has($a->milestone_id) && $pathways->activityApplies($fellow, $a))->values();
+        }
         $progress = FellowCurriculumProgress::where('fellow_id', $fellow->id)->whereIn('curriculum_activity_id', $activities->pluck('id'))->get()->keyBy('curriculum_activity_id');
         $completed = $progress->filter(fn ($p) => $p->status === CurriculumStatus::COMPLETED)->keys()->flip();
         $certs = SkillCertificate::where('fellow_id', $fellow->id)->where('track_id', $track->id)->whereNull('revoked_at')->pluck('skill_key')->flip();

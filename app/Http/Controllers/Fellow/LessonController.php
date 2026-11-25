@@ -94,4 +94,16 @@ class LessonController extends Controller
 
         return response()->json($r + ($r['ok'] ? ['embed' => $youtube->embedUrl($r['id'])] : []), $r['ok'] ? 200 : 422);
     }
+
+    /** Backend projects: run the activity's API contract against the fellow's deployed API. */
+    public function contractCheck(Request $request, FellowCurriculumProgress $progress, \App\Services\ApiContractService $contracts)
+    {
+        abort_unless($progress->fellow_id === $request->user()->id, 403);
+        $contract = $progress->curriculumActivity?->api_contract;
+        abort_unless(is_array($contract) && !empty($contract['checks']), 404);
+        $data = $request->validate(['url' => ['required', 'string', 'max:300']]);
+        $r = $contracts->run($contract, $data['url']);
+
+        return response()->json($r, $r['ok'] ? 200 : 422);
+    }
 }
