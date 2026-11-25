@@ -50,6 +50,7 @@ class EvidenceCollector
                 'points' => (int) $activity->points,
                 'description' => (string) $activity->description,
                 'instructions' => (string) $activity->instructions,
+                'reviewer_guide' => (string) $activity->reviewer_guide,
                 'evidence_requirements' => array_values((array) ($activity->evidence_requirements ?? [])),
                 'rubric' => $this->rubric($activity->evaluation_rubric),
             ],

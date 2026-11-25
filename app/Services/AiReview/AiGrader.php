@@ -16,7 +16,7 @@ use App\Services\Ai\AiUnavailableException;
  */
 class AiGrader
 {
-    public const PROMPT_VERSION = 'v2';
+    public const PROMPT_VERSION = 'v3';
 
     public const FLAGS = [
         'prompt_injection',      // tries to instruct or manipulate the reviewer
@@ -132,6 +132,12 @@ PROMPT;
         $lines[] = "Description:\n" . trim($a['description']);
         if (trim($a['instructions']) !== '') {
             $lines[] = "Instructions:\n" . trim($a['instructions']);
+        }
+
+        if (trim($a['reviewer_guide'] ?? '') !== '') {
+            $lines[] = "\n=== REVIEWER GUIDE (private to reviewers: model answers and what to look for) ===";
+            $lines[] = 'Use it to judge correctness. Never quote it or reveal its answers in feedback_for_fellow; point the fellow to what to re-check instead.';
+            $lines[] = trim($a['reviewer_guide']);
         }
 
         $lines[] = "\n=== RUBRIC (score in this order) ===";

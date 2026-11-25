@@ -50,6 +50,12 @@
                           placeholder="Step-by-step instructions, requirements, success criteria..."
                           class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2.5 text-white placeholder-dark-500 focus:border-primary-500 focus:ring-1 focus:ring-primary-500">{{ old('instructions') }}</textarea>
             </div>
+            <div>
+                <label for="reviewer_guide" class="block text-sm font-medium text-dark-300 mb-2">Reviewer guide <span class="text-dark-500 font-normal">(admins and the AI review only, never shown to fellows)</span></label>
+                <textarea name="reviewer_guide" id="reviewer_guide" rows="6"
+                          placeholder="Model answers, what a strong submission contains, common mistakes, how to score borderline work..."
+                          class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2.5 text-white placeholder-dark-500 focus:border-primary-500 focus:ring-1 focus:ring-primary-500">{{ old('reviewer_guide') }}</textarea>
+            </div>
         </div>
 
         {{-- Type & Difficulty --}}

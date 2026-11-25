@@ -636,6 +636,43 @@
     @endif
 
     {{-- ============================================= --}}
+    {{-- LESSON FEEDBACK --}}
+    {{-- ============================================= --}}
+    @php
+        $myFeedback = \App\Models\LessonFeedback::where('curriculum_activity_id', $activity->id)->where('fellow_id', auth()->id())->first();
+    @endphp
+    <div id="lesson-feedback" class="card p-6" x-data="{ choice: @js($myFeedback ? ($myFeedback->is_clear ? '1' : '0') : null), editing: @js(!$myFeedback) }">
+        @if(session('feedback_saved'))
+            <p class="text-green-400 text-sm mb-3">Thanks, your feedback helps us improve this lesson.</p>
+        @endif
+        <template x-if="!editing">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <p class="text-dark-300 text-sm">You said this lesson was <span class="text-white font-medium" x-text="choice === '1' ? 'clear' : 'not clear enough'"></span>.</p>
+                <button type="button" @click="editing = true" class="text-primary-400 hover:text-primary-300 text-sm">Change</button>
+            </div>
+        </template>
+        <form x-show="editing" method="POST" action="{{ route('curriculum.activity.feedback', $activity) }}" class="space-y-3">
+            @csrf
+            <p class="text-white font-semibold">Was this lesson clear?</p>
+            <div class="flex flex-wrap gap-3">
+                <label class="flex items-center gap-2 px-4 py-2 rounded-lg border border-dark-600 cursor-pointer" :class="choice === '1' ? 'border-primary-500 bg-primary-500/10' : ''">
+                    <input type="radio" name="is_clear" value="1" x-model="choice" class="accent-primary-500" required>
+                    <span class="text-dark-200 text-sm">👍 Yes, clear</span>
+                </label>
+                <label class="flex items-center gap-2 px-4 py-2 rounded-lg border border-dark-600 cursor-pointer" :class="choice === '0' ? 'border-primary-500 bg-primary-500/10' : ''">
+                    <input type="radio" name="is_clear" value="0" x-model="choice" class="accent-primary-500">
+                    <span class="text-dark-200 text-sm">👎 Not really</span>
+                </label>
+            </div>
+            <div x-show="choice === '0'" x-cloak>
+                <textarea name="comment" rows="2" maxlength="1000" placeholder="What was confusing or missing? (optional)"
+                          class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2.5 text-white placeholder-dark-500 focus:border-primary-500 focus:ring-1 focus:ring-primary-500">{{ $myFeedback?->comment }}</textarea>
+            </div>
+            <button type="submit" class="btn-secondary" x-show="choice !== null">Send feedback</button>
+        </form>
+    </div>
+
+    {{-- ============================================= --}}
     {{-- BOTTOM ACTION BAR --}}
     {{-- ============================================= --}}
     <div class="flex items-center justify-between gap-3 py-2">

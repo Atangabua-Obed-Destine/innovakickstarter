@@ -215,6 +215,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/activities/{activity}', [FellowCurriculumController::class, 'showActivity'])->name('activity.show');
             Route::post('/activities/{activity}/start', [FellowCurriculumController::class, 'startActivity'])->name('activity.start');
             Route::post('/activities/{activity}/interview', [FellowCurriculumController::class, 'launchInterview'])->name('activity.interview');
+            Route::post('/activities/{activity}/feedback', [\App\Http\Controllers\Fellow\LessonFeedbackController::class, 'store'])->name('activity.feedback')->middleware('throttle:20,1');
 
             // Submission
             Route::get('/progress/{progress}/submit', [FellowCurriculumController::class, 'submitForm'])->name('submit.form');
@@ -501,6 +502,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         // Curriculum review queue (not track-specific)
+        Route::get('/curriculum/lesson-feedback', [\App\Http\Controllers\Admin\LessonFeedbackController::class, 'index'])->name('curriculum.lesson-feedback');
         Route::get('/curriculum/reviews', [AdminCurriculumController::class, 'reviewQueue'])->name('curriculum.reviews');
         Route::get('/curriculum/reviews/{progress}', [AdminCurriculumController::class, 'reviewShow'])->name('curriculum.reviews.show');
         Route::post('/curriculum/reviews/{progress}', [AdminCurriculumController::class, 'reviewProcess'])->name('curriculum.reviews.process');

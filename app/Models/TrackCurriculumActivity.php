@@ -82,12 +82,16 @@ class TrackCurriculumActivity extends Model
     /**
      * The attributes that are mass assignable.
      */
+    /** Admin-only reviewing notes and model answers: never serialised for fellows. */
+    protected $hidden = ['reviewer_guide'];
+
     protected $fillable = [
         'track_id',
         'milestone_id',
         'title',
         'description',
         'instructions',
+        'reviewer_guide',
         'type',
         'difficulty_level',
         'career_capital_category',

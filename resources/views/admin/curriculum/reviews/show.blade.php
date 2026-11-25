@@ -261,6 +261,17 @@
                 </div>
             </div>
 
+            @if($progress->curriculumActivity?->reviewer_guide)
+            <div class="card p-6" x-data="{ open: false }">
+                <button type="button" @click="open = !open" class="w-full flex items-center justify-between text-left">
+                    <h3 class="text-white font-semibold">Reviewer guide</h3>
+                    <span class="text-primary-400 text-sm" x-text="open ? 'Hide' : 'Show'"></span>
+                </button>
+                <p class="text-dark-500 text-xs mt-1">Model answers and what to look for. Fellows never see this; don't paste it into feedback.</p>
+                <div x-show="open" x-cloak class="mt-3 text-dark-200 text-sm whitespace-pre-line">{{ $progress->curriculumActivity->reviewer_guide }}</div>
+            </div>
+            @endif
+
             @if(in_array($progress->status?->value ?? $progress->status, ['submitted', 'under_review']))
             {{-- Review Form --}}
             <div class="card p-6">
