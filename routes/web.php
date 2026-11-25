@@ -229,6 +229,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/badges/{badge}/share', [FellowCurriculumController::class, 'shareBadge'])->name('badges.share');
         });
 
+        // Presentations (demos, workshops, talks) reviewed by the I-NNOVA team
+        Route::get('/presentations', [\App\Http\Controllers\Fellow\PresentationController::class, 'index'])->name('presentations.index');
+        Route::get('/presentations/create', [\App\Http\Controllers\Fellow\PresentationController::class, 'create'])->name('presentations.create');
+        Route::post('/presentations', [\App\Http\Controllers\Fellow\PresentationController::class, 'store'])->name('presentations.store')->middleware('throttle:10,1');
+        Route::get('/presentations/{presentation}', [\App\Http\Controllers\Fellow\PresentationController::class, 'show'])->name('presentations.show');
+        Route::get('/presentations/{presentation}/edit', [\App\Http\Controllers\Fellow\PresentationController::class, 'edit'])->name('presentations.edit');
+        Route::put('/presentations/{presentation}', [\App\Http\Controllers\Fellow\PresentationController::class, 'update'])->name('presentations.update');
+        Route::get('/presentations/{presentation}/files/{index}', [\App\Http\Controllers\Fellow\PresentationController::class, 'file'])->name('presentations.file')->whereNumber('index');
+
         // Fellow Fees
         Route::get('/fees', [FellowFeeController::class, 'index'])->name('fees.index');
         Route::get('/fees/{fee}', [FellowFeeController::class, 'show'])->name('fees.show');
@@ -500,6 +509,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // AI review of submissions
         Route::post('/curriculum/reviews/{progress}/ai-review', [\App\Http\Controllers\Admin\AiReviewController::class, 'run'])->name('curriculum.reviews.ai-run');
         Route::post('/curriculum/reviews/{progress}/ai-review/reveal', [\App\Http\Controllers\Admin\AiReviewController::class, 'reveal'])->name('curriculum.reviews.ai-reveal');
+
+        // Presentations review
+        Route::get('/presentations', [\App\Http\Controllers\Admin\PresentationController::class, 'index'])->name('presentations.index');
+        Route::get('/presentations/{presentation}', [\App\Http\Controllers\Admin\PresentationController::class, 'show'])->name('presentations.show');
+        Route::post('/presentations/{presentation}/review', [\App\Http\Controllers\Admin\PresentationController::class, 'review'])->name('presentations.review');
+        Route::post('/presentations/{presentation}/reopen', [\App\Http\Controllers\Admin\PresentationController::class, 'reopen'])->name('presentations.reopen');
+        Route::get('/presentations/{presentation}/files/{index}', [\App\Http\Controllers\Admin\PresentationController::class, 'file'])->name('presentations.file')->whereNumber('index');
         Route::get('/ai-reviews', [\App\Http\Controllers\Admin\AiReviewController::class, 'index'])->name('ai-reviews.index');
         Route::post('/ai-reviews/settings', [\App\Http\Controllers\Admin\AiReviewController::class, 'updateSettings'])->name('ai-reviews.settings');
 

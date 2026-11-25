@@ -114,14 +114,43 @@ class CareerCapitalCalculator
     /**
      * All five category scores, keyed by category value.
      */
-    public function calculateCategoryScores(User $fellow, Track $track): array
+    public function calculateCategoryScores(User $fellow, Track $track, ?string $exceptPresentationId = null): array
     {
-        return [
+        $scores = [
             'technical' => $this->calculateTechnicalScore($fellow, $track),
             'interview' => $this->calculateInterviewScore($fellow, $track),
             'portfolio' => $this->calculatePortfolioScore($fellow, $track),
             'collaboration' => $this->calculateCollaborationScore($fellow, $track),
             'learning' => $this->calculateLearningScore($fellow, $track),
+        ];
+
+        // Approved presentations add what the reviewer chose to each category.
+        $boosts = \App\Models\Presentation::boostsFor($fellow->id, $track->id, $exceptPresentationId);
+        foreach ($scores as $key => $score) {
+            $scores[$key] = round(min(self::MAX_SCORE, $score + ($boosts[$key] ?? 0)), 3);
+        }
+
+        return $scores;
+    }
+
+    /**
+     * What a reviewer needs to preview a presentation's effect: the fellow's
+     * category scores without that presentation, the weights, the decay
+     * multiplier and the tier thresholds. Total = sum(min(100, category +
+     * added) x weight / 100) x decay.
+     */
+    public function presentationPreviewBasis(User $fellow, Track $track, ?string $presentationId = null): array
+    {
+        $categories = $this->calculateCategoryScores($fellow, $track, $presentationId);
+
+        return [
+            'categories' => $categories,
+            'weights' => $this->categoryWeights($track),
+            'decay' => round($this->applyDecay($fellow, $track, 100.0) / 100, 4),
+            'total' => $this->totalFromCategories($fellow, $track, $categories),
+            'current_total' => (float) ($fellow->fellowTracks()->where('track_id', $track->id)->value('score') ?? 0),
+            'tiers' => collect(Tier::cases())->map(fn (Tier $t) => ['label' => $t->label(), 'min' => (float) $t->defaultRange()['min']])
+                ->sortBy('min')->values()->all(),
         ];
     }
 
