@@ -45,6 +45,7 @@ class Track extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
+        'experience',
         'name',
         'slug',
         'category',
@@ -70,6 +71,7 @@ class Track extends Model
         return [
             'category' => TrackCategory::class,
             'scoring_rubric' => 'array',
+            'experience' => 'array',
             'requirements' => 'array',
             'outcomes' => 'array',
             'is_active' => 'boolean',

@@ -597,6 +597,7 @@ class CurriculumService
             // Award milestone badge if not already awarded
             if (!$this->curriculumRepository->hasBadge($fellow, BadgeType::MILESTONE->value, $milestone->id)) {
                 FellowBadge::createMilestoneBadge($fellow, $milestone);
+                $this->sendChapterDebrief($fellow, $milestone);
 
                 Log::info("Milestone badge awarded", [
                     'fellow_id' => $fellow->id,
@@ -611,6 +612,35 @@ class CurriculumService
             // Check for full track completion
             $this->checkTrackCompletion($fellow, $milestone->track);
         }
+    }
+
+    /**
+     * Story tracks: when a chapter (milestone) is completed, the fellow's
+     * "manager" sends the chapter debrief and points to the next chapter.
+     */
+    protected function sendChapterDebrief(User $fellow, TrackMilestone $milestone): void
+    {
+        $experience = \App\Support\TrackExperience::for($milestone->track);
+        $manager = $experience?->manager();
+        $debrief = $milestone->story['debrief'] ?? null;
+        if (!$manager || !$debrief) {
+            return;
+        }
+
+        $next = TrackMilestone::where('track_id', $milestone->track_id)
+            ->where('is_active', true)
+            ->where('sequence_order', '>', $milestone->sequence_order)
+            ->orderBy('sequence_order')
+            ->first();
+        $nextLine = $next ? ' Next: ' . ($next->story['chapter'] ?? $next->title) . '.' : '';
+
+        \App\Models\Notification::send(
+            $fellow,
+            \App\Models\Notification::TYPE_ACHIEVEMENT,
+            "Message from {$manager['name']}",
+            trim($debrief) . $nextLine,
+            ['action_url' => route('curriculum.index'), 'action_label' => 'Open your journey']
+        );
     }
 
     /**

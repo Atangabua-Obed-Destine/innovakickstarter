@@ -154,9 +154,17 @@
         </div>
     @endif
 
+    @php
+        $trackExperience = \App\Support\TrackExperience::for(($activeTrack ?? null)?->track ?? $primaryTrack?->track);
+        $trackSkills = $trackExperience ? app(\App\Services\SkillMapService::class)->forFellow($user, $trackExperience->track) : [];
+    @endphp
+    @if($trackExperience?->hasStory())
+        @include('partials.track.hero', ['experience' => $trackExperience, 'fellowTrack' => ($activeTrack ?? null) ?? $primaryTrack, 'user' => $user])
+    @endif
+
     <!-- Welcome Header -->
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
+        <div class="{{ $trackExperience?->hasStory() ? 'hidden' : '' }}">
             <h1 class="text-2xl font-bold text-white">
                 Welcome back, {{ explode(' ', $user->name)[0] }}! 👋
             </h1>
@@ -712,6 +720,10 @@
             </div>
         </div>
     </div>
+
+    @if(count($trackSkills ?? []) >= 3)
+        @include('partials.track.skill-map', ['skills' => $trackSkills, 'experience' => $trackExperience])
+    @endif
 
     <!-- Stats Row -->
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">

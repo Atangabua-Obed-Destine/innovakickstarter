@@ -64,6 +64,7 @@ class TrackMilestone extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
+        'story',
         'track_id',
         'title',
         'description',
@@ -91,6 +92,7 @@ class TrackMilestone extends Model
             'is_required' => 'boolean',
             'is_active' => 'boolean',
             'bonus_points' => 'integer',
+            'story' => 'array',
         ];
     }
 

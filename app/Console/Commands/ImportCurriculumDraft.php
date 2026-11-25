@@ -71,6 +71,10 @@ class ImportCurriculumDraft extends Command
         $admin = User::role('admin')->orderBy('id')->value('id');
 
         DB::transaction(function () use ($track, $draft, $admin) {
+            if (is_array($draft['track_experience'] ?? null)) {
+                $track->update(['experience' => $draft['track_experience']]);
+            }
+
             // Free the sequence numbers first (milestones have a unique track + order).
             TrackMilestone::withTrashed()->where('track_id', $track->id)->update(['sequence_order' => DB::raw('sequence_order + 10000')]);
 
@@ -85,6 +89,7 @@ class ImportCurriculumDraft extends Command
                     'description' => $m['description'],
                     'sequence_order' => (int) $m['sequence_order'],
                     'estimated_duration_days' => (int) ($m['estimated_duration_days'] ?? 14),
+                    'story' => $m['story'] ?? $milestone->story,
                     'is_active' => true,
                     'is_required' => true,
                 ])->save();
@@ -114,6 +119,7 @@ class ImportCurriculumDraft extends Command
                         'career_capital_category' => $a['career_capital_category'],
                         'is_required' => (bool) $a['is_required'],
                         'is_collaborative' => (bool) ($a['is_collaborative'] ?? false),
+                        'skills' => array_key_exists('skills', $a) ? array_values((array) $a['skills']) : $activity->skills,
                         'is_active' => true,
                         'is_sequential' => false,
                         'sequence_order' => $order,
@@ -196,9 +202,15 @@ class ImportCurriculumDraft extends Command
             $errors[] = "Existing activity {$missing} is missing from the draft (fellows have progress on it).";
         }
 
+        $skillKeys = array_column(($draft['track_experience']['skills'] ?? $track->experience['skills'] ?? []), 'key');
         foreach ($draft['milestones'] as $m) {
             foreach ($m['activities'] ?? [] as $a) {
                 $label = "'" . ($a['title'] ?? $a['key']) . "'";
+                foreach ((array) ($a['skills'] ?? []) as $skill) {
+                    if (!in_array($skill, $skillKeys, true)) {
+                        $errors[] = "{$label}: unknown skill {$skill}";
+                    }
+                }
                 if (!str_starts_with($a['key'], 'new-') && !in_array($a['key'], $existingActivities, true)) {
                     $errors[] = "{$label}: activity {$a['key']} is not in this track.";
                 }

@@ -18,6 +18,13 @@
         </div>
     </div>
 
+    @php
+        $trackExperience = \App\Support\TrackExperience::for($currentTrack);
+    @endphp
+    @if($trackExperience?->hasStory())
+        @include('partials.track.journey', ['experience' => $trackExperience, 'milestones' => $milestones, 'progress' => $progress, 'activeMilestone' => $activeMilestone ?? null])
+    @endif
+
     <!-- Streak & Partner Bar -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         {{-- Streak --}}
@@ -127,7 +134,7 @@
         $isUnlocked = $milestone->isUnlockedFor(auth()->user());
         $isComplete = $msTotal > 0 && $msCompleted === $msTotal;
     @endphp
-    <div class="card overflow-hidden {{ !$isUnlocked && !$isComplete ? 'opacity-60' : '' }}">
+    <div id="milestone-{{ $milestone->id }}" class="card overflow-hidden {{ !$isUnlocked && !$isComplete ? 'opacity-60' : '' }}">
         <!-- Milestone Header -->
         <div class="p-5 border-b border-dark-700">
             <div class="flex items-center gap-4">

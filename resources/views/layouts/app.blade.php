@@ -17,6 +17,9 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @if(isset($activeTrack) && $activeTrack?->track)
+        {{ \App\Support\TrackExperience::for($activeTrack->track)->themeStyle() }}
+    @endif
     <script src="{{ asset('js/audio-manager.js') }}"></script>
 
     <!-- Additional Head Content -->
