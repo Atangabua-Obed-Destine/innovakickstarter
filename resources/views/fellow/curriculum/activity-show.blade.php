@@ -437,6 +437,23 @@
     @endif
     @endif
 
+<style>
+    .lesson-md { color: rgb(203 213 225); font-size: 0.9rem; line-height: 1.65; }
+    .lesson-md > * + * { margin-top: 0.75rem; }
+    .lesson-md h1, .lesson-md h2, .lesson-md h3, .lesson-md h4 { color: #fff; font-weight: 600; margin-top: 1.25rem; }
+    .lesson-md h1 { font-size: 1.25rem; } .lesson-md h2 { font-size: 1.125rem; } .lesson-md h3, .lesson-md h4 { font-size: 1rem; }
+    .lesson-md ul { list-style: disc; padding-left: 1.4rem; } .lesson-md ol { list-style: decimal; padding-left: 1.4rem; }
+    .lesson-md li + li { margin-top: 0.3rem; } .lesson-md li > ul, .lesson-md li > ol { margin-top: 0.3rem; }
+    .lesson-md strong { color: #fff; font-weight: 600; }
+    .lesson-md a { color: rgb(96 165 250); text-decoration: underline; }
+    .lesson-md code { background: rgba(148, 163, 184, 0.15); border-radius: 4px; padding: 0.1rem 0.35rem; font-size: 0.85em; color: rgb(226 232 240); }
+    .lesson-md pre { background: rgba(2, 6, 23, 0.6); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; padding: 0.85rem 1rem; overflow-x: auto; }
+    .lesson-md pre code { background: none; padding: 0; font-size: 0.82rem; line-height: 1.55; }
+    .lesson-md blockquote { border-left: 3px solid rgba(96, 165, 250, 0.6); padding-left: 0.9rem; color: rgb(148 163 184); }
+    .lesson-md table { width: 100%; border-collapse: collapse; font-size: 0.85rem; display: block; overflow-x: auto; }
+    .lesson-md th, .lesson-md td { border: 1px solid rgba(148, 163, 184, 0.25); padding: 0.35rem 0.6rem; text-align: left; }
+    .lesson-md hr { border-color: rgba(148, 163, 184, 0.25); }
+</style>
     {{-- ============================================= --}}
     {{-- DESCRIPTION --}}
     {{-- ============================================= --}}
@@ -444,8 +461,8 @@
         <h3 class="text-white font-semibold text-lg mb-3 flex items-center gap-2">
             <span class="text-primary-400">📖</span> Description
         </h3>
-        <div class="text-dark-300 text-sm leading-relaxed">
-            {!! nl2br(e($activity->description)) !!}
+        <div class="lesson-md">
+            {{ \App\Support\LessonMarkdown::render($activity->description) }}
         </div>
     </div>
 
@@ -457,8 +474,8 @@
         <h3 class="text-white font-semibold text-lg mb-3 flex items-center gap-2">
             <span class="text-blue-400">📋</span> Step-by-Step Instructions
         </h3>
-        <div class="text-dark-300 text-sm leading-relaxed prose prose-invert max-w-none">
-            {!! nl2br(e($activity->instructions)) !!}
+        <div class="lesson-md">
+            {{ \App\Support\LessonMarkdown::render($activity->instructions) }}
         </div>
     </div>
     @endif

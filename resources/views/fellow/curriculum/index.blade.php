@@ -146,7 +146,7 @@
                         @endif
                     </div>
                     @if($milestone->description)
-                    <p class="text-dark-400 text-sm mt-0.5">{{ Str::limit($milestone->description, 120) }}</p>
+                    <p class="text-dark-400 text-sm mt-0.5">{{ \App\Support\LessonMarkdown::plain($milestone->description, 120) }}</p>
                     @endif
                 </div>
                 <div class="text-right">
