@@ -85,6 +85,9 @@
                     </div>
                 @endif
                 @if(!empty($ns['note']))<p class="text-dark-300 text-sm mt-2">{{ $ns['note'] }}</p>@endif
+                @if(!empty($ns['why']))
+                    <p class="text-primary-200 text-sm mt-2">💼 Why it matters: builds <strong>{{ $ns['why']['skill']['label'] }}</strong>, asked for in {{ (int) round($ns['why']['skill']['frequency'] * 100) }}% of entry-level data job adverts.</p>
+                @endif
             </div>
             @if($ns['url'])
                 <a href="{{ $ns['url'] }}" class="btn-primary px-6 py-3 text-base flex-shrink-0">{{ $ns['cta'] }} →</a>
@@ -104,6 +107,21 @@
             </div>
         @endif
     </div>
+    @endif
+
+    @if(!empty($career))
+        <a href="{{ route('career.index') }}" class="card p-4 flex flex-wrap items-center gap-4 hover:border-primary-500/40">
+            <div class="relative w-14 h-14 flex-shrink-0">
+                <svg viewBox="0 0 36 36" class="w-14 h-14"><circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(148,163,184,.2)" stroke-width="4"/>
+                    <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-primary-400)" stroke-width="4" stroke-linecap="round" stroke-dasharray="{{ round(97.4 * $career['percent'] / 100, 1) }} 97.4" transform="rotate(-90 18 18)"/></svg>
+                <span class="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">{{ $career['percent'] }}%</span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-white font-semibold">💼 Job-ready for {{ $career['role']['title'] }}: {{ $career['percent'] }}%</p>
+                <p class="text-dark-400 text-sm">{{ $career['offer'] ? '📨 Mock offer unlocked! ' : '' }}{{ $career['gap'] ? 'Biggest gap: ' . $career['gap']['label'] . ' (asked in ' . (int) round($career['gap']['role_frequency'] * 100) . '% of adverts).' : 'You have proof for everything the program teaches for this role.' }} Measured against real job adverts.</p>
+            </div>
+            <span class="text-primary-300 text-sm">Job Market →</span>
+        </a>
     @endif
 
     @if($trackExperience?->hasStory())

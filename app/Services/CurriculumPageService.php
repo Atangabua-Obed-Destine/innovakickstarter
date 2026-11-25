@@ -78,6 +78,7 @@ class CurriculumPageService
 
         return [
             'kind' => $kind, 'title' => $item['activity']->title, 'url' => route('curriculum.activity.show', $item['activity']), 'cta' => $cta,
+            'activity' => $item['activity'],
             'chapter' => $item['chapter'],
             'chapter_title' => preg_replace('/^Chapter\s+\d+\s*[:·.-]\s*/i', '', (string) ($item['milestone']->story['chapter'] ?? $item['milestone']->title)),
             'type' => trim(($item['activity']->type?->icon() ?? '') . ' ' . ($item['activity']->type?->label() ?? '')),

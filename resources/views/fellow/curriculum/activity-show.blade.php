@@ -501,6 +501,13 @@
         </div>
     </div>
 
+    @if($stakeholder)
+        @include('partials.lesson.ticket', ['activity' => $activity, 'progress' => $progress, 'stakeholder' => $stakeholder])
+    @endif
+    @if($why)
+        @include('partials.lesson.real-world', ['why' => $why])
+    @endif
+
     {{-- ============================================= --}}
     {{-- INSTRUCTIONS (interactive steps when the lesson has them) --}}
     {{-- ============================================= --}}

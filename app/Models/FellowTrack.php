@@ -70,6 +70,9 @@ class FellowTrack extends Model
         'reviewed_at',
         'reviewed_by',
         'review_notes',
+        'career_role',
+        'offer_role',
+        'offer_unlocked_at',
     ];
 
     /**
@@ -90,6 +93,7 @@ class FellowTrack extends Model
             'started_at' => 'datetime',
             'last_active_at' => 'datetime',
             'tier_promoted_at' => 'datetime',
+            'offer_unlocked_at' => 'datetime',
             'requested_at' => 'datetime',
             'reviewed_at' => 'datetime',
         ];

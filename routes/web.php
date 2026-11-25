@@ -267,6 +267,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/sessions', [\App\Http\Controllers\Fellow\TypingController::class, 'save'])->name('save')->middleware('throttle:30,1,typing-save');
             Route::get('/{mode}/{lesson?}', [\App\Http\Controllers\Fellow\TypingController::class, 'practice'])->name('practice')->where('mode', 'lesson|test|drill');
         });
+        // Job Market: what employers ask for, readiness, job advert checks, hiring loop, mock offer
+        Route::get('/job-market', [\App\Http\Controllers\Fellow\CareerController::class, 'index'])->name('career.index');
+        Route::post('/job-market/role', [\App\Http\Controllers\Fellow\CareerController::class, 'role'])->name('career.role');
+        Route::post('/job-market/advert', [\App\Http\Controllers\Fellow\CareerController::class, 'advert'])->name('career.advert')->middleware('throttle:6,1,job-advert');
+        Route::get('/job-market/offer', [\App\Http\Controllers\Fellow\CareerController::class, 'offer'])->name('career.offer');
+        Route::post('/curriculum/activities/{activity}/stakeholder', [\App\Http\Controllers\Fellow\CareerController::class, 'stakeholder'])->name('curriculum.activity.stakeholder')->middleware('throttle:10,1,stakeholder');
         Route::get('/help', [\App\Http\Controllers\Fellow\HelpRequestController::class, 'index'])->name('help.index');
         Route::post('/help', [\App\Http\Controllers\Fellow\HelpRequestController::class, 'store'])->name('help.store')->middleware('throttle:6,1');
 

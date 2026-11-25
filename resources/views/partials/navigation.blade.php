@@ -52,6 +52,14 @@
             <span>Practice Lab</span>
         </a>
 
+        <a href="{{ route('career.index') }}"
+           class="nav-link {{ str_starts_with($currentRoute, 'career') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13l4-4 4 4 8-8M15 5h4v4"/>
+            </svg>
+            <span>Job Market</span>
+        </a>
+
         <a href="{{ route('base-camp.index') }}"
            class="nav-link {{ str_starts_with($currentRoute, 'base-camp') ? 'nav-link-active' : '' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

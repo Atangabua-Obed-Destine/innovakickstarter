@@ -1,0 +1,2416 @@
+{
+  "track": "data-science",
+  "researched_on": "2026-11-25",
+  "summary": {
+    "postings": 52,
+    "by_market": {
+      "US": 12,
+      "UK": 13,
+      "Remote": 8,
+      "Africa": 19
+    },
+    "employers": [
+      "Altius Group Ltd",
+      "AstrikCoders",
+      "Banco Plata, S.A., Institución de Banca Múltiple",
+      "Barclays",
+      "CI-CABLES PREMIUM",
+      "Coinbase",
+      "Creditinfo West Africa",
+      "Emergent Africa",
+      "Enveritas",
+      "FanDuel",
+      "GiveDirectly",
+      "Gousto",
+      "Guidehouse",
+      "Gusto",
+      "Hire Hangar",
+      "IDinsight",
+      "Immediate Media",
+      "Isio Group",
+      "Kpler",
+      "Laterite",
+      "Lloyds Banking Group",
+      "Mass General Brigham (The General Hospital Corporation)",
+      "Moko Home + Living",
+      "Mwanga Limited",
+      "NICE - The National Institute for Health and Care Excellence",
+      "Nawy Real Estate",
+      "Orange Business",
+      "Pinterest",
+      "Riot Games",
+      "Route 101 Limited",
+      "Salt South Africa (recruiting for a client)",
+      "SavageOne",
+      "Smartflow Technologies Limited",
+      "South Tyneside and Sunderland NHS Foundation Trust",
+      "Spiralyze",
+      "Stripe",
+      "TRADING ECONOMICS",
+      "TakaTaka Solutions",
+      "The Guardian (Guardian News & Media)",
+      "U.S. Department of Homeland Security - Citizenship and Immigration Services (USCIS)",
+      "UN-Habitat (Quality of Life Initiative)",
+      "UNFPA (West and Central Africa Regional Office)",
+      "United Nations Department of Operational Support (Office of Supply Chain Management)",
+      "Veeva Systems",
+      "Watu Credit",
+      "Zable (formerly Lendable)",
+      "Zoox",
+      "eHealth4everyone",
+      "iRecruiters Africa Limited (recruiting for a client)",
+      "ivee",
+      "mPharma"
+    ]
+  },
+  "roles": [
+    {
+      "key": "junior-data-analyst",
+      "title": "Junior Data Analyst",
+      "level": 1,
+      "description": "Clean data, answer clear business questions with SQL, spreadsheets and Python, and report findings. The most common first data job.",
+      "postings": 43,
+      "skills": {
+        "degree": 0.628,
+        "stakeholder_management": 0.233,
+        "sql": 0.605,
+        "communication": 0.744,
+        "etl": 0.093,
+        "problem_solving": 0.558,
+        "business_acumen": 0.093,
+        "bi_dashboards": 0.535,
+        "spreadsheets": 0.558,
+        "python": 0.372,
+        "attention_to_detail": 0.372,
+        "machine_learning": 0.047,
+        "git": 0.093,
+        "r": 0.163,
+        "statistics": 0.279,
+        "data_cleaning": 0.186,
+        "visualization": 0.233,
+        "cloud_data": 0.07,
+        "pandas": 0.047,
+        "portfolio": 0.023,
+        "data_modeling": 0.07,
+        "french": 0.07,
+        "ab_testing": 0.023
+      }
+    },
+    {
+      "key": "bi-analyst",
+      "title": "BI / Reporting Analyst",
+      "level": 2,
+      "description": "Build and maintain dashboards and reports that managers use every day.",
+      "postings": 4,
+      "skills": {
+        "python": 0.5,
+        "degree": 0.75,
+        "bi_dashboards": 0.5,
+        "portfolio": 0.25,
+        "sql": 0.75,
+        "communication": 1.0,
+        "visualization": 0.5,
+        "problem_solving": 0.75,
+        "statistics": 0.5,
+        "git": 0.25,
+        "etl": 0.25,
+        "attention_to_detail": 0.25,
+        "spreadsheets": 0.25,
+        "business_acumen": 0.25,
+        "stakeholder_management": 0.25
+      }
+    },
+    {
+      "key": "junior-data-scientist",
+      "title": "Junior Data Scientist",
+      "level": 3,
+      "description": "Deeper statistics and first predictive models, usually after some analyst experience.",
+      "postings": 5,
+      "skills": {
+        "python": 1.0,
+        "r": 0.8,
+        "machine_learning": 0.6,
+        "business_acumen": 0.2,
+        "degree": 0.8,
+        "sql": 1.0,
+        "communication": 0.8,
+        "problem_solving": 0.8,
+        "statistics": 1.0,
+        "data_cleaning": 0.2,
+        "attention_to_detail": 0.2,
+        "visualization": 0.6,
+        "bi_dashboards": 0.4,
+        "stakeholder_management": 0.2,
+        "cloud_data": 0.2,
+        "pandas": 0.2
+      }
+    }
+  ],
+  "insights": [
+    {
+      "icon": "🔎",
+      "title": "Read the experience line, not just the title",
+      "text": "Some adverts called \"Data Analyst\" or \"Data Analyst I\" asked for 3 to 8 years of experience. Look for intern, graduate, apprentice, junior or associate roles, or use \"You vs a job advert\" to check the level."
+    },
+    {
+      "icon": "🎓",
+      "title": "Big graduate schemes hire for potential",
+      "text": "Several UK graduate schemes and apprenticeships (banks, media, the NHS) mostly ask for problem solving, communication and care over detail, and test them with numerical reasoning tests and case studies. Many accept any degree subject."
+    },
+    {
+      "icon": "🌍",
+      "title": "Remote entry-level roles are scarce",
+      "text": "Remote junior data roles genuinely open to Africa were the hardest to find. African employers (banks, telcos, NGOs, consultancies, startups) and international internships (for example UN agencies) are the most realistic first step."
+    },
+    {
+      "icon": "🛂",
+      "title": "Check visa and location rules",
+      "text": "Many US roles do not sponsor visas or need US security clearance; some UK schemes sponsor visas and some do not. Check before you spend time on an application."
+    },
+    {
+      "icon": "🇫🇷",
+      "title": "French is an advantage",
+      "text": "Several West African and international roles asked for French. If you speak it, put it clearly on your CV."
+    },
+    {
+      "icon": "🤖",
+      "title": "Employers expect you to use AI tools well",
+      "text": "About a third of US and UK adverts mentioned using AI tools responsibly. Using them openly and checking their work, as this program asks, is the habit they want."
+    }
+  ],
+  "skills": [
+    {
+      "key": "communication",
+      "label": "Communicating results",
+      "why": "Explaining findings simply to people who are not technical, in writing and in person.",
+      "frequency": 0.769,
+      "count": 40,
+      "quotes": [
+        {
+          "text": "Experience communicating and collaborating with multidisciplinary stakeholders in a team environment",
+          "company": "Stripe",
+          "market": "US",
+          "url": "https://stripe.com/jobs/search?gh_jid=8194291"
+        },
+        {
+          "text": "Proven experience preparing and presenting reports and dashboards for varied audiences, with specific examples demonstrating your role, the audience, and the impact.",
+          "company": "NICE - The National Institute for Health and Care Excellence",
+          "market": "UK",
+          "url": "https://www.jobs.nhs.uk/candidate/jobadvert/G9907-26-0025"
+        },
+        {
+          "text": "Excellent verbal and written proficiency in English",
+          "company": "Enveritas",
+          "market": "Remote",
+          "url": "https://dynamitejobs.com/company/enveritas/remote-job/junior-data-analyst-africa"
+        },
+        {
+          "text": "Excellent written and oral communication skills in English.",
+          "company": "Laterite",
+          "market": "Africa",
+          "url": "https://reliefweb.int/job/4235954/research-analyst"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "communication"
+        ]
+      }
+    },
+    {
+      "key": "sql",
+      "label": "SQL",
+      "why": "Getting data out of company databases yourself, without waiting for an engineer.",
+      "frequency": 0.654,
+      "count": 34,
+      "quotes": [
+        {
+          "text": "Experience with SQL",
+          "company": "Stripe",
+          "market": "US",
+          "url": "https://stripe.com/jobs/search?gh_jid=8194291"
+        },
+        {
+          "text": "Solid foundational SQL skills with the ability to query, filter, aggregate, and join complex tables efficiently.",
+          "company": "Kpler",
+          "market": "UK",
+          "url": "https://jobs.lever.co/kpler/caa9dbc6-f48f-437b-994f-64d233010da7"
+        },
+        {
+          "text": "Basic knowledge of Excel and an interest in SQL and BI tools",
+          "company": "Hire Hangar",
+          "market": "Remote",
+          "url": "https://himalayas.app/companies/hire-hangar/jobs/junior-data-analyst-2593566728"
+        },
+        {
+          "text": "knowledge of SQL, Power BI, or other data analysis tools is an advantage.",
+          "company": "iRecruiters Africa Limited (recruiting for a client)",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/data-analyst-irecruiters-africa-limited-1"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "sql"
+        ]
+      }
+    },
+    {
+      "key": "degree",
+      "label": "A degree",
+      "why": "Many adverts list a degree (often \"or equivalent experience\"). A strong portfolio helps where it is flexible.",
+      "frequency": 0.654,
+      "count": 34,
+      "quotes": [
+        {
+          "text": "Enrolled in a quantitative Bachelor's or Master's degree program (e.g. Data Analytics, Statistics, Economics, Mathematics, etc.) with the expectation of graduating in December 2027 or spring/summer 2028",
+          "company": "Stripe",
+          "market": "US",
+          "url": "https://stripe.com/jobs/search?gh_jid=8194291"
+        },
+        {
+          "text": "Bachelor's degree (or higher) in a quantitative field such as Economics, Computer Science, Statistics, Business, or equivalent practical experience.",
+          "company": "Kpler",
+          "market": "UK",
+          "url": "https://jobs.lever.co/kpler/caa9dbc6-f48f-437b-994f-64d233010da7"
+        },
+        {
+          "text": "Bachelor's degree and excellent academic record related to development studies, economics, business, statistics, plant science, forestry, or other relevant disciplines with relevant professional experience",
+          "company": "Enveritas",
+          "market": "Remote",
+          "url": "https://dynamitejobs.com/company/enveritas/remote-job/junior-data-analyst-africa"
+        },
+        {
+          "text": "A completed Master’s degree in Economics, Public Health, Development, statistics, or related fields.",
+          "company": "Laterite",
+          "market": "Africa",
+          "url": "https://reliefweb.int/job/4235954/research-analyst"
+        }
+      ],
+      "kind": "info"
+    },
+    {
+      "key": "problem_solving",
+      "label": "Problem solving",
+      "why": "Breaking a vague business question into steps you can answer with data.",
+      "frequency": 0.596,
+      "count": 31,
+      "quotes": [
+        {
+          "text": "experience solving analytical problems using quantitative approaches including in the fields of Machine Learning, Statistical Modeling, Forecasting, Econometrics or other related fields",
+          "company": "Pinterest",
+          "market": "US",
+          "url": "https://www.pinterestcareers.com/jobs/?gh_jid=8140389"
+        },
+        {
+          "text": "Meticulous attention to detail, strong problem-solving skills, and a desire to take end-to-end ownership of data accuracy.",
+          "company": "Kpler",
+          "market": "UK",
+          "url": "https://jobs.lever.co/kpler/caa9dbc6-f48f-437b-994f-64d233010da7"
+        },
+        {
+          "text": "Excellent communication and analytical skills; flexible problem-solving attitude",
+          "company": "Enveritas",
+          "market": "Remote",
+          "url": "https://dynamitejobs.com/company/enveritas/remote-job/junior-data-analyst-africa"
+        },
+        {
+          "text": "Strong analytical, logical reasoning, and problem-solving abilities.",
+          "company": "iRecruiters Africa Limited (recruiting for a client)",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/data-analyst-irecruiters-africa-limited-1"
+        }
+      ],
+      "curriculum": {
+        "title_contains": [
+          "Problem Solving"
+        ],
+        "types": [
+          "case_study",
+          "debug_challenge"
+        ]
+      }
+    },
+    {
+      "key": "bi_dashboards",
+      "label": "Dashboards (Tableau, Power BI, Looker)",
+      "why": "Dashboards let managers answer their own questions every day.",
+      "frequency": 0.519,
+      "count": 27,
+      "quotes": [
+        {
+          "text": "Familiarity with SQL and at least one analytics or visualization tool such as Tableau, Looker or Power BI gained through coursework, projects or internships.",
+          "company": "Pinterest",
+          "market": "US",
+          "url": "https://www.pinterestcareers.com/jobs/?gh_jid=8214783"
+        },
+        {
+          "text": "Working experience with modern BI visualisation tools such as Looker, Tableau, or Power BI.",
+          "company": "Kpler",
+          "market": "UK",
+          "url": "https://jobs.lever.co/kpler/caa9dbc6-f48f-437b-994f-64d233010da7"
+        },
+        {
+          "text": "Familiarity with: Data Visualization, dashboard and performance optimization; Automatization of streamlined workflows; Data management techniques, quantitative analysis and methods.",
+          "company": "United Nations Department of Operational Support (Office of Supply Chain Management)",
+          "market": "Remote",
+          "url": "https://www.unjobnet.org/jobs/detail/un-dos-intern-data-research-89787918"
+        },
+        {
+          "text": "knowledge of SQL, Power BI, or other data analysis tools is an advantage.",
+          "company": "iRecruiters Africa Limited (recruiting for a client)",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/data-analyst-irecruiters-africa-limited-1"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "bi"
+        ],
+        "title_contains": [
+          "Dashboard"
+        ]
+      },
+      "note": "We teach this with Looker Studio and Google Sheets; Power BI and Tableau work the same way. Free resources: Microsoft Learn: Power BI (free), Tableau Public how-to videos (free).",
+      "beyond": [
+        {
+          "title": "Microsoft Learn: Power BI (free)",
+          "url": "https://learn.microsoft.com/en-us/training/powerplatform/power-bi"
+        },
+        {
+          "title": "Tableau Public how-to videos (free)",
+          "url": "https://public.tableau.com/app/learn/how-to-videos"
+        }
+      ]
+    },
+    {
+      "key": "spreadsheets",
+      "label": "Excel / Google Sheets",
+      "why": "Still the tool every team shares: pivot tables, lookups and clean sheets.",
+      "frequency": 0.481,
+      "count": 25,
+      "quotes": [
+        {
+          "text": "Proficiency with Excel or Google Sheets to organize data, conduct analysis or build basic models.",
+          "company": "Pinterest",
+          "market": "US",
+          "url": "https://www.pinterestcareers.com/jobs/?gh_jid=8214783"
+        },
+        {
+          "text": "Practical familiarity with Python, GitHub, and spreadsheet tools (Excel or Google Sheets) for data manipulation and profiling.",
+          "company": "Kpler",
+          "market": "UK",
+          "url": "https://jobs.lever.co/kpler/caa9dbc6-f48f-437b-994f-64d233010da7"
+        },
+        {
+          "text": "Basic knowledge of Excel and an interest in SQL and BI tools",
+          "company": "Hire Hangar",
+          "market": "Remote",
+          "url": "https://himalayas.app/companies/hire-hangar/jobs/junior-data-analyst-2593566728"
+        },
+        {
+          "text": "Proficiency in Microsoft Excel and data reporting tools.",
+          "company": "Smartflow Technologies Limited",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/graduate-trainee-business-intelligence-data-analyst-smartflow-technologies-limited"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "bi"
+        ],
+        "title_contains": [
+          "Sheets",
+          "Spreadsheet",
+          "Excel"
+        ]
+      }
+    },
+    {
+      "key": "python",
+      "label": "Python",
+      "why": "Automating analysis and working with data too big or messy for a spreadsheet.",
+      "frequency": 0.442,
+      "count": 23,
+      "quotes": [
+        {
+          "text": "Ability to manipulate large data sets with high dimensionality and complexity; fluency in SQL and a scripting language (Python or R)",
+          "company": "Pinterest",
+          "market": "US",
+          "url": "https://www.pinterestcareers.com/jobs/?gh_jid=8140389"
+        },
+        {
+          "text": "Practical familiarity with Python, GitHub, and spreadsheet tools (Excel or Google Sheets) for data manipulation and profiling.",
+          "company": "Kpler",
+          "market": "UK",
+          "url": "https://jobs.lever.co/kpler/caa9dbc6-f48f-437b-994f-64d233010da7"
+        },
+        {
+          "text": "knowledge of Python or other programming languages beneficial but not required",
+          "company": "Enveritas",
+          "market": "Remote",
+          "url": "https://dynamitejobs.com/company/enveritas/remote-job/junior-data-analyst-africa"
+        },
+        {
+          "text": "Additional software skills, such as knowledge of R or Python.",
+          "company": "Laterite",
+          "market": "Africa",
+          "url": "https://reliefweb.int/job/4235954/research-analyst"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "python"
+        ]
+      }
+    },
+    {
+      "key": "statistics",
+      "label": "Statistics",
+      "why": "Knowing whether a change is real or just noise, and saying how sure you are.",
+      "frequency": 0.365,
+      "count": 19,
+      "quotes": [
+        {
+          "text": "Master's degree in statistics, mathematics, economics, applied sciences, computer science or related field.",
+          "company": "Pinterest",
+          "market": "US",
+          "url": "https://www.pinterestcareers.com/jobs/?gh_jid=8140389"
+        },
+        {
+          "text": "Data analysis skills and knowledge of statistical principles.",
+          "company": "South Tyneside and Sunderland NHS Foundation Trust",
+          "market": "UK",
+          "url": "https://www.jobs.nhs.uk/candidate/jobadvert/C9155-CRAC-0426-16"
+        },
+        {
+          "text": "We seek candidates with relevant coursework in Computer Science, Economics, Statistics, Operations Research, Engineering, Mathematics, Data Visualization, or Analytics.",
+          "company": "United Nations Department of Operational Support (Office of Supply Chain Management)",
+          "market": "Remote",
+          "url": "https://www.unjobnet.org/jobs/detail/un-dos-intern-data-research-89787918"
+        },
+        {
+          "text": "A completed Master’s degree in Economics, Public Health, Development, statistics, or related fields.",
+          "company": "Laterite",
+          "market": "Africa",
+          "url": "https://reliefweb.int/job/4235954/research-analyst"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "statistics"
+        ]
+      }
+    },
+    {
+      "key": "attention_to_detail",
+      "label": "Attention to detail",
+      "why": "Checking your own numbers before anyone else does: practised in every self-check.",
+      "frequency": 0.346,
+      "count": 18,
+      "quotes": [
+        {
+          "text": "Meticulous Attention to Detail: Exceptional precision and a commitment to rigorous quality control. You take pride in catching small errors before they impact the final product.",
+          "company": "Veeva Systems",
+          "market": "US",
+          "url": "https://jobs.lever.co/veeva/28c47d34-3ad6-4485-85a9-686b4239b9ea"
+        },
+        {
+          "text": "Meticulous attention to detail, strong problem-solving skills, and a desire to take end-to-end ownership of data accuracy.",
+          "company": "Kpler",
+          "market": "UK",
+          "url": "https://jobs.lever.co/kpler/caa9dbc6-f48f-437b-994f-64d233010da7"
+        },
+        {
+          "text": "Great attention to detail and time management",
+          "company": "Hire Hangar",
+          "market": "Remote",
+          "url": "https://himalayas.app/companies/hire-hangar/jobs/junior-data-analyst-2593566728"
+        },
+        {
+          "text": "Exceptional attention to detail, organizational skills, and ability to manage multiple reports.",
+          "company": "Smartflow Technologies Limited",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/graduate-trainee-business-intelligence-data-analyst-smartflow-technologies-limited"
+        }
+      ],
+      "kind": "info"
+    },
+    {
+      "key": "visualization",
+      "label": "Charts & visualisation",
+      "why": "One clear, honest chart makes a decision easy.",
+      "frequency": 0.288,
+      "count": 15,
+      "quotes": [
+        {
+          "text": "Experience using Tableau or other data visualization tools to build dashboards, reports, or interactive visualizations.",
+          "company": "Riot Games",
+          "market": "US",
+          "url": "https://www.riotgames.com/en/work-with-us/job/8356372?gh_jid=8356372"
+        },
+        {
+          "text": "Proven experience using Power BI for data visualisation and reporting, evidenced through examples of dashboards or reports you have created and how they were used.",
+          "company": "NICE - The National Institute for Health and Care Excellence",
+          "market": "UK",
+          "url": "https://www.jobs.nhs.uk/candidate/jobadvert/G9907-26-0025"
+        },
+        {
+          "text": "We seek candidates with relevant coursework in Computer Science, Economics, Statistics, Operations Research, Engineering, Mathematics, Data Visualization, or Analytics.",
+          "company": "United Nations Department of Operational Support (Office of Supply Chain Management)",
+          "market": "Remote",
+          "url": "https://www.unjobnet.org/jobs/detail/un-dos-intern-data-research-89787918"
+        },
+        {
+          "text": "Knowledge of Power BI, Tableau, or other data visualization tools",
+          "company": "Mwanga Limited",
+          "market": "Africa",
+          "url": "https://www.hotnigerianjobs.com/print/920416/"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "visualization"
+        ]
+      }
+    },
+    {
+      "key": "stakeholder_management",
+      "label": "Working with stakeholders",
+      "why": "Understanding what the business really needs and keeping people informed.",
+      "frequency": 0.231,
+      "count": 12,
+      "quotes": [
+        {
+          "text": "Experience communicating and collaborating with multidisciplinary stakeholders in a team environment",
+          "company": "Stripe",
+          "market": "US",
+          "url": "https://stripe.com/jobs/search?gh_jid=8194291"
+        },
+        {
+          "text": "Demonstrates clear written and verbal communication, including the ability to explain analysis to non-technical stakeholders",
+          "company": "Gousto",
+          "market": "UK",
+          "url": "https://jobs.mmc.vc/companies/gousto/jobs/86828213-junior-data-analyst"
+        },
+        {
+          "text": "Experience collaborating with cross-functional teams (e.g., programs/operations, product, or research) and external partners to implement projects and solve problems",
+          "company": "GiveDirectly",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/givedirectly/jobs/4743156005"
+        },
+        {
+          "text": "Strong collaboration and stakeholder engagement skills.",
+          "company": "Emergent Africa",
+          "market": "Africa",
+          "url": "https://emergent.africa/careers/junior-data-analyst/"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "communication"
+        ],
+        "types": [
+          "case_study"
+        ]
+      }
+    },
+    {
+      "key": "r",
+      "label": "R",
+      "why": "Another language for statistics, popular in research, health and NGOs.",
+      "frequency": 0.212,
+      "count": 11,
+      "quotes": [
+        {
+          "text": "Ability to manipulate large data sets with high dimensionality and complexity; fluency in SQL and a scripting language (Python or R)",
+          "company": "Pinterest",
+          "market": "US",
+          "url": "https://www.pinterestcareers.com/jobs/?gh_jid=8140389"
+        },
+        {
+          "text": "Experience using R, Python, or Stata to clean, manipulate, and analyze data, including working with multiple data sources (e.g., survey or administrative data)",
+          "company": "GiveDirectly",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/givedirectly/jobs/4743156005"
+        },
+        {
+          "text": "Additional software skills, such as knowledge of R or Python.",
+          "company": "Laterite",
+          "market": "Africa",
+          "url": "https://reliefweb.int/job/4235954/research-analyst"
+        },
+        {
+          "text": "GS-07: one (1) year of specialized experience ... Assisting with the collection, cleaning, and organization of data for analysis; Supporting data analysis using statistical methods and software tools under supervision; P",
+          "company": "U.S. Department of Homeland Security - Citizenship and Immigration Services (USCIS)",
+          "market": "US",
+          "url": "https://www.usajobs.gov/job/866941000"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "R for Data Science (free online book)",
+          "url": "https://r4ds.hadley.nz/"
+        }
+      ]
+    },
+    {
+      "key": "data_cleaning",
+      "label": "Data cleaning",
+      "why": "Real data is messy: fixing it carefully is most of the job.",
+      "frequency": 0.173,
+      "count": 9,
+      "quotes": [
+        {
+          "text": "GS-07: one (1) year of specialized experience ... Assisting with the collection, cleaning, and organization of data for analysis; Supporting data analysis using statistical methods and software tools under supervision; P",
+          "company": "U.S. Department of Homeland Security - Citizenship and Immigration Services (USCIS)",
+          "market": "US",
+          "url": "https://www.usajobs.gov/job/866941000"
+        },
+        {
+          "text": "Meticulous attention to detail, strong problem-solving skills, and a desire to take end-to-end ownership of data accuracy.",
+          "company": "Kpler",
+          "market": "UK",
+          "url": "https://jobs.lever.co/kpler/caa9dbc6-f48f-437b-994f-64d233010da7"
+        },
+        {
+          "text": "1-2 years experience managing and conducting quantitative and qualitative research with strong data quality management knowledge is highly desirable",
+          "company": "Enveritas",
+          "market": "Remote",
+          "url": "https://dynamitejobs.com/company/enveritas/remote-job/junior-data-analyst-africa"
+        },
+        {
+          "text": "Minimum of 1 year of working experience in scripting/coding for data cleaning and analysis",
+          "company": "eHealth4everyone",
+          "market": "Africa",
+          "url": "https://www.myjobmag.com/job/data-analyst-scripting-vba-ehealth4everyone-1"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "cleaning"
+        ]
+      }
+    },
+    {
+      "key": "business_acumen",
+      "label": "Business sense",
+      "why": "Understanding how the company makes money and what matters to it: practised through the Nkwen Traders story.",
+      "frequency": 0.115,
+      "count": 6,
+      "quotes": [
+        {
+          "text": "Ability to connect data analysis to real business problems, in order to impact business performance.",
+          "company": "Pinterest",
+          "market": "US",
+          "url": "https://www.pinterestcareers.com/jobs/?gh_jid=8140389"
+        },
+        {
+          "text": "Shows a genuine interest in the commercial context behind the data - understanding what a metric means for the business, not just how to calculate it",
+          "company": "Gousto",
+          "market": "UK",
+          "url": "https://jobs.mmc.vc/companies/gousto/jobs/86828213-junior-data-analyst"
+        },
+        {
+          "text": "1+ year of experience as a Business Analyst, Product Analyst, or in a related role (including internships)",
+          "company": "Banco Plata, S.A., Institución de Banca Múltiple",
+          "market": "Remote",
+          "url": "https://himalayas.app/companies/banco-plata-s-a-institucion-de-banca-multiple/jobs/business-analyst-junior-antifraud-disputes"
+        },
+        {
+          "text": "Currently pursuing a Bachelor's degree in business, economics, statistics, data analytics or a related field, or equivalent experience.",
+          "company": "Pinterest",
+          "market": "US",
+          "url": "https://www.pinterestcareers.com/jobs/?gh_jid=8214783"
+        }
+      ],
+      "kind": "info"
+    },
+    {
+      "key": "git",
+      "label": "Git & GitHub",
+      "why": "How teams save, share and review code and notebooks.",
+      "frequency": 0.096,
+      "count": 5,
+      "quotes": [
+        {
+          "text": "Practical familiarity with Python, GitHub, and spreadsheet tools (Excel or Google Sheets) for data manipulation and profiling.",
+          "company": "Kpler",
+          "market": "UK",
+          "url": "https://jobs.lever.co/kpler/caa9dbc6-f48f-437b-994f-64d233010da7"
+        },
+        {
+          "text": "The following technical knowledge would be a plus: Power BI; Python / R; dbt; Git; Google Cloud solutions; Experience with Big data",
+          "company": "Watu Credit",
+          "market": "Africa",
+          "url": "https://builtin.com/job/junior-data-analyst/9206397"
+        },
+        {
+          "text": "Pour un stagiaire automatisation / EDH : SQL, Python (pandas + autres librairies de traitement de données / Polars), Spark, power bi , git , Hadoop ( de preference ) , Excel est un plus .",
+          "company": "Orange Business",
+          "market": "Africa",
+          "url": "https://www.rekrute.com/offre-emploi-stagiaire-anapec-data-analyst-recrutement-orange-business-rabat-184385.html"
+        }
+      ],
+      "curriculum": {
+        "github": true
+      }
+    },
+    {
+      "key": "machine_learning",
+      "label": "Machine learning basics",
+      "why": "Teaching computers to predict from past data.",
+      "frequency": 0.096,
+      "count": 5,
+      "quotes": [
+        {
+          "text": "experience solving analytical problems using quantitative approaches including in the fields of Machine Learning, Statistical Modeling, Forecasting, Econometrics or other related fields",
+          "company": "Pinterest",
+          "market": "US",
+          "url": "https://www.pinterestcareers.com/jobs/?gh_jid=8140389"
+        },
+        {
+          "text": "Strong proficiency in programming languages such as Python, R, or Java, with experience in data manipulation libraries (e.g., Pandas, NumPy) and machine learning frameworks (e.g., scikit-learn, TensorFlow, PyTorch).",
+          "company": "SavageOne",
+          "market": "Africa",
+          "url": "https://himalayas.app/companies/savageone/jobs/junior-data-scientist"
+        },
+        {
+          "text": "ML",
+          "company": "Zoox",
+          "market": "US",
+          "url": "https://jobs.lever.co/zoox/5e03b357-0cc1-4194-9488-14f85044f4f9"
+        },
+        {
+          "text": "ONE (1) or more years of experience developing data analytics solutions, statistical models, machine learning algorithms, or advanced analytical products in a professional environment.",
+          "company": "Guidehouse",
+          "market": "US",
+          "url": "https://guidehouse.wd1.myworkdayjobs.com/External/job/US---VA-McLean/Jr-Data-Scientist_44767"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "Kaggle Learn: Intro to Machine Learning (free)",
+          "url": "https://www.kaggle.com/learn/intro-to-machine-learning"
+        }
+      ]
+    },
+    {
+      "key": "etl",
+      "label": "Data pipelines (ETL, dbt, Airflow)",
+      "why": "Moving and preparing data automatically, every day.",
+      "frequency": 0.096,
+      "count": 5,
+      "quotes": [
+        {
+          "text": "Experience writing and debugging data pipelines",
+          "company": "Stripe",
+          "market": "US",
+          "url": "https://stripe.com/jobs/search?gh_jid=8194291"
+        },
+        {
+          "text": "Some experience using SQL, GA4, DBT, Python or similar analytics tools",
+          "company": "Immediate Media",
+          "market": "UK",
+          "url": "https://builtinlondon.uk/job/junior-data-analyst/10829493"
+        },
+        {
+          "text": "The following technical knowledge would be a plus: Power BI; Python / R; dbt; Git; Google Cloud solutions; Experience with Big data",
+          "company": "Watu Credit",
+          "market": "Africa",
+          "url": "https://builtin.com/job/junior-data-analyst/9206397"
+        },
+        {
+          "text": "Nice to have: version control experience and a willingness to build small tools or pipelines.",
+          "company": "Gusto",
+          "market": "US",
+          "url": "https://job-boards.greenhouse.io/gusto/jobs/8400148"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "dbt Fundamentals (free course)",
+          "url": "https://learn.getdbt.com/courses/dbt-fundamentals"
+        }
+      ]
+    },
+    {
+      "key": "cloud_data",
+      "label": "Cloud data tools (BigQuery, Snowflake...)",
+      "why": "Where large companies keep their data.",
+      "frequency": 0.077,
+      "count": 4,
+      "quotes": [
+        {
+          "text": "Experience with Python, SQL, Jupyter Notebook, Databricks, R, or similar analytics and data science tools used for data preparation, modeling, and visualization.",
+          "company": "Guidehouse",
+          "market": "US",
+          "url": "https://guidehouse.wd1.myworkdayjobs.com/External/job/US---VA-McLean/Jr-Data-Scientist_44767"
+        },
+        {
+          "text": "Feels comfortable writing SQL to extract, transform and interrogate data in a modern cloud data warehouse such as Databricks, Snowflake, BigQuery or similar",
+          "company": "Gousto",
+          "market": "UK",
+          "url": "https://jobs.mmc.vc/companies/gousto/jobs/86828213-junior-data-analyst"
+        },
+        {
+          "text": "The following technical knowledge would be a plus: Power BI; Python / R; dbt; Git; Google Cloud solutions; Experience with Big data",
+          "company": "Watu Credit",
+          "market": "Africa",
+          "url": "https://builtin.com/job/junior-data-analyst/9206397"
+        },
+        {
+          "text": "Exposure to cloud platforms (e.g., Azure, AWS) and data lakes.",
+          "company": "Emergent Africa",
+          "market": "Africa",
+          "url": "https://emergent.africa/careers/junior-data-analyst/"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "BigQuery sandbox: practise SQL in the cloud for free",
+          "url": "https://cloud.google.com/bigquery/docs/sandbox"
+        }
+      ]
+    },
+    {
+      "key": "pandas",
+      "label": "pandas",
+      "why": "The Python library analysts use to load, clean, group and join tables.",
+      "frequency": 0.058,
+      "count": 3,
+      "quotes": [
+        {
+          "text": "Working Python for data work (pandas), including cleaning data and simple automation.",
+          "company": "Moko Home + Living",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.ke/job/junior-data-analyst-internship-moko-home-living"
+        },
+        {
+          "text": "Pour un stagiaire automatisation / EDH : SQL, Python (pandas + autres librairies de traitement de données / Polars), Spark, power bi , git , Hadoop ( de preference ) , Excel est un plus .",
+          "company": "Orange Business",
+          "market": "Africa",
+          "url": "https://www.rekrute.com/offre-emploi-stagiaire-anapec-data-analyst-recrutement-orange-business-rabat-184385.html"
+        },
+        {
+          "text": "Strong proficiency in programming languages such as Python, R, or Java, with experience in data manipulation libraries (e.g., Pandas, NumPy) and machine learning frameworks (e.g., scikit-learn, TensorFlow, PyTorch).",
+          "company": "SavageOne",
+          "market": "Africa",
+          "url": "https://himalayas.app/companies/savageone/jobs/junior-data-scientist"
+        }
+      ],
+      "curriculum": {
+        "skills": [
+          "pandas"
+        ]
+      }
+    },
+    {
+      "key": "data_modeling",
+      "label": "Data modelling",
+      "why": "Designing tables so data is easy and correct to use.",
+      "frequency": 0.058,
+      "count": 3,
+      "quotes": [
+        {
+          "text": "Data modelling and reporting experience",
+          "company": "Salt South Africa (recruiting for a client)",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.za/job/junior-data-analyst-recruit-digital-3"
+        },
+        {
+          "text": "Familiarity with data warehouse development and data modeling.",
+          "company": "Nawy Real Estate",
+          "market": "Africa",
+          "url": "https://jobs.workable.com/view/mV15xidpfsmkpje93muLWB/hybrid-data-analyst-in-maadi-at-nawy-real-estate"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "Microsoft Learn: model data in Power BI (free)",
+          "url": "https://learn.microsoft.com/en-us/training/modules/design-model-power-bi/"
+        }
+      ]
+    },
+    {
+      "key": "french",
+      "label": "French",
+      "why": "Some African and international roles ask for French: if you speak it, say so on your CV.",
+      "frequency": 0.058,
+      "count": 3,
+      "quotes": [
+        {
+          "text": "Strong written and verbal communication skills in both English and French.",
+          "company": "mPharma",
+          "market": "Africa",
+          "url": "https://jobs.luxcapital.com/companies/mpharma/jobs/42196138-data-analyst-junior-associate-francophone-wa"
+        },
+        {
+          "text": "Le français niveau courant (C2) et une bonne pratique de l'anglais (C1) sont essentiels ;",
+          "company": "IDinsight",
+          "market": "Africa",
+          "url": "https://jobs.ashbyhq.com/idinsight/eb8a4368-8e33-4ef4-b5cb-7c2bf26f0841"
+        },
+        {
+          "text": "Niveau de communication excellent en Français",
+          "company": "Orange Business",
+          "market": "Africa",
+          "url": "https://www.rekrute.com/offre-emploi-stagiaire-anapec-data-analyst-recrutement-orange-business-rabat-184385.html"
+        }
+      ],
+      "kind": "info"
+    },
+    {
+      "key": "portfolio",
+      "label": "Portfolio of projects",
+      "why": "Proof you can do the work: projects an employer can open and read.",
+      "frequency": 0.038,
+      "count": 2,
+      "quotes": [
+        {
+          "text": "Experience creating reports or presentations that communicate data and findings clearly to an audience, through academic projects, internships, or professional experience.",
+          "company": "Riot Games",
+          "market": "US",
+          "url": "https://www.riotgames.com/en/work-with-us/job/8356372?gh_jid=8356372"
+        },
+        {
+          "text": "Hands-on experience with data analysis through an internship, academic project, personal portfolio or similar.",
+          "company": "Moko Home + Living",
+          "market": "Africa",
+          "url": "https://www.myjobmag.co.ke/job/junior-data-analyst-internship-moko-home-living"
+        }
+      ],
+      "curriculum": {
+        "types": [
+          "project"
+        ]
+      }
+    },
+    {
+      "key": "ab_testing",
+      "label": "A/B testing & experiments",
+      "why": "Testing a change on some users first to see if it really works.",
+      "frequency": 0.019,
+      "count": 1,
+      "quotes": [
+        {
+          "text": "2–4 years of experience working with data in applied settings (e.g., experimentation, evaluation, analytics, or program learning), ideally in development, tech, or operations-focused roles",
+          "company": "GiveDirectly",
+          "market": "Remote",
+          "url": "https://job-boards.greenhouse.io/givedirectly/jobs/4743156005"
+        }
+      ],
+      "beyond": [
+        {
+          "title": "A/B Testing by Google (free course, Udacity)",
+          "url": "https://www.udacity.com/course/ab-testing--ud257"
+        }
+      ]
+    }
+  ],
+  "real_world": {
+    "sql": [
+      {
+        "company": "Monzo (UK digital bank)",
+        "example": "Monzo keeps its data in a BigQuery data warehouse and turns raw app events into clean tables with dbt, a tool where the work is written in SQL. In 2021 the project had over 4,700 data models and about 600,000 lines of SQL, written not only by data staff but also by software engineers and business analysts. SQL is the shared language that lets many teams build on the same trusted tables.",
+        "source_title": "An introduction to Monzo's data stack (Monzo blog, 2021)",
+        "source_url": "https://monzo.com/blog/2021/10/14/an-introduction-to-monzos-data-stack"
+      },
+      {
+        "company": "Airbnb",
+        "example": "Airbnb created its own internal 'Data University' because general online courses did not match its own data and tools. Middle-level classes taught SQL and Superset (a dashboard tool), and helped some non-technical staff take on project manager roles. After the launch, weekly use of internal data tools rose from 30% to 45% of staff.",
+        "source_title": "Airbnb is running its own internal university to teach data science (TechCrunch, 2017)",
+        "source_url": "https://techcrunch.com/2017/05/24/airbnb-is-running-its-own-internal-university-to-teach-data-science/"
+      },
+      {
+        "company": "Moniepoint (Nigeria, fintech)",
+        "example": "A business analyst at Moniepoint, who first worked mostly with spreadsheets and customer feedback, was introduced to SQL by her manager. She learned by taking online courses and reading the team's internal queries, and in less than a year she became a Data Analyst. She now uses data to track loan repayment behaviour and to find reconciliation problems, for example when a supermarket's books and Moniepoint's system show different results.",
+        "source_title": "Curiosity Killed The Cat? Thankfully, I'm A Data Analyst! (Moniepoint Blog)",
+        "source_url": "https://moniepoint.com/blog/curiosity-as-a-data-analyst"
+      }
+    ],
+    "spreadsheets": [
+      {
+        "company": "Public Health England (UK)",
+        "example": "In 2020, Public Health England pulled COVID-19 test results into Excel templates saved in the old XLS format, which can hold only about 65,000 rows. Each test result used several rows, so each file could hold only about 1,400 cases, and 15,841 positive cases were missed from the reports, which delayed contact tracing. The lesson for analysts: know the limits of your tool and always check that row counts match.",
+        "source_title": "Excel: Why using Microsoft's tool caused Covid-19 results to be lost (BBC News, 2020)",
+        "source_url": "https://www.bbc.co.uk/news/technology-54423988"
+      },
+      {
+        "company": "Nigeria Federal Ministry of Health and NPHCDA",
+        "example": "Until 2014, Nigeria's immunisation programme collected vaccine data with an Excel-based WHO tool. Users reported data entry errors, no access to past data, a one-month delay between collection and analysis, and reports that did not match between health facilities and local government areas. So the government asked partners to build an online routine immunisation module and dashboard in DHIS2.",
+        "source_title": "Implementing the routine immunisation data module and dashboard of DHIS2 in Nigeria, 2014-2019 (via PubMed Central)",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7375433/"
+      },
+      {
+        "company": "UK Government Analysis Function",
+        "example": "UK government statisticians publish many official data tables as spreadsheets. The Government Analysis Function wrote guidance called 'Releasing statistics in spreadsheets' for everyone who publishes data tables this way. Its aim is to make these spreadsheets more usable, more accessible and more machine readable (easy for software to read).",
+        "source_title": "Releasing statistics in spreadsheets (Government Analysis Function)",
+        "source_url": "https://analysisfunction.civilservice.gov.uk/policy-store/releasing-statistics-in-spreadsheets/"
+      }
+    ],
+    "python": [
+      {
+        "company": "Netflix",
+        "example": "Netflix says many of its teams build their tools mainly in Python. For example, one team uses Python libraries such as numpy, scipy and pandas to automatically analyse thousands of related signals when an alert shows a problem. Netflix staff are also heavy users of Jupyter notebooks, and an experimentation team is building a platform for scientists and engineers to analyse A/B tests.",
+        "source_title": "Python at Netflix (Netflix Technology Blog)",
+        "source_url": "https://netflixtechblog.com/python-at-netflix-bba45dae649e"
+      },
+      {
+        "company": "Spotify",
+        "example": "Spotify built Luigi, a free Python package for building pipelines of batch jobs: tasks that must run in order, such as load the data, then clean it, then make a report. Spotify says it uses Luigi internally to run thousands of tasks every day.",
+        "source_title": "spotify/luigi README (GitHub)",
+        "source_url": "https://github.com/spotify/luigi"
+      },
+      {
+        "company": "Bluesquare / OpenHEXA (used with ministries of health in Africa)",
+        "example": "OpenHEXA is an open-source public health data platform from Bluesquare. Data scientists write Jupyter notebooks in Python or R to explore and analyse data, and they build automatic data pipelines. In Niger, Bluesquare and national teams used it to produce automatic monthly immunisation performance reports at national, regional and district level.",
+        "source_title": "OpenHEXA: open-source, collaborative data integration and analysis platform for public health",
+        "source_url": "https://openhexa.pages.dev/"
+      }
+    ],
+    "statistics": [
+      {
+        "company": "DHIS2 (health information software used by many ministries of health)",
+        "example": "DHIS2's Data Quality app has an Outlier Detection tool that flags unusual values in health facility data. It can compare each value with the mean (Z-score), with the median (modified Z-score), or with stored minimum and maximum values. The guide warns that the mean and standard deviation method is only right for normally distributed data: data with big seasonal changes can create false alarms.",
+        "source_title": "Data Quality - DHIS2 user guide (version 2.42)",
+        "source_url": "https://docs.dhis2.org/en/use/user-guides/dhis-core-version-242/collecting-data/data-quality.html"
+      },
+      {
+        "company": "AHADI and partners, SNT Code Library (malaria data, Sierra Leone teaching example)",
+        "example": "Analysts who supported malaria planning in more than 30 countries share their code in the SNT Code Library, using Sierra Leone routine data as a teaching example. It compares three ways to find outliers in each health facility's monthly case counts: mean +/- 2 standard deviations, median +/- 2.5 MAD, and the interquartile range (IQR). It explains that the mean is pulled by extreme values, that facility malaria data is often right-skewed, and that seasonal peaks and real outbreaks must not be 'corrected' by mistake.",
+        "source_title": "Outlier detection methods (Community Code Library for Subnational Tailoring of Malaria Interventions)",
+        "source_url": "https://ahadi-analytics.github.io/snt-code-library/english/library/data/routine_cases/outlier_detection.html"
+      },
+      {
+        "company": "Netflix",
+        "example": "Some Netflix datasets grow by more than 10 billion records a day, so the company needed automatic outlier detection to protect data quality. Simple methods such as moving averages with standard deviations were not robust enough, partly because the data is not always normally distributed and has hourly, weekly and monthly seasonal patterns. Netflix built and open-sourced a more robust tool called RAD.",
+        "source_title": "RAD - Outlier Detection on Big Data (Netflix Technology Blog, 2015)",
+        "source_url": "https://netflixtechblog.com/rad-outlier-detection-on-big-data-d6b0494371cc"
+      }
+    ],
+    "data_cleaning": [
+      {
+        "company": "Kenya Ministry of Health data (study by Gesicho and colleagues)",
+        "example": "Researchers exported eight years (2011-2018) of HIV reporting data from Kenya's national DHIS2 system to Excel: 93,179 facility records from 11,446 health facilities. They screened the data, diagnosed problems and then fixed or removed them: records with no data (50.23%) were removed, and they also found reporting rates above 100% and duplicate facilities. A clean dataset was needed to answer a Ministry of Health question about which facilities report completely and on time.",
+        "source_title": "Data cleaning process for HIV-indicator data extracted from DHIS2 national reporting system: a case study of Kenya (BMC Medical Informatics and Decision Making, 2020)",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7664027/"
+      },
+      {
+        "company": "Office for National Statistics (ONS, UK)",
+        "example": "For Census 2021 in England and Wales, ONS used 'edit rules' to catch impossible answers; for example, a person under 16 cannot have a qualification for census purposes. Missing or inconsistent answers were filled in from similar 'donor' records. About 2.4 million of 26.3 million household records (9%) needed at least one answer filled in this way.",
+        "source_title": "Item editing and imputation process for Census 2021, England and Wales (ONS)",
+        "source_url": "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/methodologies/itemeditingandimputationprocessforcensus2021englandandwales"
+      },
+      {
+        "company": "Code for Africa (PesaYetu, Kenya)",
+        "example": "To build PesaYetu, a tool that shows Kenyan county budgets, Code for Africa scraped hundreds of data tables from county plan PDFs into a spreadsheet, cleaned them and loaded them into a database. They found that counties reported different things in different ways and that some budget figures did not add up. Cleaning was slow, but it had to happen before counties could be compared fairly.",
+        "source_title": "The Covid-19 infodemic: how we fought back with data (Code for Africa)",
+        "source_url": "https://cfa.dev.codeforafrica.org/posts/stories/the-covid-19-infodemic-how-we-fought-back-with-data"
+      }
+    ],
+    "visualization": [
+      {
+        "company": "BBC News",
+        "example": "The BBC News data team built an R package called bbplot and a public 'cookbook' so that charts made with ggplot2 follow the BBC house style. This makes publication-ready graphics easier to repeat and easier for people who are new to R.",
+        "source_title": "BBC Visual and Data Journalism cookbook for R graphics",
+        "source_url": "https://bbc.github.io/rcookbook/"
+      },
+      {
+        "company": "Financial Times",
+        "example": "The FT's Visual Journalism team made the 'Visual Vocabulary', a poster and website that help journalists choose the best chart for what the data needs to show. For example, to show values above and below a reference point (like a trade surplus or deficit) it suggests a diverging bar chart. It is the core of newsroom-wide training to improve chart literacy.",
+        "source_title": "Financial Times Visual Vocabulary (Financial-Times/chart-doctor on GitHub)",
+        "source_url": "https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md"
+      },
+      {
+        "company": "Code for South Africa (Wazimap)",
+        "example": "Code for South Africa built Wazimap in 2014 so that journalists could quickly see census and election data for any area as maps and charts, instead of searching long reports and many Excel files. Journalists can embed the visualisations in their stories so readers understand the data at a glance.",
+        "source_title": "Code for Africa Builds WaziMap to Make Public Data More User-Friendly for Journalists (ICFJ)",
+        "source_url": "https://www.icfj.org/news/code-africa-builds-wazimap-make-public-data-more-user-friendly-journalists"
+      }
+    ],
+    "bi_dashboards": [
+      {
+        "company": "Airbnb (Apache Superset)",
+        "example": "Superset started at Airbnb in 2015 as a tool to build and explore dashboards, with a no-code chart builder and a SQL editor. Airbnb says it connects SQL analysis with data exploration for thousands of its employees each week. It is now the open-source Apache Superset, also used by companies such as Netflix, Lyft and Dropbox.",
+        "source_title": "The Apache Software Foundation Announces Apache Superset as a Top-Level Project",
+        "source_url": "https://news.apache.org/foundation/entry/the-apache-software-foundation-announces70"
+      },
+      {
+        "company": "Botswana Ministry of Health and Wellness (with UNICEF)",
+        "example": "From 27 March 2020, Botswana ran a COVID-19 tracker in DHIS2, using staff who already had DHIS2 skills. Its dashboard kept a real-time count of COVID-19 numbers, and managers at different levels used it to follow the outbreak and decide on control measures.",
+        "source_title": "Botswana COVID-19 Tracker (UNICEF, June 2020)",
+        "source_url": "https://www.unicef.org/esa/media/6436/file/UNICEF%20Bostwana%20COVID-19%20Tracker%20%2019%20June%202020%20Final.pdf"
+      },
+      {
+        "company": "Public Health England (now UK Health Security Agency)",
+        "example": "In 2020 the UK built a COVID-19 dashboard to bring data from more than a dozen sources together in one place, for the public and for leaders in government and health care. It had over 300,000 unique users a day, and about 10,000 people were online at 4pm each day waiting for the update. People even used it to decide whether to visit a friend or go on holiday to an area.",
+        "source_title": "The COVID-19 dashboard: bringing together data and statistics in one place (UKHSA blog, 2020)",
+        "source_url": "https://ukhsa.blog.gov.uk/2020/09/04/the-covid-19-dashboard-bringing-together-data-and-statistics-in-one-place/"
+      }
+    ],
+    "communication": [
+      {
+        "company": "Uganda Ministry of Health",
+        "example": "Since 2003, Uganda's Ministry of Health has produced a District League Table that ranks districts from best to worst using a score built from several indicators, and presents it at national review meetings. A 2018 study found it a convenient way to show many numbers at once, but district managers argued that very different districts should not be compared without taking their differences into account. The lesson: a ranking gets attention, but decision-makers also need the context behind the numbers.",
+        "source_title": "A critique of the Uganda district league table using a normative health system performance assessment framework (BMC Health Services Research, 2018)",
+        "source_url": "https://link.springer.com/article/10.1186/s12913-018-3126-6"
+      },
+      {
+        "company": "Defence Science and Technology Laboratory (Dstl, UK)",
+        "example": "After the 2018 nerve-agent attack in Salisbury, Dstl statisticians designed sampling plans to check which places were safe. They wrote a single document that started with the top-level answer, including 3D images of the plan, and then gave detail for readers who needed it. This let the government advisory group and the military each find what they needed quickly.",
+        "source_title": "Statistics Under Pressure case study: Salisbury poisonings and decontamination (Royal Statistical Society)",
+        "source_url": "https://rss.org.uk/policy-campaigns/our-policy-and-research/how-we-work/statistics-under-pressure-steering-group/statistics-under-pressure-informing-decision-makin/statistics-under-pressure-case-studies/salisbury-poisonings-and-decontamination-is-the-ar/"
+      },
+      {
+        "company": "Department for Transport (DfT, UK)",
+        "example": "During COVID-19, DfT moved from quarterly to daily travel statistics, which were shown at TV press briefings and used by 10 Downing Street and SAGE. To make the numbers easy to compare, the team showed change against a pre-pandemic baseline instead of raw totals, and explained the limits of the data clearly.",
+        "source_title": "Statistics Under Pressure case study: Transport statistics, shedding light on social distancing during the Covid-19 pandemic (Royal Statistical Society)",
+        "source_url": "https://rss.org.uk/policy-campaigns/our-policy-and-research/how-we-work/statistics-under-pressure-steering-group/statistics-under-pressure-informing-decision-makin/statistics-under-pressure-case-studies/transport-statistics-shedding-light-on-social-dist/"
+      }
+    ],
+    "ab_testing": [
+      {
+        "company": "Netflix",
+        "example": "Netflix puts a random sample of members into a control group (A) that sees the normal service and a treatment group (B) that sees one change, then compares metrics such as engagement. Random assignment keeps everything else equal, so a difference comes from the change and not from something else, like a hit new show. The 'Top 10' rows on Netflix started as an idea that was tested in this way.",
+        "source_title": "What is an A/B Test? (Netflix Technology Blog, 2021)",
+        "source_url": "https://netflixtechblog.com/what-is-an-a-b-test-b08cc1b57962"
+      },
+      {
+        "company": "Booking.com",
+        "example": "Booking.com staff write that every change, from full redesigns to bug fixes, is wrapped in an experiment, and that more than a thousand experiments run at the same time. Anyone in the company can search past experiments and their results, so teams learn from earlier successes and failures.",
+        "source_title": "Democratizing online controlled experiments at Booking.com (Kaufman, Pitchforth and Vermeer, 2017)",
+        "source_url": "https://arxiv.org/abs/1710.08217"
+      },
+      {
+        "company": "Center for Advanced Hindsight with a mobile health wallet partner (Kenya)",
+        "example": "A partner sent SMS reminders to users of a mobile health savings wallet. The control message had no savings target; the two test messages had a low target (10 Kenyan shillings) or a high target (100 Kenyan shillings). The low target gave the most people saving and the highest amount saved, which shows how one small change in a message can be tested.",
+        "source_title": "The SMS Study: Saving for healthcare (Center for Advanced Hindsight)",
+        "source_url": "https://advanced-hindsight.com/case-study/the-sms-study/"
+      }
+    ],
+    "pandas": [
+      {
+        "company": "AQR Capital Management",
+        "example": "pandas, the Python library for working with tables of data (DataFrames), started in 2008 at AQR Capital Management, an investment firm, and became open source by the end of 2009. Its mission is to be the basic building block for practical, real-world data analysis in Python.",
+        "source_title": "About pandas (pandas.pydata.org)",
+        "source_url": "https://pandas.pydata.org/about/"
+      },
+      {
+        "company": "Man Group",
+        "example": "Man Group, an investment management firm, built ArcticDB, a database that reads and writes pandas DataFrames directly ('Pandas in, Pandas out'). Users can filter, group and create new columns with a pandas-like syntax, which shows how central the DataFrame is to data work in finance.",
+        "source_title": "ArcticDB README (man-group/ArcticDB on GitHub)",
+        "source_url": "https://github.com/man-group/ArcticDB"
+      },
+      {
+        "company": "M-KOPA (fintech in 5 African markets)",
+        "example": "M-KOPA lists Python, SQL, pandas, numpy and scikit-learn as the tools for its credit data scientists. They analyse repayment data to build models that decide who can get a loan and at what price. M-KOPA says it has helped over 7 million customers access over $2 billion in credit.",
+        "source_title": "Senior Data Scientist - Credit Eligibility at M-KOPA (job posting, Shortlist job board)",
+        "source_url": "https://climatejobs.shortlist.net/companies/m-kopa/jobs/75956581-senior-data-scientist-credit-eligibility"
+      }
+    ]
+  },
+  "interview_loop": {
+    "typical": [
+      {
+        "key": "screen",
+        "name": "Application and first screen",
+        "what_happens": "Your CV or form is checked, then you have a 20-30 minute call (or record a video interview) about your background, your motivation and the role.",
+        "how_to_prepare": "Practise a 1-minute story of who you are, one project you are proud of, and why you want this job."
+      },
+      {
+        "key": "online_test",
+        "name": "Online test",
+        "what_happens": "Graduate schemes and large employers often use an online judgement, reasoning or skills test before any interview.",
+        "how_to_prepare": "Do a few free practice reasoning and situational judgement tests with a timer so the format does not surprise you."
+      },
+      {
+        "key": "technical",
+        "name": "Technical interview",
+        "what_happens": "A data person asks technical questions or works through a problem with you, for example SQL, statistics or code you wrote.",
+        "how_to_prepare": "Practise solving small SQL and statistics problems while you explain each step out loud."
+      },
+      {
+        "key": "take_home",
+        "name": "Take-home task",
+        "what_happens": "You get a dataset or small problem to work on at home, and often send back slides or code that you discuss later.",
+        "how_to_prepare": "Keep your work tidy, write down your assumptions, and finish with a clear answer and a recommendation."
+      },
+      {
+        "key": "case",
+        "name": "Case study",
+        "what_happens": "Interviewers describe a real business problem and ask how you would use data to solve it; it feels more like a conversation than a test.",
+        "how_to_prepare": "Practise a simple structure: check the question, choose metrics, say what data you need, then give a recommendation."
+      },
+      {
+        "key": "presentation",
+        "name": "Presentation of findings",
+        "what_happens": "You present your analysis (of a dataset they give you, or of your take-home task) to a panel and answer questions.",
+        "how_to_prepare": "Start with your main finding in one sentence, use 2-3 simple charts, and practise answering 'why?' and 'so what?'."
+      },
+      {
+        "key": "behavioural",
+        "name": "Behavioural / competency interview",
+        "what_happens": "Questions about how you worked with others, solved problems and delivered results, often asked by people outside the data team.",
+        "how_to_prepare": "Prepare 4-5 real examples using STAR (Situation, Task, Action, Result) and say what you learned from each."
+      },
+      {
+        "key": "final",
+        "name": "Final round and decision",
+        "what_happens": "A last interview with the hiring manager or business leaders, then the interviewers meet to agree a decision.",
+        "how_to_prepare": "Prepare good questions about the team and the work, and be ready to sum up in two sentences why you fit the role."
+      }
+    ],
+    "examples": [
+      {
+        "company": "Monzo (UK)",
+        "role": "Data Analyst / Data Scientist (all individual-contributor data roles)",
+        "stages": [
+          {
+            "name": "Recruiter call",
+            "what_happens": "A 30-minute call about your experience, what you want from a new role, and how the process will work."
+          },
+          {
+            "name": "First-stage call",
+            "what_happens": "An interviewer asks about the skills on your CV, some behavioural and light technical questions, and asks you to talk through one project you did."
+          },
+          {
+            "name": "Take-home task",
+            "what_happens": "A role-specific data problem with no time limit; you usually give your answer as a slide deck or presentation."
+          },
+          {
+            "name": "Take-home follow-up (sometimes)",
+            "what_happens": "A conversation about your solution, your choices, and what you would change if the problem changed."
+          },
+          {
+            "name": "Final interview: case study",
+            "what_happens": "Interviewers share a real business problem, give you time to think, then you talk through your proposed solution with them."
+          },
+          {
+            "name": "Final interview: collaboration (behavioural)",
+            "what_happens": "You meet people from outside data, such as a product manager or engineer, and talk about what you delivered, your successes and your challenges."
+          },
+          {
+            "name": "Decision",
+            "what_happens": "All interviewers meet with the hiring manager, and a 'hiring mentor' reviews the evidence; you usually hear within a week."
+          }
+        ],
+        "source_title": "Data Hiring at Monzo - The Interview Process (Monzo blog, 2022)",
+        "source_url": "https://monzo.com/blog/2022/03/21/data-hiring-at-monzo"
+      },
+      {
+        "company": "GitLab",
+        "role": "Data Analyst",
+        "stages": [
+          {
+            "name": "Short questionnaire",
+            "what_happens": "Selected candidates fill in a short questionnaire."
+          },
+          {
+            "name": "Recruiter screen",
+            "what_happens": "A screening call with one of GitLab's global recruiters."
+          },
+          {
+            "name": "First interview with a data leader",
+            "what_happens": "An interview with a leader from the Data team."
+          },
+          {
+            "name": "Team interviews",
+            "what_happens": "Separate interviews with a Data team member, a business team member and an executive leader."
+          }
+        ],
+        "source_title": "Data Analytics job description: Hiring Process (The GitLab Handbook)",
+        "source_url": "https://handbook.gitlab.com/job-description-library/marketing/enterprise-data/data-analyst/"
+      },
+      {
+        "company": "FreeAgent (UK)",
+        "role": "Data Scientist (data science and analytics roles)",
+        "stages": [
+          {
+            "name": "Application",
+            "what_happens": "CV, cover letter and one role-specific question; about half of applicants stop here."
+          },
+          {
+            "name": "Phone screen",
+            "what_happens": "A 30-minute call with a recruiter about motivation and values, and whether you can explain technical work to a non-technical person."
+          },
+          {
+            "name": "Technical exercise and call",
+            "what_happens": "You get a simulated dataset and a small working model system, then discuss and improve it with two data scientists in a 45-minute call."
+          },
+          {
+            "name": "Final interview",
+            "what_happens": "Two one-hour panels, one on people skills and one on technical skills, with questions agreed in advance."
+          },
+          {
+            "name": "Decision meeting",
+            "what_happens": "The panel meets the hiring manager to agree the final decision."
+          }
+        ],
+        "source_title": "Our data science hiring process (FreeAgent engineering blog, 2022)",
+        "source_url": "https://engineering.freeagent.com/2022/01/28/our-data-science-hiring-process/"
+      },
+      {
+        "company": "Bank of England",
+        "role": "Graduate (Future Talent) programmes, including the Data stream",
+        "stages": [
+          {
+            "name": "Application form",
+            "what_happens": "Your details plus free-text questions about you and your motivation."
+          },
+          {
+            "name": "Situational judgement test",
+            "what_happens": "An online test with work scenarios where you choose what you would do; it checks how well you match the Bank's values."
+          },
+          {
+            "name": "Video interview",
+            "what_happens": "You record answers to set questions; a person reviews them later."
+          },
+          {
+            "name": "Virtual assessment centre",
+            "what_happens": "One group exercise and one interview with motivation, behaviour-based and analytical/technical questions (the Bank uses the STARR method)."
+          }
+        ],
+        "source_title": "How to apply for our Future Talent programmes (Bank of England)",
+        "source_url": "https://www.bankofengland.co.uk/careers/how-to-apply"
+      },
+      {
+        "company": "UK Government Operational Research Service (Civil Service)",
+        "role": "Level 6 Data Science Degree Apprenticeship (entry level)",
+        "stages": [
+          {
+            "name": "Online application form",
+            "what_happens": "Questions that test the behaviours and technical skills in the Civil Service Success Profiles."
+          },
+          {
+            "name": "Civil Service Judgement Test",
+            "what_happens": "An online test sent to you after you submit your application."
+          },
+          {
+            "name": "Technical exercise",
+            "what_happens": "Usually online: a short spoken presentation about a dataset they give you."
+          },
+          {
+            "name": "Interview",
+            "what_happens": "Questions about how you take charge of your own learning, analyse data and work at pace, alone and in a team."
+          }
+        ],
+        "source_title": "GORS Level 6 Data Science Apprenticeship (GOV.UK)",
+        "source_url": "https://www.gov.uk/guidance/gors-level-6-data-science-apprenticeship"
+      },
+      {
+        "company": "Standard Bank Group (South Africa and other African countries)",
+        "role": "Graduate programmes (including data and analytics)",
+        "stages": [
+          {
+            "name": "Pre-screening questionnaire",
+            "what_happens": "Short first questions after you apply."
+          },
+          {
+            "name": "Online assessment",
+            "what_happens": "An online test."
+          },
+          {
+            "name": "Video and/or panel interviews",
+            "what_happens": "A digital video interview and/or panel interviews with people from the business."
+          },
+          {
+            "name": "Psychometric assessments",
+            "what_happens": "Detailed tests of ability and working style."
+          },
+          {
+            "name": "Final round",
+            "what_happens": "A final interview or assessment centre with business leaders."
+          }
+        ],
+        "source_title": "Graduate programmes at Standard Bank Group",
+        "source_url": "https://www.standardbank.com/sbg/standard-bank-group/careers/early-careers/graduate-programmes"
+      },
+      {
+        "company": "Safaricom (Kenya)",
+        "role": "Discover Graduate programme (technology graduates)",
+        "stages": [
+          {
+            "name": "Online cognitive assessments",
+            "what_happens": "Online thinking and reasoning tests."
+          },
+          {
+            "name": "On-demand video interview",
+            "what_happens": "You record video answers in your own time to questions chosen for the role."
+          },
+          {
+            "name": "Shortlisting",
+            "what_happens": "Hiring managers look at the videos and test results together to choose a shortlist."
+          },
+          {
+            "name": "Case study presentation",
+            "what_happens": "The final stage: you present a case study to the hiring panel."
+          }
+        ],
+        "source_title": "SHL Partners with Safaricom, a Leading Telecoms Provider, to Transform Graduate Hiring (SHL customer story)",
+        "source_url": "https://shl.com/resources/by-type/customer-stories/safaricom"
+      }
+    ]
+  },
+  "postings": [
+    {
+      "id": "us-01",
+      "title": "Data Analyst, Intern",
+      "company": "Stripe",
+      "location": "New York / Seattle / South San Francisco, US",
+      "market": "US",
+      "url": "https://stripe.com/jobs/search?gh_jid=8194291",
+      "posted": "2026-10",
+      "role": "junior-data-analyst",
+      "skills": [
+        "degree",
+        "sql",
+        "communication",
+        "stakeholder_management",
+        "etl",
+        "problem_solving"
+      ]
+    },
+    {
+      "id": "us-02",
+      "title": "Master's University Grad Data Scientist (USA)",
+      "company": "Pinterest",
+      "location": "San Francisco / Palo Alto / Seattle / New York, US",
+      "market": "US",
+      "url": "https://www.pinterestcareers.com/jobs/?gh_jid=8140389",
+      "posted": "2026-10",
+      "role": "junior-data-scientist",
+      "skills": [
+        "degree",
+        "sql",
+        "python",
+        "r",
+        "machine_learning",
+        "statistics",
+        "communication",
+        "problem_solving",
+        "business_acumen"
+      ]
+    },
+    {
+      "id": "us-03",
+      "title": "Sales Analytics Intern 2027 (USA)",
+      "company": "Pinterest",
+      "location": "San Francisco, CA / New York, NY, US",
+      "market": "US",
+      "url": "https://www.pinterestcareers.com/jobs/?gh_jid=8214783",
+      "posted": "2026-11",
+      "role": "junior-data-analyst",
+      "skills": [
+        "degree",
+        "spreadsheets",
+        "sql",
+        "bi_dashboards",
+        "communication",
+        "problem_solving",
+        "business_acumen"
+      ]
+    },
+    {
+      "id": "us-04",
+      "title": "Insights Analyst Intern, League of Legends - Summer 2027",
+      "company": "Riot Games",
+      "location": "Los Angeles, US",
+      "market": "US",
+      "url": "https://www.riotgames.com/en/work-with-us/job/8356372?gh_jid=8356372",
+      "posted": "2026-11",
+      "role": "bi-analyst",
+      "skills": [
+        "degree",
+        "statistics",
+        "problem_solving",
+        "communication",
+        "sql",
+        "bi_dashboards",
+        "visualization",
+        "python",
+        "portfolio"
+      ]
+    },
+    {
+      "id": "us-05",
+      "title": "Campaign Analytics, Data Analyst",
+      "company": "FanDuel",
+      "location": "New York, NY, US",
+      "market": "US",
+      "url": "https://www.fanduel.careers/open-positions?gh_jid=8055746",
+      "posted": "2026-07",
+      "role": "junior-data-analyst",
+      "skills": [
+        "sql",
+        "spreadsheets",
+        "python",
+        "degree",
+        "bi_dashboards"
+      ]
+    },
+    {
+      "id": "us-06",
+      "title": "People Analytics Intern",
+      "company": "Coinbase",
+      "location": "New York, NY, US",
+      "market": "US",
+      "url": "https://www.coinbase.com/careers/positions/8175517?gh_jid=8175517",
+      "posted": "2026-09",
+      "role": "junior-data-analyst",
+      "skills": [
+        "degree",
+        "spreadsheets",
+        "communication",
+        "bi_dashboards",
+        "sql"
+      ]
+    },
+    {
+      "id": "us-07",
+      "title": "Gusto Insights Intern",
+      "company": "Gusto",
+      "location": "San Francisco, CA, US",
+      "market": "US",
+      "url": "https://job-boards.greenhouse.io/gusto/jobs/8400148",
+      "posted": "2026-11",
+      "role": "bi-analyst",
+      "skills": [
+        "degree",
+        "python",
+        "sql",
+        "statistics",
+        "communication",
+        "visualization",
+        "problem_solving",
+        "git",
+        "etl"
+      ]
+    },
+    {
+      "id": "us-08",
+      "title": "Marketing Analytics - Data Analyst - July 2027 Start Date - ADP",
+      "company": "Veeva Systems",
+      "location": "New York, NY, US",
+      "market": "US",
+      "url": "https://jobs.lever.co/veeva/28c47d34-3ad6-4485-85a9-686b4239b9ea",
+      "posted": "unknown",
+      "role": "junior-data-analyst",
+      "skills": [
+        "sql",
+        "python",
+        "attention_to_detail",
+        "communication",
+        "problem_solving"
+      ]
+    },
+    {
+      "id": "us-09",
+      "title": "Contract Student Worker - Data Analyst (Part-time)",
+      "company": "Zoox",
+      "location": "Foster City, CA, US",
+      "market": "US",
+      "url": "https://jobs.lever.co/zoox/5e03b357-0cc1-4194-9488-14f85044f4f9",
+      "posted": "2026-07",
+      "role": "junior-data-analyst",
+      "skills": [
+        "sql",
+        "python",
+        "git",
+        "degree",
+        "machine_learning"
+      ]
+    },
+    {
+      "id": "us-10",
+      "title": "DATA SCIENTIST (RECENT GRAD)",
+      "company": "U.S. Department of Homeland Security - Citizenship and Immigration Services (USCIS)",
+      "location": "Camp Springs, MD, US",
+      "market": "US",
+      "url": "https://www.usajobs.gov/job/866941000",
+      "posted": "2026-04",
+      "role": "junior-data-scientist",
+      "skills": [
+        "degree",
+        "data_cleaning",
+        "statistics",
+        "visualization",
+        "communication",
+        "python",
+        "r",
+        "sql",
+        "attention_to_detail",
+        "problem_solving"
+      ]
+    },
+    {
+      "id": "us-11",
+      "title": "Data Analyst I",
+      "company": "Mass General Brigham (The General Hospital Corporation)",
+      "location": "Somerville, MA, US",
+      "market": "US",
+      "url": "https://jobs.mehi.masstech.org/companies/new-health/jobs/92357563-data-analyst-i",
+      "posted": "2026-09",
+      "role": "junior-data-analyst",
+      "skills": [
+        "degree",
+        "statistics",
+        "spreadsheets",
+        "sql",
+        "r",
+        "problem_solving",
+        "business_acumen",
+        "stakeholder_management"
+      ]
+    },
+    {
+      "id": "us-13",
+      "title": "Jr. Data Scientist",
+      "company": "Guidehouse",
+      "location": "McLean, VA, US (2 locations)",
+      "market": "US",
+      "url": "https://guidehouse.wd1.myworkdayjobs.com/External/job/US---VA-McLean/Jr-Data-Scientist_44767",
+      "posted": "2026-11",
+      "role": "junior-data-scientist",
+      "skills": [
+        "degree",
+        "statistics",
+        "machine_learning",
+        "python",
+        "sql",
+        "r",
+        "cloud_data",
+        "visualization",
+        "bi_dashboards",
+        "communication",
+        "stakeholder_management"
+      ]
+    },
+    {
+      "id": "uk-01",
+      "title": "Junior Data Quality Analyst",
+      "company": "Kpler",
+      "location": "London, UK",
+      "market": "UK",
+      "url": "https://jobs.lever.co/kpler/caa9dbc6-f48f-437b-994f-64d233010da7",
+      "posted": "2026-10",
+      "role": "junior-data-analyst",
+      "skills": [
+        "degree",
+        "sql",
+        "python",
+        "git",
+        "spreadsheets",
+        "bi_dashboards",
+        "attention_to_detail",
+        "problem_solving",
+        "data_cleaning"
+      ]
+    },
+    {
+      "id": "uk-02",
+      "title": "Graduate Analyst - £50,000 + Share Options",
+      "company": "Zable (formerly Lendable)",
+      "location": "London, UK",
+      "market": "UK",
+      "url": "https://jobs.ashbyhq.com/Zable/a0ed2d2c-1c24-4d53-8ab4-af7e7ac06e20",
+      "posted": "2026-08",
+      "role": "junior-data-analyst",
+      "skills": [
+        "problem_solving"
+      ]
+    },
+    {
+      "id": "uk-03",
+      "title": "Data Analyst (Band 5)",
+      "company": "NICE - The National Institute for Health and Care Excellence",
+      "location": "Manchester, UK",
+      "market": "UK",
+      "url": "https://www.jobs.nhs.uk/candidate/jobadvert/G9907-26-0025",
+      "posted": "2026-03",
+      "role": "junior-data-analyst",
+      "skills": [
+        "degree",
+        "spreadsheets",
+        "bi_dashboards",
+        "communication",
+        "data_cleaning",
+        "visualization"
+      ]
+    },
+    {
+      "id": "uk-04",
+      "title": "Data Analyst (Band 5)",
+      "company": "South Tyneside and Sunderland NHS Foundation Trust",
+      "location": "Sunderland, UK",
+      "market": "UK",
+      "url": "https://www.jobs.nhs.uk/candidate/jobadvert/C9155-CRAC-0426-16",
+      "posted": "2026-04",
+      "role": "junior-data-analyst",
+      "skills": [
+        "statistics",
+        "communication",
+        "problem_solving",
+        "visualization",
+        "bi_dashboards",
+        "sql",
+        "stakeholder_management"
+      ]
+    },
+    {
+      "id": "uk-05",
+      "title": "Junior Data Analyst",
+      "company": "Gousto",
+      "location": "London, UK",
+      "market": "UK",
+      "url": "https://jobs.mmc.vc/companies/gousto/jobs/86828213-junior-data-analyst",
+      "posted": "2026-07",
+      "role": "junior-data-analyst",
+      "skills": [
+        "problem_solving",
+        "attention_to_detail",
+        "communication",
+        "business_acumen",
+        "sql",
+        "cloud_data",
+        "bi_dashboards",
+        "stakeholder_management"
+      ]
+    },
+    {
+      "id": "uk-06",
+      "title": "Junior Data Analyst",
+      "company": "ivee",
+      "location": "London, UK",
+      "market": "UK",
+      "url": "https://jobs.techstars.com/companies/ivee-2/jobs/83755662-junior-data-analyst",
+      "posted": "2026-06",
+      "role": "junior-data-analyst",
+      "skills": [
+        "problem_solving",
+        "spreadsheets",
+        "sql",
+        "bi_dashboards",
+        "attention_to_detail",
+        "communication",
+        "degree"
+      ]
+    },
+    {
+      "id": "uk-07",
+      "title": "Data Analyst (Editorial Analytics)",
+      "company": "The Guardian (Guardian News & Media)",
+      "location": "London, UK",
+      "market": "UK",
+      "url": "https://builtinlondon.uk/job/data-analyst/11204983",
+      "posted": "2026-09",
+      "role": "junior-data-analyst",
+      "skills": [
+        "sql",
+        "statistics",
+        "bi_dashboards",
+        "problem_solving",
+        "stakeholder_management"
+      ]
+    },
+    {
+      "id": "uk-08",
+      "title": "Junior Data Analyst (up to £35,000 per annum)",
+      "company": "Immediate Media",
+      "location": "London (Fulham), UK",
+      "market": "UK",
+      "url": "https://builtinlondon.uk/job/junior-data-analyst/10829493",
+      "posted": "2026-08",
+      "role": "junior-data-analyst",
+      "skills": [
+        "sql",
+        "etl",
+        "python",
+        "statistics",
+        "visualization",
+        "problem_solving",
+        "communication",
+        "stakeholder_management",
+        "bi_dashboards"
+      ]
+    },
+    {
+      "id": "uk-09",
+      "title": "Data Science & AI Graduate Scheme - London",
+      "company": "Lloyds Banking Group",
+      "location": "London, UK (scheme also in Bristol, Edinburgh, Halifax, Leeds, Manchester)",
+      "market": "UK",
+      "url": "https://targetjobs.co.uk/jobs/data-science-ai-graduate-scheme-london-239715",
+      "posted": "2026-09",
+      "role": "junior-data-scientist",
+      "skills": [
+        "python",
+        "sql",
+        "statistics",
+        "problem_solving"
+      ]
+    },
+    {
+      "id": "uk-10",
+      "title": "2027 Customer and Digital - Data and Analytics Graduate Programme",
+      "company": "Barclays",
+      "location": "Glasgow, UK",
+      "market": "UK",
+      "url": "https://targetjobs.co.uk/jobs/2027-customer-and-digital-data-and-analytics-graduate-programme-241949",
+      "posted": "unknown",
+      "role": "junior-data-analyst",
+      "skills": [
+        "problem_solving"
+      ]
+    },
+    {
+      "id": "uk-11",
+      "title": "2027 Graduate Business Data Analyst",
+      "company": "Isio Group",
+      "location": "Birmingham, UK",
+      "market": "UK",
+      "url": "https://targetjobs.co.uk/jobs/2027-graduate-business-data-analyst-244875",
+      "posted": "unknown",
+      "role": "junior-data-analyst",
+      "skills": [
+        "problem_solving",
+        "communication",
+        "attention_to_detail",
+        "stakeholder_management",
+        "business_acumen"
+      ]
+    },
+    {
+      "id": "uk-12",
+      "title": "Data Analyst Apprenticeship (Level 4)",
+      "company": "Route 101 Limited",
+      "location": "Bristol (Hambrook), UK",
+      "market": "UK",
+      "url": "https://www.findapprenticeship.service.gov.uk/apprenticeship/VAC2000061883",
+      "posted": "2026-11",
+      "role": "junior-data-analyst",
+      "skills": [
+        "communication",
+        "problem_solving"
+      ]
+    },
+    {
+      "id": "uk-13",
+      "title": "Data Analyst Apprentice",
+      "company": "Altius Group Ltd",
+      "location": "Preston, UK",
+      "market": "UK",
+      "url": "https://www.findapprenticeship.service.gov.uk/apprenticeship/VAC2000065006",
+      "posted": "2026-11",
+      "role": "junior-data-analyst",
+      "skills": [
+        "communication",
+        "attention_to_detail",
+        "spreadsheets",
+        "problem_solving"
+      ]
+    },
+    {
+      "id": "af-01",
+      "title": "Research Analyst",
+      "company": "Laterite",
+      "location": "Kampala, Uganda",
+      "market": "Africa",
+      "url": "https://reliefweb.int/job/4235954/research-analyst",
+      "posted": "2026-10",
+      "role": "junior-data-analyst",
+      "skills": [
+        "statistics",
+        "r",
+        "python",
+        "communication",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-02",
+      "title": "Graduate Trainee Business Intelligence / Data Analyst",
+      "company": "Smartflow Technologies Limited",
+      "location": "Ojodu Berger, Lagos, Nigeria",
+      "market": "Africa",
+      "url": "https://www.myjobmag.com/job/graduate-trainee-business-intelligence-data-analyst-smartflow-technologies-limited",
+      "posted": "2026-11",
+      "role": "bi-analyst",
+      "skills": [
+        "spreadsheets",
+        "attention_to_detail",
+        "communication",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-03",
+      "title": "Data Analyst (Scripting & VBA)",
+      "company": "eHealth4everyone",
+      "location": "Nigeria",
+      "market": "Africa",
+      "url": "https://www.myjobmag.com/job/data-analyst-scripting-vba-ehealth4everyone-1",
+      "posted": "2026-11",
+      "role": "junior-data-analyst",
+      "skills": [
+        "spreadsheets",
+        "python",
+        "data_cleaning",
+        "communication",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-04",
+      "title": "Data Analyst",
+      "company": "iRecruiters Africa Limited (recruiting for a client)",
+      "location": "Lagos, Nigeria",
+      "market": "Africa",
+      "url": "https://www.myjobmag.com/job/data-analyst-irecruiters-africa-limited-1",
+      "posted": "2026-10",
+      "role": "junior-data-analyst",
+      "skills": [
+        "spreadsheets",
+        "sql",
+        "bi_dashboards",
+        "problem_solving",
+        "attention_to_detail",
+        "communication",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-05",
+      "title": "Junior Data Analyst",
+      "company": "Mwanga Limited",
+      "location": "Maryland, Lagos, Nigeria",
+      "market": "Africa",
+      "url": "https://www.hotnigerianjobs.com/print/920416/",
+      "posted": "2026-07",
+      "role": "junior-data-analyst",
+      "skills": [
+        "spreadsheets",
+        "bi_dashboards",
+        "visualization",
+        "sql",
+        "problem_solving",
+        "attention_to_detail",
+        "communication"
+      ]
+    },
+    {
+      "id": "af-07",
+      "title": "Junior Data Analyst (Internship)",
+      "company": "Moko Home + Living",
+      "location": "Nairobi, Kenya",
+      "market": "Africa",
+      "url": "https://www.myjobmag.co.ke/job/junior-data-analyst-internship-moko-home-living",
+      "posted": "2026-10",
+      "role": "junior-data-analyst",
+      "skills": [
+        "sql",
+        "python",
+        "pandas",
+        "data_cleaning",
+        "visualization",
+        "bi_dashboards",
+        "communication",
+        "attention_to_detail",
+        "degree",
+        "portfolio"
+      ]
+    },
+    {
+      "id": "af-08",
+      "title": "Data Analyst",
+      "company": "TakaTaka Solutions",
+      "location": "Kiambu, Kenya",
+      "market": "Africa",
+      "url": "https://www.myjobmag.co.ke/job/data-analyst-takataka-solutions-1",
+      "posted": "2026-08",
+      "role": "junior-data-analyst",
+      "skills": [
+        "spreadsheets",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-09",
+      "title": "Junior Data Analyst",
+      "company": "Watu Credit",
+      "location": "Nairobi, Kenya (listed as hiring remotely in Nairobi)",
+      "market": "Africa",
+      "url": "https://builtin.com/job/junior-data-analyst/9206397",
+      "posted": "unknown",
+      "role": "junior-data-analyst",
+      "skills": [
+        "sql",
+        "spreadsheets",
+        "data_modeling",
+        "data_cleaning",
+        "attention_to_detail",
+        "communication",
+        "bi_dashboards",
+        "python",
+        "r",
+        "etl",
+        "git",
+        "cloud_data"
+      ]
+    },
+    {
+      "id": "af-10",
+      "title": "Junior Data Analyst",
+      "company": "Salt South Africa (recruiting for a client)",
+      "location": "Johannesburg, Gauteng, South Africa",
+      "market": "Africa",
+      "url": "https://www.myjobmag.co.za/job/junior-data-analyst-recruit-digital-3",
+      "posted": "2026-11",
+      "role": "junior-data-analyst",
+      "skills": [
+        "sql",
+        "bi_dashboards",
+        "data_modeling",
+        "spreadsheets",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-11",
+      "title": "Junior Data Analyst",
+      "company": "Emergent Africa",
+      "location": "South Africa (hybrid or remote, occasional client onsite)",
+      "market": "Africa",
+      "url": "https://emergent.africa/careers/junior-data-analyst/",
+      "posted": "unknown",
+      "role": "junior-data-analyst",
+      "skills": [
+        "sql",
+        "bi_dashboards",
+        "visualization",
+        "etl",
+        "problem_solving",
+        "communication",
+        "python",
+        "cloud_data",
+        "attention_to_detail",
+        "stakeholder_management",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-12",
+      "title": "Data Analyst (Junior Associate) - Francophone WA",
+      "company": "mPharma",
+      "location": "Lomé, Togo",
+      "market": "Africa",
+      "url": "https://jobs.luxcapital.com/companies/mpharma/jobs/42196138-data-analyst-junior-associate-francophone-wa",
+      "posted": "unknown",
+      "role": "junior-data-analyst",
+      "skills": [
+        "spreadsheets",
+        "sql",
+        "python",
+        "bi_dashboards",
+        "visualization",
+        "communication",
+        "stakeholder_management",
+        "french"
+      ]
+    },
+    {
+      "id": "af-13",
+      "title": "Data Analyst",
+      "company": "Nawy Real Estate",
+      "location": "Maadi, Cairo, Egypt",
+      "market": "Africa",
+      "url": "https://jobs.workable.com/view/mV15xidpfsmkpje93muLWB/hybrid-data-analyst-in-maadi-at-nawy-real-estate",
+      "posted": "2026-10",
+      "role": "junior-data-analyst",
+      "skills": [
+        "sql",
+        "bi_dashboards",
+        "visualization",
+        "statistics",
+        "data_modeling",
+        "attention_to_detail",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-14",
+      "title": "Internship - Data Processing And Analysis (2 positions), WCARO",
+      "company": "UNFPA (West and Central Africa Regional Office)",
+      "location": "Dakar, Senegal",
+      "market": "Africa",
+      "url": "https://www.unfpa.org/jobs/internship-data-processing-and-analysis-2-positions-wcaro-dakar-senegal",
+      "posted": "unknown",
+      "role": "junior-data-analyst",
+      "skills": [
+        "statistics",
+        "r",
+        "python",
+        "spreadsheets",
+        "problem_solving",
+        "communication",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-15",
+      "title": "Associate / Senior Associate",
+      "company": "IDinsight",
+      "location": "Dakar, Senegal (or Rabat, Morocco)",
+      "market": "Africa",
+      "url": "https://jobs.ashbyhq.com/idinsight/eb8a4368-8e33-4ef4-b5cb-7c2bf26f0841",
+      "posted": "2026-10",
+      "role": "junior-data-analyst",
+      "skills": [
+        "statistics",
+        "r",
+        "problem_solving",
+        "communication",
+        "french",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-16",
+      "title": "Chargé d'études (Stage)",
+      "company": "Creditinfo West Africa",
+      "location": "Abidjan, Côte d'Ivoire",
+      "market": "Africa",
+      "url": "https://africarrieres.com/cameroon/en/emplois/charge-detudes-stage-creditinfo-west-africa",
+      "posted": "unknown",
+      "role": "junior-data-analyst",
+      "skills": [
+        "spreadsheets",
+        "bi_dashboards",
+        "python",
+        "r",
+        "sql",
+        "statistics",
+        "communication",
+        "problem_solving",
+        "degree"
+      ]
+    },
+    {
+      "id": "af-17",
+      "title": "Stagiaire Analyste Data",
+      "company": "CI-CABLES PREMIUM",
+      "location": "Abidjan, Côte d'Ivoire",
+      "market": "Africa",
+      "url": "https://www.goafricaonline.com/ci/emploi/job-12976-stagiaire-analyste-data",
+      "posted": "unknown",
+      "role": "junior-data-analyst",
+      "skills": [
+        "spreadsheets",
+        "communication"
+      ]
+    },
+    {
+      "id": "af-18",
+      "title": "Stagiaire Anapec Data Analyst - Rabat",
+      "company": "Orange Business",
+      "location": "Rabat, Morocco",
+      "market": "Africa",
+      "url": "https://www.rekrute.com/offre-emploi-stagiaire-anapec-data-analyst-recrutement-orange-business-rabat-184385.html",
+      "posted": "2026-07",
+      "role": "junior-data-analyst",
+      "skills": [
+        "sql",
+        "python",
+        "pandas",
+        "bi_dashboards",
+        "git",
+        "spreadsheets",
+        "machine_learning",
+        "communication",
+        "french",
+        "degree"
+      ]
+    },
+    {
+      "id": "rm-01",
+      "title": "Junior Data Analyst - Africa",
+      "company": "Enveritas",
+      "location": "Remote (Africa)",
+      "market": "Remote",
+      "url": "https://dynamitejobs.com/company/enveritas/remote-job/junior-data-analyst-africa",
+      "posted": "unknown",
+      "role": "junior-data-analyst",
+      "skills": [
+        "data_cleaning",
+        "communication",
+        "problem_solving",
+        "python",
+        "degree"
+      ]
+    },
+    {
+      "id": "rm-02",
+      "title": "Junior Analytics Specialist",
+      "company": "Spiralyze",
+      "location": "Remote (Cairo, Egypt)",
+      "market": "Africa",
+      "url": "https://spiralyze.pinpointhq.com/en/postings/496e61a7-ddfc-4c2d-a1b8-d1da0a59ad67",
+      "posted": "2026-09",
+      "role": "junior-data-analyst",
+      "skills": [
+        "spreadsheets",
+        "communication",
+        "attention_to_detail"
+      ]
+    },
+    {
+      "id": "rm-03",
+      "title": "Data Analyst",
+      "company": "TRADING ECONOMICS",
+      "location": "Remote (candidates from any country)",
+      "market": "Remote",
+      "url": "https://tradingeconomics.hire.trakstar.com/jobs/fk0zum/",
+      "posted": "unknown",
+      "role": "junior-data-analyst",
+      "skills": [
+        "communication"
+      ]
+    },
+    {
+      "id": "rm-04",
+      "title": "Junior Data Analyst",
+      "company": "Hire Hangar",
+      "location": "Remote (eligible countries include Egypt and South Africa; US time zones)",
+      "market": "Remote",
+      "url": "https://himalayas.app/companies/hire-hangar/jobs/junior-data-analyst-2593566728",
+      "posted": "2026-11",
+      "role": "junior-data-analyst",
+      "skills": [
+        "spreadsheets",
+        "sql",
+        "bi_dashboards",
+        "attention_to_detail",
+        "communication",
+        "degree"
+      ]
+    },
+    {
+      "id": "rm-05",
+      "title": "Junior Data Scientist",
+      "company": "SavageOne",
+      "location": "Remote (South Africa)",
+      "market": "Africa",
+      "url": "https://himalayas.app/companies/savageone/jobs/junior-data-scientist",
+      "posted": "2026-10",
+      "role": "junior-data-scientist",
+      "skills": [
+        "python",
+        "r",
+        "pandas",
+        "machine_learning",
+        "statistics",
+        "sql",
+        "problem_solving",
+        "communication",
+        "visualization",
+        "bi_dashboards",
+        "degree"
+      ]
+    },
+    {
+      "id": "rm-06",
+      "title": "Intern - Data analytics",
+      "company": "UN-Habitat (Quality of Life Initiative)",
+      "location": "Remote (candidates based in GMT+0 to GMT+6)",
+      "market": "Remote",
+      "url": "https://www.unjobnet.org/jobs/detail/unhabitat-intern-data-analytics-87881948",
+      "posted": "2026-08",
+      "role": "junior-data-analyst",
+      "skills": [
+        "data_cleaning",
+        "spreadsheets",
+        "attention_to_detail",
+        "communication",
+        "degree"
+      ]
+    },
+    {
+      "id": "rm-07",
+      "title": "Intern- Data Research",
+      "company": "United Nations Department of Operational Support (Office of Supply Chain Management)",
+      "location": "New York, USA, or fully remote, or hybrid (flexible modality)",
+      "market": "Remote",
+      "url": "https://www.unjobnet.org/jobs/detail/un-dos-intern-data-research-89787918",
+      "posted": "2026-10",
+      "role": "junior-data-analyst",
+      "skills": [
+        "spreadsheets",
+        "sql",
+        "bi_dashboards",
+        "visualization",
+        "statistics",
+        "degree"
+      ]
+    },
+    {
+      "id": "rm-08",
+      "title": "Data Analyst",
+      "company": "AstrikCoders",
+      "location": "Remote (anywhere in the world)",
+      "market": "Remote",
+      "url": "https://remoterocketship.com/publicjobs/company/astrikcoders/jobs/data-analyst-worldwide-remote/",
+      "posted": "unknown",
+      "role": "junior-data-analyst",
+      "skills": [
+        "sql",
+        "spreadsheets",
+        "bi_dashboards",
+        "visualization",
+        "statistics",
+        "problem_solving",
+        "attention_to_detail",
+        "communication",
+        "degree"
+      ]
+    },
+    {
+      "id": "rm-09",
+      "title": "M&E Associate - Rapid Experimentation (Remote)",
+      "company": "GiveDirectly",
+      "location": "Remote (must overlap East Africa time zone by 3+ hours; Kenya/Rwanda preferred)",
+      "market": "Remote",
+      "url": "https://job-boards.greenhouse.io/givedirectly/jobs/4743156005",
+      "posted": "2026-10",
+      "role": "junior-data-analyst",
+      "skills": [
+        "ab_testing",
+        "statistics",
+        "r",
+        "python",
+        "data_cleaning",
+        "stakeholder_management",
+        "problem_solving",
+        "communication",
+        "degree"
+      ]
+    },
+    {
+      "id": "rm-10",
+      "title": "Business Analyst Junior [Antifraud & Disputes]",
+      "company": "Banco Plata, S.A., Institución de Banca Múltiple",
+      "location": "Remote (all countries; UTC-11 to UTC+14)",
+      "market": "Remote",
+      "url": "https://himalayas.app/companies/banco-plata-s-a-institucion-de-banca-multiple/jobs/business-analyst-junior-antifraud-disputes",
+      "posted": "2026-10",
+      "role": "bi-analyst",
+      "skills": [
+        "sql",
+        "bi_dashboards",
+        "problem_solving",
+        "communication",
+        "stakeholder_management",
+        "business_acumen"
+      ]
+    }
+  ]
+}

@@ -137,11 +137,24 @@ class CurriculumController extends Controller
         $completedIds = $progressRows->filter(fn ($p) => ($p->status?->value ?? $p->status) === 'completed')->pluck('curriculum_activity_id')->flip();
         $currentIndex = $page->currentChapterIndex($milestones, $completedIds);
 
+        // Job market: readiness for the target role, and why the next step matters to employers.
+        $market = app(\App\Services\JobMarketService::class);
+        $career = null;
+        if ($market->data($track)) {
+            $market->checkOffer($fellow, $track);
+            $career = $market->readiness($fellow, $track) + ['offer' => (bool) $market->enrolment($fellow, $track)?->offer_unlocked_at];
+        }
+        $nextStep = $page->nextStep($fellow, $track, $milestones, $progressRows, $orientationRequired);
+        if (!empty($nextStep['activity'])) {
+            $nextStep['why'] = $market->whyItMatters($track, $nextStep['activity']);
+        }
+
         return view('fellow.curriculum.index', array_merge($dashboard, [
+            'career' => $career,
             'currentMilestoneId' => $currentIndex !== null ? $milestones->values()[$currentIndex]->id : null,
             'orientationRequired' => $orientationRequired,
             'orientationDone' => $orientation->isComplete($fellow, $track),
-            'nextStep' => $page->nextStep($fellow, $track, $milestones, $progressRows, $orientationRequired),
+            'nextStep' => $nextStep,
             'classmates' => $page->classmates($fellow, $track, $milestones),
             'extras' => $page->extras($fellow, $track),
             'streakSummary' => $streakSummary,
@@ -212,7 +225,13 @@ class CurriculumController extends Controller
                 'startWith' => in_array('sql', (array) $activity->skills, true) && !in_array('python', (array) $activity->skills, true) ? 'sql' : 'python']
             : null;
 
-        return view('fellow.curriculum.activity-show', compact('activity', 'progress', 'linkedInterviews', 'reviewPartner', 'lessonSections', 'quickChecks', 'orientationRequired', 'colabUrl', 'sandbox', 'isOpen'));
+        // Job market: why employers care about this lesson, and work tickets for projects/case studies.
+        $why = app(\App\Services\JobMarketService::class)->whyItMatters($activity->track, $activity);
+        $stakeholder = in_array($activity->type?->value, ['project', 'case_study'], true) && $isOpen
+            && \App\Support\TrackExperience::for($activity->track)?->hasStory()
+            ? app(\App\Services\StakeholderService::class)->stakeholder($activity) : null;
+
+        return view('fellow.curriculum.activity-show', compact('activity', 'progress', 'linkedInterviews', 'reviewPartner', 'lessonSections', 'quickChecks', 'orientationRequired', 'colabUrl', 'sandbox', 'isOpen', 'why', 'stakeholder'));
     }
 
     /**
