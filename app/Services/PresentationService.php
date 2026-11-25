@@ -106,6 +106,7 @@ class PresentationService
             $after = $before;
             if ($decision === 'approve') {
                 $after = (float) $this->calculator->updateScore($presentation->fellow, $presentation->track)->score;
+                app(TrackFeedService::class)->presentationApproved($presentation);
             }
 
             $this->audit($reviewer, $presentation, "presentation_{$decision}", [

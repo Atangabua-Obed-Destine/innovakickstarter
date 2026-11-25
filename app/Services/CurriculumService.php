@@ -537,6 +537,9 @@ class CurriculumService
                 // Recalculate Career Capital
                 $this->recalculateCareerCapital($progress->fellow, $progress->curriculumActivity->track);
 
+                // Share projects and Brand posts with the track's community feed
+                app(TrackFeedService::class)->workApproved($progress->fresh(['curriculumActivity', 'fellow']));
+
             } elseif ($decision === 'reject') {
                 $progress->reject($reviewer, $data['feedback'] ?? 'Submission does not meet requirements.');
             }
@@ -598,6 +601,7 @@ class CurriculumService
             if (!$this->curriculumRepository->hasBadge($fellow, BadgeType::MILESTONE->value, $milestone->id)) {
                 FellowBadge::createMilestoneBadge($fellow, $milestone);
                 $this->sendChapterDebrief($fellow, $milestone);
+                app(TrackFeedService::class)->chapterCompleted($fellow, $milestone);
 
                 Log::info("Milestone badge awarded", [
                     'fellow_id' => $fellow->id,

@@ -477,6 +477,7 @@ class CareerCapitalCalculator
 
             if ($notify && $newTier->rank() > $previousTier->rank()) {
                 Notification::sendTierPromotion($fellow, $previousTier->label(), $newTier->label(), $newScore);
+                app(TrackFeedService::class)->levelUp($fellow, $track, $newTier->value);
             }
 
             return $fellowTrack->fresh();

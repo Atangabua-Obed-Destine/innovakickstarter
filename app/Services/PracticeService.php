@@ -67,6 +67,10 @@ class PracticeService
                 'practiced_on' => now()->toDateString(),
             ]);
 
+            if ($correct) {
+                app(TrackFeedService::class)->practiceStreak($fellow, $challenge->track_id, $this->stats($fellow, $challenge->track)['streak']);
+            }
+
             $attempts = PracticeAttempt::where('challenge_id', $challenge->id)->where('fellow_id', $fellow->id)->count();
             $canReveal = $correct || $alreadySolved || $attempts >= self::ATTEMPTS_BEFORE_REVEAL;
 

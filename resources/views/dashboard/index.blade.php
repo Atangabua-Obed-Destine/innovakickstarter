@@ -740,6 +740,28 @@
         @include('partials.track.skill-map', ['skills' => $trackSkills, 'experience' => $trackExperience])
     @endif
 
+    @php
+        $feedEvents = $trackExperience ? \App\Models\TrackFeedEvent::with('fellow:id,name')->where('track_id', $trackExperience->track->id)
+            ->whereHas('fellow', fn ($q) => $q->where('show_in_track_feed', true))->latest()->limit(4)->get() : collect();
+    @endphp
+    @if($feedEvents->isNotEmpty())
+        <div class="card p-5">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-white font-semibold">From your track</h3>
+                <a href="{{ route('community.index') }}" class="text-primary-400 hover:text-primary-300 text-sm">See all →</a>
+            </div>
+            <div class="space-y-2">
+                @foreach($feedEvents as $event)
+                    <div class="flex items-center gap-3 text-sm">
+                        <span aria-hidden="true">{{ $event->icon() }}</span>
+                        <span class="text-dark-200 flex-1 min-w-0 truncate">{{ $event->title }}</span>
+                        <span class="text-dark-500 text-xs flex-shrink-0">{{ $event->created_at->diffForHumans(null, true) }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     <!-- Stats Row -->
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Activities This Month -->

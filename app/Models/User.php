@@ -46,6 +46,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $fillable = [
+        'show_in_track_feed',
         'uuid',
         'name',
         'email',
@@ -103,6 +104,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return [
             'email_verified_at' => 'datetime',
+            'show_in_track_feed' => 'boolean',
             'password' => 'hashed',
             'role' => UserRole::class,
             'is_public' => 'boolean',

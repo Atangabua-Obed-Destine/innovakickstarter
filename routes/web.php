@@ -230,6 +230,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/badges/{badge}/share', [FellowCurriculumController::class, 'shareBadge'])->name('badges.share');
         });
 
+        // Track community feed
+        Route::get('/community', [\App\Http\Controllers\Fellow\CommunityController::class, 'index'])->name('community.index');
+        Route::post('/community/visibility', [\App\Http\Controllers\Fellow\CommunityController::class, 'visibility'])->name('community.visibility');
+        Route::post('/community/{event}/kudos', [\App\Http\Controllers\Fellow\CommunityController::class, 'kudos'])->name('community.kudos')->middleware('throttle:60,1');
+
         // AI track mentor
         Route::get('/ai-mentor', [\App\Http\Controllers\Fellow\MentorController::class, 'index'])->name('ai-mentor.index');
         Route::get('/ai-mentor/history', [\App\Http\Controllers\Fellow\MentorController::class, 'history'])->name('ai-mentor.history');
