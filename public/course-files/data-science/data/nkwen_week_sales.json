@@ -1,0 +1,212 @@
+[
+ {
+  "day": "Monday",
+  "product": "Rice (25kg bag)",
+  "quantity": 3,
+  "price": 17500
+ },
+ {
+  "day": "Monday",
+  "product": "Palm Oil (5L)",
+  "quantity": 6,
+  "price": 5500
+ },
+ {
+  "day": "Monday",
+  "product": "Soap",
+  "quantity": 12,
+  "price": 500
+ },
+ {
+  "day": "Monday",
+  "product": "Sugar (1kg)",
+  "quantity": 8,
+  "price": 900
+ },
+ {
+  "day": "Monday",
+  "product": "Matches (box)",
+  "quantity": 20,
+  "price": 100
+ },
+ {
+  "day": "Tuesday",
+  "product": "Rice (25kg bag)",
+  "quantity": 2,
+  "price": 17500
+ },
+ {
+  "day": "Tuesday",
+  "product": "Beans (kg)",
+  "quantity": 10,
+  "price": 1200
+ },
+ {
+  "day": "Tuesday",
+  "product": "Spaghetti (pack)",
+  "quantity": 15,
+  "price": 600
+ },
+ {
+  "day": "Tuesday",
+  "product": "Milk (tin)",
+  "quantity": 9,
+  "price": 750
+ },
+ {
+  "day": "Tuesday",
+  "product": "Onions (kg)",
+  "quantity": 7,
+  "price": 800
+ },
+ {
+  "day": "Wednesday",
+  "product": "Palm Oil (5L)",
+  "quantity": 4,
+  "price": 5500
+ },
+ {
+  "day": "Wednesday",
+  "product": "Tomato Paste (tin)",
+  "quantity": 18,
+  "price": 350
+ },
+ {
+  "day": "Wednesday",
+  "product": "Garri (kg)",
+  "quantity": 11,
+  "price": 600
+ },
+ {
+  "day": "Wednesday",
+  "product": "Soap",
+  "quantity": 9,
+  "price": 500
+ },
+ {
+  "day": "Wednesday",
+  "product": "Bread (loaf)",
+  "quantity": 14,
+  "price": 700
+ },
+ {
+  "day": "Thursday",
+  "product": "Rice (25kg bag)",
+  "quantity": 4,
+  "price": 17500
+ },
+ {
+  "day": "Thursday",
+  "product": "Sugar (1kg)",
+  "quantity": 6,
+  "price": 900
+ },
+ {
+  "day": "Thursday",
+  "product": "Groundnuts (kg)",
+  "quantity": 10,
+  "price": 1000
+ },
+ {
+  "day": "Thursday",
+  "product": "Plantains (bunch)",
+  "quantity": 5,
+  "price": 1500
+ },
+ {
+  "day": "Thursday",
+  "product": "Matches (box)",
+  "quantity": 25,
+  "price": 100
+ },
+ {
+  "day": "Friday",
+  "product": "Beans (kg)",
+  "quantity": 12,
+  "price": 1200
+ },
+ {
+  "day": "Friday",
+  "product": "Palm Oil (5L)",
+  "quantity": 8,
+  "price": 5500
+ },
+ {
+  "day": "Friday",
+  "product": "Spaghetti (pack)",
+  "quantity": 20,
+  "price": 600
+ },
+ {
+  "day": "Friday",
+  "product": "Milk (tin)",
+  "quantity": 11,
+  "price": 750
+ },
+ {
+  "day": "Friday",
+  "product": "Soap",
+  "quantity": 15,
+  "price": 500
+ },
+ {
+  "day": "Saturday",
+  "product": "Rice (25kg bag)",
+  "quantity": 6,
+  "price": 17500
+ },
+ {
+  "day": "Saturday",
+  "product": "Onions (kg)",
+  "quantity": 13,
+  "price": 800
+ },
+ {
+  "day": "Saturday",
+  "product": "Tomato Paste (tin)",
+  "quantity": 22,
+  "price": 350
+ },
+ {
+  "day": "Saturday",
+  "product": "Garri (kg)",
+  "quantity": 16,
+  "price": 600
+ },
+ {
+  "day": "Saturday",
+  "product": "Bread (loaf)",
+  "quantity": 19,
+  "price": 700
+ },
+ {
+  "day": "Sunday",
+  "product": "Sugar (1kg)",
+  "quantity": 4,
+  "price": 900
+ },
+ {
+  "day": "Sunday",
+  "product": "Matches (box)",
+  "quantity": 10,
+  "price": 100
+ },
+ {
+  "day": "Sunday",
+  "product": "Soap",
+  "quantity": 5,
+  "price": 500
+ },
+ {
+  "day": "Sunday",
+  "product": "Groundnuts (kg)",
+  "quantity": 3,
+  "price": 1000
+ },
+ {
+  "day": "Sunday",
+  "product": "Plantains (bunch)",
+  "quantity": 2,
+  "price": 1500
+ }
+]

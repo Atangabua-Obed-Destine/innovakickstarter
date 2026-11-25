@@ -1,0 +1,501 @@
+TransactionID,Date,Product,Category,Quantity,UnitPrice_FCFA,TotalSale_FCFA,PaymentMethod,SalesRep,CustomerType
+NKW-0001,2026-02-07,Rice 50kg,Grains,1.0,34928.0,34928.0,Bank Transfer,Divine K.,Walk-in
+NKW-0002,2026-04-13,Onions 1kg,Produce,12.0,685.0,8220.0,Mobile Money,Florence A.,Wholesale
+NKW-0003,2026-04-11,Salt 1kg,Groceries,11.0,297.0,3267.0,Orange Money,Beatrice T.,Walk-in
+NKW-0004,2026-01-01,Bread (loaf),Bakery,13.0,591.0,7683.0,Bank Transfer,Divine K.,Wholesale
+NKW-0005,2026-02-14,Beans (White),Grain,6.0,915.0,5490.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0006,2026-03-09,Rice 25kg,Grains,,17880.0,35760.0,Bank Transfer,Florence A.,Walk-in
+NKW-0007,2026-01-14,Bread (loaf),Bakery,19.0,614.0,11666.0,Orange Money,Florence A.,Walk-in
+NKW-0008,2026-03-11,Rice 50kg,Grains,4.0,37414.0,149656.0,Bank Transfer,Ernest M.,Wholesale
+NKW-0009,2026-06-26,Palm Oil 1L,Oils,15.0,1394.0,20910.0,Cash,Divine K.,Wholesale
+NKW-0010,2026-01-05,Tomatoes 1kg,Produce,8.0,781.0,6248.0,Cash,Florence A.,Walk-in
+NKW-0011,2026-06-24,Tomatoes 1kg,Produce,8.0,812.0,6496.0,Mobile Money,Beatrice T.,Wholesale
+NKW-0012,2026-03-12,Rice 50kg,Grains,13.0,34389.0,447057.0,Bank Transfer,Achu N.,Wholesale
+NKW-0013,2026-02-10,Palm Oil 5L,Oils,14.0,6844.0,95816.0,Bank Transfer,Divine K.,Walk-in
+NKW-0014,2026-01-06,Beans (White),Grain,11.0,826.0,9086.0,Bank Transfer,Divine K.,Walk-in
+NKW-0015,2026-03-16,Rice 50kg,Grains,15.0,37084.0,556260.0,Orange Money,Ernest M.,Walk-in
+NKW-0016,2026-05-07,Rice 50kg,Grains,13.0,34245.0,445185.0,Bank Transfer,Florence A.,Walk-in
+NKW-0017,2026-01-07,Tomato Paste (tin),Groceries,16.0,378.0,6048.0,Orange Money,Ernest M.,Wholesale
+NKW-0018,2026-04-29,Salt 1kg,Groceries,17.0,300.0,5100.0,Cash,Achu N.,Walk-in
+NKW-0019,2026-04-15,Detergent 1kg,Household,4.0,1835.0,7340.0,Mobile Money,Ernest M.,Walk-in
+NKW-0020,2026-01-14,Beans (Red),Grains,9.0,899.0,8091.0,Cash,Achu N.,Walk-in
+NKW-0021,2026-04-01,Tomatoes 1kg,Produce,8.0,826.0,6608.0,Orange Money,Beatrice T.,Walk-in
+NKW-0022,2026-02-01,Matches (box),Household,5.0,106.0,530.0,Bank Transfer,Beatrice T.,Wholesale
+NKW-0023,2026-05-20,Beans (Red),Grains,19.0,932.0,17708.0,Mobile Money,Divine K.,Walk-in
+NKW-0024,2026-04-17,Cassava (bag),Produce,20.0,4110.0,82200.0,Mobile Money,Florence A.,Wholesale
+NKW-0025,2026-01-21,Sugar 1kg,Groceres,12.0,734.0,8808.0,Orange Money,Achu N.,Walk-in
+NKW-0026,2026-05-21,Maggi Cubes (pack),Groceries,,483.0,9177.0,Bank Transfer,Divine K.,Walk-in
+NKW-0027,2026-04-15,Cassava (bag),Produce,3.0,3917.0,11751.0,Cash,Ernest M.,Walk-in
+NKW-0028,2026-05-21,Bread (loaf),Bakery,1.0,594.0,594.0,Mobile Money,Ernest M.,Walk-in
+NKW-0029,2026-06-29,Tomatoes 1kg,Produce,9.0,818.0,7362.0,Mobile Money,Achu N.,Walk-in
+NKW-0030,2026-02-12,Cassava (bag),Produce,,3950.0,63200.0,Mobile Money,Divine K.,Wholesale
+NKW-0031,2026-04-06,Palm Oil 1L,Oils,5.0,1466.0,7330.0,Orange Money,Achu N.,Walk-in
+NKW-0032,2026-02-20,Tomatoes 1kg,Produce,15.0,822.0,12330.0,Bank Transfer,Achu N.,Walk-in
+NKW-0033,2026-06-29,Palm Oil 1L,Oils,4.0,1400.0,5600.0,Cash,Ernest M.,Walk-in
+NKW-0034,2026-06-11,Bread (loaf),Bakery,6.0,585.0,3510.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0035,2026-03-10,Detergent 1kg,Household,15.0,1768.0,26520.0,Cash,Achu N.,Walk-in
+NKW-0036,2026-03-13,Maggi Cubes (pack),Groceries,16.0,531.0,8496.0,Cash,Beatrice T.,Walk-in
+NKW-0037,2026-04-26,Palm Oil 1L,Oils,3.0,1475.0,4425.0,Cash,Divine K.,Walk-in
+NKW-0038,2026-04-06,Rice 50kg,Grain,9.0,,334566.0,Orange Money,Achu N.,Walk-in
+NKW-0039,2026-06-17,Cassava (bag),Produce,14.0,3917.0,54838.0,Mobile Money,Ernest M.,Walk-in
+NKW-0040,2026-02-10,Vegetable Oil 5L,Oils,16.0,7772.0,124352.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0041,2026-02-20,Beans (Red),Grains,18.0,887.0,15966.0,Orange Money,Florence A.,Walk-in
+NKW-0042,2026-03-13,Vegetable Oil 5L,Oils,3.0,7380.0,22140.0,Mobile Money,Divine K.,Walk-in
+NKW-0043,2026-03-21,Beans (White),Grains,19.0,,16758.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0044,2026-05-24,Bread (loaf),Bakery,17.0,621.0,10557.0,Bank Transfer,Ernest M.,Wholesale
+NKW-0045,2026-03-04,Detergent 1kg,Household,2.0,1804.0,3608.0,Mobile Money,Florence A.,Walk-in
+NKW-0046,2026-04-29,Cassava (bag),Produce,14.0,3828.0,53592.0,Orange Money,,Wholesale
+NKW-0047,2026-04-28,Tomato Paste (tin),Groceries,18.0,348.0,6264.0,Orange Money,Divine K.,Wholesale
+NKW-0048,2026-03-18,Sugar 1kg,Groceres,15.0,720.0,10800.0,Cash,Beatrice T.,Wholesale
+NKW-0049,2026-01-11,Tomato Paste (tin),Groceries,15.0,335.0,5025.0,Bank Transfer,Ernest M.,Wholesale
+NKW-0050,2026-05-26,Onions 1kg,Produce,2.0,705.0,1410.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0051,2026-01-23,Tomato Paste (tin),Groceries,13.0,358.0,4654.0,Orange Money,Divine K.,Wholesale
+NKW-0052,2026-01-31,Plantain (bunch),Produce,13.0,2547.0,33111.0,Bank Transfer,Achu N.,Walk-in
+NKW-0053,2026-02-25,Beans (Red),Grain,14.0,952.0,13328.0,Bank Transfer,Divine K.,Walk-in
+NKW-0054,2026-02-18,Rice 50kg,Grains,1.0,35760.0,35760.0,Bank Transfer,Beatrice T.,Wholesale
+NKW-0055,2026-04-22,Sugar 1kg,Groceries,4.0,757.0,3028.0,Cash,Divine K.,Walk-in
+NKW-0056,2026-04-05,Palm Oil 1L,Oils,13.0,1397.0,18161.0,Bank Transfer,Achu N.,Walk-in
+NKW-0057,2026-05-22,Milk Powder 400g,Dairy,4.0,2919.0,11676.0,Cash,Divine K.,Walk-in
+NKW-0058,2026-05-31,Tomatoes 1kg,Produce,8.0,785.0,6280.0,Mobile Money,,Walk-in
+NKW-0059,2026-04-26,Detergent 1kg,Household,19.0,1863.0,35397.0,Orange Money,Florence A.,Wholesale
+NKW-0060,2026-04-06,Tomato Paste (tin),Groceries,5.0,364.0,1820.0,Bank Transfer,Achu N.,Walk-in
+NKW-0061,2026-04-02,Tomato Paste (tin),Groceres,7.0,340.0,2380.0,,Achu N.,Walk-in
+NKW-0062,2026-01-21,Tomato Paste (tin),Groceries,11.0,363.0,3993.0,Orange Money,Ernest M.,Wholesale
+NKW-0063,2026-04-14,Rice 50kg,Grains,13.0,35466.0,461058.0,Bank Transfer,Achu N.,Walk-in
+NKW-0064,2026-03-09,Detergent 1kg,House hold,8.0,1906.0,15248.0,Cash,Beatrice T.,Walk-in
+NKW-0065,2026-06-17,Sugar 1kg,Groceries,1.0,800.0,800.0,Cash,Ernest M.,Walk-in
+NKW-0066,2026-04-16,Vegetable Oil 5L,Oils,17.0,7565.0,128605.0,Bank Transfer,Achu N.,Walk-in
+NKW-0067,2026-03-24,Palm Oil 1L,Oils,2.0,1334.0,2668.0,Mobile Money,Achu N.,Walk-in
+NKW-0068,2026-05-02,Milk Powder 400g,Dairy,4.0,2819.0,11276.0,Bank Transfer,Divine K.,Walk-in
+NKW-0069,2026-05-28,Soap (bar),Household,13.0,402.0,5226.0,Bank Transfer,Florence A.,Walk-in
+NKW-0070,2026-05-10,Beans (Red),Grains,13.0,871.0,11323.0,Cash,Beatrice T.,Walk-in
+NKW-0071,2026-05-09,Rice 50kg,Grains,10.0,34806.0,348060.0,Orange Money,Florence A.,Walk-in
+NKW-0072,2026-04-24,Sugar 1kg,Groceries,18.0,722.0,12996.0,Cash,Achu N.,Walk-in
+NKW-0073,2026-06-21,Maggi Cubes (pack),Groceres,12.0,503.0,6036.0,Bank Transfer,Achu N.,Walk-in
+NKW-0074,2026-03-26,Milk Powder 400g,Dairy,4.0,3017.0,12068.0,Orange Money,Achu N.,Wholesale
+NKW-0075,2026-04-15,Palm Oil 1L,Oils,16.0,1418.0,22688.0,Bank Transfer,Achu N.,Walk-in
+NKW-0076,2026-01-17,Beans (Red),Grains,7.0,961.0,6727.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0077,2026-04-28,Vegetable Oil 5L,Oils,12.0,7126.0,85512.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0078,2026-03-10,Vegetable Oil 5L,Oils,14.0,7320.0,102480.0,Cash,Ernest M.,Walk-in
+NKW-0079,2026-04-13,Milk Powder 400g,Dairy,5.0,2937.0,14685.0,Cash,Divine K.,Walk-in
+NKW-0080,2026-05-27,Maggi Cubes (pack),Groceries,18.0,500.0,9000.0,Bank Transfer,Divine K.,Walk-in
+NKW-0081,2026-05-05,Tomato Paste (tin),Groceries,7.0,349.0,2443.0,Orange Money,Divine K.,Walk-in
+NKW-0082,2026-04-09,Soap (bar),Household,19.0,390.0,7410.0,Cash,Ernest M.,Walk-in
+NKW-0083,2026-01-04,Rice 25kg,Grain,1.0,18848.0,18848.0,Orange Money,Florence A.,Walk-in
+NKW-0084,2026-02-20,Cassava (bag),Produce,18.0,4018.0,72324.0,Bank Transfer,Florence A.,Walk-in
+NKW-0085,2026-05-10,Beans (White),Grains,10.0,881.0,8810.0,Orange Money,Ernest M.,Walk-in
+NKW-0086,2026-05-29,Sugar 1kg,Groceries,11.0,726.0,7986.0,Orange Money,Florence A.,Walk-in
+NKW-0087,2026-01-20,Salt 1kg,Groceries,13.0,299.0,3887.0,Mobile Money,Achu N.,Walk-in
+NKW-0088,2026-01-27,Tomato Paste (tin),Groceries,3.0,348.0,1044.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0089,2026-04-23,Onions 1kg,Produce,15.0,735.0,11025.0,Bank Transfer,Florence A.,Wholesale
+NKW-0090,2026-05-05,Soap (bar),Household,8.0,394.0,3152.0,Bank Transfer,Achu N.,Wholesale
+NKW-0091,2026-01-22,Palm Oil 1L,Oils,16.0,1484.0,23744.0,Orange Money,Florence A.,Walk-in
+NKW-0092,2026-02-04,Beans (White),Grain,9.0,888.0,7992.0,Bank Transfer,Divine K.,Walk-in
+NKW-0093,2026-01-02,Palm Oil 5L,Oils,14.0,6195.0,86730.0,Orange Money,Achu N.,Walk-in
+NKW-0094,2026-04-27,Matches (box),Household,18.0,97.0,1746.0,Mobile Money,Florence A.,Walk-in
+NKW-0095,2026-05-02,Sugar 1kg,Groceries,4.0,767.0,3068.0,Mobile Money,Ernest M.,Walk-in
+NKW-0096,2026-03-19,Beans (White),Grains,6.0,825.0,4950.0,Mobile Money,Divine K.,Walk-in
+NKW-0097,2026-05-28,Onions 1kg,Produce,16.0,687.0,10992.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0098,2026-03-11,Rice 25kg,Grains,10.0,19791.0,197910.0,Orange Money,Achu N.,Walk-in
+NKW-0099,2026-01-13,Sugar 1kg,Groceries,13.0,768.0,9984.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0100,2026-01-11,Onions 1kg,Produce,1.0,672.0,672.0,Orange Money,Beatrice T.,Wholesale
+NKW-0101,2026-03-06,Maggi Cubes (pack),Groceries,5.0,521.0,2605.0,Bank Transfer,Achu N.,Wholesale
+NKW-0102,2026-03-20,Beans (White),Grains,4.0,828.0,3312.0,Mobile Money,Florence A.,Wholesale
+NKW-0103,2026-01-11,Tomatoes 1kg,Produce,14.0,836.0,11704.0,Orange Money,Achu N.,Walk-in
+NKW-0104,2026-02-15,Soap (bar),Household,11.0,421.0,4631.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0105,2026-01-01,Milk Powder 400g,Dairy,14.0,2692.0,37688.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0106,2026-04-07,Detergent 1kg,House hold,3.0,1870.0,5610.0,Mobile Money,Divine K.,Walk-in
+NKW-0107,2026-01-29,Beans (Red),Grains,5.0,928.0,4640.0,Bank Transfer,Florence A.,Walk-in
+NKW-0108,2026-01-14,Tomatoes 1kg,Produce,12.0,859.0,10308.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0109,2026-03-24,Tomato Paste (tin),Groceries,4.0,377.0,1508.0,Bank Transfer,Florence A.,Walk-in
+NKW-0110,2026-04-26,Maggi Cubes (pack),Groceries,9.0,498.0,4482.0,Cash,Ernest M.,Walk-in
+NKW-0111,2026-06-28,Rice 25kg,Grains,14.0,18393.0,257502.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0112,2026-03-31,Sugar 1kg,Groceres,1.0,753.0,753.0,Bank Transfer,Florence A.,Walk-in
+NKW-0113,2026-02-02,Cassava (bag),Produce,7.0,4019.0,28133.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0114,2026-01-10,Palm Oil 1L,Oils,13.0,1473.0,19149.0,Mobile Money,Divine K.,Walk-in
+NKW-0115,2026-01-17,Tomato Paste (tin),Groceries,5.0,345.0,1725.0,Orange Money,Ernest M.,Walk-in
+NKW-0116,2026-01-12,Plantain (bunch),Produce,13.0,2397.0,31161.0,Bank Transfer,Divine K.,Walk-in
+NKW-0117,2026-03-14,Onions 1kg,Produce,16.0,709.0,11344.0,Orange Money,Beatrice T.,Walk-in
+NKW-0118,2026-01-30,Maggi Cubes (pack),Groceres,5.0,478.0,2390.0,Cash,Divine K.,Wholesale
+NKW-0119,2026-03-09,Plantain (bunch),Produce,5.0,2678.0,13390.0,Cash,Beatrice T.,Walk-in
+NKW-0120,2026-03-15,Soap (bar),Household,20.0,396.0,7920.0,Cash,Florence A.,Walk-in
+NKW-0121,2026-04-23,Maggi Cubes (pack),Groceries,18.0,521.0,9378.0,Cash,Florence A.,Walk-in
+NKW-0122,2026-06-01,Beans (White),Grains,18.0,827.0,14886.0,Cash,Ernest M.,Walk-in
+NKW-0123,2026-03-15,Milk Powder 400g,Dairy,3.0,2895.0,8685.0,Cash,Florence A.,Wholesale
+NKW-0124,2026-05-06,Salt 1kg,Groceres,8.0,299.0,2392.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0125,2026-02-13,Bread (loaf),Bakery,5.0,591.0,2955.0,Orange Money,Ernest M.,Walk-in
+NKW-0126,2026-06-14,Rice 50kg,Grains,13.0,,485563.0,Orange Money,Ernest M.,Wholesale
+NKW-0127,2026-01-08,Beans (Red),Grains,8.0,878.0,7024.0,Cash,Florence A.,Walk-in
+NKW-0128,2026-05-24,Onions 1kg,Produce,18.0,695.0,12510.0,Cash,Ernest M.,Walk-in
+NKW-0129,2026-04-14,Beans (White),Grains,11.0,896.0,9856.0,Cash,Beatrice T.,Walk-in
+NKW-0130,2026-05-24,Tomatoes 1kg,Produce,11.0,855.0,9405.0,Mobile Money,Achu N.,Wholesale
+NKW-0131,2026-02-12,Detergent 1kg,House hold,3.0,1842.0,5526.0,Mobile Money,Divine K.,Walk-in
+NKW-0132,2026-06-14,Plantain (bunch),Produce,6.0,2567.0,15402.0,,Beatrice T.,Walk-in
+NKW-0133,2026-01-02,Tomato Paste (tin),Groceries,9.0,350.0,3150.0,Bank Transfer,Divine K.,Walk-in
+NKW-0134,2026-05-18,Plantain (bunch),Produce,7.0,2493.0,17451.0,Cash,Divine K.,Walk-in
+NKW-0135,2026-02-13,Rice 25kg,Grains,10.0,19925.0,199250.0,Bank Transfer,Achu N.,Walk-in
+NKW-0136,2026-06-19,Plantain (bunch),Produce,20.0,2484.0,49680.0,Mobile Money,Divine K.,Walk-in
+NKW-0137,2026-05-30,Salt 1kg,Groceries,14.0,310.0,4340.0,Bank Transfer,Achu N.,Wholesale
+NKW-0138,2026-05-17,Milk Powder 400g,Dairy,14.0,2901.0,40614.0,Cash,Florence A.,Walk-in
+NKW-0139,2026-06-13,Cassava (bag),Produce,16.0,4271.0,68336.0,Orange Money,Florence A.,Walk-in
+NKW-0140,2026-06-17,Rice 50kg,Grains,5.0,36962.0,184810.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0141,2026-03-02,Beans (White),Grains,18.0,822.0,14796.0,Bank Transfer,Divine K.,Wholesale
+NKW-0142,2026-06-29,Milk Powder 400g,Dairy,18.0,2876.0,51768.0,Cash,Achu N.,Walk-in
+NKW-0143,2026-01-26,Beans (Red),Grain,4.0,907.0,3628.0,Orange Money,Achu N.,Walk-in
+NKW-0144,2026-02-26,Salt 1kg,Groceries,19.0,318.0,6042.0,Bank Transfer,Divine K.,Walk-in
+NKW-0145,2026-02-15,Sugar 1kg,Groceries,10.0,714.0,7140.0,Mobile Money,Divine K.,Walk-in
+NKW-0146,2026-03-24,Maggi Cubes (pack),Groceres,9.0,522.0,4698.0,Cash,Beatrice T.,Wholesale
+NKW-0147,2026-03-26,Beans (White),Grain,16.0,819.0,13104.0,Mobile Money,Achu N.,Walk-in
+NKW-0148,2026-03-07,Palm Oil 1L,Oils,16.0,1506.0,24096.0,Orange Money,Divine K.,Walk-in
+NKW-0149,2026-04-15,Vegetable Oil 5L,Oils,18.0,7516.0,135288.0,Orange Money,Divine K.,Walk-in
+NKW-0150,2026-02-05,Bread (loaf),Bakery,3.0,,1827.0,Orange Money,Achu N.,Walk-in
+NKW-0151,2026-04-29,Maggi Cubes (pack),Groceries,2.0,512.0,1024.0,Bank Transfer,Florence A.,Walk-in
+NKW-0152,2026-02-09,Detergent 1kg,Household,9.0,1754.0,15786.0,Cash,Achu N.,Wholesale
+NKW-0153,2026-05-27,Rice 50kg,Grains,18.0,34417.0,619506.0,Orange Money,Florence A.,Wholesale
+NKW-0154,2026-02-11,Milk Powder 400g,Dairy,9.0,2933.0,26397.0,Cash,Divine K.,Walk-in
+NKW-0155,2026-01-23,Tomatoes 1kg,Produce,3.0,792.0,2376.0,Bank Transfer,Florence A.,Wholesale
+NKW-0156,2026-01-24,Matches (box),Household,13.0,102.0,1326.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0157,2026-02-12,Milk Powder 400g,Dairy,20.0,2881.0,57620.0,Cash,Beatrice T.,Walk-in
+NKW-0158,2026-03-21,Salt 1kg,Groceries,3.0,305.0,915.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0159,2026-06-14,Salt 1kg,Groceres,16.0,303.0,4848.0,Orange Money,Beatrice T.,Walk-in
+NKW-0160,2026-03-12,Rice 25kg,Grain,7.0,19406.0,135842.0,Mobile Money,Florence A.,Walk-in
+NKW-0161,2026-02-03,Rice 50kg,Grains,7.0,37526.0,262682.0,Orange Money,,Walk-in
+NKW-0162,2026-03-19,Palm Oil 5L,Oils,1.0,6977.0,6977.0,Orange Money,Florence A.,Wholesale
+NKW-0163,2026-05-12,Vegetable Oil 5L,Oils,4.0,7163.0,28652.0,Cash,Divine K.,Wholesale
+NKW-0164,2026-03-04,Bread (loaf),Bakery,9.0,586.0,5274.0,Cash,Ernest M.,Walk-in
+NKW-0165,2026-04-13,Vegetable Oil 5L,Oils,11.0,7101.0,78111.0,Cash,Divine K.,Walk-in
+NKW-0166,2026-03-04,Tomatoes 1kg,Produce,15.0,798.0,11970.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0167,2026-04-23,Rice 50kg,Grains,2.0,36400.0,72800.0,Mobile Money,Achu N.,Walk-in
+NKW-0168,2026-06-26,Vegetable Oil 5L,Oils,16.0,7137.0,114192.0,Orange Money,Florence A.,Walk-in
+NKW-0169,2026-01-29,Salt 1kg,Groceries,11.0,291.0,3201.0,Bank Transfer,Divine K.,Walk-in
+NKW-0170,2026-06-28,Palm Oil 1L,Oils,17.0,1415.0,24055.0,,Achu N.,Wholesale
+NKW-0171,2026-01-02,Matches (box),House hold,2.0,102.0,204.0,Orange Money,Achu N.,Walk-in
+NKW-0172,2026-03-27,Palm Oil 5L,Oils,16.0,6614.0,105824.0,Mobile Money,Florence A.,Walk-in
+NKW-0173,2026-05-30,Beans (White),Grains,16.0,818.0,13088.0,Bank Transfer,Achu N.,Wholesale
+NKW-0174,2026-06-22,Detergent 1kg,Household,10.0,1925.0,19250.0,Cash,Beatrice T.,Walk-in
+NKW-0175,2026-01-30,Salt 1kg,Groceres,3.0,301.0,903.0,Cash,Florence A.,Walk-in
+NKW-0176,2026-05-15,Tomatoes 1kg,Produce,9.0,845.0,7605.0,Orange Money,Ernest M.,Walk-in
+NKW-0177,2026-02-09,Onions 1kg,Produce,14.0,725.0,10150.0,Bank Transfer,Florence A.,Wholesale
+NKW-0178,2026-04-08,Bread (loaf),Bakery,20.0,648.0,12960.0,Orange Money,Florence A.,Walk-in
+NKW-0179,2026-04-21,Beans (Red),Grains,4.0,942.0,3768.0,Orange Money,Beatrice T.,Walk-in
+NKW-0180,2026-01-29,Rice 25kg,Grain,14.0,17935.0,251090.0,Cash,Achu N.,Walk-in
+NKW-0181,2026-01-03,Cassava (bag),Produce,4.0,3839.0,15356.0,Mobile Money,Florence A.,Walk-in
+NKW-0182,2026-05-14,Soap (bar),Household,9.0,412.0,3708.0,Bank Transfer,Ernest M.,Wholesale
+NKW-0183,2026-01-21,Tomatoes 1kg,Produce,14.0,828.0,11592.0,Orange Money,Divine K.,Walk-in
+NKW-0184,2026-03-20,Rice 25kg,Grain,4.0,18068.0,72272.0,Mobile Money,Ernest M.,Wholesale
+NKW-0185,2026-03-06,Beans (Red),Grains,3.0,899.0,2697.0,Mobile Money,Achu N.,Wholesale
+NKW-0186,2026-06-19,Onions 1kg,Produce,5.0,748.0,3740.0,Orange Money,Ernest M.,Walk-in
+NKW-0187,2026-04-24,Beans (Red),Grains,14.0,912.0,12768.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0188,2026-04-08,Onions 1kg,Produce,,666.0,10656.0,Orange Money,Divine K.,Wholesale
+NKW-0189,2026-06-16,Rice 50kg,Grains,19.0,34797.0,661143.0,Cash,Beatrice T.,Wholesale
+NKW-0190,2026-05-22,Sugar 1kg,Groceries,,728.0,2184.0,Bank Transfer,Ernest M.,Wholesale
+NKW-0191,2026-02-05,Palm Oil 5L,Oils,2.0,6417.0,12834.0,Bank Transfer,Beatrice T.,Wholesale
+NKW-0192,2026-02-06,Sugar 1kg,Groceries,17.0,734.0,12478.0,Orange Money,Divine K.,Walk-in
+NKW-0193,2026-06-14,Beans (White),Grains,11.0,820.0,9020.0,Bank Transfer,Beatrice T.,Wholesale
+NKW-0194,2026-06-16,Cassava (bag),Produce,12.0,3960.0,47520.0,,Florence A.,Wholesale
+NKW-0195,2026-06-24,Soap (bar),Household,14.0,390.0,5460.0,Mobile Money,Florence A.,Walk-in
+NKW-0196,2026-05-26,Sugar 1kg,Groceres,20.0,778.0,15560.0,Orange Money,Achu N.,Wholesale
+NKW-0197,2026-05-29,Matches (box),Household,1.0,106.0,106.0,Cash,Ernest M.,Walk-in
+NKW-0198,2026-02-14,Tomato Paste (tin),Groceres,7.0,339.0,2373.0,Orange Money,Florence A.,Walk-in
+NKW-0199,2026-01-22,Tomatoes 1kg,Produce,10.0,818.0,8180.0,,Beatrice T.,Walk-in
+NKW-0200,2026-03-18,Detergent 1kg,House hold,19.0,1942.0,36898.0,Orange Money,Florence A.,Walk-in
+NKW-0201,2026-03-22,Beans (White),Grains,12.0,905.0,10860.0,Mobile Money,Ernest M.,Walk-in
+NKW-0202,2026-06-20,Plantain (bunch),Produce,10.0,2390.0,23900.0,Bank Transfer,Florence A.,Walk-in
+NKW-0203,2026-04-18,Bread (loaf),Bakery,15.0,597.0,8955.0,Orange Money,Divine K.,Walk-in
+NKW-0204,2026-06-13,Tomatoes 1kg,Produce,1.0,812.0,812.0,Orange Money,Divine K.,Wholesale
+NKW-0205,2026-01-12,Tomatoes 1kg,Produce,17.0,791.0,13447.0,Cash,Achu N.,Wholesale
+NKW-0206,2026-03-11,Maggi Cubes (pack),Groceries,11.0,496.0,5456.0,Cash,Beatrice T.,Walk-in
+NKW-0207,2026-03-07,Salt 1kg,Groceres,1.0,320.0,320.0,Bank Transfer,Divine K.,Walk-in
+NKW-0208,2026-01-21,Matches (box),Household,13.0,107.0,1391.0,Cash,Florence A.,Walk-in
+NKW-0209,2026-02-03,Matches (box),Household,20.0,101.0,2020.0,Bank Transfer,Ernest M.,Wholesale
+NKW-0210,2026-01-11,Cassava (bag),Produce,15.0,4084.0,61260.0,Bank Transfer,Achu N.,Walk-in
+NKW-0211,2026-05-20,Maggi Cubes (pack),Groceres,16.0,491.0,7856.0,Mobile Money,Divine K.,Walk-in
+NKW-0212,2026-01-31,Cassava (bag),Produce,9.0,4203.0,37827.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0213,2026-02-09,Beans (Red),Grains,13.0,938.0,12194.0,Mobile Money,Ernest M.,Walk-in
+NKW-0214,2026-02-01,Beans (White),Grains,19.0,888.0,16872.0,Orange Money,Ernest M.,Walk-in
+NKW-0215,2026-06-27,Detergent 1kg,Household,3.0,1902.0,5706.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0216,2026-04-10,Tomatoes 1kg,Produce,20.0,801.0,16020.0,Cash,Divine K.,Walk-in
+NKW-0217,2026-04-06,Palm Oil 5L,Oils,6.0,6631.0,39786.0,Cash,Florence A.,Walk-in
+NKW-0218,2026-05-24,Plantain (bunch),Produce,12.0,2398.0,28776.0,Cash,Ernest M.,Walk-in
+NKW-0219,2026-06-01,Beans (Red),Grains,8.0,916.0,7328.0,Bank Transfer,Achu N.,Walk-in
+NKW-0220,2026-01-22,Sugar 1kg,Groceries,16.0,792.0,12672.0,Mobile Money,Beatrice T.,Wholesale
+NKW-0221,2026-05-29,Palm Oil 1L,Oils,9.0,1337.0,12033.0,Bank Transfer,Divine K.,Walk-in
+NKW-0222,2026-06-07,Milk Powder 400g,Dairy,8.0,2740.0,21920.0,Mobile Money,Ernest M.,Walk-in
+NKW-0223,2026-02-08,Salt 1kg,Groceres,2.0,309.0,618.0,Mobile Money,Divine K.,Wholesale
+NKW-0224,2026-01-16,Soap (bar),House hold,3.0,395.0,1185.0,Mobile Money,Ernest M.,Walk-in
+NKW-0225,2026-05-19,Onions 1kg,Produce,2.0,733.0,1466.0,Cash,Achu N.,Wholesale
+NKW-0226,2026-03-27,Tomato Paste (tin),Groceries,6.0,336.0,2016.0,Cash,Florence A.,Walk-in
+NKW-0227,2026-06-24,Detergent 1kg,House hold,19.0,1860.0,35340.0,Orange Money,Divine K.,Walk-in
+NKW-0228,2026-05-20,Beans (White),Grains,12.0,814.0,9768.0,Orange Money,Beatrice T.,Walk-in
+NKW-0229,2026-01-21,Detergent 1kg,Household,1.0,1770.0,1770.0,Mobile Money,Florence A.,Wholesale
+NKW-0230,2026-06-27,Tomatoes 1kg,Produce,7.0,810.0,5670.0,Mobile Money,Ernest M.,Walk-in
+NKW-0231,2026-06-07,Bread (loaf),Bakery,14.0,589.0,8246.0,Mobile Money,Divine K.,Walk-in
+NKW-0232,2026-05-18,Salt 1kg,Groceries,10.0,292.0,2920.0,Bank Transfer,Florence A.,Wholesale
+NKW-0233,2026-05-06,Palm Oil 1L,Oils,2.0,1346.0,2692.0,Mobile Money,Florence A.,Walk-in
+NKW-0234,2026-06-28,Rice 50kg,Grains,5.0,36669.0,183345.0,Bank Transfer,Achu N.,Walk-in
+NKW-0235,2026-01-10,Bread (loaf),Bakery,19.0,625.0,11875.0,Mobile Money,Divine K.,Walk-in
+NKW-0236,2026-01-09,Onions 1kg,Produce,6.0,720.0,4320.0,Mobile Money,Florence A.,Walk-in
+NKW-0237,2026-01-29,Palm Oil 1L,Oils,1.0,1354.0,1354.0,Orange Money,Beatrice T.,Walk-in
+NKW-0238,2026-02-08,Maggi Cubes (pack),Groceres,15.0,510.0,7650.0,Orange Money,Divine K.,Wholesale
+NKW-0239,2026-03-15,Soap (bar),House hold,13.0,422.0,5486.0,Cash,Ernest M.,Walk-in
+NKW-0240,2026-03-25,Vegetable Oil 5L,Oils,5.0,6925.0,34625.0,Mobile Money,Divine K.,Wholesale
+NKW-0241,2026-06-19,Onions 1kg,Produce,13.0,673.0,8749.0,Orange Money,Beatrice T.,Walk-in
+NKW-0242,2026-06-02,Onions 1kg,Produce,3.0,745.0,2235.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0243,2026-06-29,Detergent 1kg,Household,13.0,1931.0,25103.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0244,2026-05-01,Salt 1kg,Groceries,1.0,314.0,314.0,Cash,Divine K.,Walk-in
+NKW-0245,2026-01-31,Salt 1kg,Groceries,7.0,297.0,2079.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0246,2026-04-24,Detergent 1kg,House hold,7.0,1830.0,12810.0,Mobile Money,Achu N.,Walk-in
+NKW-0247,2026-01-03,Tomato Paste (tin),Groceres,9.0,342.0,3078.0,Cash,Divine K.,Walk-in
+NKW-0248,2026-05-09,Palm Oil 5L,Oils,19.0,6456.0,122664.0,Cash,Ernest M.,Walk-in
+NKW-0249,2026-03-27,Tomato Paste (tin),Groceres,14.0,370.0,5180.0,Mobile Money,Divine K.,Walk-in
+NKW-0250,2026-03-03,Bread (loaf),Bakery,18.0,595.0,10710.0,Orange Money,Ernest M.,Wholesale
+NKW-0251,2026-02-18,Salt 1kg,Groceries,5.0,305.0,1525.0,Mobile Money,Achu N.,Wholesale
+NKW-0252,2026-05-23,Soap (bar),House hold,8.0,416.0,3328.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0253,2026-01-13,Bread (loaf),Bakery,6.0,637.0,3822.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0254,2026-01-31,Detergent 1kg,Household,3.0,1747.0,5241.0,Orange Money,Florence A.,Walk-in
+NKW-0255,2026-05-15,Cassava (bag),Produce,16.0,4262.0,68192.0,Mobile Money,Florence A.,Wholesale
+NKW-0256,2026-01-30,Maggi Cubes (pack),Groceries,1.0,530.0,530.0,Cash,Beatrice T.,Walk-in
+NKW-0257,2026-06-21,Onions 1kg,Produce,18.0,685.0,12330.0,Mobile Money,Divine K.,Walk-in
+NKW-0258,2026-05-27,Salt 1kg,Groceries,12.0,290.0,3480.0,Cash,Beatrice T.,Walk-in
+NKW-0259,2026-06-11,Rice 25kg,Grains,2.0,18126.0,36252.0,Cash,Divine K.,Walk-in
+NKW-0260,2026-05-26,Milk Powder 400g,Dairy,19.0,2712.0,51528.0,Mobile Money,Ernest M.,Walk-in
+NKW-0261,2026-03-26,Maggi Cubes (pack),Groceres,12.0,492.0,5904.0,Orange Money,Ernest M.,Walk-in
+NKW-0262,2026-02-18,Plantain (bunch),Produce,1.0,2595.0,2595.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0263,2026-04-27,Plantain (bunch),Produce,1.0,2610.0,2610.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0264,2026-05-01,Sugar 1kg,Groceries,12.0,750.0,9000.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0265,2026-03-08,Maggi Cubes (pack),Groceries,12.0,520.0,6240.0,Cash,Achu N.,Wholesale
+NKW-0266,2026-03-22,Detergent 1kg,Household,19.0,1810.0,34390.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0267,2026-05-30,Matches (box),Household,8.0,108.0,864.0,,Beatrice T.,Walk-in
+NKW-0268,2026-05-31,Sugar 1kg,Groceries,12.0,796.0,9552.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0269,2026-06-23,Tomatoes 1kg,Produce,15.0,764.0,11460.0,Cash,Beatrice T.,Walk-in
+NKW-0270,2026-04-29,Bread (loaf),Bakery,19.0,624.0,11856.0,Mobile Money,Divine K.,Walk-in
+NKW-0271,2026-04-19,Matches (box),Household,18.0,99.0,1782.0,Bank Transfer,Divine K.,Walk-in
+NKW-0272,2026-05-14,Sugar 1kg,Groceries,16.0,774.0,12384.0,Orange Money,Ernest M.,Walk-in
+NKW-0273,2026-01-18,Tomatoes 1kg,Produce,8.0,802.0,6416.0,Mobile Money,Florence A.,Walk-in
+NKW-0274,2026-01-26,Detergent 1kg,House hold,4.0,1910.0,7640.0,Mobile Money,Ernest M.,Wholesale
+NKW-0275,2026-05-26,Vegetable Oil 5L,Oils,11.0,7039.0,77429.0,Bank Transfer,Ernest M.,Wholesale
+NKW-0276,2026-04-08,Onions 1kg,Produce,12.0,675.0,8100.0,Mobile Money,Ernest M.,Walk-in
+NKW-0277,2026-02-14,Plantain (bunch),Produce,18.0,2427.0,43686.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0278,2026-03-28,Matches (box),Household,20.0,104.0,2080.0,Cash,Divine K.,Wholesale
+NKW-0279,2026-04-17,Detergent 1kg,Household,18.0,1924.0,34632.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0280,2026-03-04,Cassava (bag),Produce,6.0,4040.0,24240.0,Orange Money,Florence A.,Walk-in
+NKW-0281,2026-02-22,Vegetable Oil 5L,Oils,2.0,7374.0,14748.0,Orange Money,Florence A.,Walk-in
+NKW-0282,2026-05-08,Beans (White),Grains,14.0,827.0,11578.0,Bank Transfer,Florence A.,Walk-in
+NKW-0283,2026-04-03,Matches (box),Household,18.0,102.0,1836.0,Bank Transfer,Florence A.,Walk-in
+NKW-0284,2026-06-07,Soap (bar),Household,12.0,393.0,4716.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0285,2026-05-19,Tomato Paste (tin),Groceres,2.0,361.0,722.0,Mobile Money,Divine K.,Walk-in
+NKW-0286,2026-01-04,Beans (Red),Grain,9.0,918.0,8262.0,Bank Transfer,Divine K.,Walk-in
+NKW-0287,2026-04-29,Soap (bar),House hold,7.0,398.0,2786.0,Mobile Money,Divine K.,Walk-in
+NKW-0288,2026-03-01,Maggi Cubes (pack),Groceries,4.0,500.0,2000.0,Bank Transfer,Divine K.,Walk-in
+NKW-0289,2026-02-11,Tomato Paste (tin),Groceries,13.0,378.0,4914.0,Orange Money,Florence A.,Walk-in
+NKW-0290,2026-06-24,Salt 1kg,Groceries,11.0,311.0,3421.0,Mobile Money,Divine K.,Walk-in
+NKW-0291,2026-02-03,Salt 1kg,Groceries,3.0,292.0,876.0,Bank Transfer,Florence A.,Wholesale
+NKW-0292,2026-04-01,Milk Powder 400g,Dairy,7.0,2904.0,20328.0,Cash,Florence A.,Walk-in
+NKW-0293,2026-04-25,Beans (Red),Grain,12.0,915.0,10980.0,Cash,Ernest M.,Walk-in
+NKW-0294,2026-06-18,Beans (White),Grains,14.0,847.0,11858.0,Bank Transfer,,Walk-in
+NKW-0295,2026-02-21,Vegetable Oil 5L,Oils,18.0,7094.0,127692.0,Orange Money,Beatrice T.,Walk-in
+NKW-0296,2026-06-11,Detergent 1kg,House hold,19.0,1755.0,33345.0,Bank Transfer,Ernest M.,Wholesale
+NKW-0297,2026-05-11,Plantain (bunch),Produce,18.0,2534.0,45612.0,Orange Money,Ernest M.,Walk-in
+NKW-0298,2026-05-10,Rice 25kg,Grains,15.0,18473.0,277095.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0299,2026-02-07,Sugar 1kg,Groceries,20.0,713.0,14260.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0300,2026-01-11,Milk Powder 400g,Dairy,12.0,2736.0,32832.0,Mobile Money,Achu N.,Walk-in
+NKW-0301,2026-03-02,Beans (White),Grains,10.0,821.0,8210.0,Mobile Money,Ernest M.,Wholesale
+NKW-0302,2026-03-30,Rice 50kg,Grain,3.0,36222.0,108666.0,Cash,Achu N.,Wholesale
+NKW-0303,2026-04-19,Onions 1kg,Produce,2.0,668.0,1336.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0304,2026-05-03,Soap (bar),House hold,7.0,419.0,2933.0,Orange Money,Divine K.,Walk-in
+NKW-0305,2026-03-15,Maggi Cubes (pack),Groceries,3.0,498.0,1494.0,Bank Transfer,Divine K.,Wholesale
+NKW-0306,2026-05-31,Vegetable Oil 5L,Oils,5.0,7544.0,37720.0,Bank Transfer,Achu N.,Walk-in
+NKW-0307,2026-04-28,Milk Powder 400g,Dairy,3.0,2871.0,8613.0,Mobile Money,Ernest M.,Walk-in
+NKW-0308,2026-05-31,Matches (box),Household,17.0,103.0,1751.0,Cash,Beatrice T.,Walk-in
+NKW-0309,2026-05-14,Bread (loaf),Bakery,14.0,645.0,9030.0,Bank Transfer,Florence A.,Walk-in
+NKW-0310,2026-06-18,Palm Oil 1L,Oils,18.0,1363.0,24534.0,Cash,Ernest M.,Walk-in
+NKW-0311,2026-01-26,Beans (White),Grains,9.0,832.0,7488.0,Mobile Money,Ernest M.,Walk-in
+NKW-0312,2026-02-22,Detergent 1kg,Household,9.0,1839.0,16551.0,Orange Money,Ernest M.,Wholesale
+NKW-0313,2026-06-13,Palm Oil 5L,Oils,9.0,6312.0,56808.0,Bank Transfer,Florence A.,Wholesale
+NKW-0314,2026-03-28,Sugar 1kg,Groceres,15.0,751.0,11265.0,Cash,Divine K.,Wholesale
+NKW-0315,2026-04-20,Maggi Cubes (pack),Groceries,3.0,521.0,1563.0,Cash,Beatrice T.,Wholesale
+NKW-0316,2026-06-11,Beans (White),Grains,20.0,896.0,17920.0,Mobile Money,Divine K.,Walk-in
+NKW-0317,2026-04-15,Rice 50kg,Grains,6.0,37274.0,223644.0,Bank Transfer,Divine K.,Wholesale
+NKW-0318,2026-04-27,Vegetable Oil 5L,Oils,11.0,7156.0,78716.0,Bank Transfer,Divine K.,Wholesale
+NKW-0319,2026-03-05,Palm Oil 5L,Oils,9.0,6720.0,60480.0,Mobile Money,Florence A.,Walk-in
+NKW-0320,2026-02-07,Vegetable Oil 5L,Oils,1.0,6883.0,6883.0,Bank Transfer,Florence A.,Walk-in
+NKW-0321,2026-02-22,Rice 25kg,Grains,17.0,19035.0,323595.0,Mobile Money,Ernest M.,Walk-in
+NKW-0322,2026-01-18,Palm Oil 5L,Oils,17.0,6651.0,113067.0,Mobile Money,Ernest M.,Walk-in
+NKW-0323,2026-04-03,Palm Oil 1L,Oils,17.0,1371.0,23307.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0324,2026-06-01,Cassava (bag),Produce,6.0,4126.0,24756.0,Bank Transfer,Florence A.,Wholesale
+NKW-0325,2026-05-10,Milk Powder 400g,Dairy,3.0,2773.0,8319.0,Bank Transfer,Achu N.,Walk-in
+NKW-0326,2026-04-22,Beans (Red),Grains,9.0,904.0,8136.0,Bank Transfer,Achu N.,Walk-in
+NKW-0327,2026-05-17,Detergent 1kg,Household,8.0,1782.0,14256.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0328,2026-06-05,Palm Oil 1L,Oils,14.0,1359.0,19026.0,,Divine K.,Walk-in
+NKW-0329,2026-04-17,Beans (Red),Grains,11.0,964.0,10604.0,Orange Money,Achu N.,Walk-in
+NKW-0330,2026-04-16,Maggi Cubes (pack),Groceries,9.0,500.0,4500.0,Bank Transfer,Florence A.,Wholesale
+NKW-0331,2026-01-07,Palm Oil 1L,Oils,11.0,1439.0,15829.0,Cash,Divine K.,Walk-in
+NKW-0332,2026-05-01,Detergent 1kg,Household,11.0,1924.0,21164.0,Orange Money,Divine K.,Wholesale
+NKW-0333,2026-05-19,Beans (Red),Grains,14.0,969.0,13566.0,Mobile Money,Florence A.,Walk-in
+NKW-0334,2026-04-20,Bread (loaf),Bakery,4.0,608.0,2432.0,Bank Transfer,Achu N.,Walk-in
+NKW-0335,2026-05-06,Rice 25kg,Grain,4.0,18618.0,74472.0,Orange Money,Ernest M.,Walk-in
+NKW-0336,2026-04-24,Milk Powder 400g,Dairy,3.0,2869.0,8607.0,Orange Money,Ernest M.,Walk-in
+NKW-0337,2026-03-05,Vegetable Oil 5L,Oils,9.0,7362.0,66258.0,Mobile Money,Divine K.,Walk-in
+NKW-0338,2026-01-23,Beans (White),Grains,12.0,869.0,10428.0,Orange Money,Ernest M.,Walk-in
+NKW-0339,2026-02-21,Palm Oil 5L,Oils,11.0,6521.0,71731.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0340,2026-02-04,Beans (Red),Grain,15.0,876.0,13140.0,Orange Money,Ernest M.,Walk-in
+NKW-0341,2026-06-10,Vegetable Oil 5L,Oils,5.0,7701.0,38505.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0342,2026-03-16,Tomato Paste (tin),Groceries,19.0,345.0,6555.0,Cash,Beatrice T.,Wholesale
+NKW-0343,2026-03-10,Onions 1kg,Produce,11.0,743.0,8173.0,Cash,Divine K.,Wholesale
+NKW-0344,2026-02-24,Sugar 1kg,Groceries,1.0,770.0,770.0,Mobile Money,Achu N.,Walk-in
+NKW-0345,2026-03-31,Milk Powder 400g,Dairy,5.0,2746.0,13730.0,Mobile Money,Divine K.,Walk-in
+NKW-0346,2026-03-01,Maggi Cubes (pack),Groceries,10.0,521.0,5210.0,Bank Transfer,Achu N.,Walk-in
+NKW-0347,2026-05-31,Bread (loaf),Bakery,3.0,594.0,1782.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0348,2026-04-15,Cassava (bag),Produce,20.0,4190.0,83800.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0349,2026-06-10,Rice 50kg,Grains,15.0,33800.0,507000.0,Mobile Moeny,Ernest M.,Wholesale
+NKW-0350,2026-05-18,Rice 50kg,Grain,4.0,38216.0,152864.0,Bank Transfer,Achu N.,Walk-in
+NKW-0351,2026-05-09,Rice 25kg,Grains,6.0,18796.0,112776.0,Cash,Divine K.,Walk-in
+NKW-0352,2026-05-22,Palm Oil 5L,Oils,19.0,6329.0,120251.0,Mobile Money,Ernest M.,Walk-in
+NKW-0353,2026-03-31,Matches (box),House hold,18.0,100.0,1800.0,Bank Transfer,Florence A.,Walk-in
+NKW-0354,2026-04-17,Plantain (bunch),Produce,,2603.0,36442.0,,Florence A.,Walk-in
+NKW-0355,2026-04-19,Salt 1kg,Groceries,4.0,306.0,1224.0,Mobile Money,Divine K.,Walk-in
+NKW-0356,2026-03-30,Beans (Red),Grain,19.0,890.0,16910.0,Bank Transfer,Divine K.,Wholesale
+NKW-0357,2026-04-03,Plantain (bunch),Produce,2.0,2537.0,5074.0,Mobile Money,Divine K.,Walk-in
+NKW-0358,2026-01-30,Salt 1kg,Groceries,1.0,314.0,314.0,Bank Transfer,Florence A.,Wholesale
+NKW-0359,2026-06-25,Palm Oil 1L,Oils,15.0,1509.0,22635.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0360,2026-04-23,Rice 50kg,Grains,15.0,36144.0,542160.0,Mobile Money,Divine K.,Walk-in
+NKW-0361,2026-06-27,Cassava (bag),Produce,20.0,4209.0,84180.0,Mobile Money,Florence A.,Walk-in
+NKW-0362,2026-01-11,Plantain (bunch),Produce,8.0,2444.0,19552.0,Bank Transfer,Divine K.,Walk-in
+NKW-0363,2026-04-25,Plantain (bunch),Produce,17.0,2604.0,44268.0,Cash,Florence A.,Walk-in
+NKW-0364,2026-05-18,Vegetable Oil 5L,Oils,15.0,6971.0,104565.0,Mobile Money,Divine K.,Wholesale
+NKW-0365,2026-05-25,Palm Oil 5L,Oils,13.0,6234.0,81042.0,Cash,Achu N.,Walk-in
+NKW-0366,2026-03-04,Soap (bar),Household,14.0,411.0,5754.0,Cash,Ernest M.,Walk-in
+NKW-0367,2026-02-08,Palm Oil 5L,Oils,19.0,6977.0,132563.0,Cash,Beatrice T.,Walk-in
+NKW-0368,2026-06-02,Tomato Paste (tin),Groceries,200.0,340.0,68000.0,Mobile Money,Florence A.,Walk-in
+NKW-0369,2026-05-08,Beans (Red),Grains,20.0,918.0,18360.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0370,2026-04-09,Maggi Cubes (pack),Groceries,16.0,482.0,7712.0,Bank Transfer,Florence A.,Walk-in
+NKW-0371,2026-04-15,Vegetable Oil 5L,Oils,16.0,7551.0,120816.0,Orange Money,Achu N.,Walk-in
+NKW-0372,2026-03-05,Plantain (bunch),Produce,18.0,2633.0,47394.0,Bank Transfer,Divine K.,Wholesale
+NKW-0373,2026-04-16,Detergent 1kg,Household,12.0,1868.0,22416.0,Mobile Money,Ernest M.,Walk-in
+NKW-0374,2026-06-23,Tomato Paste (tin),Groceries,13.0,355.0,4615.0,Orange Money,Ernest M.,Wholesale
+NKW-0375,2026-06-18,Palm Oil 5L,Oils,16.0,6364.0,101824.0,Cash,Divine K.,Walk-in
+NKW-0376,2026-01-25,Detergent 1kg,Household,15.0,1734.0,26010.0,Mobile Money,Achu N.,Walk-in
+NKW-0377,2026-03-17,Onions 1kg,Produce,10.0,667.0,6670.0,Bank Transfer,Divine K.,Walk-in
+NKW-0378,2026-05-12,Palm Oil 5L,Oils,14.0,6561.0,91854.0,Cash,Florence A.,Wholesale
+NKW-0379,2026-06-10,Salt 1kg,Groceries,16.0,308.0,4928.0,Mobile Money,Ernest M.,Walk-in
+NKW-0380,2026-06-24,Onions 1kg,Produce,6.0,680.0,4080.0,Cash,Florence A.,Wholesale
+NKW-0381,2026-04-28,Beans (Red),Grains,20.0,972.0,19440.0,Cash,Achu N.,Walk-in
+NKW-0382,2026-01-10,Beans (Red),Grain,10.0,879.0,8790.0,Mobile Money,Achu N.,Walk-in
+NKW-0383,2026-02-23,Tomatoes 1kg,Produce,11.0,781.0,8591.0,Orange Money,Florence A.,Wholesale
+NKW-0384,2026-04-13,Plantain (bunch),Produce,18.0,2483.0,44694.0,Cash,Achu N.,Walk-in
+NKW-0385,2026-05-06,Milk Powder 400g,Dairy,20.0,2822.0,56440.0,Bank Transfer,Florence A.,Walk-in
+NKW-0386,2026-03-18,Palm Oil 5L,Oils,13.0,6330.0,82290.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0387,2026-05-01,Bread (loaf),Bakery,16.0,640.0,10240.0,Orange Money,Achu N.,Wholesale
+NKW-0388,2026-02-18,Rice 25kg,Grains,4.0,19371.0,77484.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0389,2026-05-16,Plantain (bunch),Produce,6.0,2393.0,14358.0,Cash,Beatrice T.,Walk-in
+NKW-0390,2026-02-15,Rice 25kg,Grain,4.0,19783.0,79132.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0391,2026-03-26,Vegetable Oil 5L,Oils,8.0,7196.0,57568.0,Mobile Money,Ernest M.,Walk-in
+NKW-0392,2026-01-23,Soap (bar),Household,13.0,415.0,5395.0,Mobile Money,Beatrice T.,Wholesale
+NKW-0393,2026-04-08,Tomato Paste (tin),Groceres,,377.0,4901.0,Mobile Money,Ernest M.,Walk-in
+NKW-0394,2026-02-06,Detergent 1kg,Household,8.0,1911.0,15288.0,Bank Transfer,Florence A.,Walk-in
+NKW-0395,2026-06-22,Sugar 1kg,Groceries,9.0,769.0,6921.0,Mobile Money,Ernest M.,Wholesale
+NKW-0396,2026-05-25,Palm Oil 1L,Oils,8.0,1433.0,11464.0,Bank Transfer,Florence A.,Walk-in
+NKW-0397,2026-04-10,Maggi Cubes (pack),Groceres,3.0,522.0,1566.0,Mobile Money,Florence A.,Walk-in
+NKW-0398,2026-02-25,Rice 25kg,Grains,2.0,19794.0,39588.0,Bank Transfer,Florence A.,Walk-in
+NKW-0399,2026-01-01,Rice 25kg,Grain,11.0,19783.0,217613.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0400,2026-02-12,Beans (Red),Grains,10.0,925.0,9250.0,Orange Money,Ernest M.,Walk-in
+NKW-0401,2026-03-26,Matches (box),Household,3.0,,294.0,Orange Money,Beatrice T.,Walk-in
+NKW-0402,2026-03-09,Palm Oil 5L,Oils,5.0,6383.0,31915.0,Orange Money,Florence A.,Wholesale
+NKW-0403,2026-05-26,Rice 25kg,Grains,20.0,17833.0,356660.0,Orange Money,Divine K.,Wholesale
+NKW-0404,2026-05-30,Milk Powder 400g,Dairy,18.0,2714.0,48852.0,Mobile Money,Achu N.,Walk-in
+NKW-0405,2026-03-11,Palm Oil 1L,Oils,15.0,1495.0,22425.0,Mobile Money,Ernest M.,Walk-in
+NKW-0406,2026-06-24,Rice 25kg,Grain,14.0,17991.0,251874.0,Mobile Money,Beatrice T.,Walk-in
+NKW-0407,2026-05-08,Palm Oil 5L,Oils,10.0,6605.0,66050.0,Orange Money,Ernest M.,Wholesale
+NKW-0408,2026-02-12,Cassava (bag),Produce,9.0,4074.0,36666.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0409,2026-05-27,Salt 1kg,Groceries,4.0,294.0,1176.0,Cash,Achu N.,Walk-in
+NKW-0410,2026-01-27,Beans (Red),Grains,10.0,954.0,9540.0,Cash,Florence A.,Walk-in
+NKW-0411,2026-03-17,Tomato Paste (tin),Groceries,12.0,350.0,4200.0,Mobile Money,Beatrice T.,Wholesale
+NKW-0412,2026-01-27,Onions 1kg,Produce,1.0,712.0,712.0,Orange Money,Florence A.,Walk-in
+NKW-0413,2026-01-28,Milk Powder 400g,Dairy,3.0,2662.0,7986.0,Orange Money,Ernest M.,Walk-in
+NKW-0414,2026-06-20,Beans (Red),Grains,12.0,938.0,11256.0,Orange Money,Divine K.,Walk-in
+NKW-0415,2026-01-21,Palm Oil 1L,Oils,16.0,1391.0,22256.0,Mobile Money,Divine K.,Walk-in
+NKW-0416,2026-04-12,Maggi Cubes (pack),Groceries,9.0,528.0,4752.0,Mobile Money,Florence A.,Walk-in
+NKW-0417,2026-02-18,Detergent 1kg,Household,8.0,1844.0,14752.0,,Ernest M.,Walk-in
+NKW-0418,2026-06-19,Cassava (bag),Produce,16.0,3880.0,62080.0,Orange Money,Beatrice T.,Walk-in
+NKW-0419,2026-01-15,Vegetable Oil 5L,Oils,8.0,6871.0,54968.0,Cash,,Walk-in
+NKW-0420,2026-04-08,Beans (White),Grains,4.0,847.0,3388.0,Orange Money,Florence A.,Walk-in
+NKW-0421,2026-03-13,Rice 50kg,Grains,3.0,33928.0,101784.0,Mobile Money,Florence A.,Wholesale
+NKW-0422,2026-01-29,Matches (box),Household,12.0,106.0,1272.0,Orange Money,Beatrice T.,Walk-in
+NKW-0423,2026-01-21,Beans (Red),Grain,14.0,925.0,12950.0,Mobile Money,Florence A.,Walk-in
+NKW-0424,2026-02-21,Rice 25kg,Grain,5.0,19697.0,98485.0,Orange Money,Beatrice T.,Walk-in
+NKW-0425,2026-01-27,Maggi Cubes (pack),Groceries,13.0,508.0,6604.0,Orange Money,Beatrice T.,Walk-in
+NKW-0426,2026-01-13,Plantain (bunch),Produce,10.0,2460.0,24600.0,Mobile Money,Achu N.,Wholesale
+NKW-0427,2026-04-28,Vegetable Oil 5L,Oils,4.0,7086.0,28344.0,Bank Transfer,Florence A.,Walk-in
+NKW-0428,2026-06-26,Salt 1kg,Groceries,12.0,293.0,3516.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0429,2026-04-09,Milk Powder 400g,Dairy,19.0,2672.0,50768.0,Mobile Money,Ernest M.,Walk-in
+NKW-0430,2026-03-14,Rice 50kg,Grains,16.0,36483.0,583728.0,Bank Transfer,Divine K.,Walk-in
+NKW-0431,2026-03-20,Bread (loaf),Bakery,10.0,580.0,5800.0,Cash,Florence A.,Wholesale
+NKW-0432,2026-06-19,Detergent 1kg,Household,7.0,1860.0,13020.0,Cash,Achu N.,Walk-in
+NKW-0433,2026-03-31,Bread (loaf),Bakery,15.0,590.0,8850.0,Bank Transfer,Divine K.,Wholesale
+NKW-0434,2026-04-14,Milk Powder 400g,Dairy,15.0,2866.0,42990.0,Mobile Money,Divine K.,Walk-in
+NKW-0435,2026-06-22,Maggi Cubes (pack),Groceres,18.0,503.0,9054.0,Bank Transfer,Beatrice T.,Walk-in
+NKW-0436,2026-02-02,Soap (bar),Household,11.0,413.0,4543.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0437,2026-02-28,Tomato Paste (tin),Groceries,2.0,369.0,738.0,Bank Transfer,Divine K.,Walk-in
+NKW-0438,2026-04-14,Maggi Cubes (pack),Groceries,17.0,535.0,9095.0,Orange Money,Achu N.,Walk-in
+NKW-0439,2026-06-27,Sugar 1kg,Groceres,5.0,781.0,3905.0,Cash,Ernest M.,Wholesale
+NKW-0440,2026-02-20,Palm Oil 5L,Oils,20.0,6605.0,132100.0,Cash,Achu N.,Walk-in
+NKW-0441,2026-02-26,Beans (Red),Grains,13.0,936.0,12168.0,Orange Money,Florence A.,Walk-in
+NKW-0442,2026-06-03,Palm Oil 1L,Oils,1.0,1371.0,1371.0,Orange Money,Divine K.,Wholesale
+NKW-0443,2026-03-21,Milk Powder 400g,Dairy,11.0,2826.0,31086.0,Mobile Money,Florence A.,Wholesale
+NKW-0444,2026-02-04,Vegetable Oil 5L,Oils,19.0,6942.0,131898.0,Cash,Beatrice T.,Wholesale
+NKW-0445,2026-06-12,Detergent 1kg,Household,,1804.0,5412.0,Orange Money,Divine K.,Wholesale
+NKW-0446,2026-03-11,Tomato Paste (tin),Groceres,17.0,335.0,5695.0,Cash,Ernest M.,Wholesale
+NKW-0447,2026-05-23,Tomato Paste (tin),Groceries,13.0,345.0,4485.0,Mobile Money,Divine K.,Walk-in
+NKW-0448,2026-01-14,Salt 1kg,Groceries,19.0,304.0,5776.0,Bank Transfer,,Walk-in
+NKW-0449,2026-05-04,Maggi Cubes (pack),Groceries,3.0,497.0,1491.0,Orange Money,Divine K.,Walk-in
+NKW-0450,2026-05-28,Maggi Cubes (pack),Groceres,8.0,496.0,3968.0,Orange Money,Ernest M.,Walk-in
+NKW-0451,2026-06-12,Matches (box),Household,19.0,103.0,1957.0,Cash,Ernest M.,Walk-in
+NKW-0452,2026-01-05,Soap (bar),Household,12.0,396.0,4752.0,Mobile Money,Divine K.,Wholesale
+NKW-0453,2026-05-03,Tomatoes 1kg,Produce,19.0,802.0,15238.0,Bank Transfer,Florence A.,Walk-in
+NKW-0454,2026-06-25,Onions 1kg,Produce,2.0,748.0,1496.0,Bank Transfer,Divine K.,Walk-in
+NKW-0455,2026-02-23,Plantain (bunch),Produce,18.0,2481.0,44658.0,Bank Transfer,Florence A.,Wholesale
+NKW-0456,2026-03-09,Tomato Paste (tin),Groceries,13.0,338.0,4394.0,Orange Money,Ernest M.,Walk-in
+NKW-0457,2026-02-21,Palm Oil 1L,Oils,20.0,1355.0,27100.0,Orange Money,Achu N.,Wholesale
+NKW-0458,2026-01-13,Tomato Paste (tin),Groceries,16.0,374.0,5984.0,Orange Money,Achu N.,Walk-in
+NKW-0459,2026-05-18,Palm Oil 1L,Oils,13.0,1426.0,18538.0,Mobile Money,Achu N.,Walk-in
+NKW-0460,2026-01-24,Cassava (bag),Produce,11.0,4109.0,45199.0,Bank Transfer,Achu N.,Wholesale
+NKW-0461,2026-02-08,Plantain (bunch),Produce,2.0,2521.0,5042.0,Orange Money,Achu N.,Walk-in
+NKW-0462,2026-01-25,Palm Oil 5L,Oils,13.0,6490.0,84370.0,Orange Money,Florence A.,Walk-in
+NKW-0463,2026-04-15,Milk Powder 400g,Dairy,11.0,2777.0,30547.0,Cash,Beatrice T.,Walk-in
+NKW-0464,2026-06-19,Beans (Red),Grains,13.0,924.0,12012.0,Orange Money,Divine K.,Walk-in
+NKW-0465,2026-06-04,Palm Oil 1L,Oils,5.0,1468.0,7340.0,Cash,Beatrice T.,Wholesale
+NKW-0466,2026-05-25,Sugar 1kg,Groceries,7.0,719.0,5033.0,Mobile Money,Florence A.,Walk-in
+NKW-0467,2026-01-02,Beans (Red),Grains,14.0,871.0,12194.0,Mobile Money,Achu N.,Walk-in
+NKW-0468,2026-01-20,Soap (bar),Household,11.0,411.0,4521.0,Bank Transfer,Divine K.,Walk-in
+NKW-0469,2026-04-15,Maggi Cubes (pack),Groceres,11.0,519.0,5709.0,Cash,Divine K.,Walk-in
+NKW-0470,2026-01-24,Salt 1kg,Groceries,14.0,317.0,4438.0,Cash,Achu N.,Walk-in
+NKW-0471,2026-01-13,Beans (White),Grains,13.0,856.0,11128.0,Bank Transfer,Beatrice T.,Wholesale
+NKW-0472,2026-03-17,Rice 25kg,Grains,19.0,19197.0,364743.0,Mobile Money,Beatrice T.,Wholesale
+NKW-0473,2026-04-03,Tomatoes 1kg,Produce,19.0,780.0,14820.0,Cash,Achu N.,Walk-in
+NKW-0474,2026-05-10,Beans (Red),Grain,15.0,944.0,14160.0,Orange Money,Florence A.,Walk-in
+NKW-0475,2026-05-06,Cassava (bag),Produce,6.0,4277.0,25662.0,Cash,Florence A.,Walk-in
+NKW-0476,2026-02-12,Tomato Paste (tin),Groceres,15.0,374.0,5610.0,Cash,Ernest M.,Walk-in
+NKW-0477,2026-03-12,Beans (White),Grains,8.0,832.0,6656.0,Cash,Florence A.,Walk-in
+NKW-0478,2026-05-05,Cassava (bag),Produce,12.0,4275.0,51300.0,Orange Money,Ernest M.,Walk-in
+NKW-0479,2026-01-04,Plantain (bunch),Produce,12.0,2679.0,32148.0,Mobile Money,Ernest M.,Wholesale
+NKW-0480,2026-04-19,Tomato Paste (tin),Groceries,5.0,354.0,1770.0,Mobile Money,Ernest M.,Walk-in
+NKW-0481,2026-03-02,Palm Oil 1L,Oils,19.0,1388.0,26372.0,Orange Money,Florence A.,Walk-in
+NKW-0482,2026-04-25,Cassava (bag),Produce,6.0,4187.0,25122.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0483,2026-05-27,Beans (White),Grains,8.0,897.0,7176.0,Cash,Florence A.,Walk-in
+NKW-0484,2026-05-20,Milk Powder 400g,Dairy,6.0,2938.0,17628.0,Cash,Achu N.,Walk-in
+NKW-0485,2026-03-28,Bread (loaf),Bakery,6.0,609.0,3654.0,Bank Transfer,Divine K.,Walk-in
+NKW-0486,2026-03-09,Beans (White),Grains,4.0,906.0,3624.0,Mobile Money,Divine K.,Walk-in
+NKW-0487,2026-05-11,Cassava (bag),Produce,4.0,4098.0,16392.0,Orange Money,Florence A.,Walk-in
+NKW-0488,2026-02-12,Milk Powder 400g,Dairy,20.0,2676.0,53520.0,,Divine K.,Wholesale
+NKW-0489,2026-04-17,Tomato Paste (tin),Groceres,2.0,342.0,684.0,Bank Transfer,Ernest M.,Walk-in
+NKW-0490,2026-03-28,Sugar 1kg,Groceries,1.0,770.0,770.0,Mobile Money,Florence A.,Walk-in
+NKW-0491,2026-02-05,Beans (White),Grains,1.0,826.0,826.0,Orange Money,Florence A.,Walk-in
+NKW-0492,2026-05-01,Detergent 1kg,Household,15.0,1858.0,27870.0,Orange Money,Florence A.,Walk-in
+NKW-0493,2026-03-17,Matches (box),Household,14.0,107.0,1498.0,Cash,Achu N.,Walk-in
+NKW-0494,2026-01-26,Tomatoes 1kg,Produce,7.0,825.0,5775.0,Orange Money,Achu N.,Walk-in
+NKW-0495,2026-05-22,Tomato Paste (tin),Groceries,15.0,333.0,4995.0,Mobile Money,Divine K.,Walk-in
+NKW-0496,2026-04-03,Plantain (bunch),Produce,3.0,2685.0,8055.0,Cash,Ernest M.,Wholesale
+NKW-0497,2026-04-29,Palm Oil 5L,Oils,17.0,7010.0,119170.0,Orange Money,Ernest M.,Wholesale
+NKW-0498,2026-03-02,Plantain (bunch),Produce,9.0,2592.0,23328.0,Mobile Money,Florence A.,Walk-in
+NKW-0499,2026-02-27,Vegetable Oil 5L,Oils,5.0,6985.0,34925.0,Orange Money,Achu N.,Walk-in
+NKW-0500,2026-03-19,Rice 25kg,Grains,7.0,19420.0,135940.0,Orange Money,Divine K.,Walk-in
