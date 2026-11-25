@@ -46,9 +46,14 @@ class GlossaryService
     /** The chapter number (1-based) of an activity in its track. */
     public function chapterOf(TrackCurriculumActivity $activity): int
     {
-        $order = $activity->milestone?->sequence_order;
+        if (!$activity->milestone) {
+            return 1;
+        }
+        $pathways = app(PathwayService::class);
 
-        return $order === null ? 1 : max(1, TrackMilestone::where('track_id', $activity->track_id)->where('is_active', true)->where('sequence_order', '<=', $order)->count());
+        return $pathways->hasPathways($activity->track)
+            ? $pathways->chapterNumber($activity->milestone)
+            : max(1, TrackMilestone::where('track_id', $activity->track_id)->where('is_active', true)->where('sequence_order', '<=', $activity->milestone->sequence_order)->count());
     }
 
     /**

@@ -142,6 +142,31 @@ class PathwayService
             ->flatMap(fn ($m) => $this->requiredIdsIn($fellow, $m))->values();
     }
 
+    /**
+     * The chapter number a fellow sees. Without pathways: position in the track. With pathways:
+     * shared chapters count in order, a pathway's chapters continue after the core (7, 8, 9 in
+     * Software Engineering) whichever pathway it is, and shared chapters after the pathways
+     * continue after the longest pathway (10, 11).
+     */
+    public function chapterNumber(TrackMilestone $milestone, ?Collection $all = null, ?string $pathway = null): int
+    {
+        $all ??= TrackMilestone::where('track_id', $milestone->track_id)->where('is_active', true)->orderBy('sequence_order')->get();
+        $before = $all->filter(fn ($m) => $m->sequence_order < $milestone->sequence_order);
+        $shared = $before->filter(fn ($m) => empty($m->pathways))->count();
+        $tags = (array) ($milestone->pathways ?? []);
+        if ($tags) {
+            // Along one pathway's route (the fellow's, when known; otherwise the shortest one through this chapter).
+            $routes = $pathway && in_array($pathway, $tags, true) ? [$pathway] : $tags;
+
+            return $shared + 1 + min(array_map(fn ($t) => $before->filter(fn ($m) => in_array($t, (array) ($m->pathways ?? []), true))->count(), $routes));
+        }
+        $tagged = $before->filter(fn ($m) => !empty($m->pathways));
+        $longest = $tagged->flatMap(fn ($m) => (array) $m->pathways)->unique()
+            ->map(fn ($p) => $tagged->filter(fn ($m) => in_array($p, (array) $m->pathways, true))->count())->max() ?? 0;
+
+        return $shared + 1 + $longest;
+    }
+
     /** Is this pathway-track chapter unlocked for the fellow? */
     public function isUnlocked(User $fellow, TrackMilestone $milestone): bool
     {

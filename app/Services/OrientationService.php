@@ -107,7 +107,8 @@ class OrientationService
         $experience = TrackExperience::for($track);
         $senior = $this->content($track)['senior'] ?? [];
         $milestones = TrackMilestone::where('track_id', $track->id)->where('is_active', true)->orderBy('sequence_order')->get(['id', 'sequence_order', 'title', 'story']);
-        $chapterNo = $milestones->values()->mapWithKeys(fn ($m, $i) => [$m->id => $i + 1]);
+        $pathways = app(PathwayService::class);
+        $chapterNo = $milestones->values()->mapWithKeys(fn ($m, $i) => [$m->id => $pathways->hasPathways($track) ? $pathways->chapterNumber($m, $milestones) : $i + 1]);
         $activities = TrackCurriculumActivity::where('track_id', $track->id)->where('is_active', true)->orderBy('sequence_order')
             ->get(['id', 'title', 'skills', 'milestone_id', 'type', 'is_required']);
 
@@ -132,11 +133,22 @@ class OrientationService
         $milestones = TrackMilestone::where('track_id', $track->id)->where('is_active', true)->orderBy('sequence_order')
             ->with(['curriculumActivities' => fn ($q) => $q->where('is_active', true)->where('is_required', true)])->get();
 
-        $chapters = $milestones->values()->map(function ($m, $i) {
-            $hours = $m->curriculumActivities->sum(fn ($a) => self::HOURS_PER_TYPE[$a->type?->value ?? ''] ?? 2);
+        $hoursOf = fn ($m) => $m->curriculumActivities->sum(fn ($a) => self::HOURS_PER_TYPE[$a->type?->value ?? ''] ?? 2);
+        $pathways = app(PathwayService::class);
+        if ($pathways->hasPathways($track)) {
+            // One route through the track: shared chapters, plus one entry per pathway chapter number (averaged).
+            $names = collect($pathways->definitions($track))->pluck('title')->implode(', ');
+            $chapters = $milestones->groupBy(fn ($m) => $pathways->chapterNumber($m, $milestones))->sortKeys()->map(function ($group, $no) use ($hoursOf, $names) {
+                $shared = $group->first(fn ($m) => empty($m->pathways));
 
-            return ['number' => $i + 1, 'title' => $m->title, 'days' => (int) ($m->estimated_duration_days ?: 14), 'hours' => round($hours), 'activities' => $m->curriculumActivities->count()];
-        });
+                return $shared
+                    ? ['number' => $no, 'title' => $shared->title, 'days' => (int) ($shared->estimated_duration_days ?: 14), 'hours' => round($hoursOf($shared)), 'activities' => $shared->curriculumActivities->count()]
+                    : ['number' => $no, 'title' => "Your pathway, chapter {$no} ({$names})", 'days' => (int) round($group->avg(fn ($m) => $m->estimated_duration_days ?: 14)),
+                        'hours' => round($group->avg($hoursOf)), 'activities' => (int) round($group->avg(fn ($m) => $m->curriculumActivities->count()))];
+            })->values();
+        } else {
+            $chapters = $milestones->values()->map(fn ($m, $i) => ['number' => $i + 1, 'title' => $m->title, 'days' => (int) ($m->estimated_duration_days ?: 14), 'hours' => round($hoursOf($m)), 'activities' => $m->curriculumActivities->count()]);
+        }
 
         $totalHours = (int) round($chapters->sum('hours'));
         $weeks = max(1, (int) round($chapters->sum('days') / 7));

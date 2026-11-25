@@ -27,6 +27,20 @@ class ImportFlashCards extends Command
 
             return self::FAILURE;
         }
+        // Quick checks may name their lesson by title ("activity_title") when the id is only known after
+        // a curriculum import (new lessons get their ids then). Titles must be unique in the track.
+        $byTitle = \App\Models\TrackCurriculumActivity::where('track_id', $track->id)->get(['id', 'title'])->groupBy('title');
+        foreach ($data['cards'] as $i => $c) {
+            if (empty($c['activity']) && !empty($c['activity_title'])) {
+                $match = $byTitle->get($c['activity_title']);
+                if (!$match || $match->count() !== 1) {
+                    $this->error("Card {$c['key']}: no single lesson titled \"{$c['activity_title']}\" in this track.");
+
+                    return self::FAILURE;
+                }
+                $data['cards'][$i]['activity'] = $match->first()->id;
+            }
+        }
         $lessonCards = count(array_filter($data['cards'], fn ($c) => !empty($c['activity'])));
         if ($lessonCards && $lessonCards !== count($data['cards'])) {
             $this->error('A file holds either daily cards or lesson quick checks (all with "activity"), not both.');

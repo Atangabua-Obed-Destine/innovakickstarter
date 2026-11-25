@@ -159,6 +159,18 @@ class PathwayTest extends TestCase
         $this->assertContains('back', $this->unlocked($u));
     }
 
+    public function test_chapter_numbers_follow_one_route_through_the_track(): void
+    {
+        $p = app(PathwayService::class);
+        $n = collect($this->m)->map(fn ($m) => $p->chapterNumber($m->fresh()))->all();
+        // core 1; backend and frontend are both "chapter 2"; full-stack's own chapter comes after its
+        // backend + frontend chapters (4); the shared team chapter follows the longest route (5).
+        $this->assertSame(['core' => 1, 'back' => 2, 'front' => 2, 'fs' => 4, 'team' => 5], $n);
+        // A full-stack fellow does the backend chapter first, so for them the frontend one is chapter 3.
+        $this->assertSame(3, $p->chapterNumber($this->m['front']->fresh(), null, 'fullstack'));
+        $this->assertSame(2, $p->chapterNumber($this->m['front']->fresh(), null, 'frontend'));
+    }
+
     public function test_choosing_a_pathway_with_minor_and_stack(): void
     {
         $u = $this->fellow();

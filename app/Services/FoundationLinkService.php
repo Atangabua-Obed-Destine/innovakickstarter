@@ -162,7 +162,9 @@ class FoundationLinkService
     public function upcoming(User $fellow, Track $track): array
     {
         $map = Cache::remember("foundation-needs:{$track->id}:" . TrackCurriculumActivity::where('track_id', $track->id)->max('updated_at'), now()->addDay(), function () use ($track) {
-            $chapters = $track->milestones()->where('is_active', true)->orderBy('sequence_order')->pluck('id')->flip();
+            $all = $track->milestones()->where('is_active', true)->orderBy('sequence_order')->get();
+            $pathways = app(PathwayService::class);
+            $chapters = $all->mapWithKeys(fn ($m, $i) => [$m->id => ($pathways->hasPathways($track) ? $pathways->chapterNumber($m, $all) : $i + 1) - 1]);
 
             return TrackCurriculumActivity::where('track_id', $track->id)->where('is_active', true)->where('type', '!=', 'mock_interview')->orderBy('sequence_order')->get()
                 ->map(fn ($a) => ['id' => $a->id, 'title' => $a->title, 'chapter' => (int) ($chapters[$a->milestone_id] ?? -1) + 1, 'areas' => array_keys($this->needs($a))])
