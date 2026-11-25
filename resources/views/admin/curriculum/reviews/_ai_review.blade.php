@@ -45,6 +45,12 @@
             @if($r->weighted_score !== null)
                 <span class="text-white font-semibold">{{ number_format($r->weighted_score, 0) }}/100</span>
             @endif
+            @php $activityPoints = (int) ($progress->curriculumActivity->points ?? 0); $suggested = $r->suggestedPoints($activityPoints); @endphp
+            @if($suggested !== null)
+                <span class="px-2 py-0.5 rounded bg-dark-700 text-dark-200 text-sm" title="{{ $r->recommended_decision === \App\Models\AiReview::DECISION_REVISE ? 'Sent back to redo: no points this attempt.' : 'In proportion to the AI score; you decide.' }}">
+                    Suggested points: <strong class="text-white">{{ $suggested }}</strong> / {{ $activityPoints }}{{ $r->recommended_decision === \App\Models\AiReview::DECISION_ESCALATE ? ' (your call)' : '' }}
+                </span>
+            @endif
             @if($r->confidence)
                 <span class="text-dark-400 text-xs">confidence: {{ $r->confidence }}</span>
             @endif

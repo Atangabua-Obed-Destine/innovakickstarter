@@ -109,10 +109,37 @@ class AiReview extends Model
     {
         return match ($this->recommended_decision) {
             self::DECISION_APPROVE => 'Approve',
-            self::DECISION_REVISE => 'Return for revision',
+            self::DECISION_REVISE => 'Reject (send back to redo)',
             self::DECISION_ESCALATE => 'Needs a human',
             default => '—',
         };
+    }
+
+    /** The review form's decision the AI points to: approve, reject (send back to redo), or null (a human must judge). */
+    public function getSuggestedDecisionAttribute(): ?string
+    {
+        return match ($this->recommended_decision) {
+            self::DECISION_APPROVE => 'approve',
+            self::DECISION_REVISE => 'reject',
+            default => null,
+        };
+    }
+
+    /**
+     * Points the AI suggests out of the activity's points: in proportion to its
+     * weighted score when it approves, 0 when it sends the work back. For an
+     * escalation it is the score-based figure, for the human to judge.
+     */
+    public function suggestedPoints(int $activityPoints): ?int
+    {
+        if (!$this->isCompleted() || $this->weighted_score === null || $activityPoints <= 0) {
+            return null;
+        }
+        if ($this->recommended_decision === self::DECISION_REVISE) {
+            return 0;
+        }
+
+        return (int) max(1, min($activityPoints, round($activityPoints * (float) $this->weighted_score / 100)));
     }
 
     public function getDecisionBadgeClassAttribute(): string

@@ -328,14 +328,23 @@
                     </div>
 
                     {{-- Decision Buttons --}}
+                    @php
+                        $aiSuggests = $aiVisible && $aiReview?->isCompleted() ? $aiReview->suggested_decision : null;
+                        $aiPoints = $aiVisible && $aiReview?->isCompleted() ? $aiReview->suggestedPoints((int) ($progress->curriculumActivity->points ?? 0)) : null;
+                    @endphp
+                    @if($aiVisible && $aiReview?->isCompleted())
+                        <p class="text-sm text-dark-300 pt-1">🤖 AI suggests:
+                            <strong class="{{ $aiSuggests === 'approve' ? 'text-green-400' : ($aiSuggests === 'reject' ? 'text-red-400' : 'text-amber-300') }}">{{ $aiSuggests === 'approve' ? '✓ Approve' : ($aiSuggests === 'reject' ? '✕ Reject (send back to redo)' : 'a human judgement') }}</strong>{{ $aiPoints !== null && $aiSuggests !== 'reject' ? ' · ' . $aiPoints . ' pts' : '' }}.
+                            <span class="text-dark-500">You decide.</span></p>
+                    @endif
                     <div class="grid grid-cols-2 gap-3 pt-2">
                         <button type="button" @click="promptConfirm('reject')"
-                                class="w-full px-4 py-2.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 font-medium text-sm transition">
-                            ✕ Reject
+                                class="w-full px-4 py-2.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 font-medium text-sm transition" @if($aiSuggests === 'reject') style="box-shadow: 0 0 0 2px #f87171" @endif>
+                            ✕ Reject{{ $aiSuggests === 'reject' ? ' · AI pick' : '' }}
                         </button>
                         <button type="button" @click="promptConfirm('approve')"
-                                class="w-full px-4 py-2.5 bg-green-500/20 text-green-400 border border-green-500/30 rounded-lg hover:bg-green-500/30 font-medium text-sm transition">
-                            ✓ Approve
+                                class="w-full px-4 py-2.5 bg-green-500/20 text-green-400 border border-green-500/30 rounded-lg hover:bg-green-500/30 font-medium text-sm transition" @if($aiSuggests === 'approve') style="box-shadow: 0 0 0 2px #4ade80" @endif>
+                            ✓ Approve{{ $aiSuggests === 'approve' ? ' · AI pick' : '' }}
                         </button>
                     </div>
                 </form>
@@ -514,9 +523,12 @@
                 input.dispatchEvent(new Event('input'));
             }
         });
+        // The form starts with full points: the AI draft replaces them with its suggestion.
         const points = document.getElementById('points');
-        if (points && !points.value) {
-            points.value = @json((int) ($progress->curriculumActivity->points ?? 0));
+        const suggested = @json($aiReview->suggestedPoints((int) ($progress->curriculumActivity->points ?? 0)));
+        if (points && suggested !== null) {
+            points.value = suggested;
+            points.dispatchEvent(new Event('input'));
         }
         const text = document.getElementById('feedback');
         if (text && !text.value.trim()) {
