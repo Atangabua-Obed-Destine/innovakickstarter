@@ -15,6 +15,7 @@
 const PYODIDE_BASE = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/';
 let py = null;
 let ns = null;
+const loaded = new Set(); // library groups already downloaded, for honest status messages
 
 const PRELUDE = `
 import os, sys, io, base64, shutil, builtins, urllib.request
@@ -99,8 +100,11 @@ self.onmessage = async (event) => {
     }
     let code = stripMagics(String(event.data.code || ''));
     code = await localiseCourseFiles(id, code);
-    post(id, 'status', { text: 'Loading libraries...' });
+    const libs = [['pandas', /\b(pandas|pd)\b/], ['charts', /\b(matplotlib|plt|seaborn|sns)\b/], ['numpy', /\b(numpy|np)\b/]]
+      .filter(([name, re]) => re.test(code) && !loaded.has(name)).map(([name]) => name);
+    post(id, 'status', { text: libs.length ? 'Downloading ' + libs.join(' and ') + ' (first time only, up to 20 MB; your browser keeps it)...' : 'Loading libraries...' });
     await py.loadPackagesFromImports(code, { messageCallback: () => {}, errorCallback: () => {} });
+    libs.forEach(l => loaded.add(l));
     if (/\b(pd|np|plt|sns)\./.test(code)) {
       // Names used without an import in this cell (imported in an earlier cell) still need their packages.
       const needed = [];

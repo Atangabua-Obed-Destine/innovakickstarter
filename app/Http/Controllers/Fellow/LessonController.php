@@ -11,6 +11,7 @@ use App\Services\FlashReviewService;
 use App\Services\PreSubmitCheckService;
 use App\Support\LessonSteps;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /** Interactive lesson pieces: ticking steps, quick checks and the pre-submit check. */
 class LessonController extends Controller
@@ -31,12 +32,18 @@ class LessonController extends Controller
         $valid = LessonSteps::keys(LessonSteps::parse($activity->instructions));
         abort_unless(in_array($data['key'], $valid, true), 422);
 
-        $checked = collect($progress->checked_steps ?? [])->intersect($valid);
-        $checked = $data['done'] ? $checked->push($data['key'])->unique() : $checked->reject(fn ($k) => $k === $data['key']);
-        $progress->checked_steps = $checked->values()->all();
-        $progress->save();
+        // Fellows tick quickly: lock the row so two ticks arriving together can't overwrite each other.
+        $checked = DB::transaction(function () use ($progress, $valid, $data) {
+            $row = FellowCurriculumProgress::whereKey($progress->getKey())->lockForUpdate()->first();
+            $checked = collect($row->checked_steps ?? [])->intersect($valid);
+            $checked = $data['done'] ? $checked->push($data['key'])->unique() : $checked->reject(fn ($k) => $k === $data['key']);
+            $row->checked_steps = $checked->values()->all();
+            $row->save();
 
-        return response()->json(['ok' => true, 'checked' => $progress->checked_steps]);
+            return $row->checked_steps;
+        });
+
+        return response()->json(['ok' => true, 'checked' => $checked]);
     }
 
     /** Answer a lesson quick check. It then joins the fellow's spaced daily review. */

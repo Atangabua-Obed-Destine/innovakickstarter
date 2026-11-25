@@ -123,6 +123,7 @@
 @push('scripts')
 <script>
 function lessonSteps(cfg) {
+    const chains = {}; // per step: saves for the same box happen in click order
     return {
         keys: cfg.keys, checked: cfg.checked, canTick: cfg.canTick, error: '',
         isOn(k) { return this.checked.includes(k); },
@@ -134,13 +135,18 @@ function lessonSteps(cfg) {
             const on = !this.isOn(k);
             this.checked = on ? [...this.checked, k] : this.checked.filter(x => x !== k);
             this.error = '';
-            try {
-                const res = await fetch(cfg.url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': cfg.csrf }, body: JSON.stringify({ key: k, done: on }) });
-                if (!res.ok) throw new Error();
-            } catch (e) {
-                this.checked = on ? this.checked.filter(x => x !== k) : [...this.checked, k];
-                this.error = 'Could not save that tick. Check your connection and try again.';
-            }
+            // Each tick is sent at once (the server locks the row); repeat clicks on the same box wait their turn.
+            chains[k] = (chains[k] || Promise.resolve()).then(async () => {
+                try {
+                    // keepalive: the tick is still saved if the fellow leaves the page right away.
+                    const res = await fetch(cfg.url, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': cfg.csrf }, body: JSON.stringify({ key: k, done: on }) });
+                    if (!res.ok) throw new Error();
+                } catch (e) {
+                    this.checked = on ? this.checked.filter(x => x !== k) : [...this.checked, k];
+                    this.error = 'Could not save that tick. Check your connection and try again.';
+                }
+            });
+            await chains[k];
         },
     };
 }

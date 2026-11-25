@@ -78,7 +78,7 @@
             <button type="button" class="btn-secondary text-xs px-3 py-1.5" x-show="!running" @click="reset()" title="Forget all variables">↺ Reset variables</button>
             <span class="text-dark-400 text-xs" x-text="status"></span>
         </div>
-        <p class="text-dark-500 text-xs">Variables stay between runs, like a notebook. The first run downloads Python (about 10 MB, once).</p>
+        <p class="text-dark-500 text-xs">Variables stay between runs, like a notebook. The very first run downloads Python and its libraries (up to 30 MB, once; on a slow connection this can take a minute or two). Your browser keeps them.</p>
         <template x-if="out">
             <div class="space-y-2">
                 <div class="sb-out" x-show="out.stdout" x-text="out.stdout"></div>
