@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Ethics Case Reading</title>
+<style>
+:root { --bg: #fafaf8; --ink: #1c2230; --muted: #596273; --line: #e2e4e9; --accent: #2457d6; --box: #f1f4fb; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #13161c; --ink: #e6e9ef; --muted: #9ba3b1; --line: #2a303a; --accent: #7fa6ff; --box: #1b2230; } }
+:root[data-theme="dark"] { --bg: #13161c; --ink: #e6e9ef; --muted: #9ba3b1; --line: #2a303a; --accent: #7fa6ff; --box: #1b2230; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 720px; margin: 0 auto; padding: 28px 16px 60px; }
+h1 { font-size: 1.6rem; line-height: 1.25; margin: 0 0 6px; }
+h2 { font-size: 1.15rem; margin: 30px 0 6px; }
+p, li { margin: 0 0 10px; }
+.muted { color: var(--muted); font-size: 0.92rem; }
+.box { background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin: 18px 0; }
+a { color: var(--accent); }
+@media print { body { background: #fff; color: #000; } .box { border-color: #ccc; } }
+</style>
+</head>
+<body>
+<main>
+<p class="muted">I-NNOVA Kickstarter · Data Science track · Milestone 1 reading</p>
+<h1>Accurate is not the same as fair: Amazon's experimental hiring tool</h1>
+<p class="muted">Reading time: about 10 minutes. Answer the questions on the activity page "Data Ethics: The Responsible Data Scientist".</p>
+
+<div class="box">
+<strong>Why read this?</strong> Every model and every analysis you produce will eventually influence a decision about a real person: whether a loan is approved, which customers get an offer, whose application a recruiter reads first. A model can be statistically accurate on the data it learned from and still be unfair or harmful when it meets the real world. This case shows how that happens without anyone intending it.
+</div>
+
+<h2>Background</h2>
+<p>Starting in 2014, a team at Amazon built an experimental tool to automate part of hiring. It reviewed job applicants' CVs and gave each candidate a score from one to five stars, much like products are rated on Amazon's shop, so that recruiters could focus on the top-rated applicants.</p>
+
+<h2>How it learned</h2>
+<p>The model learned what a "good" candidate looked like by studying about ten years of CVs submitted to the company, and which of those applicants had been hired. Because the technology industry has long been male-dominated, most of those historical CVs came from men.</p>
+
+<h2>What went wrong</h2>
+<p>By 2015 the team realised the tool was not rating candidates for technical jobs in a gender-neutral way. It had learned that CVs resembling those of past hires, mostly men, were preferable. According to public reporting, it penalised CVs that included the word "women's" (as in "women's chess club captain") and downgraded graduates of two all-women's colleges.</p>
+<p>The engineers edited the system so it would treat those particular terms neutrally. But that was no guarantee: the model could find other ways to sort candidates that were just as discriminatory, through words and patterns that correlate with gender. The company later dropped the project; it said the tool was never used by its recruiters to evaluate candidates.</p>
+
+<h2>The key point</h2>
+<p>Nobody wrote a rule saying "prefer men". The bias was learned from a real pattern already present in the data: the historical under-representation of women among applicants and past hires. The model did exactly what it was trained to do, which was to find patterns that matched past "successful" hires. It was accurate with respect to its training data. It was not fair, and used at scale it would have screened out qualified people for a reason unrelated to their ability to do the job.</p>
+
+<h2>Closer to home</h2>
+<p>The same thing can happen with data that looks like "just numbers". In Cameroon, lenders, telecoms and mobile money services increasingly use transaction histories, airtime top-ups and phone data to make decisions. People with little digital history, for example in rural areas, people who mostly use cash, or people who share a phone with family, can look "risky" to a model for reasons that have nothing to do with whether they repay.</p>
+
+<div class="box">
+<strong>A note on privacy.</strong> Data that seems anonymous or purely numeric, such as a phone number prefix, a transaction amount or a device ID, can still reveal sensitive information about a real person: where they live, how much they earn, their daily habits. "It's just numbers" is not the same as "it's not personal". In December 2024 Cameroon adopted a law on the protection of personal data (Law No. 2024/017), which sets obligations for organisations that collect and use personal data. The activity page links a summary.
+</div>
+
+<h2>Source</h2>
+<p class="muted">Based on public reporting: Jeffrey Dastin, "Amazon scraps secret AI recruiting tool that showed bias against women", Reuters, 10 October 2018. Adapted for the I-NNOVA Data Science track.</p>
+</main>
+</body>
+</html>

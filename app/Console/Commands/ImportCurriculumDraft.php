@@ -113,6 +113,7 @@ class ImportCurriculumDraft extends Command
                         'points' => (int) $a['points'],
                         'career_capital_category' => $a['career_capital_category'],
                         'is_required' => (bool) $a['is_required'],
+                        'is_collaborative' => (bool) ($a['is_collaborative'] ?? false),
                         'is_active' => true,
                         'is_sequential' => false,
                         'sequence_order' => $order,

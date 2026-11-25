@@ -455,6 +455,21 @@
     .lesson-md hr { border-color: rgba(148, 163, 184, 0.25); }
 </style>
     {{-- ============================================= --}}
+    {{-- REVIEW PARTNER (collaborative activities) --}}
+    {{-- ============================================= --}}
+    @if($activity->is_collaborative && !$isLocked && $progress)
+    <div class="card p-6 border border-blue-500/30">
+        <h3 class="text-white font-semibold text-lg mb-2 flex items-center gap-2"><span class="text-blue-400">👥</span> Your review partner</h3>
+        @if(!empty($reviewPartner))
+            <p class="text-dark-200"><span class="text-white font-semibold">{{ $reviewPartner->name }}</span>@if($reviewPartner->github_url) · <a href="{{ $reviewPartner->github_url }}" target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:text-primary-300 underline">GitHub profile</a>@endif</p>
+            <p class="text-dark-400 text-sm mt-1">You review their work and they review yours, following the steps below. Contact them through your cohort channel if you need to.</p>
+        @else
+            <p class="text-dark-300 text-sm">We pair you automatically with the next fellow who reaches this step, and you'll get a notification. If nobody is matched within {{ \App\Services\ReviewPartnerService::WAIT_DAYS_BEFORE_ALERT }} days, the I-NNOVA team assigns you a reviewer.</p>
+        @endif
+    </div>
+    @endif
+
+    {{-- ============================================= --}}
     {{-- DESCRIPTION --}}
     {{-- ============================================= --}}
     <div class="card p-6">

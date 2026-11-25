@@ -166,7 +166,13 @@ class CurriculumController extends Controller
             $linkedInterviews = $this->curriculumService->getLinkedInterviews($fellow, $activity);
         }
 
-        return view('fellow.curriculum.activity-show', compact('activity', 'progress', 'linkedInterviews'));
+        // Collaborative activities: find (or show) the fellow's review partner.
+        $reviewPartner = null;
+        if ($activity->is_collaborative && $progress && in_array($progress->status, [\App\Enums\CurriculumStatus::AVAILABLE, \App\Enums\CurriculumStatus::IN_PROGRESS, \App\Enums\CurriculumStatus::SUBMITTED, \App\Enums\CurriculumStatus::UNDER_REVIEW, \App\Enums\CurriculumStatus::COMPLETED, \App\Enums\CurriculumStatus::REJECTED], true)) {
+            $reviewPartner = app(\App\Services\ReviewPartnerService::class)->matchFellow($fellow, $activity);
+        }
+
+        return view('fellow.curriculum.activity-show', compact('activity', 'progress', 'linkedInterviews', 'reviewPartner'));
     }
 
     /**

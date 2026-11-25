@@ -683,6 +683,10 @@ class CurriculumService
                         'deadline_at' => $child->calculateDeadlineFor($fellow),
                         'grace_deadline_at' => $child->calculateGraceDeadlineFor($fellow),
                     ]);
+
+                    if ($child->is_collaborative) {
+                        app(ReviewPartnerService::class)->matchFellow($fellow, $child);
+                    }
                 }
             }
         }

@@ -23,3 +23,6 @@ Schedule::command('cohorts:transition')
 Schedule::command('internships:complete-expired')
     ->dailyAt('00:10')
     ->appendOutputTo(storage_path('logs/internship-completions.log'));
+
+// Pair fellows waiting for a review partner (collaborative activities); flag long waits to admins
+Schedule::command('curriculum:match-review-partners')->dailyAt('07:00')->withoutOverlapping();
