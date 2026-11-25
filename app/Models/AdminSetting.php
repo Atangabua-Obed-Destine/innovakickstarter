@@ -147,6 +147,18 @@ class AdminSetting extends Model
         'score_decay_weekly_percentage' => ['value' => 2, 'type' => 'float', 'group' => 'scoring', 'label' => 'Weekly Score Decay Percentage'],
         'score_decay_max_weeks_inactive' => ['value' => 4, 'type' => 'integer', 'group' => 'scoring', 'label' => 'Max Weeks Inactive Before Decay'],
 
+        // Weekly bar and standing (see StandingService)
+        'standing_enabled' => ['value' => true, 'type' => 'boolean', 'group' => 'standing', 'label' => 'Weekly Bar Enabled'],
+        'standing_start_date' => ['value' => '2026-11-30', 'type' => 'string', 'group' => 'standing', 'label' => 'First Week Counted (a Monday)'],
+        'weekly_bar_active_days' => ['value' => 3, 'type' => 'integer', 'group' => 'standing', 'label' => 'Active Days Per Week'],
+        'weekly_bar_practice_days' => ['value' => 3, 'type' => 'integer', 'group' => 'standing', 'label' => 'Practice Days Per Week'],
+        'weekly_bar_progress_actions' => ['value' => 1, 'type' => 'integer', 'group' => 'standing', 'label' => 'Curriculum Actions Per Week'],
+        'standing_penalty_fee' => ['value' => 500, 'type' => 'integer', 'group' => 'standing', 'label' => 'Penalty Fee (FCFA)'],
+        'standing_penalty_from_miss' => ['value' => 2, 'type' => 'integer', 'group' => 'standing', 'label' => 'Fee From Consecutive Miss Number'],
+        'foundations_typing_wpm' => ['value' => 25, 'type' => 'integer', 'group' => 'standing', 'label' => 'Typing Target (words per minute)'],
+        'foundations_typing_accuracy' => ['value' => 90, 'type' => 'integer', 'group' => 'standing', 'label' => 'Typing Target Accuracy (%)'],
+        'foundations_pass_percent' => ['value' => 70, 'type' => 'integer', 'group' => 'standing', 'label' => 'Base Camp Area Ready From (%)'],
+
         // AI review of curriculum submissions
         'ai_review_mode' => ['value' => 'shadow', 'type' => 'string', 'group' => 'ai_review', 'label' => 'AI Review Mode (off, shadow, assist)'],
         'ai_review_pass_score' => ['value' => 70, 'type' => 'integer', 'group' => 'ai_review', 'label' => 'Approve From Weighted Score'],

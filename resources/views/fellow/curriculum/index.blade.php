@@ -50,6 +50,24 @@
         @if(session($key))<div class="p-4 rounded-xl border bg-{{ $color }}-500/10 border-{{ $color }}-500/30 text-{{ $color }}-400">{{ session($key) }}</div>@endif
     @endforeach
 
+    @php
+        $onHold = app(\App\Services\StandingService::class)->onHold(auth()->user());
+        $baseGaps = app(\App\Services\FoundationService::class)->gaps(auth()->user());
+    @endphp
+    @if($onHold)
+        <div class="p-4 rounded-xl border bg-red-500/10 border-red-500/30 flex flex-wrap items-center justify-between gap-3">
+            <p class="text-red-300 text-sm"><strong>⛔ Progress on hold.</strong> You can read lessons, review and ask for help, but starting and submitting activities waits until your weekly-bar penalty is paid or waived.</p>
+            <a href="{{ route('standing.show') }}" class="btn-primary text-sm">What to do</a>
+        </div>
+    @endif
+    @if($baseGaps && !$orientationRequired)
+        <a href="{{ route($baseGaps === ['skills check'] ? 'base-camp.check' : 'base-camp.index') }}" class="ch0 flex flex-wrap items-center gap-3 hover:border-primary-400">
+            <span class="text-2xl">⛺</span>
+            <span class="flex-1 min-w-0 text-dark-200 text-sm">{!! $baseGaps === ['skills check'] ? '<strong class="text-white">Take your 15-minute skills check.</strong> Typing, computer basics, maths, reading and spreadsheets: we find gaps early so no chapter feels too steep.' : '<strong class="text-white">Base Camp:</strong> strengthen ' . e(implode(', ', $baseGaps)) . ' alongside your chapters.' !!}</span>
+            <span class="text-primary-300 text-sm">Open →</span>
+        </a>
+    @endif
+
     {{-- YOUR NEXT STEP --}}
     @if($ns && $milestones->isNotEmpty())
     <div class="ns-card">

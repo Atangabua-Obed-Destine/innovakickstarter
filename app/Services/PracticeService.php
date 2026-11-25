@@ -44,6 +44,7 @@ class PracticeService
      */
     public function check(User $fellow, PracticeChallenge $challenge, array $payload): array
     {
+        app(FellowActivityService::class)->record($fellow, 'practice');
         $correct = match ($challenge->kind) {
             'quiz' => isset($payload['option']) && (int) $payload['option'] === (int) $challenge->answer_index,
             default => is_string($payload['canonical'] ?? null) && $challenge->expected_hash !== null

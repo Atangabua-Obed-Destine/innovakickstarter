@@ -177,11 +177,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Live AI Interview - Conversational voice-enabled interviews
         Route::get('/interviews/live', [\App\Http\Controllers\LiveInterviewController::class, 'lobby'])->name('interviews.live.lobby');
-        Route::post('/interviews/live/start', [\App\Http\Controllers\LiveInterviewController::class, 'start'])->name('interviews.live.start');
+        Route::post('/interviews/live/start', [\App\Http\Controllers\LiveInterviewController::class, 'start'])->name('interviews.live.start')->middleware(\App\Http\Middleware\EnsureNoPenaltyHold::class);
 
         // Interview resource and parameterized routes
-        Route::resource('interviews', InterviewController::class)->except(['edit', 'update', 'destroy']);
-        Route::post('/interviews/{interview}/start', [InterviewController::class, 'start'])->name('interviews.start');
+        Route::post('/interviews', [InterviewController::class, 'store'])->name('interviews.store')->middleware(\App\Http\Middleware\EnsureNoPenaltyHold::class);
+        Route::resource('interviews', InterviewController::class)->except(['edit', 'update', 'destroy', 'store']);
+        Route::post('/interviews/{interview}/start', [InterviewController::class, 'start'])->name('interviews.start')->middleware(\App\Http\Middleware\EnsureNoPenaltyHold::class);
         Route::post('/interviews/{interview}/cancel', [InterviewController::class, 'cancel'])->name('interviews.cancel');
         Route::post('/interviews/{interview}/complete', [InterviewController::class, 'complete'])->name('interviews.complete');
         Route::get('/interviews/{interview}/ai-room', [InterviewController::class, 'aiRoom'])->name('interviews.ai-room');
@@ -218,26 +219,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             // Track orientation ("Chapter 0")
             Route::get('/orientation', [\App\Http\Controllers\Fellow\OrientationController::class, 'show'])->name('orientation');
-            Route::post('/orientation/section', [\App\Http\Controllers\Fellow\OrientationController::class, 'section'])->name('orientation.section')->middleware('throttle:60,1');
+            Route::post('/orientation/section', [\App\Http\Controllers\Fellow\OrientationController::class, 'section'])->name('orientation.section')->middleware('throttle:60,1,orientation');
             Route::post('/orientation/quiz', [\App\Http\Controllers\Fellow\OrientationController::class, 'quiz'])->name('orientation.quiz')->middleware('throttle:20,1');
             Route::post('/orientation/complete', [\App\Http\Controllers\Fellow\OrientationController::class, 'complete'])->name('orientation.complete')->middleware('throttle:10,1');
             Route::post('/orientation/letter', [\App\Http\Controllers\Fellow\OrientationController::class, 'letter'])->name('orientation.letter')->middleware('throttle:10,1');
 
             // Interactive lessons
-            Route::post('/activities/{activity}/steps', [\App\Http\Controllers\Fellow\LessonController::class, 'step'])->name('activity.steps')->middleware('throttle:120,1');
-            Route::post('/quick-checks/{card}', [\App\Http\Controllers\Fellow\LessonController::class, 'quickCheck'])->name('quick-check')->middleware('throttle:30,1');
+            Route::post('/activities/{activity}/steps', [\App\Http\Controllers\Fellow\LessonController::class, 'step'])->name('activity.steps')->middleware('throttle:120,1,steps');
+            Route::post('/quick-checks/{card}', [\App\Http\Controllers\Fellow\LessonController::class, 'quickCheck'])->name('quick-check')->middleware('throttle:30,1,quick-check');
             Route::post('/progress/{progress}/precheck', [\App\Http\Controllers\Fellow\LessonController::class, 'precheck'])->name('precheck')->middleware('throttle:5,1');
 
             // Activity interactions
             Route::get('/activities/{activity}', [FellowCurriculumController::class, 'showActivity'])->name('activity.show');
-            Route::post('/activities/{activity}/start', [FellowCurriculumController::class, 'startActivity'])->name('activity.start');
-            Route::post('/activities/{activity}/interview', [FellowCurriculumController::class, 'launchInterview'])->name('activity.interview');
+            Route::post('/activities/{activity}/start', [FellowCurriculumController::class, 'startActivity'])->name('activity.start')->middleware(\App\Http\Middleware\EnsureNoPenaltyHold::class);
+            Route::post('/activities/{activity}/interview', [FellowCurriculumController::class, 'launchInterview'])->name('activity.interview')->middleware(\App\Http\Middleware\EnsureNoPenaltyHold::class);
             Route::post('/activities/{activity}/explain', [\App\Http\Controllers\Fellow\ExplainBackController::class, 'store'])->name('activity.explain')->middleware('throttle:6,1');
             Route::post('/activities/{activity}/feedback', [\App\Http\Controllers\Fellow\LessonFeedbackController::class, 'store'])->name('activity.feedback')->middleware('throttle:20,1');
 
             // Submission
-            Route::get('/progress/{progress}/submit', [FellowCurriculumController::class, 'submitForm'])->name('submit.form');
-            Route::post('/progress/{progress}/submit', [FellowCurriculumController::class, 'submit'])->name('submit');
+            Route::get('/progress/{progress}/submit', [FellowCurriculumController::class, 'submitForm'])->name('submit.form')->middleware(\App\Http\Middleware\EnsureNoPenaltyHold::class);
+            Route::post('/progress/{progress}/submit', [FellowCurriculumController::class, 'submit'])->name('submit')->middleware(\App\Http\Middleware\EnsureNoPenaltyHold::class);
 
             // Peer review
             Route::get('/peer-review/{progress}', [FellowCurriculumController::class, 'peerReviewForm'])->name('peer-review.form');
@@ -247,6 +248,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/badges', [FellowCurriculumController::class, 'badges'])->name('badges');
             Route::post('/badges/{badge}/share', [FellowCurriculumController::class, 'shareBadge'])->name('badges.share');
         });
+
+        // Weekly bar, Base Camp, typing, Ask a human
+        Route::get('/my-standing', [\App\Http\Controllers\Fellow\StandingController::class, 'show'])->name('standing.show');
+        Route::prefix('base-camp')->name('base-camp.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Fellow\BaseCampController::class, 'index'])->name('index');
+            Route::get('/check', [\App\Http\Controllers\Fellow\BaseCampController::class, 'check'])->name('check');
+            Route::get('/{area}/lessons/{lesson}', [\App\Http\Controllers\Fellow\BaseCampController::class, 'lesson'])->name('lesson');
+            Route::get('/{area}/test', [\App\Http\Controllers\Fellow\BaseCampController::class, 'test'])->name('test');
+            Route::post('/{area}/{kind}/{lesson?}', [\App\Http\Controllers\Fellow\BaseCampController::class, 'submit'])->name('submit')->middleware('throttle:30,1,base-camp');
+        });
+        Route::prefix('typing')->name('typing.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Fellow\TypingController::class, 'index'])->name('index');
+            Route::get('/arena', [\App\Http\Controllers\Fellow\TypingArenaController::class, 'index'])->name('arena');
+            Route::post('/arena/join', [\App\Http\Controllers\Fellow\TypingArenaController::class, 'join'])->name('arena.join')->middleware(['throttle:20,1,arena-join', \App\Http\Middleware\EnsureNoPenaltyHold::class]);
+            Route::get('/arena/races/{race}', [\App\Http\Controllers\Fellow\TypingArenaController::class, 'state'])->name('arena.state')->middleware('throttle:200,1,arena-state');
+            Route::post('/arena/races/{race}/progress', [\App\Http\Controllers\Fellow\TypingArenaController::class, 'progress'])->name('arena.progress')->middleware(['throttle:240,1,arena-progress', \App\Http\Middleware\EnsureNoPenaltyHold::class]);
+            Route::post('/sessions', [\App\Http\Controllers\Fellow\TypingController::class, 'save'])->name('save')->middleware('throttle:30,1,typing-save');
+            Route::get('/{mode}/{lesson?}', [\App\Http\Controllers\Fellow\TypingController::class, 'practice'])->name('practice')->where('mode', 'lesson|test|drill');
+        });
+        Route::get('/help', [\App\Http\Controllers\Fellow\HelpRequestController::class, 'index'])->name('help.index');
+        Route::post('/help', [\App\Http\Controllers\Fellow\HelpRequestController::class, 'store'])->name('help.store')->middleware('throttle:6,1');
 
         // Track community feed
         Route::get('/community', [\App\Http\Controllers\Fellow\CommunityController::class, 'index'])->name('community.index');
@@ -552,6 +574,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         // Curriculum review queue (not track-specific)
+        Route::prefix('support')->name('support.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\SupportController::class, 'index'])->name('index');
+            Route::post('/standings/{standing}/excuse', [\App\Http\Controllers\Admin\SupportController::class, 'excuse'])->name('excuse');
+            Route::post('/fellows/{fellow}/buddy', [\App\Http\Controllers\Admin\SupportController::class, 'buddy'])->name('buddy');
+            Route::post('/fellows/{fellow}/nudge', [\App\Http\Controllers\Admin\SupportController::class, 'nudge'])->name('nudge');
+            Route::post('/help/{help}/answer', [\App\Http\Controllers\Admin\SupportController::class, 'answer'])->name('help.answer');
+        });
         Route::get('/curriculum/lesson-feedback', [\App\Http\Controllers\Admin\LessonFeedbackController::class, 'index'])->name('curriculum.lesson-feedback');
         Route::get('/curriculum/reviews', [AdminCurriculumController::class, 'reviewQueue'])->name('curriculum.reviews');
         Route::get('/curriculum/reviews/{progress}', [AdminCurriculumController::class, 'reviewShow'])->name('curriculum.reviews.show');

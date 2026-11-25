@@ -772,6 +772,50 @@
             <a href="{{ route('curriculum.orientation') }}" class="btn-secondary whitespace-nowrap">View</a>
         </div>
     @endif
+    @if($user->hasRole('fellow') && $hasCurriculum)
+        @php
+            $standingSvc = app(\App\Services\StandingService::class);
+            $bar = $standingSvc->thisWeek($user);
+            $onHold = $standingSvc->onHold($user);
+            $gaps = app(\App\Services\FoundationService::class)->gaps($user);
+        @endphp
+        @if($onHold)
+            <div class="p-5 rounded-xl border bg-red-500/10 border-red-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <p class="text-red-300 font-semibold">⛔ Your progress is on hold</p>
+                    <p class="text-dark-300 text-sm">You missed the weekly bar and have an unpaid penalty. You can still learn and ask for help, but starting and submitting work waits until it is paid or waived.</p>
+                </div>
+                <a href="{{ route('standing.show') }}" class="btn btn-primary whitespace-nowrap">See what to do</a>
+            </div>
+        @endif
+        <a href="{{ route('standing.show') }}" class="card p-5 block hover:border-primary-500/40">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <p class="text-dark-400 text-xs uppercase tracking-wider">📏 Weekly bar · {{ $bar['days_left'] }} {{ Str::plural('day', $bar['days_left']) }} left</p>
+                    <p class="text-white font-semibold mt-1">{{ $bar['met'] ? 'Met for this week. Well done! 🎉' : 'Keep going: here is this week so far' }}</p>
+                </div>
+                <div class="flex gap-4">
+                    @foreach($bar['items'] as $item)
+                        <div class="text-center">
+                            <p class="text-lg font-bold {{ $item['met'] ? 'text-green-400' : 'text-white' }}">{{ $item['have'] }}/{{ $item['need'] }}</p>
+                            <p class="text-dark-500 text-xs">{{ $item['label'] }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            @unless($bar['enabled'])<p class="text-dark-500 text-xs mt-2">Counting starts the week of {{ $bar['starts_on']->format('j F') }}.</p>@endunless
+        </a>
+        @if($gaps)
+            <div class="card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <p class="text-dark-400 text-xs uppercase tracking-wider">⛺ Base Camp</p>
+                    <p class="text-white font-semibold mt-1">{{ $gaps === ['skills check'] ? 'Take your 15-minute skills check' : 'Strengthen your foundations: ' . implode(', ', $gaps) }}</p>
+                    <p class="text-dark-400 text-sm">{{ $gaps === ['skills check'] ? 'Typing, computer basics, maths, reading and spreadsheets: we find gaps early so no chapter feels too steep.' : 'Short lessons alongside your chapters. A little every day goes a long way.' }}</p>
+                </div>
+                <a href="{{ route($gaps === ['skills check'] ? 'base-camp.check' : 'base-camp.index') }}" class="btn btn-primary whitespace-nowrap">{{ $gaps === ['skills check'] ? 'Start the check' : 'Open Base Camp' }}</a>
+            </div>
+        @endif
+    @endif
     @php
         $flashLeft = $trackExperience ? app(\App\Services\FlashReviewService::class)->todaysCards($user, $trackExperience->track)->count() : 0;
     @endphp

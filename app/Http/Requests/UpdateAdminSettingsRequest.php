@@ -38,6 +38,18 @@ class UpdateAdminSettingsRequest extends FormRequest
             'subscriptions' => $this->subscriptionRules(),
             'points' => $this->pointsRules(),
             'penalties' => $this->penaltyRules(),
+            'standing' => [
+                'standing_enabled' => ['required', 'boolean'],
+                'standing_start_date' => ['required', 'date_format:Y-m-d'],
+                'weekly_bar_active_days' => ['required', 'integer', 'min:0', 'max:7'],
+                'weekly_bar_practice_days' => ['required', 'integer', 'min:0', 'max:7'],
+                'weekly_bar_progress_actions' => ['required', 'integer', 'min:0', 'max:20'],
+                'standing_penalty_fee' => ['required', 'integer', 'min:0', 'max:100000'],
+                'standing_penalty_from_miss' => ['required', 'integer', 'min:1', 'max:10'],
+                'foundations_typing_wpm' => ['required', 'integer', 'min:5', 'max:100'],
+                'foundations_typing_accuracy' => ['required', 'integer', 'min:50', 'max:100'],
+                'foundations_pass_percent' => ['required', 'integer', 'min:30', 'max:100'],
+            ],
             'email' => $this->emailRules(),
             default => $this->generalRules(),
         };

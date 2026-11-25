@@ -85,6 +85,7 @@
                                                 <button type="button" @click="$dispatch('mentor-ask', { message: @js('I\'m on step ' . $item['n'] . ' of this lesson: "' . $stepText . '". Can you explain this step more simply, with a small example?') }); open = false">🧩 Explain it more simply</button>
                                                 <button type="button" @click="$dispatch('mentor-ask', { message: @js('I\'m stuck on step ' . $item['n'] . ': "' . $stepText . '". Give me a hint for the next small thing to try, not the full answer.') }); open = false">💡 Give me a hint</button>
                                                 <button type="button" @click="$dispatch('mentor-ask', { message: @js('For step ' . $item['n'] . ' ("' . $stepText . '"), show me a similar example on different data so I can see the idea, without solving my exercise.') }); open = false">🔎 Show an example</button>
+                                                <button type="button" @click="$dispatch('ask-human', { question: @js('About step ' . $item['n'] . ' of "' . $activity->title . '" ("' . \Illuminate\Support\Str::limit($item['plain'], 120) . '"): ') , activity_id: @js($activity->id), step_key: @js($item['key']) }); open = false">🙋 Ask a human</button>
                                             </div>
                                         </div>
                                     @endif

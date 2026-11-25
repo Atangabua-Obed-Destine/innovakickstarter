@@ -52,7 +52,40 @@
             <span>Practice Lab</span>
         </a>
 
-        <a href="{{ route('briefs.index') }}" 
+        <a href="{{ route('base-camp.index') }}"
+           class="nav-link {{ str_starts_with($currentRoute, 'base-camp') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21l9-16 9 16H3zm9-16v16"/>
+            </svg>
+            <span>Base Camp</span>
+        </a>
+
+        <a href="{{ route('typing.index') }}"
+           class="nav-link {{ str_starts_with($currentRoute, 'typing') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect x="2" y="6" width="20" height="12" rx="2" stroke-width="2"/>
+                <path stroke-linecap="round" stroke-width="2" d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>
+            </svg>
+            <span>Typing</span>
+        </a>
+
+        <a href="{{ route('standing.show') }}"
+           class="nav-link {{ str_starts_with($currentRoute, 'standing') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19h16M7 16V9m5 7V5m5 11v-4"/>
+            </svg>
+            <span>Weekly Bar</span>
+        </a>
+
+        <a href="{{ route('help.index') }}"
+           class="nav-link {{ str_starts_with($currentRoute, 'help') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>Ask a Human</span>
+        </a>
+
+        <a href="{{ route('briefs.index') }}"
            class="nav-link {{ str_starts_with($currentRoute, 'briefs') ? 'nav-link-active' : '' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
@@ -315,6 +348,18 @@
             @endphp
             @if($pendingReviews > 0)
                 <span class="ml-auto badge badge-warning">{{ $pendingReviews }}</span>
+            @endif
+        </a>
+
+        @php $openHelp = \App\Models\HelpRequest::where('status', 'open')->count(); @endphp
+        <a href="{{ route('admin.support.index') }}"
+           class="nav-link {{ str_starts_with($currentRoute, 'admin.support') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <span>Support</span>
+            @if($openHelp > 0)
+                <span class="ml-auto badge badge-warning">{{ $openHelp }}</span>
             @endif
         </a>
 

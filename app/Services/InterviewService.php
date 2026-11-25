@@ -191,6 +191,7 @@ class InterviewService
      */
     public function completeAiInterview(InterviewSession $interview, int $skipped = 0, ?string $feedback = null): InterviewSession
     {
+        app(FellowActivityService::class)->record($interview->fellow, 'interview');
         // Latest answer per question (a fellow may retry an unscored answer).
         $latest = collect($interview->responses ?? [])
             ->keyBy(fn ($r) => (int) ($r['question_index'] ?? 0));

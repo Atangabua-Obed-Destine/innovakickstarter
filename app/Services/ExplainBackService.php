@@ -76,6 +76,7 @@ class ExplainBackService
         $earnedBefore = Explanation::where('fellow_id', $fellow->id)->where('curriculum_activity_id', $activity->id)->where('xp_awarded', '>', 0)->exists();
         $xp = $passed && !$earnedBefore ? self::XP : 0;
 
+        app(\App\Services\FellowActivityService::class)->record($fellow, 'explain');
         Explanation::create([
             'fellow_id' => $fellow->id, 'curriculum_activity_id' => $activity->id, 'text' => $text, 'score' => $score, 'feedback' => $feedback,
             'correct' => $passed, 'xp_awarded' => $xp, 'answered_on' => now()->toDateString(), 'model' => $result['model'],

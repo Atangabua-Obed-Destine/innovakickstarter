@@ -91,6 +91,7 @@ class OrientationService
             $done[] = $section;
             $record->sections_done = $done;
             $record->save();
+            app(FellowActivityService::class)->record($record->fellow, 'orientation');
         }
     }
 
@@ -177,6 +178,16 @@ class OrientationService
             ['icon' => '🎓', 'name' => 'Certificates & public portfolio', 'what' => 'Finish every activity of a skill to earn a verifiable certificate. Your approved projects build a public portfolio page you can share.', 'gives' => 'Proof of skill that employers can check in one click.'],
         ];
 
+        $bar = app(StandingService::class)->settings();
+        if ($bar['enabled']) {
+            array_splice($cards, 2, 0, [['icon' => '📏', 'name' => 'The weekly bar', 'what' => "Every week: be active on {$bar['active_days']} days, practise on {$bar['practice_days']} days and make {$bar['progress_actions']} curriculum "
+                . ($bar['progress_actions'] === 1 ? 'action' : 'actions') . '. Miss it once: a warning.' . ($bar['fee'] > 0 ? ' Miss it ' . ($bar['fee_from'] === 2 ? 'twice in a row' : "{$bar['fee_from']} weeks in a row") . ': a ' . number_format($bar['fee']) . ' FCFA penalty, and starting or submitting work waits until it is paid.' : ''),
+                'gives' => 'The steady rhythm that gets people hired. Serious reasons can always be excused by the team.']]);
+        }
+        $cards[] = ['icon' => '⛺', 'name' => 'Base Camp', 'what' => 'A 15-minute skills check (typing, computer basics, maths, reading, spreadsheets), then short lessons for anything that needs a boost, alongside your first chapters.', 'gives' => 'Nobody gets left behind because of a missing basic.'];
+        $cards[] = ['icon' => '⌨️', 'name' => 'Typing trainer & Arena', 'what' => 'Lessons from the home row to real code from your track, a daily 5-minute drill, and live races against classmates in your league.', 'gives' => 'Typing fast frees your mind for thinking.'];
+        $cards[] = ['icon' => '🙋', 'name' => 'Ask a human', 'what' => 'When AI hints are not enough, send your question to the I-NNOVA team from any lesson. A person answers.', 'gives' => 'You are never alone with a problem.'];
+
         if ($types->contains('mock_interview')) {
             array_splice($cards, 8, 0, [['icon' => '🎙️', 'name' => 'Mock interviews', 'what' => 'Practice interviews on what you just learned, with an AI interviewer or a person. Retry as often as you need.', 'gives' => 'No surprises in a real interview.']]);
         }
@@ -219,7 +230,18 @@ class OrientationService
     protected function quizBank(Track $track): array
     {
         $mentor = app(MentorService::class)->persona($track)['short'];
+        $bar = app(StandingService::class)->settings();
+        $barQuestion = $bar['enabled'] && $bar['fee'] > 0 ? [[
+            'key' => 'bar', 'question' => 'What happens if you miss the weekly bar ' . ($bar['fee_from'] === 2 ? 'two weeks in a row' : "{$bar['fee_from']} weeks in a row") . '?',
+            'options' => ['Nothing: it is only advice', 'A ' . number_format($bar['fee']) . ' FCFA penalty, and starting or submitting work is on hold until it is paid', 'I am removed from the program the same day', 'My Career Capital score goes back to zero'],
+            'answer' => 1, 'explain' => 'The penalty and hold apply until it is paid, or until the team excuses it for a serious reason. Meeting the bar again resets the count.',
+        ]] : [];
 
+        return [...$barQuestion, ...$this->baseQuizBank($mentor)];
+    }
+
+    protected function baseQuizBank(string $mentor): array
+    {
         return [
             ['key' => 'clock', 'question' => "When does an activity's deadline start counting?",
                 'options' => ['When I press Start', 'When the activity opens (unlocks) for me', 'When my review partner starts it', 'After the team reviews my previous activity'],

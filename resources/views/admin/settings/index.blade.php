@@ -56,7 +56,12 @@
                     class="px-4 py-2 rounded-lg font-medium transition-colors">
                 Subscriptions
             </button>
-            <button @click="activeTab = 'email'" 
+            <button @click="activeTab = 'standing'"
+                    :class="activeTab === 'standing' ? 'bg-primary-600 text-white' : 'bg-dark-700 text-dark-300 hover:bg-dark-600'"
+                    class="px-4 py-2 rounded-lg font-medium transition-colors">
+                Standing
+            </button>
+            <button @click="activeTab = 'email'"
                     :class="activeTab === 'email' ? 'bg-primary-600 text-white' : 'bg-dark-700 text-dark-300 hover:bg-dark-600'"
                     class="px-4 py-2 rounded-lg font-medium transition-colors">
                 Email
@@ -302,6 +307,70 @@
                 
                 <div class="mt-6 flex justify-end">
                     <button type="submit" class="btn-primary">Save Interview Settings</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Weekly bar & standing -->
+        <div x-show="activeTab === 'standing'" x-cloak>
+            @php $st = fn ($k, $d) => \App\Models\AdminSetting::get($k, $d); @endphp
+            <form action="{{ route('admin.settings.update', 'standing') }}" method="POST" class="card p-6">
+                @csrf
+                @method('PATCH')
+                <h3 class="text-lg font-semibold text-white mb-1">Weekly bar & penalties</h3>
+                <p class="text-dark-400 text-sm mb-6">What every fellow must do each week (Monday to Sunday), and what happens when they don't. Their first week and weeks with nothing open to work on are never counted against them. Excuse a week or waive a penalty from Support or Fees.</p>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="md:col-span-3 flex items-center gap-3">
+                        <input type="hidden" name="standing_enabled" value="0">
+                        <input type="checkbox" name="standing_enabled" value="1" id="standing_enabled" class="accent-primary-500" @checked($st('standing_enabled', true))>
+                        <label for="standing_enabled" class="text-dark-200">Weekly bar is on (warnings, penalties and holds)</label>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-dark-300 mb-2">First week counted (a Monday)</label>
+                        <input type="date" name="standing_start_date" value="{{ $st('standing_start_date', '2026-11-30') }}" class="input-field w-full" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-dark-300 mb-2">Active days per week</label>
+                        <input type="number" name="weekly_bar_active_days" value="{{ $st('weekly_bar_active_days', 3) }}" min="0" max="7" class="input-field w-full">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-dark-300 mb-2">Practice days per week</label>
+                        <input type="number" name="weekly_bar_practice_days" value="{{ $st('weekly_bar_practice_days', 3) }}" min="0" max="7" class="input-field w-full">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-dark-300 mb-2">Curriculum actions per week</label>
+                        <input type="number" name="weekly_bar_progress_actions" value="{{ $st('weekly_bar_progress_actions', 1) }}" min="0" max="20" class="input-field w-full">
+                        <p class="text-dark-500 text-xs mt-1">Starting or submitting work, ticking lesson steps</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-dark-300 mb-2">Penalty fee (FCFA)</label>
+                        <input type="number" name="standing_penalty_fee" value="{{ $st('standing_penalty_fee', 500) }}" min="0" max="100000" step="50" class="input-field w-full">
+                        <p class="text-dark-500 text-xs mt-1">0 = warnings only, no fee or hold</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-dark-300 mb-2">Fee from consecutive miss number</label>
+                        <input type="number" name="standing_penalty_from_miss" value="{{ $st('standing_penalty_from_miss', 2) }}" min="1" max="10" class="input-field w-full">
+                        <p class="text-dark-500 text-xs mt-1">2 = warning first, fee on the 2nd miss in a row</p>
+                    </div>
+                </div>
+                <h3 class="text-lg font-semibold text-white mt-8 mb-1">Base Camp targets</h3>
+                <p class="text-dark-400 text-sm mb-4">When a foundation area counts as ready.</p>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-dark-300 mb-2">Typing target (words per minute)</label>
+                        <input type="number" name="foundations_typing_wpm" value="{{ $st('foundations_typing_wpm', 25) }}" min="5" max="100" class="input-field w-full">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-dark-300 mb-2">Typing accuracy target (%)</label>
+                        <input type="number" name="foundations_typing_accuracy" value="{{ $st('foundations_typing_accuracy', 90) }}" min="50" max="100" class="input-field w-full">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-dark-300 mb-2">Area ready from (%)</label>
+                        <input type="number" name="foundations_pass_percent" value="{{ $st('foundations_pass_percent', 70) }}" min="30" max="100" class="input-field w-full">
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end">
+                    <button type="submit" class="btn-primary">Save Standing Settings</button>
                 </div>
             </form>
         </div>

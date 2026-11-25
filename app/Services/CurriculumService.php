@@ -209,6 +209,7 @@ class CurriculumService
         }
 
         $progress->markInProgress();
+        app(FellowActivityService::class)->record($fellow, 'start');
 
         // For mock_interview activities, create an interview session
         if ($activity->requiresInterviewSession()) {
@@ -460,6 +461,8 @@ class CurriculumService
                     }
                 }
             }
+
+            app(FellowActivityService::class)->record($fellow, 'submit');
 
             return $progress->fresh();
         });

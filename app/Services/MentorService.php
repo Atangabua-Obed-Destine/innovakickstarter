@@ -86,6 +86,7 @@ class MentorService
         $base = ['fellow_id' => $fellow->id, 'track_id' => $track->id, 'context_type' => $type, 'context_id' => $id];
         MentorMessage::create($base + ['role' => 'user', 'content' => $message]);
         MentorMessage::create($base + ['role' => 'assistant', 'content' => $reply, 'model' => $result['model']]);
+        app(FellowActivityService::class)->record($fellow, 'mentor');
 
         return ['ok' => true, 'reply' => $reply, 'remaining' => self::DAILY_LIMIT - $used - 1];
     }

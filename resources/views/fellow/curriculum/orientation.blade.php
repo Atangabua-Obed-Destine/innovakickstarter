@@ -522,8 +522,8 @@
     {{-- ========================= 8. QUIZ ========================= --}}
     <section x-show="step === 'quiz'" x-cloak class="or-stage card p-6 sm:p-8">
         <p class="or-kicker">The rules</p>
-        <h2 class="or-h mt-1">Five questions to make sure nothing surprises you later</h2>
-        <p class="text-dark-300 mt-2">Get all five right to continue. You can try again as often as you need.</p>
+        <h2 class="or-h mt-1">A few questions to make sure nothing surprises you later</h2>
+        <p class="text-dark-300 mt-2">Get them all right to continue. You can try again as often as you need.</p>
         <div class="space-y-5 mt-6">
             <template x-for="(q, qi) in quiz" :key="q.key">
                 <div class="tl-card" :style="quizResults[q.key] ? (quizResults[q.key].correct ? 'border-color: rgba(34,197,94,.5)' : 'border-color: rgba(248,113,113,.5)') : ''">

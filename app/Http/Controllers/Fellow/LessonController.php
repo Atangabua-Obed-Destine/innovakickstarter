@@ -43,6 +43,10 @@ class LessonController extends Controller
             return $row->checked_steps;
         });
 
+        if ($data['done']) {
+            app(\App\Services\FellowActivityService::class)->record($request->user(), 'step');
+        }
+
         return response()->json(['ok' => true, 'checked' => $checked]);
     }
 

@@ -76,12 +76,13 @@
             <textarea class="mc-input" rows="2" x-model="draft" maxlength="1500" placeholder="Ask a question... (Enter to send, Shift+Enter for a new line)"
                       @keydown.enter="if (!$event.shiftKey) { $event.preventDefault(); send(); }" :disabled="thinking"></textarea>
             <div class="flex items-center justify-between mt-1">
-                <span class="text-dark-500" style="font-size:11px;" x-text="remaining !== null ? remaining + ' questions left today · conversations are saved' : 'Conversations are saved'"></span>
+                <span class="text-dark-500" style="font-size:11px;"><span x-text="remaining !== null ? remaining + ' left today · ' : ''"></span><button type="button" class="text-primary-400 hover:text-primary-300" @click="$dispatch('ask-human', { question: draft, activity_id: cfg.contextType === 'activity' ? cfg.contextId : null })">🙋 Ask a human instead</button></span>
                 <button type="submit" class="btn btn-primary btn-sm" :disabled="thinking || draft.trim().length < 2">Send</button>
             </div>
         </form>
     </div>
 </div>
+@include('partials.help.ask')
 @once
 @push('scripts')
 <script>

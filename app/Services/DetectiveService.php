@@ -44,6 +44,7 @@ class DetectiveService
     /** @return array{correct: bool, solved: bool, xp: int, solution: ?string} */
     public function answer(User $fellow, DetectiveCase $case, string $key, $value): array
     {
+        app(FellowActivityService::class)->record($fellow, 'detective');
         $question = collect($case->questions)->firstWhere('key', $key);
         abort_unless($question, 404);
         $expected = $case->answer_key[$key] ?? null;

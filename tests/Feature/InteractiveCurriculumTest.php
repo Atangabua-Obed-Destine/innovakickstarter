@@ -90,9 +90,9 @@ class InteractiveCurriculumTest extends TestCase
             'why' => 'I want to help my family business make decisions with data, and get my first analyst job.', 'signature' => 'Ada Lovelace'];
         $this->postJson(route('curriculum.orientation.complete'), $commit)->assertStatus(422);
 
-        $wrong = $this->postJson(route('curriculum.orientation.quiz'), ['answers' => ['clock' => 0, 'late' => 2, 'ai' => 1, 'score' => 2, 'stuck' => 0]])->assertOk();
+        $wrong = $this->postJson(route('curriculum.orientation.quiz'), ['answers' => ['bar' => 1, 'clock' => 0, 'late' => 2, 'ai' => 1, 'score' => 2, 'stuck' => 0]])->assertOk();
         $wrong->assertJson(['passed' => false])->assertJsonPath('results.clock.correct', false)->assertJsonPath('results.clock.explain', null);
-        $this->postJson(route('curriculum.orientation.quiz'), ['answers' => ['clock' => 1, 'late' => 2, 'ai' => 1, 'score' => 2, 'stuck' => 0]])->assertJson(['passed' => true]);
+        $this->postJson(route('curriculum.orientation.quiz'), ['answers' => ['bar' => 1, 'clock' => 1, 'late' => 2, 'ai' => 1, 'score' => 2, 'stuck' => 0]])->assertJson(['passed' => true]);
 
         $this->postJson(route('curriculum.orientation.complete'), ['why' => 'short'] + $commit)->assertStatus(422);
         $this->postJson(route('curriculum.orientation.complete'), $commit)->assertJson(['ok' => true, 'first' => true]);

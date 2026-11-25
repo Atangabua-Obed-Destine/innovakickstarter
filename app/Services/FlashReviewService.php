@@ -118,6 +118,7 @@ class FlashReviewService
         $xpAllowed = $source === 'lesson' ? !(clone $earlier)->exists() : !(clone $earlier)->whereDate('answered_on', now()->toDateString())->exists();
         $xp = $correct && $xpAllowed ? self::XP_PER_CORRECT : 0;
         FlashAnswer::create(['fellow_id' => $fellow->id, 'card_id' => $card->id, 'correct' => $correct, 'xp_awarded' => $xp, 'source' => $source, 'answered_on' => now()->toDateString()]);
+        app(FellowActivityService::class)->record($fellow, $source === 'lesson' ? 'quick_check' : 'review');
 
         $track = Track::find($card->track_id);
         if ($correct) {

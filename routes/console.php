@@ -26,3 +26,10 @@ Schedule::command('internships:complete-expired')
 
 // Pair fellows waiting for a review partner (collaborative activities); flag long waits to admins
 Schedule::command('curriculum:match-review-partners')->dailyAt('07:00')->withoutOverlapping();
+
+// Weekly bar: evaluate the week that just ended (warnings, penalties, holds)
+Schedule::command('standing:evaluate')->weeklyOn(1, '01:00')->withoutOverlapping()
+    ->appendOutputTo(storage_path('logs/weekly-standing.log'));
+
+// Early warning: kind nudges for fellows who are struggling (each signal at most once a week)
+Schedule::command('support:nudge')->dailyAt('08:30')->withoutOverlapping();

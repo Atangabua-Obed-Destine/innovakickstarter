@@ -27,7 +27,9 @@ class EnsureInternshipApproved
         }
 
         // Check for overdue fees past grace period (blocks all fellows, regardless of type)
-        $hasOverdueFees = \App\Models\Fee::forFellow($user->id)->overduePastGrace()->exists();
+        // Weekly-bar penalties only hold curriculum progress (EnsureNoPenaltyHold), never the whole platform.
+        $hasOverdueFees = \App\Models\Fee::forFellow($user->id)->overduePastGrace()
+            ->where(fn ($q) => $q->whereNull('billable_type')->orWhere('billable_type', '!=', \App\Models\WeeklyStanding::class))->exists();
         if ($hasOverdueFees) {
             if ($request->routeIs('fees.*', 'logout', 'profile.*', 'verification.*')) {
                 return $next($request);
