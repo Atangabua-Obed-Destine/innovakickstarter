@@ -89,18 +89,12 @@ class AIInterviewService
         }
 
         try {
-            $result = $this->callOpenAI($this->buildActivityQuestionPrompt($activity, $type, $difficulty), true);
-            $questions = collect($result['questions'] ?? (array_is_list($result) ? $result : []))
-                ->filter(fn ($q) => is_array($q) && is_string($q['question'] ?? null) && trim($q['question']) !== '')
-                ->map(fn ($q) => [
-                    'question' => trim($q['question']),
-                    'type' => is_string($q['type'] ?? null) ? $q['type'] : 'conceptual',
-                    'hints' => array_values(array_filter((array) ($q['hints'] ?? []), 'is_string')),
-                    'criteria' => array_values(array_filter((array) ($q['criteria'] ?? []), 'is_string')),
-                ])
-                ->values()
-                ->take(6)
-                ->all();
+            $prompt = $this->buildActivityQuestionPrompt($activity, $type, $difficulty);
+            // The model occasionally answers in another shape: one retry.
+            $questions = $this->parseQuestions($this->callOpenAI($prompt, true));
+            if (count($questions) < 3) {
+                $questions = $this->parseQuestions($this->callOpenAI($prompt, true));
+            }
 
             if (count($questions) < 3) {
                 throw new \RuntimeException('The AI returned too few usable questions.');
@@ -114,6 +108,38 @@ class AIInterviewService
 
             return $this->getFallbackQuestions($type, $difficulty);
         }
+    }
+
+    /**
+     * Questions from an AI answer: {"questions": [...]}, a bare list, or the
+     * first list of question objects under any key; the text may be under
+     * "question", "text" or "prompt".
+     */
+    protected function parseQuestions(array $result): array
+    {
+        $list = $result['questions'] ?? null;
+        if (!is_array($list)) {
+            $list = array_is_list($result) ? $result : collect($result)->first(fn ($v) => is_array($v) && array_is_list($v) && is_array($v[0] ?? null));
+        }
+
+        return collect(is_array($list) ? $list : [])
+            ->map(function ($q) {
+                if (is_string($q)) {
+                    $q = ['question' => $q];
+                }
+                $text = is_array($q) ? ($q['question'] ?? $q['text'] ?? $q['prompt'] ?? null) : null;
+
+                return is_string($text) && trim($text) !== '' ? [
+                    'question' => trim($text),
+                    'type' => is_string($q['type'] ?? null) ? $q['type'] : 'conceptual',
+                    'hints' => array_values(array_filter((array) ($q['hints'] ?? []), 'is_string')),
+                    'criteria' => array_values(array_filter((array) ($q['criteria'] ?? []), 'is_string')),
+                ] : null;
+            })
+            ->filter()
+            ->values()
+            ->take(6)
+            ->all();
     }
 
     protected function buildActivityQuestionPrompt(\App\Models\TrackCurriculumActivity $activity, InterviewType $type, string $difficulty): string

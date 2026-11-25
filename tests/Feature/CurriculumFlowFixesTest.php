@@ -195,6 +195,19 @@ class CurriculumFlowFixesTest extends TestCase
             && str_contains($r['messages'][1]['content'], 'Selecting & Filtering Data'));
     }
 
+    public function test_question_answers_in_another_shape_are_read_and_a_useless_one_is_retried(): void
+    {
+        [, , $interview] = $this->startMockInterview();
+        $answer = fn (array $content) => ['choices' => [['message' => ['content' => json_encode($content)]]]];
+        Http::fake(['api.groq.com/*' => Http::sequence()
+            ->push($answer(['note' => 'Here are some questions']))
+            ->push($answer(['interview_questions' => [['text' => 'What is a DataFrame index?'], ['prompt' => 'How do you filter rows?'], ['question' => 'What does merge(how="left") keep?']]]))]);
+
+        $this->actingAs($this->fellow)->getJson(route('interviews.questions', $interview))
+            ->assertOk()->assertJsonCount(3, 'questions')->assertJsonPath('questions.1.question', 'How do you filter rows?');
+        Http::assertSentCount(2);
+    }
+
     // ---------------------------------------------------------------- deadlines
 
     public function test_a_deadline_counts_from_when_the_activity_opens(): void
