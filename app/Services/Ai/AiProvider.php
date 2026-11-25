@@ -24,6 +24,9 @@ class AiProvider
             'default_model' => 'gpt-4o',
             'default_review_model' => null, // same as the interview model
             'interview_effort' => null,
+            'mentor_model' => 'gpt-4o-mini',
+            'mentor_max_tokens' => 600,
+            'mentor_params' => [],
         ],
         'groq' => [
             'label' => 'Groq',
@@ -37,6 +40,12 @@ class AiProvider
             'default_model' => 'openai/gpt-oss-20b',
             'default_review_model' => 'openai/gpt-oss-120b',
             'interview_effort' => null, // default effort answers in ~1 s
+            // The mentor has its own model so it never uses up the interview/review quotas
+            // (free tier: limits are per model). Reasoning stays hidden from the reply.
+            // This model allows ~1,000 output tokens per minute: keep replies short.
+            'mentor_model' => 'qwen/qwen3.8-27b',
+            'mentor_max_tokens' => 700,
+            'mentor_params' => ['reasoning_format' => 'hidden'],
         ],
         'gemini' => [
             'label' => 'Google Gemini',
@@ -49,6 +58,9 @@ class AiProvider
             'default_review_model' => 'gemini-3.5-flash',
             // Default thinking takes ~6 s per interview answer; "low" ~3.5 s, same scores.
             'interview_effort' => 'low',
+            'mentor_model' => 'gemini-3.5-flash',
+            'mentor_max_tokens' => 2500, // thinking counts against it
+            'mentor_params' => ['reasoning_effort' => 'low'],
         ],
     ];
 
@@ -106,6 +118,25 @@ class AiProvider
         $provider ??= self::name();
 
         return (string) (config("services.{$provider}.model") ?: self::PROVIDERS[$provider]['default_model']);
+    }
+
+    /** Model for the track mentor chat. */
+    public static function mentorModel(?string $provider = null): string
+    {
+        $provider ??= self::name();
+
+        return (string) (config("services.{$provider}.mentor_model") ?: self::PROVIDERS[$provider]['mentor_model'] ?? self::model($provider));
+    }
+
+    public static function mentorMaxTokens(?string $provider = null): int
+    {
+        return (int) (self::PROVIDERS[$provider ?? self::name()]['mentor_max_tokens'] ?? 700);
+    }
+
+    /** Extra request parameters for a purpose (e.g. hidden reasoning for the mentor). */
+    public static function extraParams(string $purpose, ?string $provider = null): array
+    {
+        return $purpose === 'mentor' ? (self::PROVIDERS[$provider ?? self::name()]['mentor_params'] ?? []) : [];
     }
 
     /** Model for reviewing submissions (needs strict JSON-schema output). */

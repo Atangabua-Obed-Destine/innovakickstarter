@@ -192,4 +192,5 @@ function practiceRunner(cfg) {
 }
 </script>
 @endpush
+@include('partials.mentor.chat', ['track' => $challenge->track, 'contextType' => 'challenge', 'contextId' => $challenge->id])
 @endsection

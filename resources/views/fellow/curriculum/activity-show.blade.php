@@ -745,4 +745,7 @@
         </div>
     </div>
 </div>
+@if($activity->track)
+    @include('partials.mentor.chat', ['track' => $activity->track, 'contextType' => 'activity', 'contextId' => $activity->id])
+@endif
 @endsection

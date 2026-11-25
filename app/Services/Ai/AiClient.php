@@ -41,7 +41,11 @@ class AiClient
         $errors = [];
         foreach ($chain as $i => $provider) {
             $last = $i === count($chain) - 1;
-            $model = $purpose === 'review' ? AiProvider::reviewModel($provider) : AiProvider::model($provider);
+            $model = match ($purpose) {
+                'review' => AiProvider::reviewModel($provider),
+                'mentor' => AiProvider::mentorModel($provider),
+                default => AiProvider::model($provider),
+            };
             $body = is_callable($payload) ? $payload($provider) : $payload;
 
             try {
@@ -71,9 +75,9 @@ class AiClient
         foreach ($efforts as $i => $effort) {
             try {
                 return $this->request($provider, $options, $last)
-                    ->post(AiProvider::chatUrl($provider), array_filter($body + [
+                    ->post(AiProvider::chatUrl($provider), array_filter($body + AiProvider::extraParams($purpose, $provider) + [
                         'model' => $model,
-                        'max_tokens' => AiProvider::maxTokens($answerTokens, $provider),
+                        'max_tokens' => $purpose === 'mentor' ? AiProvider::mentorMaxTokens($provider) : AiProvider::maxTokens($answerTokens, $provider),
                         'reasoning_effort' => $effort,
                     ], fn ($value) => $value !== null));
             } catch (RequestException $e) {

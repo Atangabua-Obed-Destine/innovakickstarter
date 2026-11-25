@@ -230,6 +230,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/badges/{badge}/share', [FellowCurriculumController::class, 'shareBadge'])->name('badges.share');
         });
 
+        // AI track mentor
+        Route::get('/ai-mentor', [\App\Http\Controllers\Fellow\MentorController::class, 'index'])->name('ai-mentor.index');
+        Route::get('/ai-mentor/history', [\App\Http\Controllers\Fellow\MentorController::class, 'history'])->name('ai-mentor.history');
+        Route::post('/ai-mentor/ask', [\App\Http\Controllers\Fellow\MentorController::class, 'ask'])->name('ai-mentor.ask')->middleware('throttle:8,1');
+
         // Practice Lab (self-checking challenges; XP is separate from Career Capital)
         Route::get('/practice', [\App\Http\Controllers\Fellow\PracticeController::class, 'index'])->name('practice.index');
         Route::get('/practice/{challenge}', [\App\Http\Controllers\Fellow\PracticeController::class, 'show'])->name('practice.show');
