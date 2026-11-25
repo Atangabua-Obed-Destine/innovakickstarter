@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Freeze demo: waiting the wrong way and the right way</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+    button { font-size: 1rem; padding: 0.6rem 1rem; margin: 0.25rem 0; }
+    #log { background: #f4f4f4; padding: 0.75rem; min-height: 4rem; white-space: pre-line; }
+  </style>
+</head>
+<body>
+  <h1>Waiting without freezing the page</h1>
+  <p>Click <strong>Count customers</strong> a few times to check the page responds. Then try each wait button and keep clicking <strong>Count customers</strong> while it waits.</p>
+  <p><button id="count">Count customers</button> Customers: <strong id="customers">0</strong></p>
+  <p><button id="busy">Wait 3 seconds the WRONG way (busy loop)</button></p>
+  <p><button id="await">Wait 3 seconds the RIGHT way (await)</button></p>
+  <div id="log" aria-live="polite"></div>
+
+  <script>
+    const log = document.querySelector('#log');
+    let customers = 0;
+
+    document.querySelector('#count').addEventListener('click', () => {
+      customers += 1;
+      document.querySelector('#customers').textContent = customers;
+    });
+
+    // WRONG: this loop keeps JavaScript busy, so the page cannot react to clicks.
+    document.querySelector('#busy').addEventListener('click', () => {
+      log.textContent = 'Busy loop started...';
+      const end = Date.now() + 3000;
+      while (Date.now() < end) {
+        // doing nothing, but blocking everything
+      }
+      log.textContent += '\nBusy loop finished. Did your clicks count while it ran?';
+    });
+
+    // RIGHT: await a Promise. JavaScript is free to handle clicks while it waits.
+    function wait(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    document.querySelector('#await').addEventListener('click', async () => {
+      log.textContent = 'Waiting with await...';
+      await wait(3000);
+      log.textContent += '\nDone. Your clicks counted while we waited.';
+    });
+  </script>
+</body>
+</html>

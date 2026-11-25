@@ -1,0 +1,77 @@
+/* Wholesale delivery page. It has accessibility and responsive problems.
+   Find them with Lighthouse, the keyboard and a 360px screen. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #1f2937;
+}
+
+h1 {
+  font-size: 40px;
+  color: #14532d;
+}
+
+h2, h4 { color: #14532d; }
+
+main { max-width: 60rem; margin: 0 auto; padding: 1rem; }
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 6px solid #14532d;
+}
+
+.phone-link { color: #14532d; font-weight: 700; }
+
+.shop-photo {
+  width: 700px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  color: #fbbf24;
+  background: #fff;
+  border: 2px solid #fbbf24;
+  border-radius: 999px;
+}
+
+.note {
+  color: #b0b7c3;
+}
+
+form {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 28rem;
+}
+
+input, select {
+  padding: 0.6rem;
+  font: inherit;
+  border: 1px solid #d1d5db;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  text-align: center;
+  color: #fff;
+  background: #14532d;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+a:focus, input:focus, select:focus, button:focus {
+  outline: none;
+}
+
+footer { padding: 1rem; text-align: center; border-top: 1px solid #d1d5db; }

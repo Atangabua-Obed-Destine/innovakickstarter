@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nkwen Traders: live products</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Nkwen Traders</h1>
+    <p>Today's prices and stock, live from head office.</p>
+  </header>
+
+  <main>
+    <form id="controls" class="controls">
+      <label>Branch
+        <select id="branch">
+          <option value="NKW">Nkwen</option>
+        </select>
+      </label>
+      <label>Practice mode
+        <select id="practice">
+          <option value="">Normal</option>
+          <option value="slow">Slow network (2.5 s)</option>
+          <option value="error">Server error (500)</option>
+        </select>
+      </label>
+    </form>
+
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+    <button id="retry" type="button" hidden>Try again</button>
+
+    <section id="products" class="grid" aria-label="Products"></section>
+  </main>
+
+  <script src="nkwen-api.js"></script>
+  <script src="format.js"></script>
+  <script src="view.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

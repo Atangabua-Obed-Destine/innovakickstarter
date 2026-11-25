@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stock board | Nkwen Traders</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1 id="board-title">Stock board</h1>
+    <p id="board-note">Loading...</p>
+
+    <!-- Each product row is empty. page.js fills it from products.js. -->
+    <ul id="product-list">
+      <li class="product" data-id="6"><h2 class="name"></h2><p class="price"></p><p class="badge"></p><button type="button" class="add">Add to basket</button></li>
+      <li class="product" data-id="2"><h2 class="name"></h2><p class="price"></p><p class="badge"></p><button type="button" class="add">Add to basket</button></li>
+      <li class="product" data-id="5"><h2 class="name"></h2><p class="price"></p><p class="badge"></p><button type="button" class="add">Add to basket</button></li>
+      <li class="product" data-id="7"><h2 class="name"></h2><p class="price"></p><p class="badge"></p><button type="button" class="add">Add to basket</button></li>
+      <li class="product" data-id="9"><h2 class="name"></h2><p class="price"></p><p class="badge"></p><button type="button" class="add">Add to basket</button></li>
+      <li class="product" data-id="14"><h2 class="name"></h2><p class="price"></p><p class="badge"></p><button type="button" class="add">Add to basket</button></li>
+    </ul>
+  </main>
+
+  <!-- Order matters: data first, then helpers, then the code that uses them. -->
+  <script src="products.js"></script>
+  <script src="format.js"></script>
+  <script src="page.js"></script>
+</body>
+</html>

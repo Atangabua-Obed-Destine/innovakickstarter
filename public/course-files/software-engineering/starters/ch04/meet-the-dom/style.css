@@ -1,0 +1,10 @@
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif; line-height: 1.5; color: #1f2937; }
+main { max-width: 48rem; margin: 0 auto; padding: 1rem; }
+h1, h2 { color: #14532d; }
+img { max-width: 100%; height: auto; }
+.low { font-weight: 700; color: #92400e; }
+#status { padding: 0.5rem 1rem; background: #f3f4f6; border-left: 6px solid #14532d; }
+#self-check { padding-left: 1.25rem; }
+#self-check .pass { color: #14532d; }
+#self-check .fail { color: #b91c1c; }

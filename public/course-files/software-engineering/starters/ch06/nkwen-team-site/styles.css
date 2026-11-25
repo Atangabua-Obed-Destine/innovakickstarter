@@ -1,0 +1,12 @@
+* { box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; margin: 0; color: #1d1d1d; background: #fafaf7; line-height: 1.5; }
+header { background: #14532d; color: #fff; padding: 1rem; }
+header h1 { margin: 0; font-size: 1.5rem; }
+nav ul { list-style: none; display: flex; gap: 1rem; padding: 0; margin: 0.5rem 0 0; flex-wrap: wrap; }
+nav a { color: #fff; }
+main { max-width: 60rem; margin: 0 auto; padding: 1rem; }
+.list { list-style: none; padding: 0; display: grid; gap: 0.5rem; }
+.list li { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 0.6rem 0.8rem; }
+.muted { color: #555; }
+input, select, button { font: inherit; padding: 0.4rem 0.6rem; }
+footer { text-align: center; padding: 2rem 1rem; color: #555; }

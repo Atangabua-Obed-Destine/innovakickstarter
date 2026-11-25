@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>First fetch: Nkwen Traders API</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 48rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+    button { font-size: 1rem; padding: 0.5rem 0.9rem; margin: 0.2rem 0.2rem 0.2rem 0; }
+    pre { background: #f4f4f4; padding: 0.75rem; overflow-x: auto; max-height: 24rem; }
+  </style>
+</head>
+<body>
+  <h1>First fetch</h1>
+  <p>Open DevTools (F12), choose the <strong>Network</strong> tab, then click a button. Click the request to see its URL, status and response.</p>
+  <p>
+    <button data-params="">All products</button>
+    <button data-params="category=Oils">Oils only</button>
+    <button data-params="delay=2000">Slow (2 s)</button>
+    <button data-params="fail=500">Server error (500)</button>
+  </p>
+  <p id="summary" aria-live="polite">Nothing loaded yet.</p>
+  <pre id="output"></pre>
+
+  <script src="nkwen-api.js"></script>
+  <script>
+    const summary = document.querySelector('#summary');
+    const output = document.querySelector('#output');
+
+    for (const button of document.querySelectorAll('button[data-params]')) {
+      button.addEventListener('click', async () => {
+        const params = Object.fromEntries(new URLSearchParams(button.dataset.params));
+        summary.textContent = 'Loading...';
+        output.textContent = '';
+        try {
+          const products = await getProducts(params);
+          summary.textContent = `Loaded ${products.length} products.`;
+          output.textContent = JSON.stringify(products.slice(0, 3), null, 2);
+        } catch (error) {
+          summary.textContent = `Could not load products. ${error.message}`;
+        }
+      });
+    }
+  </script>
+</body>
+</html>

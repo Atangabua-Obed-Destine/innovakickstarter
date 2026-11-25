@@ -1,0 +1,24 @@
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif; line-height: 1.5; color: #1f2937; }
+main { max-width: 36rem; margin: 0 auto; padding: 1rem; }
+h1, h2 { color: #14532d; }
+
+.card { display: grid; gap: 0.35rem; padding: 1rem; background: #f3f4f6; border-radius: 8px; }
+label { margin-top: 0.5rem; font-weight: 700; }
+input, select, textarea { width: 100%; padding: 0.6rem; font: inherit; border: 2px solid #6b7280; border-radius: 6px; }
+button { margin-top: 0.75rem; padding: 0.75rem 1.5rem; font: inherit; font-weight: 700; color: #fff; background: #14532d; border: 0; border-radius: 6px; cursor: pointer; }
+
+a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible {
+  outline: 3px solid #b45309;
+  outline-offset: 2px;
+}
+
+.hint { margin: 0; font-size: 0.875rem; color: #4b5563; }
+.hint.over { color: #b91c1c; font-weight: 700; }   /* events.js adds "over" when the message is too long */
+
+.error { margin: 0; color: #b91c1c; font-weight: 700; }
+.error:empty { display: none; }
+[aria-invalid="true"] { border-color: #b91c1c; }   /* events.js sets aria-invalid on wrong fields */
+
+.thanks { padding: 0.75rem 1rem; color: #14532d; background: #dcfce7; border-radius: 6px; font-weight: 700; }
+.thanks:empty { display: none; }

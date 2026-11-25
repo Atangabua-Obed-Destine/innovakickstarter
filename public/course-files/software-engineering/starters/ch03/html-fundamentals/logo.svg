@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" width="240" height="64" role="img" aria-labelledby="logo-title">
+  <title id="logo-title">Nkwen Traders</title>
+  <rect x="2" y="2" width="60" height="60" rx="12" fill="#14532d"/>
+  <path d="M14 46 V20 L32 40 V20 M38 20 H52 M45 20 V46" fill="none" stroke="#fbbf24" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="74" y="30" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#14532d">Nkwen</text>
+  <text x="74" y="54" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#14532d">Traders Ltd.</text>
+</svg>

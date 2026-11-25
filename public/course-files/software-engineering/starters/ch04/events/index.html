@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Price check and call-back | Nkwen Traders</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Price check</h1>
+    <form id="price-check" class="card">
+      <label for="product">Product</label>
+      <select id="product"></select>
+      <label for="quantity">Quantity</label>
+      <input type="number" id="quantity" min="1" value="1">
+      <p>Total: <strong id="price-total">0 FCFA</strong></p>
+    </form>
+
+    <h2>Ask us to call you back</h2>
+    <form id="callback" class="card" novalidate>
+      <label for="name">Your name</label>
+      <input type="text" id="name" name="name" autocomplete="name" aria-describedby="name-error">
+      <p class="error" id="name-error"></p>
+
+      <label for="phone">Mobile number</label>
+      <input type="tel" id="phone" name="phone" autocomplete="tel" aria-describedby="phone-error">
+      <p class="error" id="phone-error"></p>
+
+      <label for="branch">Branch</label>
+      <select id="branch" name="branch" aria-describedby="branch-error">
+        <option value="">Choose a branch</option>
+        <option value="NKW">Nkwen, Bamenda</option>
+        <option value="ML4">Mile 4, Bamenda</option>
+        <option value="CAV">Commercial Avenue, Bamenda</option>
+        <option value="BAF">Bafoussam Centre, Bafoussam</option>
+      </select>
+      <p class="error" id="branch-error"></p>
+
+      <label for="message">Message (optional)</label>
+      <textarea id="message" name="message" rows="4" aria-describedby="message-count message-error"></textarea>
+      <p class="hint" id="message-count">200 characters left</p>
+      <p class="error" id="message-error"></p>
+
+      <button type="submit">Call me back</button>
+    </form>
+
+    <p id="thanks" class="thanks" role="status"></p>
+  </main>
+
+  <script src="products.js"></script>
+  <script src="validation.js"></script>
+  <script src="events.js"></script>
+</body>
+</html>

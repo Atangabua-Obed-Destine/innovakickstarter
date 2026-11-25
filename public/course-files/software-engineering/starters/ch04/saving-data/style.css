@@ -1,0 +1,10 @@
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif; line-height: 1.5; color: #1f2937; }
+main { max-width: 36rem; margin: 0 auto; padding: 1rem; }
+h1, h2 { color: #14532d; }
+label { display: block; font-weight: 700; }
+select { width: 100%; padding: 0.6rem; font: inherit; border: 2px solid #6b7280; border-radius: 6px; }
+.buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0; }
+button { padding: 0.6rem 1rem; font: inherit; font-weight: 700; color: #fff; background: #14532d; border: 0; border-radius: 6px; cursor: pointer; }
+button.secondary { color: #14532d; background: #fff; border: 2px solid #14532d; }
+button:focus-visible, select:focus-visible { outline: 3px solid #b45309; outline-offset: 2px; }

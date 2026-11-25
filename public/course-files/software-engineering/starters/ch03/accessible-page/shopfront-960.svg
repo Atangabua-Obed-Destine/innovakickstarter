@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600">
+  <!-- Placeholder drawing of a shop front. This is the 960px version. -->
+  <rect width="960" height="600" fill="#e5e7eb"/>
+  <rect x="120" y="170" width="720" height="380" fill="#ffffff" stroke="#14532d" stroke-width="8"/>
+  <path d="M100 170 L160 80 H800 L860 170 Z" fill="#14532d"/>
+  <path d="M100 170 h95 v30 a47 25 0 0 1 -95 0 Z M195 170 h95 v30 a47 25 0 0 1 -95 0 Z M290 170 h95 v30 a47 25 0 0 1 -95 0 Z M385 170 h95 v30 a47 25 0 0 1 -95 0 Z M480 170 h95 v30 a47 25 0 0 1 -95 0 Z M575 170 h95 v30 a47 25 0 0 1 -95 0 Z M670 170 h95 v30 a47 25 0 0 1 -95 0 Z M765 170 h95 v30 a47 25 0 0 1 -95 0 Z" fill="#fbbf24"/>
+  <text x="480" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="700" fill="#fbbf24">NKWEN TRADERS</text>
+  <rect x="200" y="260" width="200" height="290" fill="#d1fae5" stroke="#14532d" stroke-width="6"/>
+  <rect x="460" y="260" width="300" height="160" fill="#d1fae5" stroke="#14532d" stroke-width="6"/>
+  <text x="610" y="500" text-anchor="middle" font-family="Arial, sans-serif" font-size="44" font-weight="700" fill="#b91c1c">960px file</text>
+</svg>

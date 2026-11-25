@@ -1,0 +1,21 @@
+id,sku,name,category,unit,price_fcfa
+1,NKT-BAK-001,Bread (loaf),Bakery,loaf,600
+2,NKT-DAI-002,Milk Powder 400g,Dairy,tin,2875
+3,NKT-GRA-003,Beans (Red),Grains,kg,930
+4,NKT-GRA-004,Beans (White),Grains,kg,845
+5,NKT-GRA-005,Rice 25kg,Grains,bag,19055
+6,NKT-GRA-006,Rice 50kg,Grains,bag,36005
+7,NKT-GRO-007,Maggi Cubes (pack),Groceries,pack,510
+8,NKT-GRO-008,Salt 1kg,Groceries,bag,305
+9,NKT-GRO-009,Sugar 1kg,Groceries,bag,760
+10,NKT-GRO-010,Tomato Paste (tin),Groceries,tin,355
+11,NKT-HOU-011,Detergent 1kg,Household,bag,1875
+12,NKT-HOU-012,Matches (box),Household,box,100
+13,NKT-HOU-013,Soap (bar),Household,bar,410
+14,NKT-OIL-014,Palm Oil 1L,Oils,bottle,1395
+15,NKT-OIL-015,Palm Oil 5L,Oils,jerrycan,6600
+16,NKT-OIL-016,Vegetable Oil 5L,Oils,jerrycan,7210
+17,NKT-PRO-017,Cassava (bag),Produce,bag,4140
+18,NKT-PRO-018,Onions 1kg,Produce,kg,705
+19,NKT-PRO-019,Plantain (bunch),Produce,bunch,2575
+20,NKT-PRO-020,Tomatoes 1kg,Produce,kg,820

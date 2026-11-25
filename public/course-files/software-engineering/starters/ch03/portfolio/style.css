@@ -1,0 +1,36 @@
+/* My portfolio: mobile-first.
+   Write the phone layout first (no media query).
+   Then add @media (min-width: ...) blocks for bigger screens. */
+
+/* TODO 1: choose 2-3 colours. Check text against background at
+   https://webaim.org/resources/contrastchecker/ (at least 4.5:1). */
+:root {
+  --accent: #14532d;
+  --text: #1f2937;
+  --background: #ffffff;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--background);
+}
+
+/* TODO 2: header and nav: stacked on phones, one row on wider screens. */
+
+/* TODO 3: main: a max-width in rem, centred, with padding. */
+
+/* TODO 4: h1 with clamp() so it grows smoothly with the screen. */
+
+/* TODO 5: .project-list as a grid: 1 column on phones, 2 or more
+   on wider screens (auto-fit + minmax, or media queries). */
+
+/* TODO 6: a clear focus ring for keyboard users:
+   a:focus-visible { outline: 3px solid ...; outline-offset: 2px; } */
+
+/* TODO 7: @media (min-width: 600px) { ... } */

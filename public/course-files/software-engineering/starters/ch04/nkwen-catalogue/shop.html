@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop online | Nkwen Traders</title>
+  <link rel="stylesheet" href="shop.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <a href="../../ch03-web-pages/nkwen-website/index.html"><img src="logo.svg" alt="Nkwen Traders Ltd., home" width="240" height="64"></a>
+    <p class="basket-badge"><a href="#basket-title">Basket: <span id="basket-count">0</span> items</a></p>
+  </header>
+
+  <main id="main" class="shop">
+    <h1>Shop online, collect at your branch</h1>
+
+    <form class="filters" role="search" aria-label="Find products">
+      <div>
+        <label for="branch">Collect at</label>
+        <select id="branch"></select>
+      </div>
+      <div>
+        <label for="search">Search</label>
+        <input type="search" id="search" autocomplete="off">
+      </div>
+      <div>
+        <label for="category">Category</label>
+        <select id="category">
+          <option value="All">All categories</option>
+        </select>
+      </div>
+    </form>
+
+    <!-- Messages for everyone, read aloud by screen readers. -->
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+
+    <div class="layout">
+      <section aria-labelledby="products-title">
+        <h2 id="products-title">Products <span id="result-count"></span></h2>
+        <p id="no-results" class="empty" hidden></p>
+        <ul id="product-list" class="product-grid"></ul>
+      </section>
+
+      <aside class="basket" aria-labelledby="basket-title">
+        <h2 id="basket-title">Your basket</h2>
+        <p id="basket-empty" class="empty">Your basket is empty.</p>
+        <ul id="basket-list"></ul>
+        <p class="total">Total: <strong id="basket-total">0 FCFA</strong></p>
+        <button type="button" id="clear-basket" class="secondary">Empty the basket</button>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Order matters: data, then helpers, then the page code. -->
+  <script src="products.js"></script>
+  <script src="format.js"></script>
+  <script src="basket.js"></script>
+  <script src="storage.js"></script>
+  <script src="catalogue.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

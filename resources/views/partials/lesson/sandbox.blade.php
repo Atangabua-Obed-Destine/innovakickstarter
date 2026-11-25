@@ -152,13 +152,14 @@
 <script>
 function lessonSandbox(cfg) {
     let worker = null, seq = 0;
+    let frameWin = null; // the preview frame's window: kept OUT of Alpine's reactive state (it is cross-origin)
     const pending = {};
     return {
         tab: cfg.tab, py: cfg.py, sql: cfg.sql, running: false, status: '', out: null, sqlOut: null,
-        web: cfg.web, webPane: 'js', ranWeb: false, logs: [], frameWin: null,
+        web: cfg.web, webPane: 'js', ranWeb: false, logs: [],
         init() {
             window.addEventListener('message', (e) => {
-                if (!this.frameWin || e.source !== this.frameWin || !e.data || !e.data.__sb) return;
+                if (!frameWin || e.source !== frameWin || !e.data || !e.data.__sb) return;
                 if (this.logs.length < 200) this.logs.push({ kind: e.data.kind, text: String(e.data.text).slice(0, 2000) });
             });
         },
@@ -171,7 +172,7 @@ function lessonSandbox(cfg) {
             const doc = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + capture
                 + '<style>' + String(this.web.css || '').replace(/<\/style/gi, '') + '</style></head><body>' + this.web.html + '<script type="module">' + esc(this.web.js) + '<\/script></body></html>';
             this.logs = []; this.ranWeb = true;
-            this.$nextTick(() => { this.$refs.preview.srcdoc = doc; this.frameWin = this.$refs.preview.contentWindow; });
+            this.$nextTick(() => { this.$refs.preview.srcdoc = doc; frameWin = this.$refs.preview.contentWindow; });
         },
         explainWebError() {
             const err = this.logs.filter(l => l.kind === 'error').map(l => l.text).join('\n').slice(0, 500);

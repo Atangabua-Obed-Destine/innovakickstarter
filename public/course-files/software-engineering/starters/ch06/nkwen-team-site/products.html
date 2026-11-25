@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Products - Nkwen Traders</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Nkwen Traders</h1>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <h2>Products</h2>
+    <ul id="product-list" class="list"></ul>
+  </main>
+  <footer>Nkwen Traders Ltd., Bamenda</footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/shop.js"></script>
+  <script>
+    const list = document.querySelector('#product-list');
+    for (const product of NKWEN.products) {
+      const item = document.createElement('li');
+      item.textContent = `${product.name} (${product.category}): ${formatFcfa(product.price_fcfa)}`;
+      list.append(item);
+    }
+  </script>
+</body>
+</html>

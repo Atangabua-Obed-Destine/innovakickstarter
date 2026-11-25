@@ -1,0 +1,72 @@
+/* Product grid. The cards are styled for you. Your job is the GRID. */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.5;
+  color: #1f2937;
+  background: #f3f4f6;
+}
+
+main {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+h1 { color: #14532d; }
+
+.product-grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  /* TODO 1: turn this list into a grid: display: grid */
+  /* TODO 2: add a gap of 1rem between the cards */
+  /* TODO 3: first try three equal columns with
+             grid-template-columns: 1fr 1fr 1fr
+             Look at it at 360px wide in DevTools. What goes wrong? */
+  /* TODO 4: replace it with columns that fit the screen by themselves:
+             repeat(auto-fit, minmax(12rem, 1fr))
+             Resize from 360px to 1280px and count the columns. */
+}
+
+.product-card {
+  padding: 1rem;
+  background: #fff;
+  border-top: 6px solid #14532d;
+  border-radius: 8px;
+}
+
+.product-card h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.category {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.875rem;
+}
+
+.price {
+  margin: 0.5rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #14532d;
+}
+
+.price span {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #4b5563;
+}
+
+.featured {
+  background: #fef3c7;
+  /* TODO 5: make the featured card 2 columns wide: grid-column: span 2
+             Check 360px again. Is there now a sideways scroll? Why?
+     TODO 6: replace it with grid-column: 1 / -1
+             (from the first grid line to the last one).
+             Check 360px and 1280px: what does the card do now? */
+}

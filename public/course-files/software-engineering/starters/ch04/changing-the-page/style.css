@@ -1,0 +1,58 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.5;
+  color: #1f2937;
+}
+
+main { max-width: 60rem; margin: 0 auto; padding: 1rem; }
+
+h1 { color: #14532d; }
+
+#product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product {
+  padding: 1rem;
+  background: #f3f4f6;
+  border-top: 6px solid #14532d;
+  border-radius: 8px;
+}
+
+.product h2 { margin: 0; font-size: 1.125rem; color: #14532d; }
+.price { margin: 0.25rem 0; font-size: 1.25rem; font-weight: 700; }
+
+/* The three badge styles. page.js adds ONE of these classes to each badge. */
+.badge {
+  display: inline-block;
+  margin: 0 0 0.75rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.badge--in  { color: #14532d; background: #dcfce7; }
+.badge--low { color: #92400e; background: #fef3c7; }
+.badge--out { color: #fff;    background: #b91c1c; }
+
+/* A product that is out of stock gets a pale red card. */
+.product.is-out { background: #fef2f2; border-top-color: #b91c1c; }
+
+.add {
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-weight: 700;
+  color: #fff;
+  background: #14532d;
+  border: 0;
+  border-radius: 6px;
+}
+.add:disabled { background: #6b7280; cursor: not-allowed; }

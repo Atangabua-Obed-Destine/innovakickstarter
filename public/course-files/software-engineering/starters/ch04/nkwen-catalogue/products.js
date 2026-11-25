@@ -1,0 +1,40 @@
+// Nkwen Traders practice data: a copy of nkwen.json (updated 2026-11-25).
+// Prices are in FCFA. Stock is the number of units at each branch.
+// In Chapter 5 you will load the same data live from the Nkwen Traders API.
+const NKWEN = {
+  currency: 'FCFA',
+  categories: ['Bakery', 'Dairy', 'Grains', 'Groceries', 'Household', 'Oils', 'Produce'],
+  branches: [
+    { code: 'NKW', name: 'Nkwen', city: 'Bamenda', region: 'North-West', manager: 'Mrs. Enow Patience', opened_year: 2019, status: 'open' },
+    { code: 'ML4', name: 'Mile 4', city: 'Bamenda', region: 'North-West', manager: 'Mr. Tanyi Godlove', opened_year: 2021, status: 'open' },
+    { code: 'CAV', name: 'Commercial Avenue', city: 'Bamenda', region: 'North-West', manager: 'Mrs. Fon Lydia', opened_year: 2022, status: 'open' },
+    { code: 'BAF', name: 'Bafoussam Centre', city: 'Bafoussam', region: 'West', manager: 'Mr. Kenfack Roland', opened_year: 2026, status: 'open' },
+    { code: 'LMB', name: 'Limbe Down Beach', city: 'Limbe', region: 'South-West', manager: 'Mr. Ekane Joseph', opened_year: 2027, status: 'planned' },
+  ],
+  payment_methods: ['cash', 'mtn_momo', 'orange_money', 'bank_transfer'],
+  products: [
+    { id: 1, sku: 'NKT-BAK-001', name: 'Bread (loaf)', category: 'Bakery', unit: 'loaf', price_fcfa: 600, stock: { NKW: 37, ML4: 0, CAV: 53, BAF: 16 } },
+    { id: 2, sku: 'NKT-DAI-002', name: 'Milk Powder 400g', category: 'Dairy', unit: 'tin', price_fcfa: 2875, stock: { NKW: 74, ML4: 37, CAV: 0, BAF: 53 } },
+    { id: 3, sku: 'NKT-GRA-003', name: 'Beans (Red)', category: 'Grains', unit: 'kg', price_fcfa: 930, stock: { NKW: 21, ML4: 74, CAV: 37, BAF: 0 } },
+    { id: 4, sku: 'NKT-GRA-004', name: 'Beans (White)', category: 'Grains', unit: 'kg', price_fcfa: 845, stock: { NKW: 58, ML4: 21, CAV: 74, BAF: 3 } },
+    { id: 5, sku: 'NKT-GRA-005', name: 'Rice 25kg', category: 'Grains', unit: 'bag', price_fcfa: 19055, stock: { NKW: 5, ML4: 58, CAV: 3, BAF: 74 } },
+    { id: 6, sku: 'NKT-GRA-006', name: 'Rice 50kg', category: 'Grains', unit: 'bag', price_fcfa: 36005, stock: { NKW: 42, ML4: 3, CAV: 58, BAF: 21 } },
+    { id: 7, sku: 'NKT-GRO-007', name: 'Maggi Cubes (pack)', category: 'Groceries', unit: 'pack', price_fcfa: 510, stock: { NKW: 3, ML4: 42, CAV: 5, BAF: 58 } },
+    { id: 8, sku: 'NKT-GRO-008', name: 'Salt 1kg', category: 'Groceries', unit: 'bag', price_fcfa: 305, stock: { NKW: 26, ML4: 79, CAV: 42, BAF: 0 } },
+    { id: 9, sku: 'NKT-GRO-009', name: 'Sugar 1kg', category: 'Groceries', unit: 'bag', price_fcfa: 760, stock: { NKW: 63, ML4: 26, CAV: 0, BAF: 42 } },
+    { id: 10, sku: 'NKT-GRO-010', name: 'Tomato Paste (tin)', category: 'Groceries', unit: 'tin', price_fcfa: 355, stock: { NKW: 10, ML4: 0, CAV: 26, BAF: 79 } },
+    { id: 11, sku: 'NKT-HOU-011', name: 'Detergent 1kg', category: 'Household', unit: 'bag', price_fcfa: 1875, stock: { NKW: 0, ML4: 10, CAV: 63, BAF: 3 } },
+    { id: 12, sku: 'NKT-HOU-012', name: 'Matches (box)', category: 'Household', unit: 'box', price_fcfa: 100, stock: { NKW: 84, ML4: 47, CAV: 3, BAF: 63 } },
+    { id: 13, sku: 'NKT-HOU-013', name: 'Soap (bar)', category: 'Household', unit: 'bar', price_fcfa: 410, stock: { NKW: 31, ML4: 3, CAV: 47, BAF: 10 } },
+    { id: 14, sku: 'NKT-OIL-014', name: 'Palm Oil 1L', category: 'Oils', unit: 'bottle', price_fcfa: 1395, stock: { NKW: 3, ML4: 31, CAV: 84, BAF: 47 } },
+    { id: 15, sku: 'NKT-OIL-015', name: 'Palm Oil 5L', category: 'Oils', unit: 'jerrycan', price_fcfa: 6600, stock: { NKW: 15, ML4: 68, CAV: 31, BAF: 84 } },
+    { id: 16, sku: 'NKT-OIL-016', name: 'Vegetable Oil 5L', category: 'Oils', unit: 'jerrycan', price_fcfa: 7210, stock: { NKW: 52, ML4: 15, CAV: 68, BAF: 31 } },
+    { id: 17, sku: 'NKT-PRO-017', name: 'Cassava (bag)', category: 'Produce', unit: 'bag', price_fcfa: 4140, stock: { NKW: 89, ML4: 52, CAV: 15, BAF: 68 } },
+    { id: 18, sku: 'NKT-PRO-018', name: 'Onions 1kg', category: 'Produce', unit: 'kg', price_fcfa: 705, stock: { NKW: 36, ML4: 89, CAV: 52, BAF: 3 } },
+    { id: 19, sku: 'NKT-PRO-019', name: 'Plantain (bunch)', category: 'Produce', unit: 'bunch', price_fcfa: 2575, stock: { NKW: 73, ML4: 36, CAV: 3, BAF: 0 } },
+    { id: 20, sku: 'NKT-PRO-020', name: 'Tomatoes 1kg', category: 'Produce', unit: 'kg', price_fcfa: 820, stock: { NKW: 20, ML4: 3, CAV: 0, BAF: 89 } },
+  ],
+};
+
+// This line lets Node's test runner use the data. The browser ignores it.
+if (typeof module !== 'undefined') module.exports = { NKWEN };

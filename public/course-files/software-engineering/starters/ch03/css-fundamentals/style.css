@@ -1,0 +1,45 @@
+/* Nkwen Traders: first stylesheet.
+   Link it in the <head> of your index.html:
+   <link rel="stylesheet" href="style.css">            */
+
+/* 1. Brand colours, ready for you. A custom property is a named value
+      you can reuse with var(--name). */
+:root {
+  --green: #14532d;      /* dark green: headings, header */
+  --gold: #fbbf24;       /* gold: highlights, only on dark green */
+  --text: #1f2937;       /* almost black: body text */
+  --light: #f3f4f6;      /* light grey: card backgrounds */
+}
+
+/* 2. TODO: make every box include its padding and border in its width.
+      Hint: box-sizing. Use the selector *, *::before, *::after */
+
+/* 3. TODO: body: a font-family list, line-height 1.5, color var(--text),
+      margin 0. */
+
+/* 4. TODO: header: a white background, a thick green bottom border,
+      some padding, and Flexbox so the logo and the nav sit on one line.
+      Try justify-content: space-between, align-items: center
+      and flex-wrap: wrap. */
+
+/* 5. TODO: the nav list: remove the bullets (list-style: none),
+      margin 0, padding 0, and Flexbox with a gap between links.
+      Make the links green and bold. Keep the underline, or replace it
+      with another clear sign that they are links. */
+
+/* 6. TODO: main: a max-width (for example 60rem), margin 0 auto
+      to centre it, and padding so text never touches the screen edge. */
+
+/* 7. TODO: headings in var(--green). */
+
+/* 8. TODO: the branches list as cards: Flexbox on the <ul> with
+      flex-wrap: wrap and a gap; each <li> gets a background, padding,
+      a border-radius and a flex-basis (for example 14rem). */
+
+/* 9. TODO: the products table: border-collapse: collapse, a border on
+      cells, padding in cells, prices aligned right. */
+
+/* 10. TODO: the form: each label on its own line (display: block),
+       inputs full width, and a big green button with white text. */
+
+/* 11. TODO: footer: small text, centred, with a top border. */

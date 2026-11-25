@@ -1,0 +1,45 @@
+/* Nkwen Traders website: mobile-first.
+   1. Phone layout first, with no media query.
+   2. Then @media (min-width: 600px) and @media (min-width: 1000px).
+   Reuse what you wrote in the CSS, Grid, Media Queries and Accessibility lessons. */
+
+:root {
+  --green: #14532d;     /* 9.1:1 on white */
+  --gold: #fbbf24;      /* use only as a background behind dark green text */
+  --text: #1f2937;      /* 14.7:1 on white */
+  --muted: #4b5563;     /* 7.6:1 on white */
+  --light: #f3f4f6;
+  --focus: #b45309;     /* 5.0:1 on white */
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+img { max-width: 100%; height: auto; }
+
+/* TODO: skip link: hidden off-screen until it gets keyboard focus. */
+
+/* TODO: header and nav (stacked on phones). */
+
+/* TODO: hero, with an h1 that uses clamp(). */
+
+/* TODO: product grid: 1 column on phones, more on wider screens. */
+
+/* TODO: branch cards, and a clear "planned" style for Limbe. */
+
+/* TODO: form: labels above fields, full-width fields, a big button. */
+
+/* TODO: a visible focus ring on links, fields and buttons. */
+
+/* TODO: footer. */
+
+/* TODO: @media (min-width: 600px) { ... } */
+
+/* TODO: @media (min-width: 1000px) { ... } */

@@ -1,0 +1,84 @@
+/* Our branches page.
+   This stylesheet was written DESKTOP-FIRST: it looks fine on a laptop
+   and squashed on a phone. Your job: rewrite the LAYOUT rules mobile-first.
+   The colour and text rules are fine. Leave them. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.5;
+  color: #1f2937;
+}
+
+h1, h2, h3 { color: #14532d; line-height: 1.2; }
+
+img { max-width: 100%; height: auto; }
+
+main { max-width: 72rem; margin: 0 auto; padding: 1rem; }
+
+.site-header { padding: 1rem; border-bottom: 6px solid #14532d; }
+
+.nav-list { margin: 0; padding: 0; list-style: none; }
+.nav-list a { color: #14532d; font-weight: 700; }
+
+.hero-box { padding: 1rem; background: #f3f4f6; border-radius: 8px; }
+
+.branch-list { margin: 0; padding: 0; list-style: none; }
+
+.branch-card {
+  padding: 1rem;
+  background: #f3f4f6;
+  border-left: 6px solid #14532d;
+  border-radius: 8px;
+}
+.branch-card p { margin: 0.25rem 0; }
+.branch-card.planned { border-left-color: #b45309; background: #fffbeb; }
+
+footer { padding: 1rem; text-align: center; border-top: 1px solid #d1d5db; }
+
+/* ---------- LAYOUT: desktop-first (rewrite these) ---------- */
+
+/* TODO 1: these rules are the desktop layout, but they apply on EVERY
+   screen. Move each one into the right @media (min-width: ...) block
+   below. Leave nothing here that makes columns or rows. */
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-list {
+  display: flex;
+  gap: 2rem;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.branch-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+/* TODO 2: mobile (no media query): what should the phone layout be?
+   Usually: things stacked in one column, with a gap between them.
+   Tip: .branch-list { display: grid; gap: 1rem; } gives one column. */
+
+/* TODO 3: tablet and up. Put the 2-column branch list and the
+   one-line header here. */
+@media (min-width: 600px) {
+
+}
+
+/* TODO 4: laptop and up. Put the 3-column branch list and the
+   side-by-side hero here. */
+@media (min-width: 1000px) {
+
+}

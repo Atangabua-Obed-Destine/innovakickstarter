@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Product cards | Nkwen Traders</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Our products</h1>
+
+    <label for="category">Show</label>
+    <select id="category">
+      <option value="All">All categories</option>
+    </select>
+
+    <h2>Products</h2>
+    <!-- Empty on purpose: cards.js builds every card from products.js. -->
+    <ul id="product-list" class="product-grid"></ul>
+
+    <aside class="list-box" aria-labelledby="list-title">
+      <h2 id="list-title">My shopping list</h2>
+      <p id="list-empty">Your list is empty.</p>
+      <ul id="shopping-list"></ul>
+    </aside>
+
+    <section aria-labelledby="check-title">
+      <h2 id="check-title">Self-check</h2>
+      <button type="button" id="run-check">Run the self-check</button>
+      <ul id="self-check"></ul>
+    </section>
+  </main>
+
+  <script src="products.js"></script>
+  <script src="cards.js"></script>
+  <script src="self-check.js"></script>
+</body>
+</html>

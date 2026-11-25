@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nkwen Traders: live catalogue</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Nkwen Traders</h1>
+    <p>Live prices and stock from head office. Orders on this page are test orders: nothing is saved.</p>
+  </header>
+
+  <main class="layout">
+    <section aria-labelledby="catalogue-title">
+      <h2 id="catalogue-title">Catalogue</h2>
+      <form id="filters" class="controls" role="search">
+        <label>Search
+          <input id="search" type="search" placeholder="e.g. rice" autocomplete="off">
+        </label>
+        <label>Category
+          <select id="category"><option value="">All categories</option></select>
+        </label>
+        <label>Branch
+          <select id="branch"><option value="NKW">Nkwen</option></select>
+        </label>
+        <label>Sort
+          <select id="sort">
+            <option value="">Default</option>
+            <option value="price">Price: low to high</option>
+            <option value="-price">Price: high to low</option>
+            <option value="name">Name A-Z</option>
+          </select>
+        </label>
+        <label>Practice mode
+          <select id="practice">
+            <option value="">Normal</option>
+            <option value="slow">Slow network (2.5 s)</option>
+            <option value="error">Server error (500)</option>
+          </select>
+        </label>
+      </form>
+
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+      <button id="retry" type="button" hidden>Try again</button>
+      <div id="products" class="grid"></div>
+    </section>
+
+    <aside aria-labelledby="basket-title" class="basket">
+      <h2 id="basket-title">Basket</h2>
+      <ul id="basket-lines" class="basket-lines"></ul>
+      <p class="total">Total: <strong id="basket-total">0 FCFA</strong></p>
+
+      <form id="order-form" class="order-form">
+        <label>Your name
+          <input id="customer-name" name="customer_name" autocomplete="name">
+        </label>
+        <label>Collect at branch
+          <select id="order-branch" name="branch"></select>
+        </label>
+        <label>Payment method
+          <select id="payment-method" name="payment_method">
+            <option value="cash">Cash</option>
+            <option value="mtn_momo">MTN Mobile Money</option>
+            <option value="orange_money">Orange Money</option>
+            <option value="bank_transfer">Bank transfer</option>
+          </select>
+        </label>
+        <button id="send-order" type="submit">Send test order</button>
+      </form>
+      <div id="order-result" class="order-result" role="status" aria-live="polite"></div>
+    </aside>
+  </main>
+
+  <script src="nkwen-api.js"></script>
+  <script src="format.js"></script>
+  <script src="view.js"></script>
+  <script src="catalogue.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
