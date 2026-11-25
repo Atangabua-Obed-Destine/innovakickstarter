@@ -45,7 +45,7 @@ class PreSubmitCheckService
             $toSubmit ? "What to submit:\n" . Str::limit($sectionText($toSubmit), 1500) : null,
             $selfCheck ? "Self-check:\n- " . Str::limit(collect($selfCheck['items'])->pluck('plain')->implode("\n- "), 1200) : null,
             $activity->evidence_requirements ? 'Evidence types expected: ' . collect($activity->evidence_requirements)->map(fn ($e) => \App\Enums\EvidenceType::tryFrom($e)?->label() ?? $e)->implode(', ') : null,
-            $activity->requires_video ? "Show & Tell video: a PUBLIC YouTube video on the fellow's own channel (screen + voice, 2-4 minutes) explaining the problem, what they did, what they found and what it means. The link is required." : null,
+            $activity->requires_video ? "Show & Tell video: a PUBLIC YouTube video on the fellow's own channel (screen + voice, 2-4 minutes) explaining the problem, what they did, what they found and what it means. The link is required. (You cannot watch videos: only check that a YouTube link is given; never guess what the video shows or where it is published.)" : null,
             $activity->evaluation_rubric ? "Grading criteria:\n" . collect($activity->evaluation_rubric)->map(fn ($c) => '- ' . ($c['criterion'] ?? '') . ' (' . ($c['weight'] ?? '?') . '%): ' . ($c['description'] ?? ''))->implode("\n") : null,
         ]);
 
