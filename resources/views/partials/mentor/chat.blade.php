@@ -41,7 +41,7 @@
     .mc-dots span:nth-child(2) { animation-delay: .15s; } .mc-dots span:nth-child(3) { animation-delay: .3s; }
     @keyframes mc-b { 0%, 80%, 100% { opacity: .3; } 40% { opacity: 1; } }
 </style>
-<div x-data="mentorChat(@js($mentorConfig))" x-init="if (cfg.inline) openChat()">
+<div x-data="mentorChat(@js($mentorConfig))" x-init="if (cfg.inline) openChat()" @mentor-ask.window="ask($event.detail.message)">
     @unless($inline)
         <button type="button" class="mc-fab" x-show="!open" @click="openChat()" aria-label="Ask {{ $persona['name'] }}">
             <span class="tx-avatar" style="width:32px;height:32px;font-size:12px;">{{ $persona['initials'] }}</span>
@@ -100,6 +100,13 @@ function mentorChat(cfg) {
             }
         },
         scroll() { this.$nextTick(() => { const b = this.$refs.body; if (b) b.scrollTop = b.scrollHeight; }); },
+        /** Ask a prepared question (e.g. from a lesson's "Stuck?" buttons). */
+        async ask(text) {
+            if (!text || this.thinking) return;
+            await this.openChat();
+            this.draft = String(text).slice(0, 1500);
+            this.send();
+        },
         async send() {
             const text = this.draft.trim();
             if (text.length < 2 || this.thinking) return;

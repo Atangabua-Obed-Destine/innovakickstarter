@@ -132,6 +132,34 @@
             </div>
         </div>
 
+        {{-- Pre-submit check --}}
+        <div class="card p-6" x-data="precheck('{{ route('curriculum.precheck', $progress) }}', '{{ csrf_token() }}')">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                    <h3 class="text-white font-semibold">🔍 Check my work first</h3>
+                    <p class="text-dark-400 text-sm mt-1 max-w-xl">Before you submit, the AI compares what you're about to send with this activity's "What to submit", self-check and grading criteria, and points out anything missing. It doesn't grade you, and it can't open links, so it only checks that a link looks right.</p>
+                </div>
+                <button type="button" class="btn-secondary flex-shrink-0" @click="run()" :disabled="busy" x-text="busy ? 'Checking...' : 'Check my work'"></button>
+            </div>
+            <p class="text-amber-300 text-sm mt-3" x-show="error" x-text="error" x-cloak></p>
+            <template x-if="result">
+                <div class="mt-4 p-4 rounded-lg bg-dark-800 space-y-2">
+                    <p class="font-semibold" :class="result.ready ? 'text-green-400' : 'text-amber-300'"
+                       x-text="(result.ready ? '✅ Looks ready to submit. ' : '⚠️ A few things to look at first. ') + (result.summary || '')"></p>
+                    <ul class="space-y-1.5">
+                        <template x-for="(item, i) in result.items" :key="i">
+                            <li class="text-sm text-dark-200 flex gap-2">
+                                <span x-text="item.status === 'ok' ? '✅' : (item.status === 'missing' ? '❌' : '🔎')"></span>
+                                <span x-text="item.text"></span>
+                            </li>
+                        </template>
+                    </ul>
+                    <p class="text-sm text-dark-200" x-show="result.tip"><span class="text-primary-300">Next step:</span> <span x-text="result.tip"></span></p>
+                    <p class="text-dark-500 text-xs" x-text="'This check is only a helper: the team makes the real review. ' + (result.remaining ?? '') + ' checks left today.'"></p>
+                </div>
+            </template>
+        </div>
+
         {{-- Review Info --}}
         <div class="card p-4 bg-dark-800/50">
             <div class="flex items-center gap-3 text-sm">
@@ -152,6 +180,26 @@
 </div>
 
 <script>
+function precheck(url, csrf) {
+    return {
+        busy: false, error: '', result: null,
+        async run() {
+            const form = this.$el.closest('form');
+            const val = (n) => (form.querySelector('[name="' + n + '"]') || {}).value || '';
+            const fileInput = form.querySelector('input[type=file]');
+            const files = fileInput ? Array.from(fileInput.files).map(f => f.name) : [];
+            this.busy = true; this.error = '';
+            try {
+                const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf },
+                    body: JSON.stringify({ url: val('evidence_url'), text: val('evidence_text'), reflection: val('reflection'), files }) });
+                const d = await res.json().catch(() => ({}));
+                if (res.ok && d.ok) { this.result = d; }
+                else { this.error = d.error || (res.status === 429 ? 'Too many checks in a minute. Wait a moment.' : 'Could not check right now. Try again.'); }
+            } catch (e) { this.error = 'No connection. Try again.'; }
+            this.busy = false;
+        },
+    };
+}
 document.getElementById('evidence_files')?.addEventListener('change', function(e) {
     const list = document.getElementById('file-list');
     list.innerHTML = '';

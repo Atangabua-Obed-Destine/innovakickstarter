@@ -1,0 +1,58 @@
+{
+    "welcome": "Welcome to the Analytics Team at Nkwen Traders.\n\nI'll be honest with you: years of our sales records sit in files that nobody reads. Every week my managers make decisions by feeling: how much rice to order, which branch needs more staff, whether a bad week is bad luck or a real problem. **You are here to change that.**\n\nYou will not start as an expert. Nobody does. Every senior data scientist I have worked with started exactly where you are today: unsure, a little scared of code, and curious. What made them senior was not talent. It was **many small problems solved well, explained clearly, one week after another.**\n\nThis orientation shows you the whole road: what the job really is, how far it goes, and where this program takes you. Take your time. Then let's get to work.",
+    "day": [
+        {"time": "08:00", "icon": "☕", "title": "Check the overnight sales", "story": "The Mobile Money sync file arrived at 3 a.m. Before anyone uses it, you count the rows, look for missing amounts and spot two branches spelled three different ways.", "skill": "cleaning", "chapter": 5, "lesson": "Bad data makes bad decisions. Checking first is the habit that saves reputations."},
+        {"time": "09:30", "icon": "📞", "title": "A question from Mrs. Ngum", "story": "\"Did Bafoussam really sell less last week, or was it the public holiday?\" You compare last week with a normal week and check whether the drop is bigger than the usual ups and downs.", "skill": "statistics", "chapter": 3, "lesson": "The real job is not computing an average. It is knowing whether a difference is real or just noise."},
+        {"time": "11:00", "icon": "🐍", "title": "Automate the weekly totals", "story": "Shop supervisors used to add the week's sales by hand and make mistakes. Your Python script reads every till file and produces the totals in two seconds.", "skill": "python", "chapter": 2, "lesson": "If you do something three times, write code that does it for you."},
+        {"time": "13:00", "icon": "🧩", "title": "Four branches, one picture", "story": "Sales live in one table and branch details in another. You merge them, then check the row count did not change, because a careless join can quietly double the numbers.", "skill": "pandas", "chapter": 4, "lesson": "Seniors check their own work before anyone else has to."},
+        {"time": "14:30", "icon": "📊", "title": "One chart for the board", "story": "The board will not read tables. You make one clear chart that shows which branch is growing, with honest axes and a title that says the finding.", "skill": "visualization", "chapter": 6, "lesson": "A chart is an argument. Make it clear, and never make it mislead."},
+        {"time": "16:00", "icon": "🗄️", "title": "A branch manager asks for her top products", "story": "The Mile 4 manager wants her ten best sellers this month. You write a SQL query, then add it to her dashboard so she never has to ask again.", "skill": "sql", "chapter": 7, "lesson": "The best analysts make themselves less needed for routine questions, so they have time for hard ones."},
+        {"time": "17:15", "icon": "✍️", "title": "Write the 'so what'", "story": "You send Mrs. Ngum five sentences: what happened, why, how sure you are, and what she should do on Monday. She forwards it to the owner.", "skill": "communication", "chapter": 8, "lesson": "Analysis that nobody understands changes nothing. The summary is the product."}
+    ],
+    "myths": [
+        {"claim": "Data scientists spend most of their day building AI models.", "truth": false, "explain": "Most of the time goes into finding data, cleaning it, understanding it and explaining results. Modelling is one step, and often a small one."},
+        {"claim": "You need to be a maths genius to work with data.", "truth": false, "explain": "You need solid basics (averages, spread, percentages, probability) used carefully and honestly. This program teaches them from the start."},
+        {"claim": "A chart can mislead even when every number in it is correct.", "truth": true, "explain": "A cut axis, a wrong chart type or a cherry-picked time period can tell a false story with true numbers. Chapter 6 teaches you to spot and avoid this."},
+        {"claim": "With enough data, you don't need a clear question.", "truth": false, "explain": "Without a question you only find noise. Every project in this track starts with a question a manager actually cares about."},
+        {"claim": "Spreadsheets and SQL still matter in modern data jobs.", "truth": true, "explain": "SQL and spreadsheets appear in a large share of data analyst job adverts. Chapter 7 gives you both, plus dashboards."},
+        {"claim": "Senior data people mostly work alone with their computer.", "truth": false, "explain": "Seniors spend a lot of their time with people: clarifying questions, reviewing others' work, and explaining results to leaders."},
+        {"claim": "Proof of your work can matter more than a certificate.", "truth": true, "explain": "Employers want to see what you can do. Your reviewed projects, public portfolio and GitHub are that proof; certificates point to it."}
+    ],
+    "ladder": [
+        {"key": "rookie", "title": "Data Rookie", "years": "Today", "icon": "🌱", "marker": "you",
+            "does": "Learning the tools: spreadsheets, first Python, basic statistics. Asking lots of questions.",
+            "trusted": "Your own practice and small, guided exercises.",
+            "program": "This is where Chapter 1 begins. Everyone in the track started here."},
+        {"key": "junior", "title": "Junior Data Analyst", "years": "0-2 years", "icon": "🎯", "marker": "finish",
+            "does": "Cleans data, answers clear questions with SQL, Python and spreadsheets, builds charts and simple dashboards, follows a plan someone else sets.",
+            "trusted": "One well-defined question at a time, with a senior reviewing the work.",
+            "program": "The program's finish line. By the end you'll have reviewed projects, a portfolio, interview practice and certificates that show you can do this job."},
+        {"key": "analyst", "title": "Data Analyst", "years": "2-4 years", "icon": "📈",
+            "does": "Owns the regular reports and dashboards of a team, chooses the right method without being told, spots data problems before they reach a report, presents to managers.",
+            "trusted": "The numbers of a whole business area.",
+            "program": "Seeds you plant now: the self-checks, the dashboards in Chapter 7 and presenting at Presentation Day."},
+        {"key": "scientist", "title": "Data Scientist", "years": "3-6 years", "icon": "🔬",
+            "does": "Designs experiments, builds forecasts and predictive models, uses deeper statistics, works with engineers to put models into real products.",
+            "trusted": "Questions where the method itself has to be invented.",
+            "program": "Built on the statistics of Chapter 3 and the habit of checking assumptions. Machine learning comes after this program."},
+        {"key": "senior", "title": "Senior Data Scientist", "years": "5-8+ years", "icon": "🧭",
+            "does": "Turns a vague business worry into a clear plan, decides what NOT to analyse, reviews other people's work, explains uncertainty to leaders, mentors juniors.",
+            "trusted": "Decisions that cost real money, and the growth of other analysts.",
+            "program": "The habits start now: explaining ideas simply (Explain it back), reviewing a partner's work, and writing a 'so what' for every analysis."},
+        {"key": "lead", "title": "Lead / Principal Data Scientist", "years": "8+ years", "icon": "🏛️",
+            "does": "Sets the data strategy, builds and leads the team, chooses which problems are worth solving, and owns data ethics and quality for the company.",
+            "trusted": "The direction of data work for a whole organisation.",
+            "program": "Far ahead. But every lead you will ever meet once did their first data-cleaning exercise, just like Chapter 1."}
+    ],
+    "ladder_note": "Years are typical, not rules: they vary a lot by company and country. What moves people up is proof of skill, the trust they earn and how well they explain their work.",
+    "senior": {
+        "python": "Writes clean, tested code that others can still run months later, and automates every boring, repeated task.",
+        "statistics": "Knows when a difference is real or just noise, and always says how sure they are.",
+        "pandas": "Reshapes large tables quickly and checks that every join and filter kept the right rows.",
+        "cleaning": "Finds data problems before they reach a report, fixes the cause, and documents every change.",
+        "visualization": "Chooses the one chart that makes a decision obvious, and never lets a chart mislead.",
+        "sql": "Answers questions straight from the company database, quickly and correctly, with clear, readable queries.",
+        "bi": "Builds dashboards managers actually open every week, and retires the ones they don't.",
+        "communication": "Turns analysis into a decision: a one-page memo, a five-minute talk, a clear 'so what'."
+    }
+}

@@ -216,6 +216,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', [FellowCurriculumController::class, 'index'])->name('index');
             Route::get('/{track}', [FellowCurriculumController::class, 'track'])->name('track')->where('track', '[0-9a-f\-]{36}');
 
+            // Track orientation ("Chapter 0")
+            Route::get('/orientation', [\App\Http\Controllers\Fellow\OrientationController::class, 'show'])->name('orientation');
+            Route::post('/orientation/section', [\App\Http\Controllers\Fellow\OrientationController::class, 'section'])->name('orientation.section')->middleware('throttle:60,1');
+            Route::post('/orientation/quiz', [\App\Http\Controllers\Fellow\OrientationController::class, 'quiz'])->name('orientation.quiz')->middleware('throttle:20,1');
+            Route::post('/orientation/complete', [\App\Http\Controllers\Fellow\OrientationController::class, 'complete'])->name('orientation.complete')->middleware('throttle:10,1');
+            Route::post('/orientation/letter', [\App\Http\Controllers\Fellow\OrientationController::class, 'letter'])->name('orientation.letter')->middleware('throttle:10,1');
+
+            // Interactive lessons
+            Route::post('/activities/{activity}/steps', [\App\Http\Controllers\Fellow\LessonController::class, 'step'])->name('activity.steps')->middleware('throttle:120,1');
+            Route::post('/quick-checks/{card}', [\App\Http\Controllers\Fellow\LessonController::class, 'quickCheck'])->name('quick-check')->middleware('throttle:30,1');
+            Route::post('/progress/{progress}/precheck', [\App\Http\Controllers\Fellow\LessonController::class, 'precheck'])->name('precheck')->middleware('throttle:5,1');
+
             // Activity interactions
             Route::get('/activities/{activity}', [FellowCurriculumController::class, 'showActivity'])->name('activity.show');
             Route::post('/activities/{activity}/start', [FellowCurriculumController::class, 'startActivity'])->name('activity.start');

@@ -746,6 +746,33 @@
         $practiceStats = $practiceDaily ? app(\App\Services\PracticeService::class)->stats($user, $trackExperience->track) : null;
     @endphp
     @php
+        $orientationRecord = $trackExperience ? \App\Models\TrackOrientation::where('fellow_id', $user->id)->where('track_id', $trackExperience->track->id)->first() : null;
+        $hasCurriculum = $trackExperience && \App\Models\TrackCurriculumActivity::where('track_id', $trackExperience->track->id)->where('is_active', true)->exists();
+    @endphp
+    @if($hasCurriculum && !$orientationRecord?->completed_at)
+        <div class="card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style="border-color: color-mix(in srgb, var(--color-primary-500) 45%, transparent);">
+            <div>
+                <p class="text-dark-400 text-xs uppercase tracking-wider">🪪 Chapter 0 · Orientation</p>
+                <p class="text-white font-semibold mt-1">See the whole path from beginner to senior, and plan your weeks</p>
+                <p class="text-dark-400 text-sm">About 20 minutes: a day in the job, the career ladder, what seniors master, the rules, and your commitment.</p>
+            </div>
+            <a href="{{ route('curriculum.orientation') }}" class="btn btn-primary whitespace-nowrap">{{ $orientationRecord?->sections_done ? 'Continue orientation' : 'Start orientation' }}</a>
+        </div>
+    @elseif($orientationRecord?->completed_at && is_array($orientationRecord->commitment))
+        @php
+            $c = $orientationRecord->commitment;
+            $goalMonth = !empty($c['goal_month']) ? \Carbon\Carbon::createFromFormat('Y-m', $c['goal_month'])->format('F Y') : null;
+        @endphp
+        <div class="card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <p class="text-dark-400 text-xs uppercase tracking-wider">✍️ My commitment</p>
+                <p class="text-white font-semibold mt-1">Becoming a {{ $c['goal_role'] ?? '' }}{{ $goalMonth ? ' by ' . $goalMonth : '' }}</p>
+                <p class="text-dark-400 text-sm">{{ $c['weekly_hours'] ?? '?' }} hours a week · ✉️ {{ $orientationRecord->letter_opened_at ? 'letter to your future self opened' : 'letter to your future self sealed until you finish the track' }}</p>
+            </div>
+            <a href="{{ route('curriculum.orientation') }}" class="btn-secondary whitespace-nowrap">View</a>
+        </div>
+    @endif
+    @php
         $flashLeft = $trackExperience ? app(\App\Services\FlashReviewService::class)->todaysCards($user, $trackExperience->track)->count() : 0;
     @endphp
     @if($flashLeft > 0)

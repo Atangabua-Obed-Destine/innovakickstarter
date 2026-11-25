@@ -16,6 +16,8 @@ use Illuminate\Support\Collection;
  * Daily flash review with Leitner boxes: 3 cards a day from chapters the
  * fellow has reached, due cards first, then new ones (oldest chapters first).
  * Right: next box (1, 3, 7, 14, 30 days). Wrong: back to box 1, due tomorrow.
+ * Lesson quick checks are cards linked to an activity: answered first in the
+ * lesson (source "lesson"), they then come back in the daily review when due.
  */
 class FlashReviewService
 {
@@ -42,7 +44,7 @@ class FlashReviewService
 
     public function answeredToday(User $fellow, Track $track): Collection
     {
-        return FlashAnswer::where('fellow_id', $fellow->id)->whereDate('answered_on', now()->toDateString())
+        return FlashAnswer::where('fellow_id', $fellow->id)->where('source', 'daily')->whereDate('answered_on', now()->toDateString())
             ->whereIn('card_id', FlashCard::where('track_id', $track->id)->pluck('id'))->get();
     }
 
@@ -62,29 +64,60 @@ class FlashReviewService
 
         $due = $reviews->filter(fn ($r) => $r->due_on->lte(now()->startOfDay()))->sortBy([['due_on', 'asc'], ['box', 'asc']])
             ->map(fn ($r) => $cards[$r->card_id]);
-        $new = $cards->reject(fn ($c) => $reviews->has($c->id))->sortBy([['chapter', 'asc'], ['key', 'asc']]);
+        // Quick checks only join the daily review after the fellow met them in their lesson.
+        $new = $cards->reject(fn ($c) => $reviews->has($c->id) || $c->curriculum_activity_id)->sortBy([['chapter', 'asc'], ['key', 'asc']]);
 
         return $due->concat($new)->take($remaining)->values();
     }
 
+    /**
+     * A lesson's quick checks with the fellow's state. Answers and explanations
+     * are only included for cards the fellow has already answered.
+     */
+    public function quickChecks(User $fellow, \App\Models\TrackCurriculumActivity $activity): Collection
+    {
+        $cards = FlashCard::where('curriculum_activity_id', $activity->id)->where('is_active', true)->orderBy('key')->get();
+        $answers = FlashAnswer::where('fellow_id', $fellow->id)->whereIn('card_id', $cards->pluck('id'))->orderBy('id')->get()->groupBy('card_id');
+
+        return $cards->map(function (FlashCard $card) use ($answers) {
+            $mine = $answers->get($card->id);
+            $first = $mine?->first();
+
+            return [
+                'id' => $card->id, 'after_step' => $card->after_step, 'question' => $card->question, 'options' => $card->options,
+                'answered' => (bool) $first, 'first_try_correct' => (bool) $first?->correct,
+                'answer_index' => $first ? $card->answer_index : null, 'explanation' => $first ? $card->explanation : null,
+                'url' => route('curriculum.quick-check', $card),
+            ];
+        })->values();
+    }
+
     /** @return array{correct: bool, answer_index: int, explanation: ?string, box: int, next_due: string, xp: int, remaining: int} */
-    public function answer(User $fellow, FlashCard $card, int $option): array
+    public function answer(User $fellow, FlashCard $card, int $option, string $source = 'daily'): array
     {
         $correct = $option === (int) $card->answer_index;
         $review = FlashReview::firstOrNew(['fellow_id' => $fellow->id, 'card_id' => $card->id], ['box' => 1]);
-        $box = $correct ? min(5, ($review->exists ? $review->box : 0) + 1) : 1;
-        $due = now()->startOfDay()->addDays($correct ? self::INTERVALS[$box] : 1);
-        $review->fill([
-            'box' => $box,
-            'due_on' => $due->toDateString(),
-            'last_reviewed_on' => now()->toDateString(),
-            'times_right' => ($review->times_right ?? 0) + ($correct ? 1 : 0),
-            'times_wrong' => ($review->times_wrong ?? 0) + ($correct ? 0 : 1),
-        ])->save();
+        if ($source === 'lesson' && $review->exists) {
+            // Re-answering a quick check in the lesson doesn't move it in the spaced review.
+            $box = (int) $review->box;
+            $due = $review->due_on->copy();
+        } else {
+            $box = $correct ? min(5, ($review->exists ? $review->box : 0) + 1) : 1;
+            $due = now()->startOfDay()->addDays($correct ? self::INTERVALS[$box] : 1);
+            $review->fill([
+                'box' => $box,
+                'due_on' => $due->toDateString(),
+                'last_reviewed_on' => now()->toDateString(),
+                'times_right' => ($review->times_right ?? 0) + ($correct ? 1 : 0),
+                'times_wrong' => ($review->times_wrong ?? 0) + ($correct ? 0 : 1),
+            ])->save();
+        }
 
-        $alreadyToday = FlashAnswer::where('fellow_id', $fellow->id)->where('card_id', $card->id)->whereDate('answered_on', now()->toDateString())->exists();
-        $xp = $correct && !$alreadyToday ? self::XP_PER_CORRECT : 0;
-        FlashAnswer::create(['fellow_id' => $fellow->id, 'card_id' => $card->id, 'correct' => $correct, 'xp_awarded' => $xp, 'answered_on' => now()->toDateString()]);
+        // XP: in the daily review once per card per day; in a lesson only for a first-try right answer.
+        $earlier = FlashAnswer::where('fellow_id', $fellow->id)->where('card_id', $card->id);
+        $xpAllowed = $source === 'lesson' ? !(clone $earlier)->exists() : !(clone $earlier)->whereDate('answered_on', now()->toDateString())->exists();
+        $xp = $correct && $xpAllowed ? self::XP_PER_CORRECT : 0;
+        FlashAnswer::create(['fellow_id' => $fellow->id, 'card_id' => $card->id, 'correct' => $correct, 'xp_awarded' => $xp, 'source' => $source, 'answered_on' => now()->toDateString()]);
 
         $track = Track::find($card->track_id);
         if ($correct) {

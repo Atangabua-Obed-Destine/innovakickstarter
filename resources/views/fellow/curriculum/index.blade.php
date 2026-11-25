@@ -3,6 +3,33 @@
 @section('title', 'My Curriculum')
 
 @section('content')
+@php
+    $trackExperience = \App\Support\TrackExperience::for($currentTrack);
+    $classmates = $classmates ?? ['chapters' => [], 'finished' => [], 'activities' => []];
+    $ns = $nextStep ?? null;
+@endphp
+<style>
+    .ns-card { position: relative; overflow: hidden; border-radius: 18px; padding: 22px; border: 1px solid color-mix(in srgb, var(--color-primary-500) 40%, transparent);
+        background: radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--color-primary-600) 30%, #0f141d) 0%, #0f141d 60%); }
+    .ns-card::after { content: ''; position: absolute; right: -60px; top: -60px; width: 200px; height: 200px; border-radius: 50%;
+        background: radial-gradient(circle, color-mix(in srgb, var(--color-primary-400) 25%, transparent), transparent 70%); pointer-events: none; }
+    .ns-icon { width: 58px; height: 58px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0;
+        background: color-mix(in srgb, var(--color-primary-500) 22%, transparent); border: 1px solid color-mix(in srgb, var(--color-primary-400) 35%, transparent); }
+    .ns-kicker { color: var(--color-primary-300); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    .ns-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 99px; font-size: 12.5px; background: rgba(148,163,184,.1); color: rgb(203 213 225); }
+    .ns-chip.urgent { background: rgba(248,113,113,.14); color: #fca5a5; }
+    .ns-extra { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 10px; background: rgba(11,15,22,.55); border: 1px solid rgba(148,163,184,.12); font-size: 13.5px; color: rgb(203 213 225); }
+    .ns-extra:hover { border-color: color-mix(in srgb, var(--color-primary-400) 50%, transparent); color: #fff; }
+    .cm-avatars { display: flex; align-items: center; }
+    .cm-avatars span { width: 26px; height: 26px; border-radius: 50%; margin-left: -7px; display: flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 700; color: #fff;
+        background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-800)); border: 2px solid #0f141d; }
+    .cm-avatars span:first-child { margin-left: 0; }
+    .ms-toggle { width: 100%; text-align: left; }
+    .ms-chev { transition: transform .2s; color: rgb(100 116 139); }
+    .ms-chev.open { transform: rotate(90deg); }
+    .cm-here { display: none; } @media (min-width: 640px) { .cm-here { display: flex; } }
+    .ch0 { border-radius: 16px; padding: 16px 18px; border: 1px dashed color-mix(in srgb, var(--color-primary-400) 50%, transparent); background: color-mix(in srgb, var(--color-primary-600) 8%, #0f141d); }
+</style>
 <div class="space-y-6">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -14,13 +41,53 @@
             @if(isset($fellowTracks) && $fellowTracks->count() > 1)
                 <span class="text-xs text-dark-500">Switch tracks from the header</span>
             @endif
+            <a href="{{ route('curriculum.orientation') }}" class="btn-secondary text-sm">🪪 Orientation</a>
             <a href="{{ route('curriculum.badges') }}" class="btn-secondary text-sm">🏅 Badges</a>
         </div>
     </div>
 
-    @php
-        $trackExperience = \App\Support\TrackExperience::for($currentTrack);
-    @endphp
+    @foreach(['success' => 'green', 'error' => 'red', 'warning' => 'amber'] as $key => $color)
+        @if(session($key))<div class="p-4 rounded-xl border bg-{{ $color }}-500/10 border-{{ $color }}-500/30 text-{{ $color }}-400">{{ session($key) }}</div>@endif
+    @endforeach
+
+    {{-- YOUR NEXT STEP --}}
+    @if($ns && $milestones->isNotEmpty())
+    <div class="ns-card">
+        <div class="relative flex flex-col sm:flex-row sm:items-center gap-5" style="z-index: 1;">
+            <div class="ns-icon" aria-hidden="true">{{ ['orientation' => '🪪', 'fix' => '🛠️', 'continue' => '▶️', 'start' => '🚀', 'waiting' => '⏳', 'done' => '🏆'][$ns['kind']] ?? '🧭' }}</div>
+            <div class="flex-1 min-w-0">
+                <p class="ns-kicker">{{ ['orientation' => 'Before Chapter 1', 'fix' => 'Needs your attention', 'continue' => 'Your next step', 'start' => 'Up next', 'waiting' => 'In review', 'done' => 'Track complete'][$ns['kind']] ?? 'Next' }}</p>
+                <h2 class="text-xl font-bold text-white mt-1">{{ $ns['title'] }}</h2>
+                @if(!empty($ns['chapter']))
+                    <div class="flex flex-wrap items-center gap-2 mt-2">
+                        <span class="ns-chip">Chapter {{ $ns['chapter'] }} · {{ \Illuminate\Support\Str::limit($ns['chapter_title'], 48) }}</span>
+                        @if($ns['type'])<span class="ns-chip">{{ $ns['type'] }}</span>@endif
+                        <span class="ns-chip">🏆 {{ $ns['points'] }} pts</span>
+                        @if($ns['deadline'])<span class="ns-chip {{ $ns['urgent'] ? 'urgent' : '' }}">⏰ {{ $ns['deadline'] }}</span>@endif
+                    </div>
+                @endif
+                @if(!empty($ns['note']))<p class="text-dark-300 text-sm mt-2">{{ $ns['note'] }}</p>@endif
+            </div>
+            @if($ns['url'])
+                <a href="{{ $ns['url'] }}" class="btn-primary px-6 py-3 text-base flex-shrink-0">{{ $ns['cta'] }} →</a>
+            @endif
+        </div>
+        @if(!empty($extras) && $ns['kind'] !== 'orientation')
+            <div class="relative flex flex-wrap gap-2 mt-4" style="z-index: 1;">
+                @isset($extras['review_left'])
+                    <a href="{{ route('flash-review.index') }}" class="ns-extra">🔁 Daily review: <strong class="text-white">{{ $extras['review_left'] > 0 ? $extras['review_left'] . ' questions left today' : 'done for today ✓' }}</strong></a>
+                @endisset
+                @isset($extras['case'])
+                    <a href="{{ $extras['case']['url'] }}" class="ns-extra">🕵️ This week's case: <strong class="text-white">{{ $extras['case']['title'] }}</strong>{{ $extras['case']['solved'] ? ' · solved ✓' : '' }}</a>
+                @endisset
+                @if($peerReviews->count() > 0)
+                    <a href="{{ route('curriculum.peer-review.form', $peerReviews->first()->id) }}" class="ns-extra">📝 <strong class="text-white">{{ $peerReviews->count() }}</strong> peer {{ Str::plural('review', $peerReviews->count()) }} waiting for you</a>
+                @endif
+            </div>
+        @endif
+    </div>
+    @endif
+
     @if($trackExperience?->hasStory())
         @include('partials.track.journey', ['experience' => $trackExperience, 'milestones' => $milestones, 'progress' => $progress, 'activeMilestone' => $activeMilestone ?? null])
     @endif
@@ -71,54 +138,52 @@
             </div>
         </div>
 
-        {{-- Peer Reviews Pending --}}
+        {{-- Overall progress --}}
+        @php
+            $totalActivities = $progress->count();
+            $completedActivities = $progress->where('status', 'completed')->count();
+            $overallPct = $totalActivities > 0 ? ($completedActivities / $totalActivities) * 100 : 0;
+        @endphp
         <div class="card p-4">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-2xl">📝</div>
-                <div>
-                    <p class="text-white font-bold text-lg">{{ $peerReviews->count() }}</p>
-                    <p class="text-dark-400 text-sm">Peer Reviews Pending</p>
-                </div>
+            <div class="flex items-center justify-between">
+                <p class="text-white font-semibold">Overall progress</p>
+                <span class="text-primary-400 font-bold text-sm">{{ $completedActivities }}/{{ $totalActivities }}</span>
             </div>
-            @if($peerReviews->count() > 0)
-            <a href="{{ route('curriculum.peer-review.form', $peerReviews->first()->id) }}"
-               class="mt-3 block w-full text-center px-3 py-1.5 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-lg hover:bg-purple-500/30 text-sm transition">
-                Review Now →
-            </a>
-            @endif
+            <div class="w-full bg-dark-800 rounded-full h-2.5 mt-3">
+                <div class="bg-gradient-to-r from-primary-600 to-primary-400 rounded-full h-2.5 transition-all duration-500" style="width: {{ $overallPct }}%"></div>
+            </div>
+            <div class="flex items-center justify-between text-xs text-dark-400 mt-2">
+                <span>{{ number_format($overallPct, 0) }}% complete</span>
+                <span>{{ $totalPoints ?? 0 }} points earned</span>
+            </div>
         </div>
     </div>
 
-    <!-- Overall Progress -->
-    @php
-        $totalActivities = $progress->count();
-        $completedActivities = $progress->where('status', 'completed')->count();
-        $overallPct = $totalActivities > 0 ? ($completedActivities / $totalActivities) * 100 : 0;
-    @endphp
-    <div class="card p-6">
-        <div class="flex items-center justify-between mb-3">
-            <h3 class="text-white font-semibold">Overall Progress</h3>
-            <span class="text-primary-400 font-bold">{{ $completedActivities }}/{{ $totalActivities }} activities</span>
+    {{-- CHAPTER 0: ORIENTATION --}}
+    @if($milestones->isNotEmpty())
+    <div class="ch0 flex flex-wrap items-center gap-4">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl {{ $orientationDone ? 'bg-green-500/20' : 'bg-primary-500/20' }}">{{ $orientationDone ? '✅' : '🪪' }}</div>
+        <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-dark-400 text-sm font-mono">M0</span>
+                <h3 class="text-lg font-semibold text-white">Orientation: your path to senior level</h3>
+                @if($orientationDone)
+                    <span class="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full">Complete</span>
+                @elseif($orientationRequired)
+                    <span class="px-2 py-0.5 bg-primary-500/20 text-primary-300 text-xs rounded-full">Start here</span>
+                @else
+                    <span class="px-2 py-0.5 bg-amber-500/20 text-amber-300 text-xs rounded-full">New · recommended</span>
+                @endif
+            </div>
+            <p class="text-dark-400 text-sm mt-0.5">
+                @if($orientationDone)
+                    Revisit the career ladder, your toolkit and your commitment any time.
+                @else
+                    Meet the team, see what seniors master and where you'll learn it, learn how the program works, and plan your weeks. About 20 minutes.
+                @endif
+            </p>
         </div>
-        <div class="w-full bg-dark-800 rounded-full h-3">
-            <div class="bg-gradient-to-r from-primary-600 to-primary-400 rounded-full h-3 transition-all duration-500"
-                 style="width: {{ $overallPct }}%"></div>
-        </div>
-        <div class="flex items-center justify-between text-sm text-dark-400 mt-2">
-            <span>{{ number_format($overallPct, 0) }}% complete</span>
-            <span>{{ $totalPoints ?? 0 }} points earned</span>
-        </div>
-    </div>
-
-    @if(session('success'))
-    <div class="p-4 bg-green-500/10 border border-green-500/30 rounded-xl text-green-400">
-        {{ session('success') }}
-    </div>
-    @endif
-
-    @if(session('error'))
-    <div class="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400">
-        {{ session('error') }}
+        <a href="{{ route('curriculum.orientation') }}" class="{{ $orientationDone ? 'btn-secondary' : 'btn-primary' }} text-sm px-4 py-2">{{ $orientationDone ? 'Open' : 'Begin' }} →</a>
     </div>
     @endif
 
@@ -133,33 +198,53 @@
 
         $isUnlocked = $milestone->isUnlockedFor(auth()->user());
         $isComplete = $msTotal > 0 && $msCompleted === $msTotal;
+        $needsAction = $msProgress->contains(fn ($p) => in_array($p->status?->value ?? $p->status, ['in_progress', 'rejected', 'overdue'], true));
+        $openByDefault = ($isUnlocked || $isComplete) && (($currentMilestoneId ?? null) === $milestone->id || $needsAction);
+        $here = $classmates['chapters'][$milestone->id] ?? [];
+        $builds = $msActivities->filter(fn ($a) => in_array($a->type?->value, ['project', 'case_study'], true))->pluck('title');
     @endphp
-    <div id="milestone-{{ $milestone->id }}" class="card overflow-hidden {{ !$isUnlocked && !$isComplete ? 'opacity-60' : '' }}">
+    <div id="milestone-{{ $milestone->id }}" class="card overflow-hidden {{ !$isUnlocked && !$isComplete ? 'opacity-70' : '' }}" x-data="{ open: @js($openByDefault) }">
         <!-- Milestone Header -->
-        <div class="p-5 border-b border-dark-700">
+        <button type="button" class="ms-toggle p-5 {{ ($isUnlocked || $isComplete) ? 'cursor-pointer hover:bg-dark-800/30' : 'cursor-default' }}" @click="{{ ($isUnlocked || $isComplete) ? 'open = !open' : '' }}" :aria-expanded="open">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl
                     {{ $isComplete ? 'bg-green-500/20' : ($isUnlocked ? 'bg-primary-500/20' : 'bg-dark-700') }}">
                     {{ $isComplete ? '✅' : ($milestone->badge_icon ?? '🏁') }}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 flex-wrap">
                         <span class="text-dark-400 text-sm font-mono">M{{ $milestone->sequence_order }}</span>
                         <h3 class="text-lg font-semibold text-white">{{ $milestone->title }}</h3>
                         @if($isComplete)
                             <span class="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full">Complete</span>
                         @elseif(!$isUnlocked)
                             <span class="px-2 py-0.5 bg-dark-700 text-dark-400 text-xs rounded-full">🔒 Locked</span>
+                        @elseif(($currentMilestoneId ?? null) === $milestone->id)
+                            <span class="px-2 py-0.5 bg-primary-500/20 text-primary-300 text-xs rounded-full">You are here</span>
                         @endif
                     </div>
                     @if($milestone->description)
                     <p class="text-dark-400 text-sm mt-0.5">{{ \App\Support\LessonMarkdown::plain($milestone->description, 120) }}</p>
                     @endif
+                    @if(!$isUnlocked && !$isComplete && $builds->isNotEmpty())
+                        <p class="text-dark-300 text-sm mt-1">🔓 What you'll build here: <span class="text-white">{{ $builds->take(2)->implode(' · ') }}</span>{{ $builds->count() > 2 ? ' and more' : '' }}</p>
+                    @endif
                 </div>
+                @if($here)
+                    <div class="cm-here flex-col items-end gap-1" title="{{ collect($here)->pluck('first')->implode(', ') }}">
+                        <div class="cm-avatars">
+                            @foreach(array_slice($here, 0, 4) as $p)<span>{{ $p['initials'] }}</span>@endforeach
+                        </div>
+                        <span class="text-dark-500 text-xs">{{ count($here) }} {{ count($here) === 1 ? 'classmate is' : 'classmates are' }} here</span>
+                    </div>
+                @endif
                 <div class="text-right">
                     <p class="text-white font-bold">{{ $msCompleted }}/{{ $msTotal }}</p>
                     <p class="text-dark-500 text-xs">activities</p>
                 </div>
+                @if($isUnlocked || $isComplete)
+                    <span class="ms-chev text-xl" :class="open && 'open'" aria-hidden="true">›</span>
+                @endif
             </div>
             @if($msTotal > 0)
             <div class="w-full bg-dark-800 rounded-full h-1.5 mt-4">
@@ -168,16 +253,16 @@
                      style="width: {{ $msPct }}%"></div>
             </div>
             @endif
-        </div>
+        </button>
 
         <!-- Activities -->
         @if($isUnlocked || $isComplete)
-        <div class="divide-y divide-dark-700/50">
+        <div class="divide-y divide-dark-700/50 border-t border-dark-700" x-show="open" x-cloak>
             @foreach($msActivities->sortBy('sequence_order') as $activity)
             @php
                 $actProgress = $msProgress->firstWhere('curriculum_activity_id', $activity->id);
                 $actStatus = $actProgress?->status?->value ?? $actProgress?->status ?? 'locked';
-                $actStatusLabel = $actProgress?->status?->label() ?? ucfirst($actStatus);
+                $peers = $classmates['activities'][$activity->id] ?? null;
             @endphp
             <div class="px-5 py-4 flex items-center gap-4 hover:bg-dark-800/30 transition">
                 {{-- Status Icon --}}
@@ -206,15 +291,19 @@
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2">
                         <span class="text-dark-500 text-xs font-mono">#{{ $activity->sequence_order }}</span>
-                        <p class="text-white text-sm font-medium truncate">{{ $activity->title }}</p>
+                        <a href="{{ route('curriculum.activity.show', $activity) }}" class="text-white text-sm font-medium truncate hover:text-primary-300">{{ $activity->title }}</a>
                         @if($activity->is_required)
                             <span class="text-red-400 text-xs">*</span>
                         @endif
                     </div>
-                    <div class="flex items-center gap-3 mt-0.5">
+                    <div class="flex items-center gap-3 mt-0.5 flex-wrap">
                         <span class="text-dark-500 text-xs">{{ $activity->type?->icon() ?? '' }} {{ $activity->type?->label() ?? '' }}</span>
                         <span class="text-dark-600 text-xs">•</span>
                         <span class="text-dark-500 text-xs">{{ $activity->difficulty_level?->icon() ?? '' }} {{ $activity->difficulty_level?->label() ?? '' }}</span>
+                        @if($peers)
+                            <span class="text-dark-600 text-xs">•</span>
+                            <span class="text-dark-400 text-xs">👥 {{ $peers['count'] }} {{ $peers['count'] === 1 ? 'classmate' : 'classmates' }} done{{ $peers['latest'] ? ' · ' . $peers['latest'] . ', ' . $peers['when'] : '' }}</span>
+                        @endif
                     </div>
                 </div>
 
@@ -255,7 +344,7 @@
             @endforeach
         </div>
         @else
-        <div class="px-5 py-6 text-center">
+        <div class="px-5 pb-5 text-center">
             <p class="text-dark-500 text-sm">
                 🔒 Complete
                 @if($milestone->prerequisiteMilestone)
@@ -269,6 +358,13 @@
         @endif
     </div>
     @endforeach
+
+    @if(!empty($classmates['finished']))
+        <div class="card p-4 flex items-center gap-3">
+            <div class="cm-avatars">@foreach(array_slice($classmates['finished'], 0, 5) as $p)<span>{{ $p['initials'] }}</span>@endforeach</div>
+            <p class="text-dark-300 text-sm">🏆 {{ collect($classmates['finished'])->pluck('first')->take(3)->implode(', ') }}{{ count($classmates['finished']) > 3 ? ' and ' . (count($classmates['finished']) - 3) . ' more' : '' }} finished the whole track.</p>
+        </div>
+    @endif
 
     @if($milestones->isEmpty())
     <div class="card p-12 text-center">

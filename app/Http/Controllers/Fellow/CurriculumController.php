@@ -127,7 +127,23 @@ class CurriculumController extends Controller
             }
         }
 
+        $orientation = app(\App\Services\OrientationService::class);
+        $orientationRequired = $orientation->isRequired($fellow, $track);
+        $page = app(\App\Services\CurriculumPageService::class);
+        $milestones = $dashboard['milestones'] ?? collect();
+        $progressRows = $dashboard['progress'] ?? collect();
+
+        // "You are here": the first chapter whose required work isn't finished (same rule as the journey bar).
+        $completedIds = $progressRows->filter(fn ($p) => ($p->status?->value ?? $p->status) === 'completed')->pluck('curriculum_activity_id')->flip();
+        $currentIndex = $page->currentChapterIndex($milestones, $completedIds);
+
         return view('fellow.curriculum.index', array_merge($dashboard, [
+            'currentMilestoneId' => $currentIndex !== null ? $milestones->values()[$currentIndex]->id : null,
+            'orientationRequired' => $orientationRequired,
+            'orientationDone' => $orientation->isComplete($fellow, $track),
+            'nextStep' => $page->nextStep($fellow, $track, $milestones, $progressRows, $orientationRequired),
+            'classmates' => $page->classmates($fellow, $track, $milestones),
+            'extras' => $page->extras($fellow, $track),
             'streakSummary' => $streakSummary,
             'partner' => $partner,
             'peerReviews' => $peerReviews,
@@ -172,7 +188,31 @@ class CurriculumController extends Controller
             $reviewPartner = app(\App\Services\ReviewPartnerService::class)->matchFellow($fellow, $activity);
         }
 
-        return view('fellow.curriculum.activity-show', compact('activity', 'progress', 'linkedInterviews', 'reviewPartner'));
+        // Interactive lesson: steps to tick, quick checks, the starter notebook and a code sandbox.
+        $isOpen = $progress && $progress->status !== \App\Enums\CurriculumStatus::LOCKED;
+        $lessonSections = \App\Support\LessonSteps::parse($activity->instructions);
+        $quickChecks = $isOpen ? app(\App\Services\FlashReviewService::class)->quickChecks($fellow, $activity) : collect();
+        $orientationRequired = app(\App\Services\OrientationService::class)->isRequired($fellow, $activity->track_id);
+        $colabUrl = null;
+        $notebookPath = null;
+        foreach ((array) $activity->resources as $resource) {
+            $url = is_array($resource) ? (string) ($resource['content'] ?? '') : (string) $resource;
+            if (!$colabUrl && str_starts_with($url, 'https://colab.research.google.com/')) {
+                $colabUrl = $url;
+            }
+            $path = (string) parse_url($url, PHP_URL_PATH);
+            if (!$notebookPath && str_starts_with($path, '/course-files/') && str_ends_with($path, '.ipynb') && !str_contains($url, 'colab.')) {
+                $notebookPath = $path;
+            }
+        }
+        $practice = $activity->track?->experience['practice'] ?? null;
+        $codeSkills = ['python', 'pandas', 'sql', 'statistics', 'cleaning', 'visualization'];
+        $sandbox = $isOpen && is_array($practice) && ($notebookPath || array_intersect((array) $activity->skills, $codeSkills))
+            ? ['notebook' => $notebookPath, 'sqlTables' => $practice['sql_tables'] ?? [], 'pythonData' => array_values($practice['python_files'] ?? [])[0] ?? null,
+                'startWith' => in_array('sql', (array) $activity->skills, true) && !in_array('python', (array) $activity->skills, true) ? 'sql' : 'python']
+            : null;
+
+        return view('fellow.curriculum.activity-show', compact('activity', 'progress', 'linkedInterviews', 'reviewPartner', 'lessonSections', 'quickChecks', 'orientationRequired', 'colabUrl', 'sandbox', 'isOpen'));
     }
 
     /**
@@ -183,6 +223,12 @@ class CurriculumController extends Controller
     public function startActivity(TrackCurriculumActivity $activity)
     {
         $fellow = Auth::user();
+
+        // New fellows complete the track orientation before their first activity.
+        if (app(\App\Services\OrientationService::class)->isRequired($fellow, $activity->track_id)) {
+            return redirect()->route('curriculum.orientation')
+                ->with('warning', 'Welcome! Complete your orientation first: it takes about 20 minutes and opens Chapter 1.');
+        }
 
         try {
             $result = $this->curriculumService->startActivity($fellow, $activity->id);

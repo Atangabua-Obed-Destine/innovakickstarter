@@ -100,6 +100,19 @@
                         </span>
                     @endif
                 </div>
+                @if($colabUrl || $sandbox || $quickChecks->isNotEmpty())
+                    <div class="flex flex-wrap items-center gap-2 mt-4">
+                        @if($colabUrl)
+                            <a href="{{ $colabUrl }}" target="_blank" rel="noopener" class="btn-primary text-sm px-4 py-2">📓 Open starter notebook in Colab ↗</a>
+                        @endif
+                        @if($sandbox)
+                            <a href="#try-it" class="btn-secondary text-sm px-4 py-2">🧪 Try code here</a>
+                        @endif
+                        @if($quickChecks->isNotEmpty())
+                            <span class="text-dark-400 text-sm">⚡ {{ $quickChecks->count() }} quick {{ Str::plural('check', $quickChecks->count()) }} inside</span>
+                        @endif
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -276,13 +289,20 @@
                     @endif
                     @endif
                 </div>
+                @if($orientationRequired)
+                    <a href="{{ route('curriculum.orientation') }}" class="btn-primary text-lg px-8 py-3">🪪 Start orientation first</a>
+                @else
                 <form action="{{ route('curriculum.activity.start', $activity) }}" method="POST">
                     @csrf
                     <button type="submit" class="btn-primary text-lg px-8 py-3">
                         {{ $isInterviewActivity ? '🎤 Start Interview' : '🚀 Start Activity' }}
                     </button>
                 </form>
+                @endif
             </div>
+            @if($orientationRequired)
+                <p class="text-dark-400 text-sm mt-3">Welcome! Before your first activity, take the 20-minute orientation: meet the team, see the whole path to senior level and plan your weeks.</p>
+            @endif
 
             {{-- LOCKED --}}
             @else
@@ -482,9 +502,22 @@
     </div>
 
     {{-- ============================================= --}}
-    {{-- INSTRUCTIONS --}}
+    {{-- INSTRUCTIONS (interactive steps when the lesson has them) --}}
     {{-- ============================================= --}}
-    @if($activity->instructions)
+    @if($lessonSections)
+        @include('partials.lesson.steps', ['sections' => $lessonSections, 'canTick' => $isStarted, 'quickChecks' => $quickChecks])
+    @elseif($quickChecks->isNotEmpty())
+        <div class="card p-6 space-y-3">
+            <h3 class="text-white font-semibold text-lg">⚡ Check your understanding</h3>
+            @foreach($quickChecks as $check)
+                @include('partials.lesson.quick-check', ['check' => $check])
+            @endforeach
+        </div>
+    @endif
+    @if($sandbox)
+        @include('partials.lesson.sandbox', ['sandbox' => $sandbox, 'colabUrl' => $colabUrl])
+    @endif
+    @if($activity->instructions && !$lessonSections)
     <div class="card p-6">
         <h3 class="text-white font-semibold text-lg mb-3 flex items-center gap-2">
             <span class="text-blue-400">📋</span> Step-by-Step Instructions
@@ -768,6 +801,8 @@
                 <a href="{{ route('curriculum.submit.form', $progress) }}" class="btn-primary">
                     {{ $statusValue === 'rejected' ? '📝 Resubmit Work' : '📤 Submit Work' }}
                 </a>
+            @elseif($canStart && $orientationRequired)
+                <a href="{{ route('curriculum.orientation') }}" class="btn-primary">🪪 Start orientation first</a>
             @elseif($canStart)
                 <form action="{{ route('curriculum.activity.start', $activity) }}" method="POST">
                     @csrf

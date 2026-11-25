@@ -102,6 +102,7 @@ class FellowCurriculumProgress extends Model
         'peer_review_score',
         'linked_activity_id',
         'linked_interview_id',
+        'checked_steps',
     ];
 
     /**
@@ -120,6 +121,7 @@ class FellowCurriculumProgress extends Model
             'peer_reviewed_at' => 'datetime',
             'evidence' => 'array',
             'rubric_scores' => 'array',
+            'checked_steps' => 'array',
             'score_awarded' => 'integer',
             'points_awarded' => 'integer',
             'late_penalty_applied' => 'boolean',
