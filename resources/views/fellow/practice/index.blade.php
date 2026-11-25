@@ -30,6 +30,21 @@
         <div class="pl-stat"><p class="text-dark-400 text-xs">Solved</p><p class="text-2xl font-bold text-white">{{ $stats['solved'] }} / {{ $stats['total'] }}</p></div>
     </div>
 
+    <div class="grid md:grid-cols-2 gap-3">
+        @if($weeklyCase)
+            <a href="{{ route('detective.show', $weeklyCase) }}" class="pl-daily block">
+                <span class="tx-chip">🕵️ Data Detective · this week</span>
+                <p class="text-white font-semibold text-lg mt-2">{{ $weeklyCase->title }}</p>
+                <p class="text-dark-300 text-sm">A mystery on the real sales data. Investigate, answer, earn {{ $weeklyCase->xp }} XP.</p>
+            </a>
+        @endif
+        <a href="{{ route('flash-review.index') }}" class="pl-daily block">
+            <span class="tx-chip">🧠 Daily review</span>
+            <p class="text-white font-semibold text-lg mt-2">{{ $flashLeft > 0 ? $flashLeft . ' quick ' . Str::plural('question', $flashLeft) . ' waiting' : 'Done for today ✓' }}</p>
+            <p class="text-dark-300 text-sm">Spaced repetition from chapters you've reached. About a minute.</p>
+        </a>
+    </div>
+
     @if($daily)
         <div class="pl-daily">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

@@ -30,6 +30,8 @@ class PracticeController extends Controller
             'leaderboard' => $this->practice->leaderboard($track),
             'bySkill' => $challenges->groupBy(fn ($c) => $c->skill ?: 'general'),
             'solved' => $solved,
+            'weeklyCase' => app(\App\Services\DetectiveService::class)->caseOfTheWeek($track),
+            'flashLeft' => app(\App\Services\FlashReviewService::class)->todaysCards($request->user(), $track)->count(),
         ]);
     }
 

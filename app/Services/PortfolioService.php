@@ -58,6 +58,7 @@ class PortfolioService
             'posts' => $completed->filter($isPost)->filter(fn ($p) => $this->safeUrl($p->evidence_url))->take(8)->map($item)->values(),
             'presentations' => Presentation::with('track')->where('fellow_id', $fellow->id)->where('status', Presentation::STATUS_APPROVED)->latest('presented_at')->get(),
             'practice' => $track ? $this->practice->stats($fellow, $track) : null,
+            'briefs' => \App\Models\BriefSubmission::with('brief')->where('fellow_id', $fellow->id)->whereIn('status', ['shortlisted', 'winner'])->latest('reviewed_at')->get(),
             'links' => array_filter([
                 'LinkedIn' => $this->safeUrl($fellow->linkedin_url),
                 'GitHub' => $this->safeUrl($fellow->github_url),

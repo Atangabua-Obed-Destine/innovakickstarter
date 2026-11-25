@@ -668,6 +668,40 @@
     @endif
 
     {{-- ============================================= --}}
+    {{-- EXPLAIN IT BACK --}}
+    {{-- ============================================= --}}
+    @php
+        $activityType = $activity->type?->value ?? (string) $activity->type;
+        $lastExplanation = \App\Models\Explanation::where('fellow_id', auth()->id())->where('curriculum_activity_id', $activity->id)->latest('id')->first();
+    @endphp
+    @if(in_array($activityType, ['research', 'project', 'case_study'], true) && $progress && !in_array($statusValue, ['locked', 'available'], true))
+    <div class="card p-6" x-data="{ text: '', busy: false, result: @js($lastExplanation ? ['score' => $lastExplanation->score] + ($lastExplanation->feedback ?? []) : null), error: '', xp: 0 }">
+        <h3 class="text-white font-semibold text-lg mb-1">🧠 Explain it back</h3>
+        <p class="text-dark-300 text-sm">{{ app(\App\Services\ExplainBackService::class)->prompt($activity) }}</p>
+        <p class="text-dark-500 text-xs mt-1">Explaining an idea simply is the best test of whether you understand it. Your mentor gives feedback; it doesn't affect your grade. +{{ \App\Services\ExplainBackService::XP }} practice XP the first time you score 3 or more.</p>
+        <textarea x-model="text" rows="4" maxlength="2000" class="w-full mt-3 bg-dark-800 border border-dark-600 rounded-lg px-4 py-2.5 text-white placeholder-dark-500 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
+                  placeholder="In plain words..."></textarea>
+        <div class="flex items-center gap-3 mt-2">
+            <button type="button" class="btn btn-primary btn-sm" :disabled="busy || text.trim().length < 60"
+                    @click="busy = true; error = ''; fetch('{{ route('curriculum.activity.explain', $activity) }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ text }) })
+                        .then(r => r.json()).then(d => { if (d.ok) { result = d; xp = d.xp || 0; } else { error = d.error || d.message || 'Try again.'; } }).catch(() => error = 'No connection. Try again.').finally(() => busy = false)"
+                    x-text="busy ? 'Your mentor is reading...' : 'Get feedback'"></button>
+            <span class="text-dark-500 text-xs" x-text="text.trim().length < 60 ? (60 - text.trim().length) + ' more characters' : ''"></span>
+        </div>
+        <p class="text-amber-300 text-sm mt-2" x-show="error" x-text="error"></p>
+        <template x-if="result">
+            <div class="mt-4 p-4 rounded-lg bg-dark-800 space-y-2">
+                <p class="text-white font-semibold"><span x-text="'⭐'.repeat(result.score) + '☆'.repeat(5 - result.score)"></span> <span class="text-dark-300 font-normal" x-text="result.verdict"></span>
+                    <span class="text-green-400 text-sm" x-show="xp > 0" x-text="' +' + xp + ' XP'"></span></p>
+                <template x-if="result.strengths && result.strengths.length"><p class="text-sm text-dark-200"><span class="text-green-400">Strong:</span> <span x-text="result.strengths.join(' · ')"></span></p></template>
+                <template x-if="result.missing && result.missing.length"><p class="text-sm text-dark-200"><span class="text-amber-300">Missing:</span> <span x-text="result.missing.join(' · ')"></span></p></template>
+                <p class="text-sm text-dark-200" x-show="result.tip"><span class="text-primary-300">Tip:</span> <span x-text="result.tip"></span></p>
+            </div>
+        </template>
+    </div>
+    @endif
+
+    {{-- ============================================= --}}
     {{-- LESSON FEEDBACK --}}
     {{-- ============================================= --}}
     @php

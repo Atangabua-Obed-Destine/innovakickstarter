@@ -99,14 +99,40 @@ class PracticeService
         return PracticeAttempt::where('challenge_id', $challenge->id)->where('fellow_id', $fellow->id)->where('correct', true)->exists();
     }
 
+    /**
+     * Every source of practice XP: [table, card/challenge table, foreign key, day column].
+     * Each row counts toward XP, the practice streak (correct answers) and the leaderboard.
+     */
+    public const XP_SOURCES = [
+        ['practice_attempts', 'practice_challenges', 'challenge_id', 'practiced_on'],
+        ['flash_answers', 'flash_cards', 'card_id', 'answered_on'],
+        ['detective_answers', 'detective_cases', 'case_id', 'answered_on'],
+        ['explanations', 'track_curriculum_activities', 'curriculum_activity_id', 'answered_on'],
+    ];
+
+    /** Union of all XP rows for a track: fellow_id, xp, day, correct. */
+    public function ledger(Track $track): \Illuminate\Database\Query\Builder
+    {
+        $query = null;
+        foreach (self::XP_SOURCES as [$table, $parent, $fk, $day]) {
+            if (!\Illuminate\Support\Facades\Schema::hasTable($table)) {
+                continue;
+            }
+            $part = DB::table($table)->join("{$parent} as p", 'p.id', '=', "{$table}.{$fk}")->where('p.track_id', $track->id)
+                ->selectRaw("{$table}.fellow_id as fellow_id, {$table}.xp_awarded as xp, {$table}.{$day} as day, {$table}.correct as correct");
+            $query = $query ? $query->unionAll($part) : $part;
+        }
+
+        return DB::query()->fromSub($query, 'ledger');
+    }
+
     /** @return array{xp: int, solved: int, total: int, streak: int, practiced_today: bool, week_xp: int} */
     public function stats(User $fellow, Track $track): array
     {
-        $ids = PracticeChallenge::where('track_id', $track->id)->pluck('id');
-        $attempts = PracticeAttempt::where('fellow_id', $fellow->id)->whereIn('challenge_id', $ids);
+        $mine = fn () => $this->ledger($track)->where('fellow_id', $fellow->id);
 
-        $days = (clone $attempts)->where('correct', true)->distinct()->orderByDesc('practiced_on')
-            ->pluck('practiced_on')->map(fn ($d) => \Carbon\Carbon::parse($d)->toDateString())->unique()->values();
+        $days = $mine()->where('correct', true)->distinct()->orderByDesc('day')->pluck('day')
+            ->map(fn ($d) => \Carbon\Carbon::parse($d)->toDateString())->unique()->values();
         $streak = 0;
         $cursor = now()->startOfDay();
         if ($days->first() !== $cursor->toDateString()) {
@@ -121,27 +147,27 @@ class PracticeService
             }
         }
 
+        $ids = PracticeChallenge::where('track_id', $track->id)->pluck('id');
+
         return [
-            'xp' => (int) (clone $attempts)->sum('xp_awarded'),
-            'solved' => (clone $attempts)->where('correct', true)->distinct('challenge_id')->count('challenge_id'),
+            'xp' => (int) $mine()->sum('xp'),
+            'solved' => PracticeAttempt::where('fellow_id', $fellow->id)->whereIn('challenge_id', $ids)->where('correct', true)->distinct('challenge_id')->count('challenge_id'),
             'total' => PracticeChallenge::where('track_id', $track->id)->where('is_active', true)->count(),
             'streak' => $streak,
-            'practiced_today' => (clone $attempts)->where('correct', true)->whereDate('practiced_on', now()->toDateString())->exists(),
-            'week_xp' => (int) (clone $attempts)->where('practiced_on', '>=', now()->startOfWeek()->toDateString())->sum('xp_awarded'),
+            'practiced_today' => $days->first() === now()->toDateString(),
+            'week_xp' => (int) $mine()->where('day', '>=', now()->startOfWeek()->toDateString())->sum('xp'),
         ];
     }
 
-    /** This week's top fellows by practice XP in the track. */
+    /** This week's top fellows by practice XP in the track (challenges, reviews, cases, explanations). */
     public function leaderboard(Track $track, int $limit = 10): Collection
     {
-        return PracticeAttempt::query()
-            ->join('practice_challenges as c', 'c.id', '=', 'practice_attempts.challenge_id')
-            ->join('users as u', 'u.id', '=', 'practice_attempts.fellow_id')
-            ->where('c.track_id', $track->id)
-            ->where('practice_attempts.practiced_on', '>=', now()->startOfWeek()->toDateString())
-            ->groupBy('practice_attempts.fellow_id', 'u.name')
-            ->havingRaw('SUM(practice_attempts.xp_awarded) > 0')
-            ->selectRaw('practice_attempts.fellow_id, u.name, SUM(practice_attempts.xp_awarded) as xp')
+        return $this->ledger($track)
+            ->join('users as u', 'u.id', '=', 'ledger.fellow_id')
+            ->where('ledger.day', '>=', now()->startOfWeek()->toDateString())
+            ->groupBy('ledger.fellow_id', 'u.name')
+            ->havingRaw('SUM(ledger.xp) > 0')
+            ->selectRaw('ledger.fellow_id as fellow_id, u.name as name, SUM(ledger.xp) as xp')
             ->orderByDesc('xp')
             ->limit($limit)
             ->get()

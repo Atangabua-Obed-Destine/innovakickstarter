@@ -97,6 +97,20 @@
             </div>
         @endif
 
+        @if($briefs->isNotEmpty())
+            <div class="pf-section">
+                <h2>💼 Employer challenges</h2>
+                <div class="space-y-2">
+                    @foreach($briefs as $b)
+                        <div class="pf-item flex flex-wrap items-center justify-between gap-2">
+                            <span class="text-dark-200">{{ $b->status === 'winner' ? '🏆 Winner' : '⭐ Shortlisted' }}: <span class="text-white">{{ $b->brief?->title }}</span> <span class="text-dark-500">· {{ $b->brief?->company_name }}</span></span>
+                            <a href="{{ $b->url }}" target="_blank" rel="noopener noreferrer nofollow" class="text-primary-400 hover:text-primary-300 text-sm">See the solution →</a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         @if($presentations->isNotEmpty())
             <div class="pf-section">
                 <h2>🎤 Presentations</h2>

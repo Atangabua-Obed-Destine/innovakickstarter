@@ -220,6 +220,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/activities/{activity}', [FellowCurriculumController::class, 'showActivity'])->name('activity.show');
             Route::post('/activities/{activity}/start', [FellowCurriculumController::class, 'startActivity'])->name('activity.start');
             Route::post('/activities/{activity}/interview', [FellowCurriculumController::class, 'launchInterview'])->name('activity.interview');
+            Route::post('/activities/{activity}/explain', [\App\Http\Controllers\Fellow\ExplainBackController::class, 'store'])->name('activity.explain')->middleware('throttle:6,1');
             Route::post('/activities/{activity}/feedback', [\App\Http\Controllers\Fellow\LessonFeedbackController::class, 'store'])->name('activity.feedback')->middleware('throttle:20,1');
 
             // Submission
@@ -244,6 +245,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/ai-mentor', [\App\Http\Controllers\Fellow\MentorController::class, 'index'])->name('ai-mentor.index');
         Route::get('/ai-mentor/history', [\App\Http\Controllers\Fellow\MentorController::class, 'history'])->name('ai-mentor.history');
         Route::post('/ai-mentor/ask', [\App\Http\Controllers\Fellow\MentorController::class, 'ask'])->name('ai-mentor.ask')->middleware('throttle:8,1');
+
+        // Employer mini-briefs
+        Route::get('/briefs', [\App\Http\Controllers\Fellow\BriefController::class, 'index'])->name('briefs.index');
+        Route::get('/briefs/{brief}', [\App\Http\Controllers\Fellow\BriefController::class, 'show'])->name('briefs.show');
+        Route::post('/briefs/{brief}', [\App\Http\Controllers\Fellow\BriefController::class, 'submit'])->name('briefs.submit')->middleware('throttle:10,1');
+
+        // Data Detective weekly cases
+        Route::get('/detective', [\App\Http\Controllers\Fellow\DetectiveController::class, 'index'])->name('detective.index');
+        Route::get('/detective/{case}', [\App\Http\Controllers\Fellow\DetectiveController::class, 'show'])->name('detective.show');
+        Route::post('/detective/{case}/answer', [\App\Http\Controllers\Fellow\DetectiveController::class, 'answer'])->name('detective.answer')->middleware('throttle:30,1');
+        Route::post('/detective/{case}/reveal', [\App\Http\Controllers\Fellow\DetectiveController::class, 'reveal'])->name('detective.reveal')->middleware('throttle:10,1');
+
+        // Daily flash review (spaced repetition)
+        Route::get('/daily-review', [\App\Http\Controllers\Fellow\FlashReviewController::class, 'index'])->name('flash-review.index');
+        Route::post('/daily-review/{card}/answer', [\App\Http\Controllers\Fellow\FlashReviewController::class, 'answer'])->name('flash-review.answer')->middleware('throttle:30,1');
 
         // Practice Lab (self-checking challenges; XP is separate from Career Capital)
         Route::get('/practice', [\App\Http\Controllers\Fellow\PracticeController::class, 'index'])->name('practice.index');
@@ -297,6 +313,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/talent/{user}/contact', [RecruiterController::class, 'contact'])->name('talent.contact');
             
             Route::get('/shortlist', [RecruiterController::class, 'shortlist'])->name('shortlist.index');
+            Route::get('/briefs', \App\Http\Controllers\RecruiterBriefController::class)->name('briefs.index');
         });
         
         // Subscription (accessible without active subscription so recruiters can subscribe/upgrade)
@@ -532,6 +549,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // AI review of submissions
         Route::post('/curriculum/reviews/{progress}/ai-review', [\App\Http\Controllers\Admin\AiReviewController::class, 'run'])->name('curriculum.reviews.ai-run');
         Route::post('/curriculum/reviews/{progress}/ai-review/reveal', [\App\Http\Controllers\Admin\AiReviewController::class, 'reveal'])->name('curriculum.reviews.ai-reveal');
+
+        // Employer mini-briefs
+        Route::get('/briefs', [\App\Http\Controllers\Admin\BriefController::class, 'index'])->name('briefs.index');
+        Route::get('/briefs/create', [\App\Http\Controllers\Admin\BriefController::class, 'create'])->name('briefs.create');
+        Route::post('/briefs', [\App\Http\Controllers\Admin\BriefController::class, 'store'])->name('briefs.store');
+        Route::get('/briefs/{brief}', [\App\Http\Controllers\Admin\BriefController::class, 'show'])->name('briefs.show');
+        Route::get('/briefs/{brief}/edit', [\App\Http\Controllers\Admin\BriefController::class, 'edit'])->name('briefs.edit');
+        Route::put('/briefs/{brief}', [\App\Http\Controllers\Admin\BriefController::class, 'update'])->name('briefs.update');
+        Route::post('/briefs/{brief}/submissions/{submission}/review', [\App\Http\Controllers\Admin\BriefController::class, 'review'])->name('briefs.review');
 
         // Presentations review
         Route::get('/presentations', [\App\Http\Controllers\Admin\PresentationController::class, 'index'])->name('presentations.index');

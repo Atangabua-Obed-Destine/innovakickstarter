@@ -745,6 +745,20 @@
         $practiceDaily = $trackExperience ? app(\App\Services\PracticeService::class)->dailyChallenge($trackExperience->track) : null;
         $practiceStats = $practiceDaily ? app(\App\Services\PracticeService::class)->stats($user, $trackExperience->track) : null;
     @endphp
+    @php
+        $flashLeft = $trackExperience ? app(\App\Services\FlashReviewService::class)->todaysCards($user, $trackExperience->track)->count() : 0;
+    @endphp
+    @if($flashLeft > 0)
+        <div class="card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <p class="text-dark-400 text-xs uppercase tracking-wider">Daily review</p>
+                <p class="text-white font-semibold mt-1">{{ $flashLeft }} quick {{ Str::plural('question', $flashLeft) }} from earlier chapters</p>
+                <p class="text-dark-400 text-sm">About a minute. Remembering what you learned is what makes it stick.</p>
+            </div>
+            <a href="{{ route('flash-review.index') }}" class="btn btn-primary whitespace-nowrap">Start review</a>
+        </div>
+    @endif
+
     @if($practiceDaily)
         <div class="card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
