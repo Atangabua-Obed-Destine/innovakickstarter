@@ -176,6 +176,11 @@
                             <a href="{{ route('interviews.ai-room', $activeSession) }}" class="btn-primary text-lg px-6 py-3 flex-shrink-0">
                                 🎤 Continue Interview
                             </a>
+                            <form action="{{ route('interviews.cancel', $activeSession) }}" method="POST"
+                                  onsubmit="return confirm('Abandon this interview attempt? You can launch a new one right after.');">
+                                @csrf
+                                <button type="submit" class="btn-secondary px-4 py-3">Cancel &amp; Start Over</button>
+                            </form>
                             @else
                             <a href="{{ route('interviews.show', $activeSession) }}" class="btn-primary text-lg px-6 py-3 flex-shrink-0">
                                 📋 View Session

@@ -69,6 +69,97 @@ class AIInterviewService
     }
 
     /**
+     * Questions for a curriculum mock interview, about what the fellow just
+     * studied: the milestone and its activities. Only real AI questions are
+     * cached; when the AI is unavailable the generic questions for the type
+     * are used for this attempt only.
+     */
+    public function generateActivityQuestions(
+        \App\Models\TrackCurriculumActivity $activity,
+        InterviewType $type,
+        string $difficulty = 'intermediate'
+    ): array {
+        $cacheKey = "interview_questions_activity_{$activity->id}_" . md5($activity->updated_at . $type->value . $difficulty);
+        if ($cached = Cache::get($cacheKey)) {
+            return $cached;
+        }
+
+        if (!$this->isConfigured()) {
+            return $this->getFallbackQuestions($type, $difficulty);
+        }
+
+        try {
+            $result = $this->callOpenAI($this->buildActivityQuestionPrompt($activity, $type, $difficulty), true);
+            $questions = collect($result['questions'] ?? (array_is_list($result) ? $result : []))
+                ->filter(fn ($q) => is_array($q) && is_string($q['question'] ?? null) && trim($q['question']) !== '')
+                ->map(fn ($q) => [
+                    'question' => trim($q['question']),
+                    'type' => is_string($q['type'] ?? null) ? $q['type'] : 'conceptual',
+                    'hints' => array_values(array_filter((array) ($q['hints'] ?? []), 'is_string')),
+                    'criteria' => array_values(array_filter((array) ($q['criteria'] ?? []), 'is_string')),
+                ])
+                ->values()
+                ->take(6)
+                ->all();
+
+            if (count($questions) < 3) {
+                throw new \RuntimeException('The AI returned too few usable questions.');
+            }
+
+            Cache::put($cacheKey, $questions, now()->addDay());
+
+            return $questions;
+        } catch (\Exception $e) {
+            Log::error('AI activity question generation failed: ' . $e->getMessage(), ['activity_id' => $activity->id]);
+
+            return $this->getFallbackQuestions($type, $difficulty);
+        }
+    }
+
+    protected function buildActivityQuestionPrompt(\App\Models\TrackCurriculumActivity $activity, InterviewType $type, string $difficulty): string
+    {
+        $activity->loadMissing(['milestone.curriculumActivities', 'track']);
+        $milestone = $activity->milestone;
+        $topics = $milestone?->curriculumActivities
+            ->where('is_active', true)
+            ->reject(fn ($a) => $a->id === $activity->id)
+            ->sortBy('sequence_order')
+            ->map(fn ($a) => '- ' . $a->title)
+            ->implode("\n");
+        $clip = fn (?string $text, int $max) => mb_substr(trim(strip_tags((string) $text)), 0, $max);
+        $trackName = $activity->track?->name ?? 'General';
+        $milestoneTitle = $milestone?->title ?? '';
+        $milestoneText = $clip($milestone?->description, 800);
+        $briefText = $clip($activity->description, 1200);
+
+        $style = $type === InterviewType::BEHAVIORAL
+            ? 'Mostly behavioral questions (STAR method) about how the fellow worked through this milestone, plus one or two questions checking they understood its key ideas.'
+            : 'Mostly technical questions that check real understanding of this milestone\'s topics: explain a concept, predict or fix a short piece of code, choose and justify an approach to a small data problem. Add at most one behavioral question about how they worked through the milestone.';
+
+        return <<<PROMPT
+Generate 5 mock interview questions for a {$difficulty} level fellow in the {$trackName} track.
+
+The interview checks what the fellow learned in this milestone of their curriculum.
+Milestone: {$milestoneTitle}
+Milestone description: {$milestoneText}
+
+Topics the fellow studied in this milestone:
+{$topics}
+
+Interview brief: {$activity->title}
+{$briefText}
+
+Question style: {$style}
+- Ask about these topics only, not other subjects.
+- Each question must be answerable in writing in a few minutes, without running code.
+- Order them from easier to harder.
+
+Return JSON only:
+{"questions": [{"question": "...", "type": "conceptual|coding|behavioral", "hints": ["..."], "criteria": ["what a good answer includes"]}]}
+PROMPT;
+    }
+
+    /**
      * Evaluate a candidate's response to an interview question.
      */
     public function evaluateResponse(

@@ -377,31 +377,26 @@ class TrackCurriculumActivity extends Model
     }
 
     /**
-     * Calculate the absolute deadline for a fellow based on their enrollment date.
+     * Deadline for a fellow: deadline_days after the activity opens for them
+     * ($openedAt, default now: callers compute it at the moment of unlocking).
+     * It used to count from the day the fellow joined the track, which made
+     * nearly every later activity overdue the moment it opened.
      */
-    public function calculateDeadlineFor(User $fellow): ?\Carbon\Carbon
+    public function calculateDeadlineFor(User $fellow, ?\Carbon\CarbonInterface $openedAt = null): ?\Carbon\Carbon
     {
         if ($this->deadline_days === null) {
             return null;
         }
 
-        $fellowTrack = $fellow->fellowTracks()
-            ->where('track_id', $this->track_id)
-            ->first();
-
-        if (!$fellowTrack) {
-            return null;
-        }
-
-        return $fellowTrack->started_at->copy()->addDays($this->deadline_days);
+        return \Carbon\Carbon::instance($openedAt ?? now())->addDays($this->deadline_days);
     }
 
     /**
      * Calculate the grace deadline for a fellow.
      */
-    public function calculateGraceDeadlineFor(User $fellow): ?\Carbon\Carbon
+    public function calculateGraceDeadlineFor(User $fellow, ?\Carbon\CarbonInterface $openedAt = null): ?\Carbon\Carbon
     {
-        $deadline = $this->calculateDeadlineFor($fellow);
+        $deadline = $this->calculateDeadlineFor($fellow, $openedAt);
 
         if (!$deadline) {
             return null;

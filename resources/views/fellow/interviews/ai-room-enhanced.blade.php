@@ -1459,12 +1459,38 @@ function enhancedAIInterview() {
                 this.stopRecording();
             }
             
+            // Save first: the server scores the interview from the answers it evaluated.
+            let serverScore = null, savedOk = false;
+            try {
+                const saved = await fetch(`{{ route('interviews.complete', $interview) }}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({
+                        evaluations: this.evaluations,
+                    }),
+                });
+                if (saved.ok) {
+                    const result = await saved.json();
+                    serverScore = result.not_scored ? null : Math.round(result.score);
+                    savedOk = true;
+                } else {
+                    console.error('Failed to save results: HTTP ' + saved.status);
+                }
+            } catch (error) {
+                console.error('Failed to save results:', error);
+            }
+            
             // Calculate overall score
             const validScores = this.questionScores.filter(s => s !== null && s > 0);
             const notScored = this.questionScores.filter(s => s === null).length;
             this.overallScore = validScores.length > 0 
                 ? Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length)
                 : (notScored > 0 ? null : 0);
+            if (savedOk) this.overallScore = serverScore;
             
             // Determine grade
             if (this.overallScore === null) {
@@ -1492,25 +1518,6 @@ function enhancedAIInterview() {
                   ` with an average score of ${this.overallScore}%. ` +
                   (notScored > 0 ? `${notScored} answer(s) could not be scored and were left out. ` : '') +
                   `Focus on the improvement areas identified to boost your performance in future interviews.`;
-            
-            // Save results to server
-            try {
-                await fetch(`{{ route('interviews.complete', $interview) }}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    },
-                    body: JSON.stringify({
-                        score: this.overallScore,
-                        feedback: this.performanceSummary,
-                        evaluations: this.evaluations,
-                        is_practice: {{ ($interview->is_practice ?? false) ? 'true' : 'false' }},
-                    }),
-                });
-            } catch (error) {
-                console.error('Failed to save results:', error);
-            }
             
             this.state = 'complete';
         },

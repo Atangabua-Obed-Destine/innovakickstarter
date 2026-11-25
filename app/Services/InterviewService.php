@@ -182,6 +182,53 @@ class InterviewService
     /**
      * Calculate overall score from rubric scores.
      */
+    /**
+     * Finish an AI interview from the answers the server scored (stored in
+     * `responses` by the evaluate endpoint). The browser's own score is never
+     * trusted. Skipped questions count as 0; answers the AI could not score are
+     * left out. With no scored answer at all, the interview is completed as
+     * "not scored": no score, no Career Capital, and the fellow can try again.
+     */
+    public function completeAiInterview(InterviewSession $interview, int $skipped = 0, ?string $feedback = null): InterviewSession
+    {
+        // Latest answer per question (a fellow may retry an unscored answer).
+        $latest = collect($interview->responses ?? [])
+            ->keyBy(fn ($r) => (int) ($r['question_index'] ?? 0));
+
+        $scores = $latest
+            ->filter(fn ($r) => is_numeric($r['evaluation']['score'] ?? null))
+            ->mapWithKeys(fn ($r, $index) => ["question_{$index}" => (float) $r['evaluation']['score']])
+            ->all();
+
+        if ($scores === []) {
+            $interview->update([
+                'status' => InterviewStatus::COMPLETED,
+                'completed_at' => now(),
+                'score' => null,
+                'overall_score' => null,
+                'feedback' => $feedback,
+            ]);
+
+            Notification::send(
+                $interview->fellow,
+                Notification::TYPE_INTERVIEW_COMPLETED,
+                'Interview Not Scored',
+                "Your {$interview->type->label()} interview was saved, but the AI could not score it. It won't count toward your Career Capital; please try again.",
+                ['action_url' => $interview->isLinkedToCurriculum()
+                    ? route('curriculum.activity.show', $interview->curriculum_activity_id)
+                    : route('interviews.index')]
+            );
+
+            return $interview->fresh();
+        }
+
+        for ($i = 0; $i < max(0, $skipped); $i++) {
+            $scores["skipped_{$i}"] = 0;
+        }
+
+        return $this->complete($interview, $scores, $feedback);
+    }
+
     protected function calculateOverallScore(array $scores): float
     {
         if (empty($scores)) {
@@ -226,10 +273,11 @@ class InterviewService
      */
     public function cancel(InterviewSession $interview, string $reason): InterviewSession
     {
-        if (!in_array($interview->status, [
-            InterviewStatus::PENDING,
-            InterviewStatus::SCHEDULED,
-        ])) {
+        $cancellable = [InterviewStatus::PENDING, InterviewStatus::SCHEDULED];
+        if ($interview->mode === InterviewMode::AI) {
+            $cancellable[] = InterviewStatus::IN_PROGRESS;
+        }
+        if (!in_array($interview->status, $cancellable, true)) {
             throw new \Exception("Cannot cancel interview in its current state.");
         }
 

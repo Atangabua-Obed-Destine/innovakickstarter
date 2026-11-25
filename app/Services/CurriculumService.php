@@ -230,7 +230,9 @@ class CurriculumService
         $config = $activity->interview_config ?? [];
         $track = Track::findOrFail($activity->track_id);
 
-        $interviewType = InterviewType::tryFrom($config['type'] ?? 'behavioral') ?? InterviewType::BEHAVIORAL;
+        // A missing or unknown type (some activities say "mock_interview") means a
+        // technical check of the milestone, not a generic behavioral interview.
+        $interviewType = InterviewType::tryFrom((string) ($config['type'] ?? '')) ?? InterviewType::TECHNICAL_CODING;
         $interviewMode = InterviewMode::tryFrom($config['mode'] ?? 'ai') ?? InterviewMode::AI;
         $difficulty = $config['difficulty'] ?? 'intermediate';
 
@@ -514,7 +516,8 @@ class CurriculumService
 
         return DB::transaction(function () use ($progress, $reviewer, $decision, $data, $reviewedAttempt) {
             if ($decision === 'approve') {
-                $points = $data['points'] ?? $progress->curriculumActivity->points;
+                // Never more than the activity is worth.
+                $points = min((int) ($data['points'] ?? $progress->curriculumActivity->points), (int) $progress->curriculumActivity->points);
                 $rubricScores = $data['rubric_scores'] ?? null;
 
                 $progress->approve($reviewer, $rubricScores ?? [], $data['feedback'] ?? '', $points);

@@ -297,15 +297,15 @@
                     {{-- Points Override --}}
                     <div>
                         <label for="points" class="block text-sm font-medium text-dark-300 mb-2">Points to Award *</label>
-                        <input type="number" name="points" id="points" min="0" max="1000" required
-                               value="{{ old('points') }}" placeholder="e.g. {{ $progress->curriculumActivity->points ?? 100 }}"
+                        @php $maxPoints = (int) ($progress->curriculumActivity->points ?? 0); @endphp
+                        <input type="number" name="points" id="points" min="0" max="{{ $maxPoints }}" required
+                               value="{{ old('points', $maxPoints) }}"
                                class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2 text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500 @error('points') border-red-500 @enderror">
                         @error('points')
                             <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
                         @enderror
                         <p class="text-dark-500 text-xs mt-1 flex items-center justify-between">
-                            <span>Default: {{ $progress->curriculumActivity->points ?? 100 }} base pts</span>
-                            <span class="text-amber-500/70 italic">Type a higher number to award bonus points!</span>
+                            <span>Up to {{ $maxPoints }} pts, the activity's value. Award less for partial work.</span>
                         </p>
                     </div>
 

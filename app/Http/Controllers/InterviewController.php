@@ -190,6 +190,11 @@ class InterviewController extends Controller
         $reason = $request->input('reason', 'Cancelled by user');
         $interview = $this->interviewService->cancel($interview, $reason);
 
+        if ($interview->curriculum_activity_id) {
+            return redirect()->route('curriculum.activity.show', $interview->curriculum_activity_id)
+                ->with('success', 'Interview cancelled. You can start a new attempt.');
+        }
+
         return redirect()->route('interviews.index')
             ->with('success', 'Interview cancelled successfully.');
     }
@@ -197,9 +202,40 @@ class InterviewController extends Controller
     /**
      * Complete an interview (for mentors/after AI interview).
      */
-    public function complete(Request $request, InterviewSession $interview): RedirectResponse
+    public function complete(Request $request, InterviewSession $interview): RedirectResponse|\Illuminate\Http\JsonResponse
     {
         $this->authorize('complete', $interview);
+
+        // AI interviews: the result comes from the answers the server scored,
+        // never from a score sent by the browser.
+        if ($interview->mode === \App\Enums\InterviewMode::AI) {
+            if ($interview->status !== \App\Enums\InterviewStatus::IN_PROGRESS) {
+                return $request->expectsJson() || $request->isJson()
+                    ? response()->json(['message' => 'This interview is not in progress.'], 409)
+                    : redirect()->route('interviews.show', $interview)->with('error', 'This interview is not in progress.');
+            }
+
+            $validated = $request->validate([
+                'feedback' => ['nullable', 'string', 'max:5000'],
+                'evaluations' => ['nullable', 'array', 'max:50'],
+            ]);
+            $skipped = collect($validated['evaluations'] ?? [])->filter(fn ($e) => is_array($e) && !empty($e['skipped']))->count();
+
+            $interview = $this->interviewService->completeAiInterview($interview, $skipped, $validated['feedback'] ?? null);
+
+            if ($request->expectsJson() || $request->isJson()) {
+                return response()->json([
+                    'status' => $interview->status->value,
+                    'score' => $interview->overall_score,
+                    'not_scored' => $interview->overall_score === null,
+                ]);
+            }
+
+            return redirect()->route('interviews.show', $interview)->with('success', 'Interview completed.');
+        }
+
+        // Rubric scores for human interviews are entered by staff, not by the fellow.
+        abort_unless($request->user()->isAdmin(), 403);
 
         $validated = $request->validate([
             'scores' => ['required', 'array'],
@@ -291,6 +327,12 @@ class InterviewController extends Controller
      */
     protected function canCancelInterview(InterviewSession $interview): bool
     {
+        // An unfinished AI interview can always be abandoned, so the fellow can
+        // start a new attempt (a closed tab otherwise blocks them for good).
+        if ($interview->mode === \App\Enums\InterviewMode::AI) {
+            return in_array($interview->status, [\App\Enums\InterviewStatus::IN_PROGRESS, \App\Enums\InterviewStatus::PENDING, \App\Enums\InterviewStatus::SCHEDULED], true);
+        }
+
         // Can only cancel scheduled interviews
         if ($interview->status !== \App\Enums\InterviewStatus::SCHEDULED) {
             return false;
@@ -371,12 +413,23 @@ class InterviewController extends Controller
     {
         $this->authorize('view', $interview);
 
-        $questions = $this->interviewService->generateQuestions(
-            $interview->type,
-            $interview->difficulty ?? 'intermediate',
-            $interview->track,
-            $interview->fellow
-        );
+        // Curriculum mock interviews ask about what the milestone taught.
+        $activity = $interview->curriculum_activity_id
+            ? \App\Models\TrackCurriculumActivity::find($interview->curriculum_activity_id)
+            : null;
+
+        $questions = $activity
+            ? app(\App\Services\AIInterviewService::class)->generateActivityQuestions(
+                $activity,
+                $interview->type,
+                $interview->difficulty_level ?? $interview->difficulty ?? 'intermediate'
+            )
+            : $this->interviewService->generateQuestions(
+                $interview->type,
+                $interview->difficulty ?? 'intermediate',
+                $interview->track,
+                $interview->fellow
+            );
 
         return response()->json([
             'questions' => $questions,

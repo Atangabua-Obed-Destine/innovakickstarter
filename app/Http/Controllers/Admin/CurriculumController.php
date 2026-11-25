@@ -469,12 +469,17 @@ class CurriculumController extends Controller
      */
     public function reviewProcess(Request $request, string $progressId)
     {
+        // A reviewer can award up to the activity's points, never more.
+        $maxPoints = (int) (\App\Models\FellowCurriculumProgress::with('curriculumActivity')->findOrFail($progressId)->curriculumActivity->points ?? 0);
+
         $validated = $request->validate([
             'decision' => 'required|in:approve,reject',
-            'points' => 'required_if:decision,approve|nullable|integer|min:0|max:1000',
+            'points' => 'required_if:decision,approve|nullable|integer|min:0|max:' . $maxPoints,
             'feedback' => 'nullable|string|max:2000',
             'rubric_scores' => 'nullable|array',
             'rubric_scores.*' => 'integer|min:0|max:100',
+        ], [
+            'points.max' => "This activity is worth {$maxPoints} points; you can't award more.",
         ]);
 
         $progress = $this->curriculumService->reviewSubmission(
