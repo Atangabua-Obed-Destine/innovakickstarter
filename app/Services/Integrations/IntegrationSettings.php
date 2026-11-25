@@ -32,11 +32,48 @@ class IntegrationSettings
      */
     public const GROUPS = [
         'openai' => [
-            'title' => 'OpenAI',
+            'title' => 'AI provider',
             'used_for' => 'AI mock interviews and AI review of curriculum submissions.',
             'fields' => [
+                'ai_provider' => [
+                    'label' => 'Provider',
+                    'config' => 'services.ai.provider',
+                    'env' => 'AI_PROVIDER',
+                    'options' => ['openai' => 'OpenAI (paid)', 'groq' => 'Groq (free tier)'],
+                    'rules' => 'in:openai,groq',
+                    'help' => 'The platform uses only the provider chosen here. Keys for the other one are kept.',
+                ],
+                'groq_api_key' => [
+                    'provider' => 'groq',
+                    'label' => 'Groq API key',
+                    'config' => 'services.groq.key',
+                    'env' => 'GROQ_API_KEY',
+                    'secret' => true,
+                    'rules' => 'string|max:300',
+                    'placeholder' => 'gsk_...',
+                    'help' => 'Free at console.groq.com → API Keys. Free tier: 8,000 tokens a minute and 1,000 requests a day per model.',
+                ],
+                'groq_model' => [
+                    'provider' => 'groq',
+                    'label' => 'Interview model',
+                    'config' => 'services.groq.model',
+                    'env' => 'GROQ_MODEL',
+                    'rules' => 'string|max:100|regex:/^[A-Za-z0-9._:\/-]+$/',
+                    'placeholder' => 'openai/gpt-oss-20b',
+                    'help' => 'Used for AI mock interviews. Use a different model from reviews: each model has its own per-minute limit.',
+                ],
+                'groq_review_model' => [
+                    'provider' => 'groq',
+                    'label' => 'Submission review model',
+                    'config' => 'services.groq.review_model',
+                    'env' => 'GROQ_REVIEW_MODEL',
+                    'rules' => 'string|max:100|regex:/^[A-Za-z0-9._:\/-]+$/',
+                    'placeholder' => 'openai/gpt-oss-120b',
+                    'help' => 'Must support strict structured outputs (openai/gpt-oss-120b or openai/gpt-oss-20b).',
+                ],
                 'openai_api_key' => [
-                    'label' => 'API key',
+                    'provider' => 'openai',
+                    'label' => 'OpenAI API key',
                     'config' => 'services.openai.key',
                     'env' => 'OPENAI_API_KEY',
                     'secret' => true,
@@ -45,6 +82,7 @@ class IntegrationSettings
                     'help' => 'Create one at platform.openai.com → API keys. The account needs credits (Settings → Billing).',
                 ],
                 'openai_organization' => [
+                    'provider' => 'openai',
                     'label' => 'Organization ID',
                     'config' => 'services.openai.organization',
                     'env' => 'OPENAI_ORGANIZATION',
@@ -53,6 +91,7 @@ class IntegrationSettings
                     'help' => 'Only needed if your key belongs to several organizations.',
                 ],
                 'openai_model' => [
+                    'provider' => 'openai',
                     'label' => 'Interview model',
                     'config' => 'services.openai.model',
                     'env' => 'OPENAI_MODEL',
@@ -61,6 +100,7 @@ class IntegrationSettings
                     'help' => 'Used for AI mock interviews.',
                 ],
                 'openai_review_model' => [
+                    'provider' => 'openai',
                     'label' => 'Submission review model',
                     'config' => 'services.openai.review_model',
                     'env' => 'OPENAI_REVIEW_MODEL',

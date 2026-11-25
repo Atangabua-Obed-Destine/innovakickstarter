@@ -7,6 +7,7 @@ use App\Models\AdminSetting;
 use App\Models\AiReview;
 use App\Models\AuditLog;
 use App\Models\FellowCurriculumProgress;
+use App\Services\Ai\AiProvider;
 use App\Services\AiReview\AiReviewService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -53,9 +54,9 @@ class AiReviewController extends Controller
                 'similarity_threshold' => (int) AdminSetting::get('ai_review_similarity_threshold', 50),
                 'human_from_points' => (int) AdminSetting::get('ai_review_human_from_points', 60),
             ],
-            'configured' => !empty(config('services.openai.key')),
+            'configured' => AiProvider::configured(),
             'githubToken' => !empty(config('services.github.token')),
-            'model' => config('services.openai.review_model'),
+            'model' => AiProvider::label() . ' · ' . AiProvider::reviewModel(),
             'readyMinCases' => self::READY_MIN_CASES,
             'readyMinAgreement' => self::READY_MIN_AGREEMENT,
         ]);

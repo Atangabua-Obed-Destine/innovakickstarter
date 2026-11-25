@@ -2,10 +2,12 @@
 
 namespace App\Services\AiReview;
 
+use App\Services\Ai\AiProvider;
 use Illuminate\Support\Facades\Http;
 
 /**
- * Grades one submission against its rubric with an OpenAI model.
+ * Grades one submission against its rubric with the active AI provider
+ * (OpenAI or Groq, see AiProvider).
  *
  * The model only scores and explains; it never takes the decision (see
  * ReviewPolicy). Everything the fellow submitted is passed as untrusted data
@@ -27,12 +29,12 @@ class AiGrader
 
     public function isConfigured(): bool
     {
-        return !empty(config('services.openai.key'));
+        return AiProvider::configured();
     }
 
     public function model(): string
     {
-        return (string) config('services.openai.review_model', 'gpt-4o');
+        return AiProvider::reviewModel();
     }
 
     /**
@@ -41,7 +43,7 @@ class AiGrader
     public function grade(array $package, array $integrity): array
     {
         if (!$this->isConfigured()) {
-            throw new \RuntimeException('OpenAI is not configured (OPENAI_API_KEY).');
+            throw new \RuntimeException('No AI provider key is set (Admin → Integrations).');
         }
 
         $rubric = $package['activity']['rubric'];
@@ -50,7 +52,7 @@ class AiGrader
             $response = $this->request($rubric, $package, $integrity);
         } catch (\Illuminate\Http\Client\RequestException $e) {
             $message = $e->response?->json('error.message') ?? $e->getMessage();
-            throw new \RuntimeException('OpenAI (HTTP ' . $e->response?->status() . '): ' . mb_substr((string) $message, 0, 300));
+            throw new \RuntimeException(AiProvider::label() . ' (HTTP ' . $e->response?->status() . '): ' . mb_substr((string) $message, 0, 300));
         }
 
         $choice = $response->json('choices.0');
@@ -73,10 +75,15 @@ class AiGrader
 
     protected function request(array $rubric, array $package, array $integrity): \Illuminate\Http\Client\Response
     {
-        return Http::withToken(config('services.openai.key'))
-            ->withHeaders(array_filter(['OpenAI-Organization' => config('services.openai.organization')]))
+        return Http::withToken(AiProvider::key())
+            ->withHeaders(AiProvider::headers())
             ->timeout(120)
-            ->retry(3, fn (int $attempt) => $attempt * 2000, function (\Throwable $e) {
+            ->retry(3, function (int $attempt, ?\Throwable $e = null) {
+                // A per-minute limit says how long to wait (Groq free tier: 8,000 tokens a minute).
+                $after = $e instanceof \Illuminate\Http\Client\RequestException ? (float) $e->response?->header('retry-after') : 0;
+
+                return $after > 0 ? (int) min(65000, ceil($after * 1000) + 500) : $attempt * 2000;
+            }, function (\Throwable $e) {
                 $response = $e instanceof \Illuminate\Http\Client\RequestException ? $e->response : null;
                 if (!$response) {
                     return true; // connection problem
@@ -90,10 +97,10 @@ class AiGrader
 
                 return $response->status() === 429 || $response->status() >= 500;
             }, throw: true)
-            ->post('https://api.openai.com/v1/chat/completions', [
+            ->post(AiProvider::chatUrl(), [
                 'model' => $this->model(),
                 'temperature' => 0,
-                'max_tokens' => 2500,
+                'max_tokens' => AiProvider::maxTokens(2500),
                 'messages' => [
                     ['role' => 'system', 'content' => $this->systemPrompt()],
                     ['role' => 'user', 'content' => $this->userPrompt($package, $integrity)],
@@ -137,8 +144,13 @@ Notes for the reviewer: short and factual, for the IKS admin: what you verified,
 PROMPT;
     }
 
-    public function userPrompt(array $package, array $integrity): string
+    /**
+     * @param int|null $maxChars Prompt size limit; when the evidence does not
+     *                           fit, the longest files and pages are shortened.
+     */
+    public function userPrompt(array $package, array $integrity, ?int $maxChars = null): string
     {
+        $maxChars ??= AiProvider::reviewPromptChars();
         $a = $package['activity'];
         $s = $package['submission'];
         $lines = [];
@@ -172,23 +184,28 @@ PROMPT;
         $lines[] = 'Attached files: ' . (implode(', ', $s['file_names']) ?: '(none)');
         $lines[] = '</submission>';
 
+        // Evidence blocks: [text before the content, content, text after, already truncated?]
+        $evidence = [];
+
         foreach ($package['github'] as $repo) {
             if (!($repo['ok'] ?? false)) {
                 continue;
             }
-            $lines[] = "\n=== GITHUB: " . ($repo['repo'] ?? $repo['url']) . ' ===';
+            $head = "\n=== GITHUB: " . ($repo['repo'] ?? $repo['url']) . " ===\n";
             $h = $repo['history'] ?? [];
-            $lines[] = 'Fork: ' . (($repo['is_fork'] ?? false) ? 'yes, of ' . ($repo['fork_parent'] ?? '?') : 'no')
+            $head .= 'Fork: ' . (($repo['is_fork'] ?? false) ? 'yes, of ' . ($repo['fork_parent'] ?? '?') : 'no')
                 . ' · Created: ' . ($repo['created_at'] ?? '?')
                 . ' · Commits: ' . ($h['commits_total'] ?? '?')
                 . ' · Commits since activity start: ' . ($h['commits_during_activity'] ?? 'unknown')
-                . ' · Authors: ' . json_encode($h['authors'] ?? []);
+                . ' · Authors: ' . json_encode($h['authors'] ?? []) . "\n";
             if (!empty($repo['focus_path'])) {
-                $lines[] = "Link points to: {$repo['focus_path']}";
+                $head .= "Link points to: {$repo['focus_path']}\n";
             }
-            $lines[] = 'Files in repo (' . ($repo['file_count'] ?? 0) . '): ' . implode(', ', array_slice($repo['file_list'] ?? [], 0, 120));
+            $head .= 'Files in repo (' . ($repo['file_count'] ?? 0) . '): ' . implode(', ', array_slice($repo['file_list'] ?? [], 0, $maxChars ? 60 : 120));
+            $evidence[] = [$head, '', '', false];
+
             foreach ($repo['files'] ?? [] as $file) {
-                $lines[] = "\n<file path=\"{$file['path']}\"" . ($file['truncated'] ? ' truncated="yes"' : '') . ">\n{$file['content']}\n</file>";
+                $evidence[] = ["\n<file path=\"{$file['path']}\"{{truncated}}>\n", (string) $file['content'], "\n</file>", (bool) $file['truncated']];
             }
         }
 
@@ -196,16 +213,66 @@ PROMPT;
             if (!($link['ok'] ?? false) || ($link['text'] ?? '') === '') {
                 continue;
             }
-            $lines[] = "\n=== PAGE: {$link['url']} (HTTP {$link['status']}) ===";
-            if ($link['title']) {
-                $lines[] = "Title: {$link['title']}";
-            }
-            $lines[] = "<page>\n{$link['text']}\n</page>";
+            $head = "\n=== PAGE: {$link['url']} (HTTP {$link['status']}) ===\n" . ($link['title'] ? "Title: {$link['title']}\n" : '');
+            $evidence[] = [$head . '<page{{truncated}}>' . "\n", (string) $link['text'], "\n</page>", false];
         }
 
         foreach ($package['files'] as $file) {
-            $lines[] = "\n=== UPLOADED FILE: {$file['name']}" . ($file['truncated'] ? ' (truncated)' : '') . " ===\n<file>\n{$file['content']}\n</file>";
+            $evidence[] = ["\n=== UPLOADED FILE: {$file['name']} ===\n<file{{truncated}}>\n", (string) $file['content'], "\n</file>", (bool) $file['truncated']];
         }
+
+        $tail = $this->integrityLines($package, $integrity);
+
+        if ($maxChars !== null) {
+            $fixed = mb_strlen(implode("\n", $lines)) + mb_strlen(implode("\n", $tail));
+            foreach ($evidence as [$before, , $after]) {
+                $fixed += mb_strlen($before) + mb_strlen($after) + 20;
+            }
+            $evidence = $this->fitEvidence($evidence, max(2000, $maxChars - $fixed));
+        }
+
+        $shortened = false;
+        foreach ($evidence as [$before, $content, $after, $truncated]) {
+            $shortened = $shortened || $truncated;
+            $lines[] = str_replace('{{truncated}}', $truncated ? ' truncated="yes"' : '', $before) . $content . $after;
+        }
+        if ($shortened) {
+            $lines[] = "\n(Some files or pages were shortened to fit; parts marked truncated=\"yes\" continue beyond what you see. Do not penalise the fellow for content cut off here.)";
+        }
+
+        return implode("\n", array_merge($lines, $tail));
+    }
+
+    /**
+     * Share a character budget across evidence contents: short items stay
+     * whole, the longest ones are cut to an equal share.
+     */
+    protected function fitEvidence(array $evidence, int $budget): array
+    {
+        $lengths = array_map(fn ($e) => mb_strlen($e[1]), $evidence);
+        if (array_sum($lengths) <= $budget) {
+            return $evidence;
+        }
+
+        asort($lengths);
+        $left = $budget;
+        $count = count($lengths);
+        foreach ($lengths as $i => $length) {
+            $share = intdiv($left, $count--);
+            if ($length > $share) {
+                $evidence[$i][1] = mb_substr($evidence[$i][1], 0, max(0, $share));
+                $evidence[$i][3] = true;
+                $length = $share;
+            }
+            $left -= $length;
+        }
+
+        return $evidence;
+    }
+
+    protected function integrityLines(array $package, array $integrity): array
+    {
+        $lines = [];
 
         if (!empty($package['unread'])) {
             $lines[] = "\n=== UNREAD (could not be inspected) ===";
@@ -225,7 +292,7 @@ PROMPT;
 
         $lines[] = "\nReview the submission now.";
 
-        return implode("\n", $lines);
+        return $lines;
     }
 
     public function schema(int $criteriaCount): array

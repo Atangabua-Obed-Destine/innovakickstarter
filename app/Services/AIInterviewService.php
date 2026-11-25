@@ -27,12 +27,11 @@ class AIInterviewService
 {
     protected string $apiKey;
     protected string $model;
-    protected string $baseUrl = 'https://api.openai.com/v1';
 
     public function __construct()
     {
-        $this->apiKey = config('services.openai.key', '');
-        $this->model = config('services.openai.model', 'gpt-4o');
+        $this->apiKey = \App\Services\Ai\AiProvider::key() ?? '';
+        $this->model = \App\Services\Ai\AiProvider::model();
     }
 
     /**
@@ -186,7 +185,7 @@ class AIInterviewService
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $this->apiKey,
             'Content-Type' => 'application/json',
-        ])->timeout(30)->post("{$this->baseUrl}/chat/completions", [
+        ])->timeout(30)->post(\App\Services\Ai\AiProvider::chatUrl(), [
             'model' => $this->model,
             'messages' => [
                 [
@@ -199,7 +198,7 @@ class AIInterviewService
                 ],
             ],
             'temperature' => 0.7,
-            'max_tokens' => 2000,
+            'max_tokens' => \App\Services\Ai\AiProvider::maxTokens(2000),
             'response_format' => $jsonMode ? ['type' => 'json_object'] : null,
         ]);
 

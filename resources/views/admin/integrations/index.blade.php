@@ -25,7 +25,11 @@
 
     <nav class="flex flex-wrap gap-2">
         @foreach($groups as $group => $meta)
-            @php $missing = collect($meta['rows'])->first(fn ($r) => !empty($r['secret']) && !$r['is_set'] && $group !== 'mail'); @endphp
+            @php
+                $active = $meta['rows']['ai_provider']['value'] ?? null;
+                $missing = collect($meta['rows'])->first(fn ($r) => !empty($r['secret']) && !$r['is_set'] && $group !== 'mail'
+                    && (empty($r['provider']) || $r['provider'] === $active));
+            @endphp
             <a href="#{{ $group }}" class="px-3 py-1.5 rounded-lg bg-dark-800 border border-dark-700 text-sm text-dark-200 hover:border-primary-500/50">
                 {{ $meta['title'] }}
                 @if($missing)<span class="ml-1 text-amber-400" title="Not configured">●</span>@endif
@@ -34,7 +38,8 @@
     </nav>
 
     @foreach($groups as $group => $meta)
-        <section id="{{ $group }}" class="card p-6" x-data="integrationTest(@js(route('admin.integrations.test', $group)))">
+        <section id="{{ $group }}" class="card p-6"
+                 x-data="Object.assign(integrationTest(@js(route('admin.integrations.test', $group))), { provider: @js($meta['rows']['ai_provider']['value'] ?? null) })">
             <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-5">
                 <div>
                     <h2 class="text-lg font-semibold text-white">{{ $meta['title'] }}</h2>
@@ -48,10 +53,11 @@
                     @foreach($meta['rows'] as $key => $row)
                         @php
                             [$badgeText, $badgeClass] = $sourceBadge[$row['source']];
-                            $wide = in_array($key, ['openai_api_key', 'github_token'], true);
+                            $wide = in_array($key, ['openai_api_key', 'groq_api_key', 'github_token', 'ai_provider'], true);
                             $error = $errors->first("values.{$key}");
                         @endphp
-                        <div class="{{ $wide ? 'sm:col-span-2' : '' }}">
+                        <div class="{{ $wide ? 'sm:col-span-2' : '' }}"
+                             @if(!empty($row['provider'])) x-show="provider === @js($row['provider'])" @if($row['provider'] !== ($meta['rows']['ai_provider']['value'] ?? null)) style="display: none" @endif @endif>
                             <div class="flex items-center justify-between gap-2 mb-1">
                                 <label for="f-{{ $key }}" class="text-dark-200 text-sm font-medium">{{ $row['label'] }}</label>
                                 <span class="text-[11px] px-2 py-0.5 rounded-full border {{ $badgeClass }}"
@@ -73,7 +79,7 @@
                                     </label>
                                 @endif
                             @elseif(!empty($row['options']))
-                                <select id="f-{{ $key }}" name="values[{{ $key }}]" class="form-input w-full">
+                                <select id="f-{{ $key }}" name="values[{{ $key }}]" class="form-input w-full" @if($key === 'ai_provider') x-model="provider" @endif>
                                     @foreach($row['options'] as $value => $label)
                                         <option value="{{ $value }}" @selected(old("values.{$key}", $row['value']) === (string) $value)>{{ $label }}</option>
                                     @endforeach

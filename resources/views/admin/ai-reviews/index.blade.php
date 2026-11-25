@@ -21,12 +21,12 @@
     </div>
 
     @if(!$configured)
-        <div class="card p-4 border border-red-500/40 text-sm text-red-300">OpenAI is not configured, so reviews fail and go to humans. <a href="{{ route('admin.integrations.index') }}#openai" class="underline">Add a key on the Integrations page</a>.</div>
+        <div class="card p-4 border border-red-500/40 text-sm text-red-300">No AI provider key is set, so reviews fail and go to humans. <a href="{{ route('admin.integrations.index') }}#openai" class="underline">Add a key on the Integrations page</a>.</div>
     @endif
     @if(!$githubToken)
         <div class="card p-4 border border-amber-500/30 text-sm text-amber-200">No GitHub token: GitHub allows only 60 requests an hour without one, which is about 10 repository reviews. <a href="{{ route('admin.integrations.index') }}#github" class="underline">Add a token on the Integrations page</a>.</div>
     @endif
-    <p class="text-dark-500 text-xs">Is the key working? Use <a href="{{ route('admin.integrations.index') }}#openai" class="underline">Integrations → OpenAI → Test</a>, which also shows whether the account has credits.</p>
+    <p class="text-dark-500 text-xs">Is the key working? Use <a href="{{ route('admin.integrations.index') }}#openai" class="underline">Integrations → AI provider → Test</a>.</p>
 
     {{-- Overall --}}
     <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">

@@ -2,6 +2,7 @@
 
 namespace App\Services\Integrations;
 
+use App\Services\Ai\AiProvider;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -15,7 +16,6 @@ use Illuminate\Support\Facades\Mail;
  */
 class IntegrationTester
 {
-    public const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
     public const GITHUB_URL = 'https://api.github.com';
 
     public function run(string $group, array $values, array $options = []): array
@@ -28,25 +28,35 @@ class IntegrationTester
     }
 
     /**
-     * Two tiny requests shaped like the real ones: the interview call (JSON
-     * mode, temperature 0.7) and the review call (strict JSON schema,
-     * temperature 0). Together they cost a fraction of a cent.
+     * Two tiny requests to the provider chosen in the form, shaped like the
+     * real ones: the interview call (JSON mode, temperature 0.7) and the
+     * review call (strict JSON schema, temperature 0). On OpenAI they cost a
+     * fraction of a cent; on Groq's free tier, nothing.
      */
     public function openai(array $v): array
     {
-        $key = $v['openai_api_key'] ?? null;
+        $provider = isset(AiProvider::PROVIDERS[$v['ai_provider'] ?? '']) ? $v['ai_provider'] : 'openai';
+        $label = AiProvider::label($provider);
+        $key = $v["{$provider}_api_key"] ?? null;
         if (blank($key)) {
-            return $this->result('error', 'No API key. Paste one above, then test again.');
+            return $this->result('error', "No {$label} API key. Paste one above, then test again.");
         }
 
-        $interviewModel = $v['openai_model'] ?: 'gpt-4o';
-        $reviewModel = $v['openai_review_model'] ?: $interviewModel;
+        if ($provider === 'groq') {
+            $interviewModel = $v['groq_model'] ?: AiProvider::model('groq');
+            $reviewModel = $v['groq_review_model'] ?: AiProvider::reviewModel('groq');
+        } else {
+            $interviewModel = $v['openai_model'] ?: 'gpt-4o';
+            $reviewModel = $v['openai_review_model'] ?: $interviewModel;
+        }
+        // Tiny answers, plus thinking room for reasoning models.
+        $maxTokens = AiProvider::maxTokens(10, $provider);
 
         $calls = [];
         if ($interviewModel !== $reviewModel) {
             $calls[] = ['interviews', $interviewModel, [
                 'temperature' => 0.7,
-                'max_tokens' => 10,
+                'max_tokens' => $maxTokens,
                 'response_format' => ['type' => 'json_object'],
                 'messages' => [
                     ['role' => 'system', 'content' => 'Answer with the JSON {"ok": true}.'],
@@ -56,7 +66,7 @@ class IntegrationTester
         }
         $calls[] = [$interviewModel === $reviewModel ? 'interviews and submission reviews' : 'submission reviews', $reviewModel, [
             'temperature' => 0,
-            'max_tokens' => 10,
+            'max_tokens' => $maxTokens,
             'response_format' => [
                 'type' => 'json_schema',
                 'json_schema' => [
@@ -78,22 +88,36 @@ class IntegrationTester
             $started = microtime(true);
             try {
                 $response = Http::withToken($key)
-                    ->withHeaders(array_filter(['OpenAI-Organization' => $v['openai_organization'] ?? null]))
+                    ->withHeaders($provider === 'openai' ? array_filter(['OpenAI-Organization' => $v['openai_organization'] ?? null]) : [])
                     ->acceptJson()
                     ->timeout(30)
-                    ->post(self::OPENAI_URL, ['model' => $model] + $payload);
+                    ->post(AiProvider::chatUrl($provider), ['model' => $model] + $payload);
             } catch (ConnectionException $e) {
-                return $this->result('error', 'Could not reach OpenAI from this server: ' . $e->getMessage(), $details);
+                return $this->result('error', "Could not reach {$label} from this server: " . $e->getMessage(), $details);
             }
 
             if (!$response->successful()) {
-                return $this->result('error', $this->explainOpenAi($response, $model), $details);
+                return $this->result('error', $this->explainOpenAi($response, $model, $provider), $details);
             }
 
             $details[] = sprintf('%s answered for %s (%d ms)', $model, $purpose, (microtime(true) - $started) * 1000);
         }
 
-        return $this->result('ok', 'The key works, the account has credits and the models answer.', $details);
+        if ($provider === 'groq' && isset($response)) {
+            $limits = $response->header('x-ratelimit-limit-tokens');
+            if ($limits) {
+                $details[] = "Limits on this key: {$limits} tokens a minute, " . $response->header('x-ratelimit-limit-requests') . ' requests a day per model';
+            }
+        }
+
+        $message = $provider === 'openai'
+            ? 'The key works, the account has credits and the models answer.'
+            : 'The key works and the models answer.';
+        if (AiProvider::name() !== $provider) {
+            $message .= " Save to switch the platform to {$label}.";
+        }
+
+        return $this->result('ok', $message, $details);
     }
 
     public function github(array $v): array
@@ -189,23 +213,27 @@ class IntegrationTester
         ]);
     }
 
-    protected function explainOpenAi(Response $response, string $model): string
+    protected function explainOpenAi(Response $response, string $model, string $provider = 'openai'): string
     {
+        $label = AiProvider::label($provider);
         $status = $response->status();
         $code = $response->json('error.code');
         $type = $response->json('error.type');
         $message = (string) ($response->json('error.message') ?? '');
         $noCredits = $type === 'insufficient_quota' || in_array($code, ['insufficient_quota', 'credit_balance_exhausted'], true);
+        $suggest = $provider === 'groq' ? 'openai/gpt-oss-120b or openai/gpt-oss-20b' : 'gpt-4o or gpt-4o-mini';
 
         return match (true) {
-            $status === 401 => 'OpenAI rejected the key (401). Check it was copied in full and has not been revoked.',
-            $noCredits =>'The key is valid, but the OpenAI account has no credits left. Add credits at platform.openai.com → Settings → Billing. Every AI feature fails until then.',
-            $status === 429 => 'OpenAI is rate-limiting this key right now. Wait a minute and test again.',
-            $status === 404 || $code === 'model_not_found' => "This key cannot use the model \"{$model}\". Check the name, or choose a model the account has access to.",
-            $status === 400 && str_contains($message, 'response_format') => "The model \"{$model}\" does not support the structured answers the platform needs. Use gpt-4o, gpt-4o-mini or newer.",
-            $status === 400 && (str_contains($message, 'max_tokens') || str_contains($message, 'temperature')) => "The model \"{$model}\" does not accept the settings the platform sends (temperature, max_tokens). Use a GPT-4o family model.",
-            $status === 403 => 'OpenAI refused access (403): ' . $message,
-            default => "OpenAI answered HTTP {$status}" . ($message !== '' ? ": {$message}" : '.'),
+            $status === 401 => "{$label} rejected the key (401). Check it was copied in full and has not been revoked.",
+            $noCredits => 'The key is valid, but the OpenAI account has no credits left. Add credits at platform.openai.com → Settings → Billing, or switch the provider to Groq (free).',
+            $status === 413 => "The request is too large for this {$label} key's limits: {$message}",
+            $status === 429 => "{$label} is rate-limiting this key right now" . ($provider === 'groq' ? ' (free tier: per-minute and daily limits)' : '') . '. Wait a minute and test again.',
+            $status === 404 || in_array($code, ['model_not_found', 'model_decommissioned'], true) => "This key cannot use the model \"{$model}\". Check the name, or use {$suggest}.",
+            $status === 400 && ($code === 'json_validate_failed' || str_contains($message, 'response_format') || str_contains($message, 'json_schema'))
+                => "The model \"{$model}\" does not give the structured answers the platform needs. Use {$suggest}.",
+            $status === 400 && (str_contains($message, 'max_tokens') || str_contains($message, 'temperature')) => "The model \"{$model}\" does not accept the settings the platform sends (temperature, max_tokens). Use {$suggest}.",
+            $status === 403 => "{$label} refused access (403): {$message}",
+            default => "{$label} answered HTTP {$status}" . ($message !== '' ? ": {$message}" : '.'),
         };
     }
 

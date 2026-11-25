@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\Log;
 class LiveAIInterviewService
 {
     protected string $apiKey;
-    protected string $baseUrl = 'https://api.openai.com/v1';
     protected string $model;
 
     // Conversation state keys
@@ -37,8 +36,8 @@ class LiveAIInterviewService
 
     public function __construct()
     {
-        $this->apiKey = config('services.openai.key') ?? '';
-        $this->model = config('services.openai.model') ?? 'gpt-4o';
+        $this->apiKey = \App\Services\Ai\AiProvider::key() ?? '';
+        $this->model = \App\Services\Ai\AiProvider::model();
         
         // Debug logging
         Log::debug('LiveAIInterviewService initialized', [
@@ -623,7 +622,7 @@ class LiveAIInterviewService
         $payload = [
             'model' => $this->model,
             'messages' => $messages,
-            'max_tokens' => 500,
+            'max_tokens' => \App\Services\Ai\AiProvider::maxTokens(500),
             'temperature' => 0.8,
         ];
 
@@ -634,7 +633,7 @@ class LiveAIInterviewService
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $this->apiKey,
             'Content-Type' => 'application/json',
-        ])->timeout(30)->post("{$this->baseUrl}/chat/completions", $payload);
+        ])->timeout(30)->post(\App\Services\Ai\AiProvider::chatUrl(), $payload);
 
         if (!$response->successful()) {
             throw new \Exception('OpenAI API error: ' . $response->body());

@@ -5,12 +5,16 @@ namespace Tests\Feature;
 use App\Models\AuditLog;
 use App\Models\IntegrationCredential;
 use App\Models\User;
+use App\Services\Ai\AiProvider;
+use App\Services\AiReview\AiGrader;
 use App\Services\Integrations\IntegrationSettings;
+use Carbon\CarbonInterval;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Sleep;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -53,7 +57,7 @@ class IntegrationSettingsTest extends TestCase
 
         $this->saveGroup('openai', ['openai_api_key' => 'sk-dashboard-secret-ABCD', 'openai_model' => 'gpt-4o'])
             ->assertRedirect()
-            ->assertSessionHas('success', 'OpenAI settings saved.');
+            ->assertSessionHas('success', 'AI provider settings saved.');
 
         $raw = DB::table('integration_credentials')->where('key', 'openai_api_key')->value('value');
         $this->assertStringNotContainsString('sk-dashboard-secret', $raw);
@@ -76,7 +80,7 @@ class IntegrationSettingsTest extends TestCase
         $this->env(['services.openai.key' => 'sk-from-env-0000000000']);
         $this->saveGroup('openai', ['openai_api_key' => 'sk-dashboard-secret-ABCD']);
 
-        $this->saveGroup('openai', ['openai_api_key' => ''])->assertSessionHas('success', 'No changes to OpenAI settings.');
+        $this->saveGroup('openai', ['openai_api_key' => ''])->assertSessionHas('success', 'No changes to AI provider settings.');
         $this->assertSame('sk-dashboard-secret-ABCD', config('services.openai.key'));
 
         $this->saveGroup('openai', ['openai_api_key' => ''], ['openai_api_key' => '1']);
@@ -213,7 +217,7 @@ class IntegrationSettingsTest extends TestCase
         Http::fake(['api.openai.com/*' => Http::response(['error' => ['message' => 'Incorrect API key provided', 'code' => 'invalid_api_key']], 401)]);
 
         $this->actingAs($this->admin)->postJson(route('admin.integrations.test', 'openai'), ['values' => []])
-            ->assertJson(['status' => 'error', 'message' => 'No API key. Paste one above, then test again.']);
+            ->assertJson(['status' => 'error', 'message' => 'No OpenAI API key. Paste one above, then test again.']);
         Http::assertNothingSent();
 
         $this->actingAs($this->admin)->postJson(route('admin.integrations.test', 'openai'), ['values' => ['openai_api_key' => 'sk-wrong-key-000000']])
@@ -257,5 +261,129 @@ class IntegrationSettingsTest extends TestCase
         $this->actingAs($this->admin)->postJson(route('admin.integrations.test', 'mail'), ['values' => $base, 'test_to' => 'nope'])
             ->assertStatus(422);
         $this->assertSame(0, IntegrationCredential::count());
+    }
+
+    // ---------------------------------------------------------------- AI provider: Groq
+
+    /** The smallest package AiGrader can grade. */
+    protected function package(string $fileContent = ''): array
+    {
+        return [
+            'activity' => [
+                'title' => 'Responsive page', 'track' => 'Software Engineering', 'milestone' => 'Web', 'type' => 'project',
+                'difficulty' => 'beginner', 'points' => 20, 'evidence_requirements' => ['github'],
+                'description' => 'Build a mobile-first page.', 'instructions' => '',
+                'rubric' => [['criterion' => 'Requirements', 'weight' => 60, 'description' => 'Does it'], ['criterion' => 'Quality', 'weight' => 40, 'description' => 'Well']],
+            ],
+            'submission' => [
+                'attempt' => 1, 'started_at' => null, 'submitted_at' => null, 'minutes_from_start_to_submit' => null,
+                'url' => null, 'text' => 'I built it and tested at 375px.', 'reflection' => '', 'file_names' => [], 'ai_assistance' => null,
+            ],
+            'github' => [],
+            'links' => [],
+            'files' => $fileContent === '' ? [] : [
+                ['name' => 'big.txt', 'content' => $fileContent, 'truncated' => false],
+                ['name' => 'small.txt', 'content' => 'short notes', 'truncated' => false],
+            ],
+            'unread' => [],
+        ];
+    }
+
+    protected function gradedAnswer(): array
+    {
+        return ['choices' => [['finish_reason' => 'stop', 'message' => ['content' => json_encode([
+            'criteria' => [
+                ['criterion' => 'Requirements', 'score' => 80, 'met' => true, 'reasoning' => 'ok', 'evidence' => 'text'],
+                ['criterion' => 'Quality', 'score' => 75, 'met' => true, 'reasoning' => 'ok', 'evidence' => 'text'],
+            ],
+            'requirements_met' => true, 'missing_requirements' => [], 'summary' => 's', 'confidence' => 'high',
+            'authenticity_concern' => 'none', 'authenticity_reasons' => [], 'flags' => [],
+            'feedback_for_fellow' => 'Good.', 'notes_for_reviewer' => 'n',
+        ])]]], 'usage' => ['prompt_tokens' => 900, 'completion_tokens' => 300]];
+    }
+
+    public function test_switching_to_groq_sends_interviews_and_reviews_to_groq_on_separate_models(): void
+    {
+        $this->env(['services.ai.provider' => 'openai', 'services.openai.key' => 'sk-openai-key-000000000', 'services.groq.key' => null]);
+
+        $this->saveGroup('openai', ['ai_provider' => 'groq', 'groq_api_key' => 'gsk_dashboard_groq_key_1234'])->assertSessionHasNoErrors();
+
+        $this->assertSame('groq', AiProvider::name());
+        $this->assertSame('gsk_dashboard_groq_key_1234', AiProvider::key());
+        $this->assertSame('https://api.groq.com/openai/v1/chat/completions', AiProvider::chatUrl());
+        $this->assertSame('openai/gpt-oss-20b', AiProvider::model());
+        $this->assertSame('openai/gpt-oss-120b', AiProvider::reviewModel());
+
+        // The OpenAI key is kept for switching back.
+        $this->assertSame('sk-openai-key-000000000', config('services.openai.key'));
+
+        Http::fake(['api.groq.com/*' => Http::response($this->gradedAnswer())]);
+        $graded = app(AiGrader::class)->grade($this->package(), []);
+
+        $this->assertSame(80, $graded['result']['criteria'][0]['score']);
+        Http::assertSent(fn (HttpRequest $r) => str_starts_with($r->url(), 'https://api.groq.com/')
+            && $r->hasHeader('Authorization', 'Bearer gsk_dashboard_groq_key_1234')
+            && $r['model'] === 'openai/gpt-oss-120b'
+            && $r['max_tokens'] === 4500
+            && $r['response_format']['json_schema']['strict'] === true
+            && !$r->hasHeader('OpenAI-Organization'));
+
+        $page = $this->actingAs($this->admin)->get(route('admin.integrations.index'))->assertOk();
+        $this->assertStringNotContainsString('gsk_dashboard_groq', $page->getContent());
+        $page->assertSee('••••••••1234');
+    }
+
+    public function test_groq_test_button_uses_the_typed_key_and_both_models(): void
+    {
+        $this->env(['services.ai.provider' => 'openai', 'services.groq.key' => null]);
+        Http::fake(['api.groq.com/*' => Http::response(['choices' => [['message' => ['content' => '{"ok":true}']]]], 200, [
+            'x-ratelimit-limit-tokens' => '8000', 'x-ratelimit-limit-requests' => '1000',
+        ])]);
+
+        $response = $this->actingAs($this->admin)->postJson(route('admin.integrations.test', 'openai'), [
+            'values' => ['ai_provider' => 'groq', 'groq_api_key' => 'gsk_typed_not_saved_9999'],
+        ])->assertOk()->assertJson(['status' => 'ok']);
+
+        $this->assertStringContainsString('Save to switch the platform to Groq', $response->json('message'));
+        $this->assertContains('Limits on this key: 8000 tokens a minute, 1000 requests a day per model', $response->json('details'));
+        Http::assertSentCount(2);
+        Http::assertSent(fn (HttpRequest $r) => $r['model'] === 'openai/gpt-oss-20b' && $r['response_format']['type'] === 'json_object'
+            && $r->hasHeader('Authorization', 'Bearer gsk_typed_not_saved_9999') && $r['max_tokens'] === 2010);
+        Http::assertSent(fn (HttpRequest $r) => $r['model'] === 'openai/gpt-oss-120b' && $r['response_format']['type'] === 'json_schema');
+        $this->assertSame(0, IntegrationCredential::count());
+        $this->assertSame('openai', AiProvider::name());
+    }
+
+    public function test_large_evidence_is_shortened_to_fit_groq_limits(): void
+    {
+        $grader = app(AiGrader::class);
+        $big = str_repeat('const line = "some code";' . "\n", 2500); // ~65k characters
+
+        $prompt = $grader->userPrompt($this->package($big), [], 16000);
+
+        $this->assertLessThanOrEqual(16500, mb_strlen($prompt));
+        $this->assertStringContainsString('<file truncated="yes">', $prompt);
+        $this->assertStringContainsString('short notes', $prompt, 'Small files stay whole.');
+        $this->assertStringContainsString('Do not penalise the fellow for content cut off here', $prompt);
+
+        // OpenAI: no limit, nothing cut.
+        $full = $grader->userPrompt($this->package($big), [], null);
+        $this->assertGreaterThan(60000, mb_strlen($full));
+        $this->assertStringNotContainsString('truncated="yes"', $full);
+    }
+
+    public function test_a_rate_limited_review_waits_as_long_as_groq_asks(): void
+    {
+        $this->env(['services.ai.provider' => 'groq', 'services.groq.key' => 'gsk_key_for_retry_test_00']);
+        Sleep::fake();
+        Http::fake(['api.groq.com/*' => Http::sequence()
+            ->push(['error' => ['message' => 'Rate limit reached for model openai/gpt-oss-120b: tokens per minute (TPM)', 'code' => 'rate_limit_exceeded']], 429, ['retry-after' => '7'])
+            ->push($this->gradedAnswer())]);
+
+        $graded = app(AiGrader::class)->grade($this->package(), []);
+
+        $this->assertSame(80, $graded['result']['criteria'][0]['score']);
+        Sleep::assertSleptTimes(1);
+        Sleep::assertSlept(fn (CarbonInterval $d) => (int) $d->totalMilliseconds === 7500);
     }
 }

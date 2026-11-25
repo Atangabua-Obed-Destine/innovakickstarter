@@ -53,6 +53,19 @@ return [
         'organization' => env('OPENAI_ORGANIZATION'),
     ],
 
+    // Which AI provider the platform uses: openai or groq (see App\Services\Ai\AiProvider).
+    'ai' => [
+        'provider' => env('AI_PROVIDER', 'openai'),
+    ],
+
+    // Groq (OpenAI-compatible API, free tier). Separate models for interviews
+    // and reviews, because each model has its own per-minute token limit.
+    'groq' => [
+        'key' => env('GROQ_API_KEY'),
+        'model' => env('GROQ_MODEL', 'openai/gpt-oss-20b'),
+        'review_model' => env('GROQ_REVIEW_MODEL', 'openai/gpt-oss-120b'),
+    ],
+
     // Optional token: raises the GitHub API limit from 60 to 5,000 requests per hour.
     'github' => [
         'token' => env('GITHUB_TOKEN'),
