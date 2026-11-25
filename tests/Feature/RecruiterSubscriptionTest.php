@@ -237,7 +237,7 @@ class RecruiterSubscriptionTest extends TestCase
         $this->get(route('admin.recruiters.show', $this->recruiter))->assertOk()->assertSee('Partner plan requested');
     }
 
-    public function test_admin_can_save_subscription_and_score_formula_settings(): void
+    public function test_admin_can_save_subscription_settings(): void
     {
         $this->actingAs($this->admin)->patch(route('admin.settings.update', 'subscriptions'), [
             'free_profile_views' => 20,
@@ -255,15 +255,6 @@ class RecruiterSubscriptionTest extends TestCase
         $this->assertSame(250000, (int) AdminSetting::get('partner_price'));
         $this->assertSame('MTN MoMo 650 000 000 (I-NNOVA CMR)', AdminSetting::get('subscription_payment_instructions'));
 
-        $this->patch(route('admin.settings.update', 'scoring_curve'), [
-            'score_curve_steepness' => 1.5,
-            'score_interview_full_volume' => 15,
-            'score_interview_session_share' => 60,
-        ])->assertSessionHasNoErrors();
-
-        $this->assertEquals(1.5, AdminSetting::get('score_curve_steepness'));
-        $this->assertSame(15, (int) AdminSetting::get('score_interview_full_volume'));
-
-        $this->get(route('admin.settings'))->assertOk()->assertSee('Score Formula');
+        $this->get(route('admin.settings'))->assertOk()->assertDontSee('Score Formula');
     }
 }

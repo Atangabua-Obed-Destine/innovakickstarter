@@ -105,6 +105,33 @@
             <p class="text-dark-500 text-xs mt-1">A short reflection helps reviewers understand your growth</p>
         </div>
 
+        {{-- AI use disclosure --}}
+        <div class="card p-6" x-data="{ used: @js(old('ai_used')) }">
+            <h3 class="text-white font-semibold mb-1">🤖 Did you use AI tools for this work? <span class="text-red-400">*</span></h3>
+            <p class="text-dark-400 text-sm mb-4">
+                AI tools (ChatGPT, Copilot, Gemini…) are allowed at IKS when you say how you used them. Honest answers are never penalised.
+                What matters is that the work reflects your own understanding: you may be asked to explain it.
+            </p>
+            <div class="flex flex-wrap gap-3">
+                <label class="flex items-center gap-2 px-4 py-2 rounded-lg border border-dark-600 cursor-pointer" :class="used === 'no' ? 'border-primary-500 bg-primary-500/10' : ''">
+                    <input type="radio" name="ai_used" value="no" x-model="used" required class="accent-primary-500">
+                    <span class="text-dark-200 text-sm">No</span>
+                </label>
+                <label class="flex items-center gap-2 px-4 py-2 rounded-lg border border-dark-600 cursor-pointer" :class="used === 'yes' ? 'border-primary-500 bg-primary-500/10' : ''">
+                    <input type="radio" name="ai_used" value="yes" x-model="used" class="accent-primary-500">
+                    <span class="text-dark-200 text-sm">Yes</span>
+                </label>
+            </div>
+            @error('ai_used')<p class="text-red-400 text-xs mt-2">{{ $message }}</p>@enderror
+            <div x-show="used === 'yes'" x-cloak class="mt-4">
+                <label class="block text-dark-300 text-sm mb-1">How did you use them?</label>
+                <textarea name="ai_used_how" rows="3" maxlength="1000"
+                          placeholder="e.g. I asked ChatGPT to explain media queries, then wrote the CSS myself. Copilot suggested the grid template."
+                          class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2.5 text-white placeholder-dark-500 focus:border-primary-500 focus:ring-1 focus:ring-primary-500">{{ old('ai_used_how') }}</textarea>
+                @error('ai_used_how')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+        </div>
+
         {{-- Review Info --}}
         <div class="card p-4 bg-dark-800/50">
             <div class="flex items-center gap-3 text-sm">

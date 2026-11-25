@@ -497,11 +497,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/curriculum/reviews/{progress}', [AdminCurriculumController::class, 'reviewProcess'])->name('curriculum.reviews.process');
         Route::post('/curriculum/reviews/{progress}/undo', [AdminCurriculumController::class, 'undoReview'])->name('curriculum.reviews.undo');
 
+        // AI review of submissions
+        Route::post('/curriculum/reviews/{progress}/ai-review', [\App\Http\Controllers\Admin\AiReviewController::class, 'run'])->name('curriculum.reviews.ai-run');
+        Route::post('/curriculum/reviews/{progress}/ai-review/reveal', [\App\Http\Controllers\Admin\AiReviewController::class, 'reveal'])->name('curriculum.reviews.ai-reveal');
+        Route::get('/ai-reviews', [\App\Http\Controllers\Admin\AiReviewController::class, 'index'])->name('ai-reviews.index');
+        Route::post('/ai-reviews/settings', [\App\Http\Controllers\Admin\AiReviewController::class, 'updateSettings'])->name('ai-reviews.settings');
+
         // Settings
         Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
         Route::patch('/settings/{group}', [AdminController::class, 'updateSettings'])->name('settings.update');
         Route::post('/settings/initialize', [AdminController::class, 'initializeSettings'])->name('settings.initialize');
-        
+
+        // Integrations: API keys and tokens for OpenAI, GitHub and email
+        Route::get('/integrations', [\App\Http\Controllers\Admin\IntegrationController::class, 'index'])->name('integrations.index');
+        Route::post('/integrations/{group}', [\App\Http\Controllers\Admin\IntegrationController::class, 'update'])
+            ->whereIn('group', ['openai', 'github', 'mail'])->name('integrations.update');
+        Route::post('/integrations/{group}/test', [\App\Http\Controllers\Admin\IntegrationController::class, 'test'])
+            ->whereIn('group', ['openai', 'github', 'mail'])->middleware('throttle:20,1')->name('integrations.test');
+
         // Content Management (CMS)
         Route::get('/content', [ContentController::class, 'index'])->name('content.index');
         Route::patch('/content/section/{section}', [ContentController::class, 'updateSection'])->name('content.section.update');

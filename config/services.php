@@ -48,7 +48,14 @@ return [
     'openai' => [
         'key' => env('OPENAI_API_KEY'),
         'model' => env('OPENAI_MODEL', 'gpt-4o'),
+        // Model used to review curriculum submissions; needs structured outputs (json_schema).
+        'review_model' => env('OPENAI_REVIEW_MODEL') ?: env('OPENAI_MODEL', 'gpt-4o'),
         'organization' => env('OPENAI_ORGANIZATION'),
+    ],
+
+    // Optional token: raises the GitHub API limit from 60 to 5,000 requests per hour.
+    'github' => [
+        'token' => env('GITHUB_TOKEN'),
     ],
 
 ];

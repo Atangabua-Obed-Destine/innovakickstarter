@@ -107,6 +107,7 @@ class TrackCurriculumActivity extends Model
         'is_collaborative',
         'requires_cross_track',
         'requires_peer_review',
+        'ai_review_mode',
         'interview_config',
         'created_by',
         'is_active',

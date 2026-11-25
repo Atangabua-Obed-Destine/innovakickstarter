@@ -110,99 +110,88 @@ class CareerCapitalScoringTest extends TestCase
         }
     }
 
-    public function test_the_curve_rewards_completing_the_curriculum(): void
+    public function test_the_curve_is_deliberately_hard(): void
     {
         $calc = $this->calculator();
 
-        $this->assertEqualsWithDelta(63.212, $calc->scaleScore(300, 300), 0.01);   // all of it
-        $this->assertEqualsWithDelta(39.347, $calc->scaleScore(150, 300), 0.01);   // half of it
-        $this->assertEqualsWithDelta(86.466, $calc->scaleScore(600, 300), 0.01);   // twice as much
-        $this->assertSame(0.0, $calc->scaleScore(0, 300));
-        $this->assertSame(0.0, $calc->scaleScore(50, 0));
+        // Ceiling = max(10,000, 10 x curriculum); score = 100 x (1 - e^(-0.1 x earned / ceiling))
+        $this->assertEqualsWithDelta(0.499, $calc->calculateHardScaledScore(500, 500), 0.001);     // whole 500-point curriculum
+        $this->assertEqualsWithDelta(9.516, $calc->calculateHardScaledScore(30000, 3000), 0.001);  // 10x a 3,000-point curriculum
+        $this->assertEqualsWithDelta(63.212, $calc->calculateHardScaledScore(100000, 500), 0.001); // 100,000 points
+        $this->assertSame(0.0, $calc->calculateHardScaledScore(0, 500));
     }
 
-    public function test_curriculum_points_are_weighted_by_review_quality(): void
+    public function test_curriculum_points_count_as_awarded_whatever_the_review_score(): void
     {
         $this->completeCurriculum(200, 100);
         $this->completeCurriculum(200, 50);
 
-        // 200 + 100 quality-weighted points out of 400 offered: ratio 0.75.
-        $this->assertEqualsWithDelta(52.763, $this->calculator()->calculateTechnicalScore($this->fellow, $this->track), 0.01);
-    }
-
-    public function test_work_approved_without_a_rubric_score_gets_full_credit(): void
-    {
-        $this->completeCurriculum(300, 0); // approved with no rubric scores: stored as 0
-
-        $this->assertEqualsWithDelta(63.212, $this->calculator()->calculateTechnicalScore($this->fellow, $this->track), 0.01);
+        $calc = $this->calculator();
+        $this->assertEqualsWithDelta($calc->calculateHardScaledScore(400, 400), $calc->calculateTechnicalScore($this->fellow, $this->track), 0.001);
     }
 
     public function test_mock_interviews_count_from_the_score_column(): void
     {
-        // 10 interviews at 80: full volume, consistent (+5%) = 84, which is half the category.
+        // Last 10 at 80, volume 10 / 20 = half credit, consistent (+5%) = 42.
         $this->mockInterviews(10, 80);
 
-        $this->assertEqualsWithDelta(84.0, $this->calculator()->mockInterviewScore($this->fellow, $this->track), 0.01);
+        $this->assertEqualsWithDelta(42.0, $this->calculator()->mockInterviewScore($this->fellow, $this->track), 0.01);
         $this->assertEqualsWithDelta(42.0, $this->calculator()->calculateInterviewScore($this->fellow, $this->track), 0.01);
     }
 
-    public function test_interview_volume_counts_beyond_the_last_ten(): void
+    public function test_only_the_last_ten_interviews_count(): void
     {
-        AdminSetting::set('score_interview_full_volume', 20);
-
         $this->mockInterviews(20, 80);
 
-        // Previously capped at 10 / 20 = half credit; 20 interviews now give full credit.
-        $this->assertEqualsWithDelta(84.0, $this->calculator()->mockInterviewScore($this->fellow, $this->track), 0.01);
+        $this->assertEqualsWithDelta(42.0, $this->calculator()->mockInterviewScore($this->fellow, $this->track), 0.01);
     }
 
-    public function test_practice_interviews_do_not_count(): void
+    public function test_practice_interviews_count(): void
     {
+        // 5 / 20 volume x 80, consistent (+5%) = 21.
         $this->mockInterviews(5, 80, practice: true);
 
-        $this->assertSame(0.0, $this->calculator()->mockInterviewScore($this->fellow, $this->track));
+        $this->assertEqualsWithDelta(21.0, $this->calculator()->mockInterviewScore($this->fellow, $this->track), 0.01);
     }
 
-    public function test_category_weights_come_from_the_settings_page(): void
+    public function test_default_weights_are_fixed_and_settings_page_weights_are_not_used(): void
     {
-        AdminSetting::set('weight_technical', 100);
-        AdminSetting::set('weight_interview', 0);
-        AdminSetting::set('weight_portfolio', 0);
-        AdminSetting::set('weight_collaboration', 0);
-        AdminSetting::set('weight_learning', 0);
+        AdminSetting::set('weight_interview', 100);
+        $this->mockInterviews(10, 80);
 
-        $this->completeCurriculum(300, 100);
-
-        $this->assertEqualsWithDelta(63.212, $this->calculator()->calculateScore($this->fellow, $this->track), 0.01);
+        // Interview 42 x 25% = 10.5
+        $this->assertEqualsWithDelta(10.5, $this->calculator()->calculateScore($this->fellow, $this->track), 0.01);
+        $this->assertSame(['technical' => 25.0, 'interview' => 25.0, 'portfolio' => 20.0, 'collaboration' => 15.0, 'learning' => 15.0],
+            $this->calculator()->categoryWeights($this->track));
     }
 
-    public function test_a_track_rubric_keyed_by_category_overrides_the_settings(): void
+    public function test_a_track_rubric_with_category_weights_overrides_the_defaults(): void
     {
-        $this->track->update(['scoring_rubric' => ['technical' => 50, 'interview' => 50, 'portfolio' => 0, 'collaboration' => 0, 'learning' => 0]]);
+        $this->track->update(['scoring_rubric' => [
+            'technical' => ['weight' => 0], 'interview' => ['weight' => 100], 'portfolio' => ['weight' => 0],
+            'collaboration' => ['weight' => 0], 'learning' => ['weight' => 0],
+        ]]);
+        $this->mockInterviews(10, 80);
 
-        $this->completeCurriculum(300, 100);
-
-        $this->assertEqualsWithDelta(31.606, $this->calculator()->calculateScore($this->fellow, $this->track->fresh()), 0.01);
+        $this->assertEqualsWithDelta(42.0, $this->calculator()->calculateScore($this->fellow, $this->track->fresh()), 0.01);
     }
 
     public function test_promotion_is_notified_and_demotion_is_not(): void
     {
-        AdminSetting::set('weight_technical', 100);
-        AdminSetting::set('weight_interview', 0);
-        AdminSetting::set('weight_portfolio', 0);
-        AdminSetting::set('weight_collaboration', 0);
-        AdminSetting::set('weight_learning', 0);
+        $this->track->update(['scoring_rubric' => [
+            'technical' => ['weight' => 0], 'interview' => ['weight' => 100], 'portfolio' => ['weight' => 0],
+            'collaboration' => ['weight' => 0], 'learning' => ['weight' => 0],
+        ]]);
+        $this->mockInterviews(10, 80);
 
-        $this->completeCurriculum(300, 100);
+        $updated = $this->calculator()->updateScore($this->fellow, $this->track->fresh());
 
-        $updated = $this->calculator()->updateScore($this->fellow, $this->track);
-
-        $this->assertSame('professional', $updated->tier);
+        $this->assertSame('intern', $updated->tier);
         $this->assertSame(1, Notification::where('user_id', $this->fellow->id)->where('type', Notification::TYPE_TIER_PROMOTION)->count());
 
         // Coming down from Elite must not send a "promotion".
         $this->fellowTrack->update(['tier' => 'elite']);
-        $this->calculator()->updateScore($this->fellow, $this->track);
+        $this->calculator()->updateScore($this->fellow, $this->track->fresh());
 
         $this->assertSame(1, Notification::where('user_id', $this->fellow->id)->where('type', Notification::TYPE_TIER_PROMOTION)->count());
     }

@@ -510,7 +510,9 @@ class CurriculumService
             throw new \Exception('This submission is not pending review.');
         }
 
-        return DB::transaction(function () use ($progress, $reviewer, $decision, $data) {
+        $reviewedAttempt = (int) ($progress->attempt_number ?: 1);
+
+        return DB::transaction(function () use ($progress, $reviewer, $decision, $data, $reviewedAttempt) {
             if ($decision === 'approve') {
                 $points = $data['points'] ?? $progress->curriculumActivity->points;
                 $rubricScores = $data['rubric_scores'] ?? null;
@@ -535,6 +537,14 @@ class CurriculumService
             } elseif ($decision === 'reject') {
                 $progress->reject($reviewer, $data['feedback'] ?? 'Submission does not meet requirements.');
             }
+
+            app(\App\Services\AiReview\AiReviewService::class)->recordHumanDecision(
+                $progress->id,
+                $reviewedAttempt,
+                $reviewer,
+                $decision,
+                $decision === 'approve' ? (int) $progress->score_awarded : null,
+            );
 
             return $progress->fresh();
         });

@@ -147,10 +147,13 @@ class AdminSetting extends Model
         'score_decay_weekly_percentage' => ['value' => 2, 'type' => 'float', 'group' => 'scoring', 'label' => 'Weekly Score Decay Percentage'],
         'score_decay_max_weeks_inactive' => ['value' => 4, 'type' => 'integer', 'group' => 'scoring', 'label' => 'Max Weeks Inactive Before Decay'],
 
-        // Score Curve: category score = 100 x (1 - e^(-steepness x earned / curriculum points))
-        'score_curve_steepness' => ['value' => 1.0, 'type' => 'float', 'group' => 'scoring', 'label' => 'Score Curve Steepness'],
-        'score_interview_full_volume' => ['value' => 10, 'type' => 'integer', 'group' => 'scoring', 'label' => 'Mock Interviews Needed for Full Interview Credit'],
-        'score_interview_session_share' => ['value' => 50, 'type' => 'integer', 'group' => 'scoring', 'label' => 'Share of Interview Score From Mock Interviews (%)'],
+        // AI review of curriculum submissions
+        'ai_review_mode' => ['value' => 'shadow', 'type' => 'string', 'group' => 'ai_review', 'label' => 'AI Review Mode (off, shadow, assist)'],
+        'ai_review_pass_score' => ['value' => 70, 'type' => 'integer', 'group' => 'ai_review', 'label' => 'Approve From Weighted Score'],
+        'ai_review_criterion_floor' => ['value' => 50, 'type' => 'integer', 'group' => 'ai_review', 'label' => 'Minimum Score On Every Criterion To Approve'],
+        'ai_review_revise_below' => ['value' => 50, 'type' => 'integer', 'group' => 'ai_review', 'label' => 'Return For Revision Below Weighted Score'],
+        'ai_review_similarity_threshold' => ['value' => 50, 'type' => 'integer', 'group' => 'ai_review', 'label' => 'Text Overlap With Another Fellow That Flags Copying (%)'],
+        'ai_review_human_from_points' => ['value' => 60, 'type' => 'integer', 'group' => 'ai_review', 'label' => 'Always Send To A Human From This Many Points'],
 
         // Recruiter subscriptions
         'subscription_payment_instructions' => ['value' => '', 'type' => 'string', 'group' => 'subscriptions', 'label' => 'Subscription Payment Instructions'],

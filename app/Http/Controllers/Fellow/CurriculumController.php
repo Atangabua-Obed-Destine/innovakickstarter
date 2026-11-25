@@ -272,6 +272,11 @@ class CurriculumController extends Controller
             'evidence_files' => 'nullable|array|max:5',
             'evidence_files.*' => 'file|max:10240',
             'reflection' => 'nullable|string|max:2000',
+            'ai_used' => 'required|in:yes,no',
+            'ai_used_how' => 'required_if:ai_used,yes|nullable|string|max:1000',
+        ], [
+            'ai_used.required' => 'Tell us whether you used AI tools for this submission.',
+            'ai_used_how.required_if' => 'Briefly describe how you used AI tools.',
         ]);
 
         // Handle file uploads
@@ -288,6 +293,10 @@ class CurriculumController extends Controller
             'evidence_text' => $validated['evidence_text'] ?? null,
             'evidence_files' => !empty($uploadedFiles) ? $uploadedFiles : null,
             'reflection' => $validated['reflection'] ?? null,
+            'ai_assistance' => [
+                'used' => $validated['ai_used'] === 'yes',
+                'how' => $validated['ai_used'] === 'yes' ? trim((string) ($validated['ai_used_how'] ?? '')) : null,
+            ],
         ];
 
         try {

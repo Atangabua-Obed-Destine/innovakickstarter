@@ -251,6 +251,17 @@
         <div class="card p-6 space-y-5">
             <h2 class="text-white font-semibold text-lg border-b border-dark-700 pb-3">Review & Collaboration</h2>
 
+            <div>
+                <label class="block text-dark-300 text-sm font-medium mb-1">AI review</label>
+                <select name="ai_review_mode" class="w-full md:w-96 bg-dark-800 border border-dark-600 rounded-lg px-4 py-2.5 text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
+                    <option value="">Platform default ({{ \App\Models\AiReview::MODES[\App\Models\AdminSetting::get('ai_review_mode', 'shadow')] ?? 'Shadow' }})</option>
+                    @foreach(\App\Models\AiReview::MODES as $value => $label)
+                        <option value="{{ $value }}" @selected(old('ai_review_mode', $activity->ai_review_mode) === $value)>{{ $label }}</option>
+                    @endforeach
+                </select>
+                <p class="text-dark-500 text-xs mt-1">A human decides every submission in all modes. Video and mock-interview activities are always reviewed by people.</p>
+            </div>
+
             <div class="flex flex-wrap gap-6">
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="hidden" name="requires_peer_review" value="0">

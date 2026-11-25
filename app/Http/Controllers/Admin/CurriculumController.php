@@ -239,6 +239,7 @@ class CurriculumController extends Controller
             'prerequisites.*' => 'uuid|exists:track_curriculum_activities,id',
             'chain_parent_id' => 'nullable|uuid|exists:track_curriculum_activities,id',
             'requires_peer_review' => 'boolean',
+            'ai_review_mode' => 'nullable|in:off,shadow,assist',
             'is_collaborative' => 'boolean',
             'requires_cross_track' => 'boolean',
             'resources' => 'nullable|array',
@@ -351,6 +352,7 @@ class CurriculumController extends Controller
             'prerequisites.*' => 'uuid|exists:track_curriculum_activities,id',
             'chain_parent_id' => 'nullable|uuid|exists:track_curriculum_activities,id',
             'requires_peer_review' => 'boolean',
+            'ai_review_mode' => 'nullable|in:off,shadow,assist',
             'is_collaborative' => 'boolean',
             'requires_cross_track' => 'boolean',
             'resources' => 'nullable|array',
@@ -444,7 +446,21 @@ class CurriculumController extends Controller
             'reviewer', 'peerReviews',
         ])->findOrFail($progressId);
 
-        return view('admin.curriculum.reviews.show', compact('progress'));
+        // AI review: in shadow mode the verdict stays hidden until the human
+        // decides (or chooses to reveal it), so agreement can be measured.
+        $aiService = app(\App\Services\AiReview\AiReviewService::class);
+        $aiReview = $aiService->currentFor($progress);
+        $aiEnabled = $aiService->shouldReview($progress);
+        $pending = in_array($progress->status?->value, ['submitted', 'under_review'], true);
+        $aiVisible = $aiReview && (
+            !$pending
+            || $aiReview->mode === \App\Models\AiReview::MODE_ASSIST
+            || $aiReview->revealed_before_decision
+            || $aiReview->status === \App\Models\AiReview::STATUS_FAILED
+            || (int) $aiReview->attempt_number !== (int) ($progress->attempt_number ?: 1)
+        );
+
+        return view('admin.curriculum.reviews.show', compact('progress', 'aiReview', 'aiEnabled', 'aiVisible', 'pending'));
     }
 
     /**

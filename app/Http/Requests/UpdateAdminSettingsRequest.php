@@ -34,7 +34,6 @@ class UpdateAdminSettingsRequest extends FormRequest
         return match ($group) {
             'tiers' => $this->tierRules(),
             'weights' => $this->weightRules(),
-            'scoring_curve' => $this->scoringCurveRules(),
             'interviews' => $this->interviewRules(),
             'subscriptions' => $this->subscriptionRules(),
             'points' => $this->pointsRules(),
@@ -101,18 +100,6 @@ class UpdateAdminSettingsRequest extends FormRequest
             'premium_intros' => ['required', 'integer', 'min:-1'],
             'recruiter_trial_days' => ['required', 'integer', 'min:0', 'max:90'],
             'subscription_payment_instructions' => ['nullable', 'string', 'max:2000'],
-        ];
-    }
-
-    /**
-     * Career Capital score formula rules.
-     */
-    protected function scoringCurveRules(): array
-    {
-        return [
-            'score_curve_steepness' => ['required', 'numeric', 'min:0.1', 'max:5'],
-            'score_interview_full_volume' => ['required', 'integer', 'min:1', 'max:100'],
-            'score_interview_session_share' => ['required', 'integer', 'min:0', 'max:100'],
         ];
     }
 

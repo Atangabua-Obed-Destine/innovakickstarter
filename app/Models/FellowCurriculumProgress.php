@@ -139,9 +139,43 @@ class FellowCurriculumProgress extends Model
         'attempt_number' => 1,
     ];
 
+    /**
+     * Queue the AI review whenever a submission becomes ready for review
+     * (directly on submit, or once peer reviews are done).
+     */
+    protected static function booted(): void
+    {
+        static::updated(function (self $progress) {
+            if ($progress->wasChanged('status') && $progress->status === CurriculumStatus::SUBMITTED) {
+                try {
+                    app(\App\Services\AiReview\AiReviewService::class)->queue($progress);
+                } catch (\Throwable $e) {
+                    // Never block a submission because the AI review could not be queued.
+                    \Illuminate\Support\Facades\Log::warning('AI review not queued', ['progress' => $progress->id, 'error' => $e->getMessage()]);
+                }
+            }
+        });
+    }
+
     // ==========================================
     // RELATIONSHIPS
     // ==========================================
+
+    /**
+     * All AI reviews of this submission (one per attempt).
+     */
+    public function aiReviews(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(AiReview::class, 'progress_id');
+    }
+
+    /**
+     * Whether the fellow said they used AI tools, and how.
+     */
+    public function getAiAssistanceAttribute(): ?array
+    {
+        return is_array($this->evidence) ? ($this->evidence['ai_assistance'] ?? null) : null;
+    }
 
     /**
      * Get the fellow working on this activity.

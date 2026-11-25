@@ -171,7 +171,21 @@
                 @if(!$progress->evidence_url && !$progress->evidence_text && empty($progress->evidence_files))
                 <p class="text-dark-500 text-sm italic">No evidence submitted.</p>
                 @endif
+
+                @php $aiUse = $progress->ai_assistance; @endphp
+                <div class="mt-4 pt-4 border-t border-dark-700 text-sm">
+                    <span class="text-dark-500 text-xs font-medium uppercase tracking-wider">AI tools used</span>
+                    <p class="text-dark-300 mt-1">
+                        @if($aiUse === null) Not answered (submitted before the question existed)
+                        @elseif($aiUse['used'] ?? false) Yes · {{ $aiUse['how'] }}
+                        @else No
+                        @endif
+                    </p>
+                </div>
             </div>
+
+            {{-- AI Review --}}
+            @include('admin.curriculum.reviews._ai_review')
 
             {{-- Peer Reviews --}}
             @if($progress->peerReviews && $progress->peerReviews->count() > 0)
@@ -271,6 +285,13 @@
                         </div>
                         @endforeach
                     </div>
+                    @endif
+
+                    @if($aiVisible && $aiReview?->isCompleted())
+                        <button type="button" onclick="applyAiDraft()"
+                                class="w-full px-3 py-2 rounded-lg text-sm bg-primary-500/10 text-primary-300 border border-primary-500/30 hover:bg-primary-500/20">
+                            🤖 Fill in the AI draft (scores, points, feedback)
+                        </button>
                     @endif
 
                     {{-- Points Override --}}
@@ -469,4 +490,29 @@
         </div>
     </div>
 </div>
+@if($aiVisible && $aiReview?->isCompleted())
+@push('scripts')
+<script>
+    function applyAiDraft() {
+        const scores = @json(collect($aiReview->criteria)->pluck('score')->values());
+        const feedback = @json($aiReview->feedback_for_fellow ?? '');
+        scores.forEach((score, i) => {
+            const input = document.querySelector(`input[name="rubric_scores[${i}]"]`);
+            if (input) {
+                input.value = score;
+                input.dispatchEvent(new Event('input'));
+            }
+        });
+        const points = document.getElementById('points');
+        if (points && !points.value) {
+            points.value = @json((int) ($progress->curriculumActivity->points ?? 0));
+        }
+        const text = document.getElementById('feedback');
+        if (text && !text.value.trim()) {
+            text.value = feedback;
+        }
+    }
+</script>
+@endpush
+@endif
 @endsection
