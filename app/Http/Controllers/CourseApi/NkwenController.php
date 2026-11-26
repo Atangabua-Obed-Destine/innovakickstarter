@@ -60,6 +60,9 @@ class NkwenController extends Controller
                 'GET ' . $base . '/categories' => 'Product categories',
                 'GET ' . $base . '/branches' => 'Branches (one is still planned)',
                 'GET ' . $base . '/legacy/price-list' => 'An old, messy price list (for cleaning practice)',
+                'POST ' . $base . '/login' => 'Practice staff login: {"email":"manager.nkw@nkwen.test","password":"Nkwen-Demo-2026"} -> {token, data}. Also headoffice@ and cashier.nkw@',
+                'GET ' . $base . '/me' => 'Who you are (send Authorization: Bearer <token>)',
+                'GET ' . $base . '/branches/{code}/stock' => 'Stock with OK/LOW/RESTOCK status. Staff only (Bearer token); your own branch unless head office',
                 'POST ' . $base . '/orders' => 'Check and price an order: {"branch":"NKW","customer_name":"...","payment_method":"mtn_momo","items":[{"product_id":1,"quantity":2}]}',
             ],
             'switches' => ['?delay=1500' => 'wait 1.5 s before answering (max 3000)', '?fail=404|500|503' => 'answer with that error'],
@@ -118,6 +121,94 @@ class NkwenController extends Controller
     public function legacyPriceList(Request $request): JsonResponse
     {
         return $this->switches($request) ?? response()->json(['exported_from' => 'old till system (2019)', 'rows' => $this->data()['legacy_price_list']]);
+    }
+
+    /** Practice staff accounts (same as the Backend pathway's B3 demo accounts). Password: Nkwen-Demo-2026. */
+    private const STAFF = [
+        'headoffice@nkwen.test' => ['id' => 1, 'name' => 'Head Office', 'role' => 'head_office', 'branch' => null],
+        'manager.nkw@nkwen.test' => ['id' => 2, 'name' => 'Mrs. Enow Patience', 'role' => 'branch_manager', 'branch' => 'NKW'],
+        'cashier.nkw@nkwen.test' => ['id' => 3, 'name' => 'Nkwen Cashier', 'role' => 'cashier', 'branch' => 'NKW'],
+    ];
+    private const STAFF_PASSWORD = 'Nkwen-Demo-2026';
+
+    private function tokenFor(string $email): string
+    {
+        $payload = rtrim(strtr(base64_encode(json_encode(['e' => $email, 'x' => now()->addHours(8)->timestamp])), '+/', '-_'), '=');
+
+        return $payload . '.' . hash_hmac('sha256', $payload, (string) config('app.key'));
+    }
+
+    /** The staff member behind a Bearer token, or null. Tokens are signed and expire after 8 hours. */
+    private function staffFrom(Request $request): ?array
+    {
+        $token = (string) $request->bearerToken();
+        if (!str_contains($token, '.')) {
+            return null;
+        }
+        [$payload, $sig] = explode('.', $token, 2);
+        if (!hash_equals(hash_hmac('sha256', $payload, (string) config('app.key')), $sig)) {
+            return null;
+        }
+        $data = json_decode((string) base64_decode(strtr($payload, '-_', '+/')), true);
+        if (!is_array($data) || ($data['x'] ?? 0) < now()->timestamp || !isset(self::STAFF[$data['e'] ?? ''])) {
+            return null;
+        }
+
+        return ['email' => $data['e']] + self::STAFF[$data['e']];
+    }
+
+    /** POST /login: practice staff login, same shape as the Backend pathway (B3). */
+    public function login(Request $request): JsonResponse
+    {
+        if ($r = $this->switches($request)) {
+            return $r;
+        }
+        $email = strtolower(trim((string) $request->input('email')));
+        if (!isset(self::STAFF[$email]) || !hash_equals(self::STAFF_PASSWORD, (string) $request->input('password'))) {
+            return response()->json(['message' => 'These credentials do not match our records.'], 401);
+        }
+
+        return response()->json(['token' => $this->tokenFor($email), 'token_type' => 'Bearer', 'data' => ['email' => $email] + self::STAFF[$email]]);
+    }
+
+    /** GET /me: who the token belongs to. */
+    public function me(Request $request): JsonResponse
+    {
+        if ($r = $this->switches($request)) {
+            return $r;
+        }
+        $staff = $this->staffFrom($request);
+
+        return $staff ? response()->json(['data' => $staff]) : response()->json(['message' => 'Unauthenticated.'], 401);
+    }
+
+    /** GET /branches/{code}/stock: staff only; managers and cashiers see their own branch, head office all. */
+    public function branchStock(Request $request, string $code): JsonResponse
+    {
+        if ($r = $this->switches($request)) {
+            return $r;
+        }
+        $staff = $this->staffFrom($request);
+        if (!$staff) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+        $code = strtoupper($code);
+        $branch = collect($this->data()['branches'])->firstWhere('code', $code);
+        if (!$branch) {
+            return response()->json(['message' => "Unknown branch code \"{$code}\"."], 404);
+        }
+        if ($staff['role'] !== 'head_office' && $staff['branch'] !== $code) {
+            return response()->json(['message' => 'This action is unauthorized.'], 403);
+        }
+        $rows = collect($this->data()['products'])->filter(fn ($p) => isset($p['stock'][$code]))->map(function ($p) use ($code) {
+            $q = $p['stock'][$code];
+            $level = (int) ($p['reorder_level'] ?? 0);
+
+            return ['product_id' => $p['id'], 'branch_code' => $code, 'sku' => $p['sku'], 'name' => $p['name'], 'quantity' => $q, 'reorder_level' => $level,
+                'status' => $q <= $level ? 'RESTOCK' : ($q <= 2 * $level ? 'LOW' : 'OK')];
+        })->values();
+
+        return response()->json(['data' => $rows, 'meta' => ['count' => $rows->count()]]);
     }
 
     /** Validate and price an order. Nothing is stored and stock is not changed. */

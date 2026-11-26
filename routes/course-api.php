@@ -15,4 +15,7 @@ Route::prefix('api/course/nkwen')->middleware(['throttle:120,1,course-api'])->gr
     Route::get('/branches', [NkwenController::class, 'branches']);
     Route::get('/legacy/price-list', [NkwenController::class, 'legacyPriceList']);
     Route::post('/orders', [NkwenController::class, 'order'])->middleware('throttle:30,1,course-api-orders');
+    Route::post('/login', [NkwenController::class, 'login'])->middleware('throttle:10,1,course-api-login');
+    Route::get('/me', [NkwenController::class, 'me']);
+    Route::get('/branches/{code}/stock', [NkwenController::class, 'branchStock']);
 });
