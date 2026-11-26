@@ -142,16 +142,23 @@ class NkwenController extends Controller
             return response()->json(['message' => 'The order is not valid.', 'errors' => $v->errors()], 422);
         }
         $products = collect($d['products'])->keyBy('id');
-        $lines = [];
         foreach ($request->input('items') as $i => $item) {
-            $p = $products->get((int) $item['product_id']);
-            if (!$p) {
+            if (!$products->has((int) $item['product_id'])) {
                 return response()->json(['message' => 'The order is not valid.', 'errors' => ["items.{$i}.product_id" => ["No product with id {$item['product_id']}."]]], 422);
             }
+        }
+        // Stock is checked per product over the whole order: two lines of the same product are added up.
+        $wanted = collect($request->input('items'))->groupBy(fn ($it) => (int) $it['product_id'])->map(fn ($g) => $g->sum(fn ($it) => (int) $it['quantity']));
+        foreach ($wanted as $productId => $qty) {
+            $p = $products->get($productId);
             $available = $p['stock'][$request->input('branch')] ?? 0;
-            if ((int) $item['quantity'] > $available) {
-                return response()->json(['message' => "Not enough {$p['name']} at this branch.", 'product_id' => $p['id'], 'requested' => (int) $item['quantity'], 'available' => $available], 409);
+            if ($qty > $available) {
+                return response()->json(['message' => "Not enough {$p['name']} at this branch.", 'product_id' => $p['id'], 'requested' => $qty, 'available' => $available], 409);
             }
+        }
+        $lines = [];
+        foreach ($request->input('items') as $item) {
+            $p = $products->get((int) $item['product_id']);
             $lines[] = ['product_id' => $p['id'], 'name' => $p['name'], 'quantity' => (int) $item['quantity'], 'unit_price_fcfa' => $p['price_fcfa'], 'line_total_fcfa' => $p['price_fcfa'] * (int) $item['quantity']];
         }
 

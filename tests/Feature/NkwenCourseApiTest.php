@@ -38,6 +38,9 @@ class NkwenCourseApiTest extends TestCase
         $this->postJson("{$this->base}/orders", ['branch' => 'LMB', 'items' => []])->assertStatus(422)->assertJsonValidationErrors(['branch', 'customer_name', 'payment_method', 'items']);
         $this->postJson("{$this->base}/orders", ['branch' => 'BAF', 'customer_name' => 'Ama', 'payment_method' => 'cash', 'items' => [['product_id' => 18, 'quantity' => 50]]])
             ->assertStatus(409)->assertJsonPath('available', 3);
+        // Two lines of the same product are added up before checking stock (2 + 2 > 3 Onions at BAF).
+        $this->postJson("{$this->base}/orders", ['branch' => 'BAF', 'customer_name' => 'Ama', 'payment_method' => 'cash', 'items' => [['product_id' => 18, 'quantity' => 2], ['product_id' => 18, 'quantity' => 2]]])
+            ->assertStatus(409)->assertJsonPath('requested', 4)->assertJsonPath('available', 3);
         $this->postJson("{$this->base}/orders", ['branch' => 'NKW', 'customer_name' => 'Ama', 'payment_method' => 'cash', 'items' => [['product_id' => 99, 'quantity' => 1]]])
             ->assertStatus(422)->assertJsonValidationErrors(['items.0.product_id']);
     }
