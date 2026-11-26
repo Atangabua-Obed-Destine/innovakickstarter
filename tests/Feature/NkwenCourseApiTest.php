@@ -41,6 +41,14 @@ class NkwenCourseApiTest extends TestCase
         // Two lines of the same product are added up before checking stock (2 + 2 > 3 Onions at BAF).
         $this->postJson("{$this->base}/orders", ['branch' => 'BAF', 'customer_name' => 'Ama', 'payment_method' => 'cash', 'items' => [['product_id' => 18, 'quantity' => 2], ['product_id' => 18, 'quantity' => 2]]])
             ->assertStatus(409)->assertJsonPath('requested', 4)->assertJsonPath('available', 3);
+
+        // Idempotency-Key: a retried order returns the first one, never a second order.
+        $body = ['branch' => 'NKW', 'customer_name' => 'Ama', 'payment_method' => 'mtn_momo', 'items' => [['product_id' => 6, 'quantity' => 1]]];
+        $first = $this->postJson("{$this->base}/orders", $body, ['Idempotency-Key' => 'rep-abc-1'])->assertCreated();
+        $again = $this->postJson("{$this->base}/orders", $body, ['Idempotency-Key' => 'rep-abc-1'])->assertCreated()->assertHeader('Idempotent-Replayed', 'true');
+        $this->assertSame($first->json('order.id'), $again->json('order.id'));
+        $this->postJson("{$this->base}/orders", array_merge($body, ['customer_name' => 'Someone else']), ['Idempotency-Key' => 'rep-abc-1'])->assertStatus(422);
+        $this->assertNotSame($first->json('order.id'), $this->postJson("{$this->base}/orders", $body)->json('order.id'), 'Without a key, every request is a new order.');
         $this->postJson("{$this->base}/orders", ['branch' => 'NKW', 'customer_name' => 'Ama', 'payment_method' => 'cash', 'items' => [['product_id' => 99, 'quantity' => 1]]])
             ->assertStatus(422)->assertJsonValidationErrors(['items.0.product_id']);
     }

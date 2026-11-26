@@ -126,6 +126,21 @@ class NkwenController extends Controller
         if ($r = $this->switches($request)) {
             return $r;
         }
+        // Idempotency-Key (as in ORDERS_API_REFERENCE): repeating a request with the same key returns the
+        // first order instead of a new one, so a retried or double-tapped order is never created twice.
+        $idemKey = trim((string) $request->header('Idempotency-Key', ''));
+        $bodyHash = sha1((string) json_encode($request->all()));
+        if ($idemKey !== '') {
+            if (mb_strlen($idemKey) > 100) {
+                return response()->json(['message' => 'The Idempotency-Key header must be at most 100 characters.'], 422);
+            }
+            $seen = Cache::get('nkwen-idem:' . sha1($idemKey));
+            if ($seen) {
+                return $seen['body_hash'] === $bodyHash
+                    ? response()->json($seen['response'], 201)->header('Idempotent-Replayed', 'true')
+                    : response()->json(['message' => 'This Idempotency-Key was already used for a different order.'], 422);
+            }
+        }
         $d = $this->data();
         $open = collect($d['branches'])->where('status', 'open')->pluck('code')->all();
         $v = Validator::make($request->all(), [
@@ -162,7 +177,7 @@ class NkwenController extends Controller
             $lines[] = ['product_id' => $p['id'], 'name' => $p['name'], 'quantity' => (int) $item['quantity'], 'unit_price_fcfa' => $p['price_fcfa'], 'line_total_fcfa' => $p['price_fcfa'] * (int) $item['quantity']];
         }
 
-        return response()->json(['order' => [
+        $response = ['order' => [
             'id' => 'ORD-' . strtoupper(Str::random(8)),
             'branch' => $request->input('branch'),
             'customer_name' => $request->input('customer_name'),
@@ -172,6 +187,11 @@ class NkwenController extends Controller
             'status' => $request->input('payment_method') === 'cash' ? 'pay_at_counter' : 'awaiting_payment',
             'created_at' => now()->toIso8601String(),
             'saved' => false,
-        ], 'message' => 'Order checked and priced. This is a practice API: nothing was saved.'], 201);
+        ], 'message' => 'Order checked and priced. This is a practice API: nothing was saved.'];
+        if ($idemKey !== '') {
+            Cache::put('nkwen-idem:' . sha1($idemKey), ['body_hash' => $bodyHash, 'response' => $response], now()->addDay());
+        }
+
+        return response()->json($response, 201);
     }
 }
