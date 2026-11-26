@@ -219,6 +219,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             Route::get('/key-words', [FellowCurriculumController::class, 'keyWords'])->name('key-words');
             Route::get('/pathway', [\App\Http\Controllers\Fellow\PathwayController::class, 'show'])->name('pathway');
+            Route::post('/squads/{squad}/repo', [FellowCurriculumController::class, 'squadRepo'])->name('squad.repo')->middleware('throttle:10,1,squad');
             Route::post('/pathway', [\App\Http\Controllers\Fellow\PathwayController::class, 'store'])->name('pathway.store')->middleware('throttle:10,1,pathway');
 
             // Track orientation ("Chapter 0")
@@ -587,6 +588,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         // Curriculum review queue (not track-specific)
+        Route::prefix('squads')->name('squads.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\SquadController::class, 'index'])->name('index');
+            Route::post('/chapters/{chapter}/form', [\App\Http\Controllers\Admin\SquadController::class, 'form'])->name('form');
+            Route::post('/{squad}/members', [\App\Http\Controllers\Admin\SquadController::class, 'assign'])->name('assign');
+            Route::delete('/members/{member}', [\App\Http\Controllers\Admin\SquadController::class, 'remove'])->name('remove');
+            Route::delete('/{squad}', [\App\Http\Controllers\Admin\SquadController::class, 'destroy'])->name('destroy');
+        });
+
         Route::prefix('support')->name('support.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\SupportController::class, 'index'])->name('index');
             Route::post('/standings/{standing}/excuse', [\App\Http\Controllers\Admin\SupportController::class, 'excuse'])->name('excuse');

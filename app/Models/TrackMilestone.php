@@ -66,6 +66,7 @@ class TrackMilestone extends Model
     protected $fillable = [
         'story',
         'pathways',
+        'squad_size',
         'track_id',
         'title',
         'description',

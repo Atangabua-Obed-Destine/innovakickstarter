@@ -101,6 +101,7 @@ class ImportCurriculumDraft extends Command
                     'estimated_duration_days' => (int) ($m['estimated_duration_days'] ?? 14),
                     'story' => $m['story'] ?? $milestone->story,
                     'pathways' => array_key_exists('pathways', $m) ? ($m['pathways'] ?: null) : $milestone->pathways,
+                    'squad_size' => array_key_exists('squad_size', $m) ? ($m['squad_size'] ?: null) : $milestone->squad_size,
                     'is_active' => true,
                     'is_required' => true,
                 ])->save();

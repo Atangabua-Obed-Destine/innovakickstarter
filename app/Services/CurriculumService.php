@@ -737,7 +737,7 @@ class CurriculumService
                         'grace_deadline_at' => $child->calculateGraceDeadlineFor($fellow),
                     ]);
 
-                    if ($child->is_collaborative) {
+                    if ($child->is_collaborative && !app(SquadService::class)->isSquadChapter($child->milestone)) {
                         app(ReviewPartnerService::class)->matchFellow($fellow, $child);
                     }
                 }

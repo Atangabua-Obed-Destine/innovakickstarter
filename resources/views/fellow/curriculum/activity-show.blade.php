@@ -482,7 +482,9 @@
     {{-- ============================================= --}}
     {{-- REVIEW PARTNER (collaborative activities) --}}
     {{-- ============================================= --}}
-    @if($activity->is_collaborative && !$isLocked && $progress)
+    @if(!empty($squadChapter) && !$isLocked && $progress)
+        @include('partials.lesson.squad', ['squad' => $squad, 'squadWaiting' => $squadWaiting])
+    @elseif($activity->is_collaborative && !$isLocked && $progress)
     <div class="card p-6 border border-blue-500/30">
         <h3 class="text-white font-semibold text-lg mb-2 flex items-center gap-2"><span class="text-blue-400">👥</span> Your review partner</h3>
         @if(!empty($reviewPartner))

@@ -371,6 +371,14 @@
             @endif
         </a>
 
+        <a href="{{ route('admin.squads.index') }}"
+           class="nav-link {{ str_starts_with($currentRoute, 'admin.squads') ? 'nav-link-active' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 015-3.87m6-4a4 4 0 11-8 0 4 4 0 018 0zm6 2a3 3 0 11-6 0 3 3 0 016 0zM9 10a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span>Squads</span>
+        </a>
+
         <a href="{{ route('admin.briefs.index') }}"
            class="nav-link {{ str_starts_with($currentRoute, 'admin.briefs') ? 'nav-link-active' : '' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

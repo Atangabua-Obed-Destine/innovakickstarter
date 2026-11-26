@@ -197,7 +197,12 @@ class CurriculumController extends Controller
 
         // Collaborative activities: find (or show) the fellow's review partner.
         $reviewPartner = null;
-        if ($activity->is_collaborative && $progress && in_array($progress->status, [\App\Enums\CurriculumStatus::AVAILABLE, \App\Enums\CurriculumStatus::IN_PROGRESS, \App\Enums\CurriculumStatus::SUBMITTED, \App\Enums\CurriculumStatus::UNDER_REVIEW, \App\Enums\CurriculumStatus::COMPLETED, \App\Enums\CurriculumStatus::REJECTED], true)) {
+        // Squad chapters (e.g. the Squad Sprint) work in teams of 3-5 instead of review pairs.
+        $squads = app(\App\Services\SquadService::class);
+        $squadChapter = $squads->isSquadChapter($activity->milestone);
+        $squad = $squadChapter ? $squads->squadFor($fellow, $activity->milestone) : null;
+        $squadWaiting = $squadChapter && !$squad ? $squads->waiting($activity->milestone)->count() : 0;
+        if (!$squadChapter && $activity->is_collaborative && $progress && in_array($progress->status, [\App\Enums\CurriculumStatus::AVAILABLE, \App\Enums\CurriculumStatus::IN_PROGRESS, \App\Enums\CurriculumStatus::SUBMITTED, \App\Enums\CurriculumStatus::UNDER_REVIEW, \App\Enums\CurriculumStatus::COMPLETED, \App\Enums\CurriculumStatus::REJECTED], true)) {
             $reviewPartner = app(\App\Services\ReviewPartnerService::class)->matchFellow($fellow, $activity);
         }
 
@@ -243,7 +248,7 @@ class CurriculumController extends Controller
         // Key words: plain-English meanings of the technical words this lesson uses.
         $glossary = $isOpen ? app(\App\Services\GlossaryService::class)->forActivity($activity) : [];
 
-        return view('fellow.curriculum.activity-show', compact('activity', 'progress', 'linkedInterviews', 'reviewPartner', 'lessonSections', 'quickChecks', 'orientationRequired', 'colabUrl', 'sandbox', 'isOpen', 'why', 'stakeholder', 'foundationNeeds', 'glossary'));
+        return view('fellow.curriculum.activity-show', compact('activity', 'progress', 'linkedInterviews', 'reviewPartner', 'lessonSections', 'quickChecks', 'orientationRequired', 'colabUrl', 'sandbox', 'isOpen', 'why', 'stakeholder', 'foundationNeeds', 'glossary', 'squadChapter', 'squad', 'squadWaiting'));
     }
 
     /** All key words of the fellow's track, grouped by the chapter that introduces them. */
@@ -570,5 +575,15 @@ class CurriculumController extends Controller
             'success' => true,
             'shareable_url' => $badge->shareable_url,
         ]);
+    }
+
+    /** A squad member sets the squad's shared repository link. */
+    public function squadRepo(Request $request, \App\Models\Squad $squad)
+    {
+        abort_unless($squad->members()->where('fellow_id', $request->user()->id)->exists(), 403);
+        $data = $request->validate(['repo_url' => ['nullable', 'url', 'max:300', 'regex:#^https://#']]);
+        $squad->update(['repo_url' => $data['repo_url'] ?: null]);
+
+        return back()->with('success', 'Squad repository saved.');
     }
 }
