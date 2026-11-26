@@ -39,8 +39,8 @@ class ImportPracticeChallenges extends Command
                 $errors[] = "{$label}: duplicate slug.";
             }
             $slugs[] = $c['slug'] ?? null;
-            if (!in_array($c['kind'] ?? '', ['sql', 'python', 'quiz'], true)) {
-                $errors[] = "{$label}: kind must be sql, python or quiz.";
+            if (!in_array($c['kind'] ?? '', ['sql', 'python', 'javascript', 'quiz'], true)) {
+                $errors[] = "{$label}: kind must be sql, python, javascript or quiz.";
             } elseif ($c['kind'] === 'quiz') {
                 if (count($c['options'] ?? []) < 2 || !isset($c['options'][$c['answer_index'] ?? -1])) {
                     $errors[] = "{$label}: a quiz needs options and a valid answer_index.";

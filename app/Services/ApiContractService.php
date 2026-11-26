@@ -16,11 +16,13 @@ use Illuminate\Support\Str;
  *
  * Safety: only public https hosts are called (private, loopback, link-local and reserved
  * addresses are refused, and the checked address is pinned for the whole run), redirects are not followed,
- * each request times out after 10 s, and at most 20 checks run.
+ * a sleeping free-tier host gets one 70 s wake-up call, each check times out after 15 s, and at most 20 checks run.
  */
 class ApiContractService
 {
     public const MAX_CHECKS = 20;
+    public const WAKE_TIMEOUT = 70;
+    public const CHECK_TIMEOUT = 15;
 
     /** @return array{ok: bool, error?: string, base?: string} */
     public function validateBaseUrl(?string $url): array
@@ -91,6 +93,15 @@ class ApiContractService
         if (!$checks) {
             return ['ok' => false, 'error' => 'This activity has no API checks.'];
         }
+        // Free hosts (e.g. Render) put idle apps to sleep and take about a minute to wake:
+        // wake the API once with a long timeout, then run the checks with a normal one.
+        @set_time_limit(self::WAKE_TIMEOUT + self::MAX_CHECKS * self::CHECK_TIMEOUT + 30);
+        try {
+            Http::withOptions(['allow_redirects' => false] + $pin)->timeout(self::WAKE_TIMEOUT)
+                ->withHeaders(['User-Agent' => 'IKS-Contract-Check/1.0'])->get($base . '/');
+        } catch (\Throwable $e) {
+            // A failed wake-up is reported by the checks themselves.
+        }
         $vars = ['rand' => strtolower(Str::random(8))];
         $results = [];
         foreach ($checks as $i => $c) {
@@ -105,7 +116,7 @@ class ApiContractService
             $body = isset($c['body']) ? $this->fillDeep($c['body'], $vars) : null;
             $label = "{$method} {$path}";
             try {
-                $req = Http::withOptions(['allow_redirects' => false] + $pin)->timeout(10)->acceptJson()->asJson()
+                $req = Http::withOptions(['allow_redirects' => false] + $pin)->timeout(self::CHECK_TIMEOUT)->acceptJson()->asJson()
                     ->withHeaders(array_merge(['User-Agent' => 'IKS-Contract-Check/1.0'], $headers));
                 $res = $req->send($method, $base . $path, $body !== null ? ['json' => $body] : []);
             } catch (\Throwable $e) {

@@ -12,7 +12,7 @@ class PracticeChallenge extends Model
 {
     use HasUuids;
 
-    public const KINDS = ['sql' => 'SQL', 'python' => 'Python', 'quiz' => 'Quick question'];
+    public const KINDS = ['sql' => 'SQL', 'python' => 'Python', 'javascript' => 'JavaScript', 'quiz' => 'Quick question'];
 
     protected $fillable = [
         'track_id', 'slug', 'title', 'skill', 'kind', 'difficulty', 'xp', 'prompt', 'starter_code', 'setup', 'hint',

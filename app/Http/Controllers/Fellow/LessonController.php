@@ -102,8 +102,23 @@ class LessonController extends Controller
         $contract = $progress->curriculumActivity?->api_contract;
         abort_unless(is_array($contract) && !empty($contract['checks']), 404);
         $data = $request->validate(['url' => ['required', 'string', 'max:300']]);
-        $r = $contracts->run($contract, $data['url']);
+        $v = $contracts->validateBaseUrl($data['url']);
+        if (!$v['ok']) {
+            return response()->json($v, 422);
+        }
+        // Runs in the background (a sleeping free host can take a minute to wake); the page polls the result.
+        $token = (string) \Illuminate\Support\Str::uuid();
+        \App\Jobs\RunApiContractCheck::dispatch($progress->id, $v['base'], $token);
 
-        return response()->json($r, $r['ok'] ? 200 : 422);
+        return response()->json(['ok' => true, 'pending' => true, 'poll' => route('curriculum.contract-check.result', [$progress, $token])]);
+    }
+
+    /** Result of a background API contract check (pending until the job has run). */
+    public function contractResult(Request $request, FellowCurriculumProgress $progress, string $token)
+    {
+        abort_unless($progress->fellow_id === $request->user()->id, 403);
+        $r = \Illuminate\Support\Facades\Cache::get(\App\Jobs\RunApiContractCheck::cacheKey($token));
+
+        return response()->json($r ?? ['ok' => true, 'pending' => true]);
     }
 }

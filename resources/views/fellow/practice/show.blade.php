@@ -15,6 +15,7 @@
         'tables' => $practiceConfig['sql_tables'] ?? [],
         'files' => $practiceConfig['python_files'] ?? [],
         'canonUrl' => asset('course-files/practice/practice_canon.py'),
+        'jsCanonUrl' => asset('course-files/practice/practice_canon.js'),
         'checkUrl' => route('practice.check', $challenge),
         'revealUrl' => route('practice.reveal', $challenge),
         'csrf' => csrf_token(),
@@ -67,7 +68,7 @@
         {{-- SQL / Python --}}
         <div class="card p-6 space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-2">
-                <h3 class="text-white font-semibold">{{ $challenge->kind === 'sql' ? 'Your SQL query' : 'Your Python code' }}</h3>
+                <h3 class="text-white font-semibold">{{ ['sql' => 'Your SQL query', 'javascript' => 'Your JavaScript code'][$challenge->kind] ?? 'Your Python code' }}</h3>
                 <div class="flex items-center gap-2">
                     @if($challenge->kind === 'sql')
                         <button type="button" class="btn-secondary text-xs px-3 py-1.5" @click="showSchema()">Tables &amp; columns</button>
@@ -80,6 +81,8 @@
             </template>
             @if($challenge->kind === 'python')
                 <p class="text-dark-400 text-xs">Put your final result in a variable named <code>answer</code>. Use <code>print()</code> to explore.</p>
+            @elseif($challenge->kind === 'javascript')
+                <p class="text-dark-400 text-xs">Put your final result in a variable named <code>answer</code> (for example <code>const answer = ...</code>). Use <code>console.log()</code> to explore; <code>await fetch(...)</code> works.</p>
             @endif
             <textarea class="pl-editor" x-model="code" spellcheck="false" autocapitalize="off" autocomplete="off"
                       @keydown.tab.prevent="insertTab($event)" @keydown.ctrl.enter.prevent="run(true)" @keydown.meta.enter.prevent="run(true)"
@@ -157,6 +160,11 @@ function practiceRunner(cfg) {
                 if (this.kind === 'sql') {
                     this.result = await window.PracticeLab.runSql(this.code, { tables: cfg.tables, ordered: cfg.ordered, onStatus: s => this.setStatus(s) });
                     canonical = this.result.canonical;
+                } else if (this.kind === 'javascript') {
+                    const r = await window.PracticeLab.runJs(this.code, { setup: cfg.setup, canonUrl: cfg.jsCanonUrl });
+                    this.output = r.output || ''; this.preview = r.preview || '';
+                    if (r.error) { this.error = r.error; }
+                    canonical = r.canonical;
                 } else {
                     const r = await window.PracticeLab.runPython(this.code, { setup: cfg.setup, needsPandas: cfg.needsPandas, files: cfg.files, canonUrl: cfg.canonUrl, onStatus: s => this.setStatus(s) });
                     this.output = r.output; this.preview = r.preview || '';

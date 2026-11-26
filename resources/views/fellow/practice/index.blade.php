@@ -6,7 +6,7 @@
 @include('partials.track.styles')
 @php
     $skillLabels = collect($experience?->skills() ?? [])->pluck('label', 'key');
-    $kindIcon = ['sql' => '🗄️', 'python' => '🐍', 'quiz' => '❓'];
+    $kindIcon = ['sql' => '🗄️', 'python' => '🐍', 'javascript' => '🟨', 'quiz' => '❓'];
 @endphp
 <style>
     .pl-stat { border-radius: 14px; padding: 16px; background: rgba(15, 20, 29, 0.6); border: 1px solid rgba(148, 163, 184, 0.15); }

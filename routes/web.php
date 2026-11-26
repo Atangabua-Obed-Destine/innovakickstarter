@@ -234,6 +234,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/progress/{progress}/precheck', [\App\Http\Controllers\Fellow\LessonController::class, 'precheck'])->name('precheck')->middleware('throttle:5,1,precheck');
             Route::post('/progress/{progress}/video-check', [\App\Http\Controllers\Fellow\LessonController::class, 'videoCheck'])->name('video-check')->middleware('throttle:20,1,video-check');
             Route::post('/progress/{progress}/contract-check', [\App\Http\Controllers\Fellow\LessonController::class, 'contractCheck'])->name('contract-check')->middleware('throttle:6,1,contract-check');
+            Route::get('/progress/{progress}/contract-check/{token}', [\App\Http\Controllers\Fellow\LessonController::class, 'contractResult'])->name('contract-check.result')->middleware('throttle:60,1,contract-poll')->where('token', '[0-9a-f-]{36}');
 
             // Activity interactions
             Route::get('/activities/{activity}', [FellowCurriculumController::class, 'showActivity'])->name('activity.show');

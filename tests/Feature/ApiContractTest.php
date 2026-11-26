@@ -103,7 +103,12 @@ class ApiContractTest extends TestCase
         $this->fakeApi();
 
         $this->actingAs($fellow)->get(route('curriculum.submit.form', $p))->assertOk()->assertSee('Your deployed API')->assertSee('5 checks');
-        $this->actingAs($fellow)->postJson(route('curriculum.contract-check', $p), ['url' => self::BASE])->assertOk()->assertJsonPath('passed', 5);
+        // "Check my API" runs in the background and the page polls the result (the queue is synchronous in tests).
+        $start = $this->actingAs($fellow)->postJson(route('curriculum.contract-check', $p), ['url' => self::BASE])->assertOk()->assertJsonPath('pending', true);
+        $this->actingAs($fellow)->getJson($start->json('poll'))->assertOk()->assertJsonPath('passed', 5);
+        $this->actingAs($fellow)->postJson(route('curriculum.contract-check', $p), ['url' => 'https://127.0.0.1'])->assertStatus(422);
+        $other = User::factory()->create(['role' => 'fellow']);
+        $this->actingAs($other)->getJson($start->json('poll'))->assertForbidden();
         $this->actingAs($fellow)->post(route('curriculum.submit', $p), ['evidence_text' => 'Done.', 'ai_used' => 'no'])->assertSessionHasErrors('api_base_url');
         $this->actingAs($fellow)->post(route('curriculum.submit', $p), ['evidence_text' => 'Done.', 'ai_used' => 'no', 'api_base_url' => self::BASE])->assertSessionHasNoErrors();
         $p->refresh();

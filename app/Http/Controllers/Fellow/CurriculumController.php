@@ -412,7 +412,8 @@ class CurriculumController extends Controller
         $contract = $progress->curriculumActivity->api_contract;
         if (is_array($contract) && !empty($contract['checks'])) {
             $request->validate(['api_base_url' => 'required|string|max:300'], ['api_base_url.required' => 'Give the public https address of your deployed API, so it can be checked.']);
-            $contractResult = app(\App\Services\ApiContractService::class)->run($contract, $request->input('api_base_url'));
+            // Only the address is checked now; the full contract runs in the background after submitting.
+            $contractResult = app(\App\Services\ApiContractService::class)->validateBaseUrl($request->input('api_base_url'));
             if (!$contractResult['ok']) {
                 return redirect()->back()->withErrors(['api_base_url' => $contractResult['error']])->withInput();
             }
@@ -432,11 +433,14 @@ class CurriculumController extends Controller
             $data['video'] = $video;
         }
         if ($contractResult) {
-            $data['contract'] = $contractResult;
+            $data['contract'] = ['ok' => true, 'pending' => true, 'base' => $contractResult['base']];
         }
 
         try {
             $this->curriculumService->submitActivity($fellow, $progress->id, $data);
+            if ($contractResult) {
+                \App\Jobs\RunApiContractCheck::dispatch($progress->id, $contractResult['base'], (string) \Illuminate\Support\Str::uuid(), true);
+            }
 
             return redirect()
                 ->route('curriculum.activity.show', $progress->curriculumActivity)

@@ -187,5 +187,37 @@
     }
   }
 
-  window.PracticeLab = { runSql, sqlSchema, runPython, canonicalSqlRows, parseCsv };
+  // ---------------------------------------------------------------- JavaScript
+  // Runs the fellow's code in a throwaway Web Worker (no access to the page), with top-level
+  // await, console capture and a time limit. The result in `answer` is canonicalised by
+  // practice_canon.js, which mirrors practice_canon.py.
+  function runJs(code, { setup, canonUrl, timeoutMs = 5000 }) {
+    const src = 'importScripts(' + JSON.stringify(canonUrl) + ');\n'
+      + 'const __out = [];\n'
+      + 'const __fmt = (a) => a.map((x) => { if (typeof x === "string") return x; try { const s = JSON.stringify(x); return s === undefined ? String(x) : s; } catch (e) { return String(x); } }).join(" ");\n'
+      + 'console.log = console.info = console.warn = console.error = (...a) => { if (__out.length < 500) __out.push(__fmt(a)); };\n'
+      + 'self.onmessage = async (e) => {\n'
+      + '  try {\n'
+      + '    const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;\n'
+      + '    const fn = new AsyncFunction(e.data.setup + "\\n" + e.data.code + "\\n;return (typeof answer === \\"undefined\\") ? { __noAnswer: true } : answer;");\n'
+      + '    const answer = await fn();\n'
+      + '    if (answer && answer.__noAnswer) { self.postMessage({ output: __out.join("\\n"), canonical: null, error: "Assign your result to a variable named answer." }); return; }\n'
+      + '    let preview; try { preview = JSON.stringify(answer, null, 1); } catch (x) { preview = String(answer); }\n'
+      + '    self.postMessage({ output: __out.join("\\n"), canonical: PracticeCanon.canonical(answer), preview: String(preview).slice(0, 2000) });\n'
+      + '  } catch (err) {\n'
+      + '    self.postMessage({ output: __out.join("\\n"), canonical: null, error: (err && err.name ? err.name + ": " : "") + (err && err.message ? err.message : String(err)) });\n'
+      + '  }\n'
+      + '};\n';
+    const url = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+    const worker = new Worker(url);
+    return new Promise((resolve) => {
+      const done = (r) => { clearTimeout(timer); worker.terminate(); URL.revokeObjectURL(url); resolve(r); };
+      const timer = setTimeout(() => done({ output: '', canonical: null, error: 'Your code ran for more than ' + Math.round(timeoutMs / 1000) + ' seconds (an endless loop?), so it was stopped.' }), timeoutMs);
+      worker.onmessage = (e) => done(e.data);
+      worker.onerror = (e) => { e.preventDefault(); done({ output: '', canonical: null, error: e.message || 'Your code could not start.' }); };
+      worker.postMessage({ code, setup: setup || '' });
+    });
+  }
+
+  window.PracticeLab = { runSql, sqlSchema, runPython, runJs, canonicalSqlRows, parseCsv };
 })();

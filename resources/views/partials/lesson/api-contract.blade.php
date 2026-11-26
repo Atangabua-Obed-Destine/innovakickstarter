@@ -1,6 +1,11 @@
 {{-- Backend projects: check a deployed API against the activity's contract. Expects $progress (submit form) or $result (review display). --}}
 @if(isset($result))
     @php $r = $result; @endphp
+    @if(!empty($r['pending']))
+        <div class="ac-box"><p class="text-dark-300 text-sm">🔌 API contract check for <span class="text-white">{{ $r['base'] ?? '' }}</span> is running in the background. Refresh in a minute.</p></div>
+    @elseif(empty($r['results']))
+        <div class="ac-box"><p class="text-amber-300 text-sm">🔌 The API contract check could not run: {{ $r['error'] ?? 'unknown error' }} ({{ $r['base'] ?? '' }}). Open the API yourself to check it.</p></div>
+    @else
     <div class="ac-box">
         <p class="text-white text-sm font-medium">🔌 API contract check: <span class="{{ $r['passed'] === $r['total'] ? 'text-green-400' : 'text-amber-300' }}">{{ $r['passed'] }} of {{ $r['total'] }} passed</span></p>
         <p class="text-dark-400 text-xs">Checked {{ \Illuminate\Support\Carbon::parse($r['checked_at'])->diffForHumans() }} against <a href="{{ $r['base'] }}" target="_blank" rel="noopener nofollow" class="text-primary-400">{{ $r['base'] }}</a></p>
@@ -10,6 +15,7 @@
             @endforeach
         </ul>
     </div>
+    @endif
 @else
 <div class="card p-6" x-data="apiContract('{{ route('curriculum.contract-check', $progress) }}', '{{ csrf_token() }}', @js(old('api_base_url', '')))">
     <h3 class="text-white font-semibold mb-1">🔌 Your deployed API <span class="text-red-400">*</span></h3>
@@ -17,7 +23,7 @@
     <div class="flex gap-2">
         <input type="url" name="api_base_url" x-model="url" required maxlength="300" placeholder="https://your-api.example.com"
                class="w-full bg-dark-800 border border-dark-600 rounded-lg px-4 py-2.5 text-white placeholder-dark-500 focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
-        <button type="button" class="btn-secondary flex-shrink-0" @click="run()" :disabled="busy || !url" x-text="busy ? 'Checking...' : 'Check my API'"></button>
+        <button type="button" class="btn-secondary flex-shrink-0" @click="run()" :disabled="busy || !url" x-text="busy ? (waiting > 10 ? 'Waking your API... ' + waiting + 's' : 'Checking...') : 'Check my API'"></button>
     </div>
     @error('api_base_url')<p class="text-red-400 text-xs mt-2">{{ $message }}</p>@enderror
     <p class="text-amber-300 text-sm mt-2" x-show="error" x-text="error" x-cloak></p>
@@ -36,15 +42,25 @@
 <script>
 function apiContract(endpoint, csrf, initial) {
     return {
-        url: initial, busy: false, error: '', result: null,
+        url: initial, busy: false, error: '', result: null, waiting: 0, pollUrl: null,
         async run() {
             this.busy = true; this.error = ''; this.result = null;
             try {
                 const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf }, body: JSON.stringify({ url: this.url }) });
-                const d = await res.json().catch(() => ({}));
-                if (res.ok && d.ok) { this.result = d; } else { this.error = d.error || (res.status === 429 ? 'Too many checks in a minute. Wait a moment.' : 'Could not run the check right now.'); }
+                let d = await res.json().catch(() => ({}));
+                if (!res.ok || !d.ok) { this.error = d.error || (res.status === 429 ? 'Too many checks in a minute. Wait a moment.' : 'Could not run the check right now.'); this.busy = false; return; }
+                // The check runs in the background: a sleeping free host can take about a minute to wake.
+                const started = Date.now();
+                while (d.pending && Date.now() - started < 8 * 60 * 1000) {
+                    this.waiting = Math.round((Date.now() - started) / 1000);
+                    await new Promise(r => setTimeout(r, 3000));
+                    d = await (await fetch(d.poll || this.pollUrl, { headers: { 'Accept': 'application/json' } })).json().catch(() => d);
+                    if (d.poll) this.pollUrl = d.poll;
+                }
+                if (d.pending) { this.error = 'The check is taking very long. Try again later.'; }
+                else if (d.ok) { this.result = d; } else { this.error = d.error || 'The check could not run.'; }
             } catch (e) { this.error = 'No connection. Try again.'; }
-            this.busy = false;
+            this.busy = false; this.waiting = 0;
         },
     };
 }
