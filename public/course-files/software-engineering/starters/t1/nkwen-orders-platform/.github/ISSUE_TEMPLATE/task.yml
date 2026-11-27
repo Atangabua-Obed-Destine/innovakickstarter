@@ -1,0 +1,31 @@
+name: Technical task
+description: Work the squad needs that is not a user story, for example "Set up CI" or "Add the Dockerfile".
+title: "[Task] "
+labels: ["task"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What needs doing, and why
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      description: One checkable line each.
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size
+      options:
+        - "S: half a day or less"
+        - "M: about one day"
+        - "L: about two days"
+    validations:
+      required: true

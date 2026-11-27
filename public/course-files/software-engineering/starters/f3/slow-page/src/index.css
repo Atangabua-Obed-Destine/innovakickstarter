@@ -1,0 +1,12 @@
+body { font-family: system-ui, sans-serif; margin: 0; color: #1f2937; }
+main { max-width: 60rem; margin: 0 auto; padding: 0 1rem 2rem; }
+.hero { text-align: center; }
+.hero-photo { width: 100%; height: auto; display: block; border-radius: 0 0 0.75rem 0.75rem; }
+.ends { font-weight: 600; color: #92400e; }
+.offers { list-style: none; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); }
+.offer { border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 0.5rem; }
+.offer-photo { width: 100%; height: auto; display: block; border-radius: 0.25rem; }
+.offer h2 { font-size: 1rem; margin: 0.5rem 0 0.25rem; }
+.price { font-weight: 700; color: #166534; }
+.save { color: #92400e; margin: 0; }
+.history button { min-height: 2.75rem; padding: 0 1rem; }

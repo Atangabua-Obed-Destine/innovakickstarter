@@ -1,0 +1,63 @@
+diff --git a/orders/total.js b/orders/total.js
+index 59d1bd8..6da88f7 100644
+--- a/orders/total.js
++++ b/orders/total.js
+@@ -3,13 +3,29 @@ const { findProduct } = require('./catalogue');
+ // Prices always come from our catalogue, never from the request.
+ function lineTotal(item) {
+   const product = findProduct(item.product_id);
+-  return product.price_fcfa * item.quantity;
++  const price = item.price_fcfa ?? product.price_fcfa;
++  return price * item.quantity;
+ }
+ 
+-function orderTotal(items) {
++function isWholesale(items) {
++  const bags = items
++    .filter((item) => findProduct(item.product_id).unit === 'bag')
++    .reduce((sum, item) => sum + item.quantity, 0);
++  return bags > 10;
++}
++
++function orderTotal(items, customer = {}) {
++  items.sort((a, b) => a.product_id - b.product_id); // receipts list products by id
+   const lines = items.map((item) => ({ ...item, line_total_fcfa: lineTotal(item) }));
+-  const total = lines.reduce((sum, line) => sum + line.line_total_fcfa, 0);
+-  return { lines, total_fcfa: total };
++  let total = lines.reduce((sum, line) => sum + line.line_total_fcfa, 0);
++
++  if (isWholesale(items)) {
++    console.log('wholesale order for', customer.name, customer.phone);
++    total = total * 0.95;
++  }
++
++  const vat = Math.round(total * 0.1925);
++  return { lines, total_fcfa: total + vat, vat_fcfa: vat };
+ }
+ 
+-module.exports = { orderTotal };
++module.exports = { orderTotal, isWholesale };
+diff --git a/orders/total.test.js b/orders/total.test.js
+index 33c6fde..35b1f87 100644
+--- a/orders/total.test.js
++++ b/orders/total.test.js
+@@ -1,8 +1,17 @@
+ const test = require('node:test');
+ const assert = require('node:assert/strict');
+-const { orderTotal } = require('./total');
++const { orderTotal, isWholesale } = require('./total');
+ 
+ test('2 x Rice 50kg + 1 x Palm Oil 5L', () => {
+   const result = orderTotal([{ product_id: 6, quantity: 2 }, { product_id: 15, quantity: 1 }]);
+-  assert.equal(result.total_fcfa, 78610);
++  assert.ok(result.total_fcfa > 78610);
++});
++
++test('wholesale discount works', () => {
++  const result = orderTotal([{ product_id: 6, quantity: 12 }], { name: 'Ndi Grace', phone: '+237 6XX XX XX XX' });
++  assert.equal(typeof result.total_fcfa, 'number');
++});
++
++test('isWholesale', () => {
++  assert.equal(isWholesale([{ product_id: 6, quantity: 20 }]), true);
+ });

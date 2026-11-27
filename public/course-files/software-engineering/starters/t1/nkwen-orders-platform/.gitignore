@@ -1,0 +1,9 @@
+# Secrets and local settings: never commit them.
+.env
+.env.*
+!.env.example
+
+# Installed packages and build output (each part's own .gitignore adds more).
+node_modules/
+*.log
+.DS_Store

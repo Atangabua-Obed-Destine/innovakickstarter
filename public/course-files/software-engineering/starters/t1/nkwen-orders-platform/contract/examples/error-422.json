@@ -1,0 +1,11 @@
+{
+  "message": "The order is not valid.",
+  "errors": {
+    "customer_name": [
+      "The customer name field is required."
+    ],
+    "items.0.quantity": [
+      "The items.0.quantity field must be at least 1."
+    ]
+  }
+}

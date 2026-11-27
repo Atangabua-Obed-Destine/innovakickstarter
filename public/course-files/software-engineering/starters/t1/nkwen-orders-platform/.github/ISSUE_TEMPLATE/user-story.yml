@@ -1,0 +1,72 @@
+name: User story
+description: Something a user of the platform needs, small enough to finish in two days or less.
+title: "[Story] "
+labels: ["user-story"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Write it from the user's side, not the code's side. One story = one thing a user can do.
+        If it would take more than two days, split it into smaller stories.
+  - type: input
+    id: story
+    attributes:
+      label: The story
+      description: "As a <who>, I want <what>, so that <why>."
+      placeholder: "As a sales rep, I want orders I take offline to send by themselves later, so that I do not lose them."
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How anyone can check it is done. One line each, as Given / When / Then.
+      value: |
+        - [ ] Given ..., when ..., then ...
+        - [ ] Given ..., when ..., then ...
+    validations:
+      required: true
+  - type: dropdown
+    id: part
+    attributes:
+      label: Which parts change?
+      multiple: true
+      options:
+        - API (backend)
+        - Web shop (frontend)
+        - Rep app (mobile)
+        - Contract, CI, deploy or docs (whole squad)
+    validations:
+      required: true
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size
+      options:
+        - "S: half a day or less"
+        - "M: about one day"
+        - "L: about two days"
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: Must = the release fails without it. Should = important. Could = only if there is time.
+      options:
+        - Must have
+        - Should have
+        - Could have
+    validations:
+      required: true
+  - type: input
+    id: endpoints
+    attributes:
+      label: API endpoints it uses
+      description: From contract/README.md. Write "none" if it uses none.
+      placeholder: "POST /api/orders, GET /api/orders/{id}"
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes, questions and wireframes
+      description: Links to wireframes, open questions, anything the builder should know.

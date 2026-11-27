@@ -1,0 +1,23 @@
+name: nkwen_device
+description: "Chapter 9 practice: receipt photos and delivery reminders (Nkwen Traders)."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.14.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  material_ui: ^1.1.0
+  image_picker: ^1.2.4
+  flutter_local_notifications: ^23.0.4
+  timezone: ^0.11.0
+  flutter_timezone: ^5.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

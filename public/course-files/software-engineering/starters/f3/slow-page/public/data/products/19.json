@@ -1,0 +1,14 @@
+{
+ "id": 19,
+ "sku": "NKT-PRO-019",
+ "name": "Plantain (bunch)",
+ "category": "Produce",
+ "unit": "bunch",
+ "price_fcfa": 2575,
+ "stock": {
+  "NKW": 73,
+  "ML4": 36,
+  "CAV": 3,
+  "BAF": 0
+ }
+}

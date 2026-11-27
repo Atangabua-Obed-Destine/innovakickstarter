@@ -1,0 +1,8 @@
+body { font-family: system-ui, sans-serif; margin: 0; padding: 1rem; color: #1f2937; }
+.product-grid { list-style: none; padding: 0; display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); }
+.product-card { border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.75rem; }
+.badge-low { color: #92400e; }
+.badge-out { color: #991b1b; }
+button { min-height: 2.75rem; }
+/* Hidden on screen, but read aloud by screen readers. */
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

@@ -1,0 +1,63 @@
+name: Bug report
+description: Something that does not work as the story or the contract says.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A good bug report lets a squadmate see the bug on their own computer in two minutes.
+        Never paste passwords, tokens or the contents of a .env file.
+  - type: dropdown
+    id: part
+    attributes:
+      label: Where is it?
+      options:
+        - API (backend)
+        - Web shop (frontend)
+        - Rep app (mobile)
+        - Between two parts (integration)
+        - CI or deployment
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to see it
+      description: Numbered, from the start. Include the URL, the branch and the data you used.
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should happen
+      description: Quote the story, the acceptance criteria or contract/README.md if you can.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happens instead
+      description: Paste the exact error message, status code or log lines (as text, not only a screenshot).
+      render: text
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: How bad is it?
+      options:
+        - "Blocker: users cannot order, or data is wrong"
+        - "Major: a feature does not work, but there is a way around it"
+        - "Minor: it looks wrong or is annoying"
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or links
+      description: A screenshot, a short screen recording, or a link to the failing CI run.

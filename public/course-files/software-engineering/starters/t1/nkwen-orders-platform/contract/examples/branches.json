@@ -1,0 +1,52 @@
+{
+  "data": [
+    {
+      "code": "NKW",
+      "name": "Nkwen",
+      "city": "Bamenda",
+      "region": "North-West",
+      "manager": "Mrs. Enow Patience",
+      "opened_year": 2019,
+      "status": "open"
+    },
+    {
+      "code": "ML4",
+      "name": "Mile 4",
+      "city": "Bamenda",
+      "region": "North-West",
+      "manager": "Mr. Tanyi Godlove",
+      "opened_year": 2021,
+      "status": "open"
+    },
+    {
+      "code": "CAV",
+      "name": "Commercial Avenue",
+      "city": "Bamenda",
+      "region": "North-West",
+      "manager": "Mrs. Fon Lydia",
+      "opened_year": 2022,
+      "status": "open"
+    },
+    {
+      "code": "BAF",
+      "name": "Bafoussam Centre",
+      "city": "Bafoussam",
+      "region": "West",
+      "manager": "Mr. Kenfack Roland",
+      "opened_year": 2026,
+      "status": "open"
+    },
+    {
+      "code": "LMB",
+      "name": "Limbe Down Beach",
+      "city": "Limbe",
+      "region": "South-West",
+      "manager": "Mr. Ekane Joseph",
+      "opened_year": 2027,
+      "status": "planned"
+    }
+  ],
+  "meta": {
+    "count": 5
+  }
+}

@@ -1,0 +1,169 @@
+# CI (continuous integration): GitHub runs every part's tests on every pull request
+# and on every push to main. Branch protection then refuses to merge a pull request
+# until these checks are green.
+#
+# A part's job runs only when its folder holds a project: api/composer.json,
+# web/package.json or mobile/pubspec.yaml. A skipped job counts as passed, so a squad
+# without (for example) a mobile member is never blocked by the mobile job.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# When you push a new commit to a pull request, stop the older run (it saves free minutes).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  parts:
+    name: Find the parts
+    runs-on: ubuntu-latest
+    outputs:
+      api: ${{ steps.find.outputs.api }}
+      docker: ${{ steps.find.outputs.docker }}
+      web: ${{ steps.find.outputs.web }}
+      mobile: ${{ steps.find.outputs.mobile }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: find
+        run: |
+          echo "api=$(test -f api/composer.json && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+          echo "docker=$(test -f api/composer.json && test -f api/Dockerfile && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+          echo "web=$(test -f web/package.json && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+          echo "mobile=$(test -f mobile/pubspec.yaml && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+
+  contract:
+    name: Contract tests (stand-in API)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - run: node --test "contract/*.test.mjs"
+
+  api:
+    name: API (Laravel)
+    needs: parts
+    if: needs.parts.outputs.api == 'yes'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    services:
+      # A MySQL container that lives only while this job runs. The password is for CI only.
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: nkwen_ci
+          MYSQL_ROOT_PASSWORD: ci-only-password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -pci-only-password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_mysql, pdo_sqlite
+          coverage: none
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Install PHP packages
+        run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Prepare the .env file
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+      - name: Feature tests
+        run: php artisan test
+      - name: Start the API on MySQL, with the demo data
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: nkwen_ci
+          DB_USERNAME: root
+          DB_PASSWORD: ci-only-password
+        run: |
+          php artisan migrate:fresh --seed --force
+          nohup php artisan serve --host=127.0.0.1 --port=8000 > serve.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:8000/api/branches > /dev/null && echo "API is up" && exit 0
+            sleep 1
+          done
+          echo "The API did not start in 30 seconds:" && cat serve.log && exit 1
+      - name: Contract tests against the real API
+        working-directory: .
+        env:
+          API_URL: http://127.0.0.1:8000
+        run: |
+          node --test "contract/*.test.mjs"
+          node contract/check-contract.mjs http://127.0.0.1:8000
+      - name: Show the API log
+        if: failure()
+        run: cat serve.log || true
+
+  api-image:
+    name: API Docker image builds
+    needs: parts
+    if: needs.parts.outputs.docker == 'yes'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the image (the same one the host will run)
+        run: docker build --tag nkwen-orders-api:ci api
+
+  web:
+    name: Web shop (React)
+    needs: parts
+    if: needs.parts.outputs.web == 'yes'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install packages
+        run: npm ci
+      - name: Tests
+        run: npm test
+      - name: Build
+        run: npm run build
+
+  mobile:
+    name: Rep app (Flutter)
+    needs: parts
+    if: needs.parts.outputs.mobile == 'yes'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Get packages
+        run: flutter pub get
+      - name: Analyse the code
+        run: flutter analyze --no-fatal-infos
+      - name: Tests
+        run: flutter test

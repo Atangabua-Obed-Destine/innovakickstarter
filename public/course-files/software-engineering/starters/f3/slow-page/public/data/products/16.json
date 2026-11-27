@@ -1,0 +1,14 @@
+{
+ "id": 16,
+ "sku": "NKT-OIL-016",
+ "name": "Vegetable Oil 5L",
+ "category": "Oils",
+ "unit": "jerrycan",
+ "price_fcfa": 7210,
+ "stock": {
+  "NKW": 52,
+  "ML4": 15,
+  "CAV": 68,
+  "BAF": 31
+ }
+}

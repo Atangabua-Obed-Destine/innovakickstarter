@@ -1,0 +1,14 @@
+{
+ "id": 3,
+ "sku": "NKT-GRA-003",
+ "name": "Beans (Red)",
+ "category": "Grains",
+ "unit": "kg",
+ "price_fcfa": 930,
+ "stock": {
+  "NKW": 21,
+  "ML4": 74,
+  "CAV": 37,
+  "BAF": 0
+ }
+}

@@ -1,0 +1,10 @@
+# Netlify reads this file from the root of your shop repository.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Every address that is not a real file gets index.html (single-page app).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

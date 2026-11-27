@@ -1,0 +1,14 @@
+{
+ "id": 9,
+ "sku": "NKT-GRO-009",
+ "name": "Sugar 1kg",
+ "category": "Groceries",
+ "unit": "bag",
+ "price_fcfa": 760,
+ "stock": {
+  "NKW": 63,
+  "ML4": 26,
+  "CAV": 0,
+  "BAF": 42
+ }
+}

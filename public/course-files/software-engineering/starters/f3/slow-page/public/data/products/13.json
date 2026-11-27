@@ -1,0 +1,14 @@
+{
+ "id": 13,
+ "sku": "NKT-HOU-013",
+ "name": "Soap (bar)",
+ "category": "Household",
+ "unit": "bar",
+ "price_fcfa": 410,
+ "stock": {
+  "NKW": 31,
+  "ML4": 3,
+  "CAV": 47,
+  "BAF": 10
+ }
+}

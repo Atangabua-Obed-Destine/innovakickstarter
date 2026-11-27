@@ -1,0 +1,10 @@
+order_no,date,branch_name,branch_manager,customer,payment,product,unit_price_fcfa,quantity,line_total_fcfa
+1001,2026-11-20,Nkwen,Mrs. Enow Patience,Mama Ngozi Provisions,mtn_momo,Rice 50kg,36005,2,72010
+1001,2026-11-20,Nkwen,Mrs. Enow Patience,Mama Ngozi Provisions,mtn_momo,Palm Oil 5L,6600,3,19800
+1001,2026-11-20,Nkwen,Mrs. Enow Patience,Mama Ngozi Provisions,mtn_momo,Sugar 1kg,760,10,7600
+1002,2026-11-20,Nkwen,Mrs Enow Patience,Che Divine,cash,Bread (loaf),600,2,1200
+1002,2026-11-20,Nkwen,Mrs Enow Patience,Che Divine,cash,Matches (box),100,5,500
+1003,2026-11-21,Commercial Avenue,Mrs. Fon Lydia,Ambe Hotel,bank_transfer,Rice 50kg,35000,1,35000
+1003,2026-11-21,Commercial Avenue,Mrs. Fon Lydia,Ambe Hotel,bank_transfer,Vegetable Oil 5L,7210,4,28840
+1004,2026-11-21,Commercial Ave.,Mrs. Fon Lydia,Che Divine,orange_money,Soap (bar),410,6,2460
+1004,2026-11-21,Commercial Ave.,Mrs. Fon Lydia,Che Divine,orange_money,Tomato Paste (tin),355,12,4260

@@ -1,0 +1,1956 @@
+{
+  "track": "software-engineering",
+  "terms": [
+    {
+      "term": "frontend",
+      "aliases": [
+        "front-end"
+      ],
+      "definition": "The part of an app that people see and use, such as web pages in a browser.",
+      "example": "The frontend is the web shop page where a customer picks Rice 50kg and sees the price in FCFA.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "backend",
+      "aliases": [],
+      "definition": "The part of a system that runs on a server: it stores data, applies business rules and answers requests.",
+      "example": "The backend checks that Mile 4 really has 12 bags of rice before it accepts an order.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "API",
+      "aliases": [
+        "APIs"
+      ],
+      "definition": "Application Programming Interface: an agreed way for one program to ask another program for data or actions.",
+      "example": "The web shop calls the Nkwen API to get every product with its stock at Bafoussam Centre.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "terminal",
+      "aliases": [
+        "terminals"
+      ],
+      "definition": "A window where you type commands for the computer instead of clicking.",
+      "example": "In the terminal, type node hello.js to run your first Nkwen program.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "Node.js",
+      "aliases": [],
+      "definition": "A program that runs JavaScript outside the browser, for example in your terminal or on a server.",
+      "example": "node restock.js uses Node.js to print which Nkwen products need restocking.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "PATH",
+      "aliases": [],
+      "definition": "A system setting listing the folders where the computer looks for programs you type in the terminal.",
+      "example": "If 'node' is not recognized, Node.js is missing from PATH; reinstall and tick Add to PATH.",
+      "chapter": 1,
+      "case_sensitive": true
+    },
+    {
+      "term": "JavaScript",
+      "aliases": [],
+      "definition": "The programming language that runs in every web browser; with Node.js it also runs on computers and servers.",
+      "example": "JavaScript calculates the basket total when a customer adds two bags of Rice 50kg.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "variable",
+      "aliases": [
+        "variables"
+      ],
+      "definition": "A name that stores a value so your program can use or change it later.",
+      "example": "let stock = 12; stores the number of rice bags left at the Nkwen branch.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "const",
+      "aliases": [],
+      "definition": "A JavaScript keyword that creates a variable you cannot reassign. Use let when the value must change.",
+      "example": "const VAT_RATE = 0.1925; the VAT rate never changes while the till runs.",
+      "chapter": 1,
+      "case_sensitive": true
+    },
+    {
+      "term": "data type",
+      "aliases": [
+        "data types"
+      ],
+      "definition": "The kind of value something is, such as a number, a string of text or true/false.",
+      "example": "35000 is a number, 'Rice 50kg' is a string, and inStock = true is a boolean.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "loop",
+      "aliases": [
+        "loops"
+      ],
+      "definition": "Code that repeats, for example once for every item in a list.",
+      "example": "A loop visits each product and prints a restock alert for every one below its level.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "array",
+      "aliases": [
+        "arrays"
+      ],
+      "definition": "An ordered list of values in one variable. Items are counted from 0.",
+      "example": "products[0] is the first product in the Nkwen array, Rice 50kg.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "object",
+      "aliases": [
+        "objects"
+      ],
+      "definition": "A group of named values (keys and values) that describes one thing.",
+      "example": "{ name: 'Rice 50kg', price: 35000, stock: 12 } is one product object.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "string",
+      "aliases": [
+        "strings"
+      ],
+      "definition": "Text in a program, written between quotes.",
+      "example": "'Commercial Avenue' is a string holding a branch name.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "pseudocode",
+      "aliases": [],
+      "definition": "Plain-language steps that describe a solution before you write real code.",
+      "example": "Pseudocode: for each product, if stock is at or below the reorder level, add it to the alert list.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "edge case",
+      "aliases": [
+        "edge cases"
+      ],
+      "definition": "An unusual input at the limits, such as zero, empty or the exact boundary, that often breaks code.",
+      "example": "Stock exactly equal to the reorder level is an edge case: does it trigger a restock alert?",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "Git",
+      "aliases": [],
+      "definition": "A tool that records the history of your files, so you can save versions, go back and work with others.",
+      "example": "Git keeps every saved version of the Nkwen restock program, with who changed what.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "GitHub",
+      "aliases": [],
+      "definition": "A website that stores Git repositories online so you can share code, review it and work as a team.",
+      "example": "Your Nkwen calculator lives on GitHub, where your mentor can read every commit.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "repository",
+      "aliases": [
+        "repositories",
+        "repo"
+      ],
+      "definition": "A project folder tracked by Git, with its full history of changes.",
+      "example": "The innova-software-engineering repository holds all your chapter folders and their history.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "commit",
+      "aliases": [
+        "commits"
+      ],
+      "definition": "A saved snapshot of your changes in Git, with a message saying what changed.",
+      "example": "git commit -m \"Add restock alerts for low stock\" saves today's work.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "git push",
+      "aliases": [],
+      "definition": "The Git command that sends your local commits to the remote copy, such as GitHub.",
+      "example": "After committing, git push puts your Nkwen work on GitHub for your mentor.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "README",
+      "aliases": [
+        "README.md"
+      ],
+      "definition": "The first file people read in a repository: it explains what the project is and how to run it.",
+      "example": "The README says how to run the Nkwen calculator and what each file does.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "bug",
+      "aliases": [
+        "bugs"
+      ],
+      "definition": "A mistake in code that makes it do the wrong thing.",
+      "example": "A bug made the basket add VAT twice, so Rice 50kg cost too much.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "debugging",
+      "aliases": [
+        "debug"
+      ],
+      "definition": "Finding out why code goes wrong and fixing it.",
+      "example": "Debugging showed the total was wrong because price was the string '35000', not a number.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "function",
+      "aliases": [
+        "functions"
+      ],
+      "definition": "A named block of code that does one job. You call it, often give it inputs and get a result.",
+      "example": "lineTotal(price, quantity) returns 70000 for two bags of rice at 35000 FCFA.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "parameter",
+      "aliases": [
+        "parameters"
+      ],
+      "definition": "A named input in a function's definition.",
+      "example": "In function lineTotal(price, quantity), price and quantity are parameters.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "console.log",
+      "aliases": [],
+      "definition": "A JavaScript command that prints a value to the terminal or browser console.",
+      "example": "console.log(total) prints 70000 so you can check the basket total.",
+      "chapter": 1,
+      "case_sensitive": true
+    },
+    {
+      "term": "STAR",
+      "aliases": [],
+      "definition": "A way to answer interview questions: Situation, Task, Action, Result.",
+      "example": "STAR: the Mile 4 stock was wrong (S), I had to fix it (T), I added tests (A), errors stopped (R).",
+      "chapter": 1,
+      "case_sensitive": true
+    },
+    {
+      "term": "code review",
+      "aliases": [
+        "code reviews"
+      ],
+      "definition": "When another developer reads your changes before they are merged, to catch problems and share knowledge.",
+      "example": "In code review, your partner spots that the discount is applied before VAT instead of after.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "pull request",
+      "aliases": [
+        "pull requests"
+      ],
+      "definition": "A request on GitHub to merge one branch into another, where the team discusses and reviews the changes.",
+      "example": "Open a pull request from add-search into main so your partner can review the Nkwen search.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "JSON",
+      "aliases": [],
+      "definition": "JavaScript Object Notation: a text format for data made of objects and lists. APIs usually send JSON.",
+      "example": "{\"name\": \"Rice 50kg\", \"price\": 35000} is one product in JSON.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "index",
+      "aliases": [],
+      "definition": "The position of an item in an array, counted from 0; in a database, a lookup structure that speeds up searches.",
+      "example": "products[2] gets the item at index 2, the third Nkwen product.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "callback",
+      "aliases": [
+        "callbacks"
+      ],
+      "definition": "A function you pass to another function so it can call it later.",
+      "example": "products.filter(p => p.stock === 0) passes a callback that tests each product.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "map",
+      "aliases": [],
+      "definition": "An array method that makes a new array by changing every item with a callback.",
+      "example": "products.map(p => p.name) gives a list of all Nkwen product names.",
+      "chapter": 2,
+      "case_sensitive": true
+    },
+    {
+      "term": "filter",
+      "aliases": [],
+      "definition": "An array method that keeps only the items for which a callback returns true.",
+      "example": "products.filter(p => p.stock === 0) lists every product that is out of stock.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "reduce",
+      "aliases": [],
+      "definition": "An array method that combines all items into one value, such as a total.",
+      "example": "items.reduce((sum, i) => sum + i.price * i.qty, 0) gives the basket total in FCFA.",
+      "chapter": 2,
+      "case_sensitive": true
+    },
+    {
+      "term": "integer",
+      "aliases": [
+        "integers"
+      ],
+      "definition": "A whole number with no decimal part. Store FCFA amounts as integers to avoid rounding errors.",
+      "example": "35000 FCFA is stored as the integer 35000, never 35000.5.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "stack trace",
+      "aliases": [
+        "stack traces"
+      ],
+      "definition": "The list printed with an error showing which functions were running, and the file and line of each.",
+      "example": "The stack trace points to basket.js line 14, where the price was read.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "breakpoint",
+      "aliases": [
+        "breakpoints"
+      ],
+      "definition": "In a debugger, a line where the program pauses so you can inspect values. In CSS, a screen width where the layout changes.",
+      "example": "Put a breakpoint on the VAT line and check the total before tax is added.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "unit test",
+      "aliases": [
+        "unit tests"
+      ],
+      "definition": "A small automatic check that one function gives the expected result.",
+      "example": "A unit test checks that lineTotal(35000, 2) returns 70000.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "integration test",
+      "aliases": [
+        "integration tests"
+      ],
+      "definition": "A test that checks several parts working together, such as screens, code and storage.",
+      "example": "An integration test taps Add to order on a phone and checks the basket shows Rice 50kg.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "end-to-end",
+      "aliases": [],
+      "definition": "Testing or following a whole user journey from start to finish, through every part of the system.",
+      "example": "End-to-end: a customer orders on the web shop and the manager sees the order in the API.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "database",
+      "aliases": [
+        "databases"
+      ],
+      "definition": "An organised store of data that a program can search and change safely, often shared by many users.",
+      "example": "The Nkwen database holds every product, branch, order and stock level.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "HTML",
+      "aliases": [],
+      "definition": "HyperText Markup Language: the code that gives a web page its structure, such as headings, paragraphs and links.",
+      "example": "<h1>Nkwen Traders</h1> is HTML for the main heading of the shop page.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "CSS",
+      "aliases": [],
+      "definition": "Cascading Style Sheets: the code that styles a web page, such as colours, spacing and layout.",
+      "example": "CSS turns the Nkwen product list into neat cards with green prices.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "element",
+      "aliases": [
+        "elements"
+      ],
+      "definition": "One piece of an HTML page, made by a tag and its content.",
+      "example": "<p>Rice 50kg: 36,005 FCFA</p> is a paragraph element.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "class",
+      "aliases": [
+        "classes"
+      ],
+      "definition": "In HTML and CSS, a label for styling elements. In PHP and Dart, a blueprint for creating objects.",
+      "example": "<span class=\"low\"> marks low stock; CSS colours every .low item red.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "Flexbox",
+      "aliases": [],
+      "definition": "A CSS layout tool that arranges items in a row or column and shares space between them.",
+      "example": "Flexbox puts the logo left and the branch menu right in the Nkwen header.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "CSS Grid",
+      "aliases": [],
+      "definition": "A CSS layout tool that places items in rows and columns at the same time.",
+      "example": "CSS Grid shows one product card per row on a phone and three on a laptop.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "responsive design",
+      "aliases": [],
+      "definition": "Building pages that adapt to any screen size, from a small phone to a large monitor.",
+      "example": "With responsive design, the Nkwen catalogue is readable on a 360px-wide phone.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "media query",
+      "aliases": [
+        "media queries"
+      ],
+      "definition": "A CSS rule that applies styles only when the screen matches a condition, such as a minimum width.",
+      "example": "@media (min-width: 768px) shows two product columns on tablets.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "mobile-first",
+      "aliases": [],
+      "definition": "Designing and writing CSS for small phone screens first, then adding rules for bigger screens.",
+      "example": "Mobile-first: write the one-column catalogue, then add a media query for laptops.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "alt text",
+      "aliases": [],
+      "definition": "A short text description of an image, read by screen readers and shown if the image fails to load.",
+      "example": "alt=\"Bag of Rice 50kg\" tells a blind customer what the picture shows.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "accessibility",
+      "aliases": [],
+      "definition": "Making apps usable by everyone, including people using screen readers, keyboards or small screens.",
+      "example": "Accessibility: the Nkwen basket can be used with only a keyboard.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "Lighthouse",
+      "aliases": [],
+      "definition": "A tool in Chrome DevTools that scores a page for performance, accessibility and good practice.",
+      "example": "Lighthouse gave the Nkwen page 72 for accessibility until you added labels.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "DevTools",
+      "aliases": [],
+      "definition": "Tools built into the browser to inspect a page's HTML, CSS, network requests and errors.",
+      "example": "Open DevTools, then the Network tab, to see the request for the product list.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "URL",
+      "aliases": [
+        "URLs"
+      ],
+      "definition": "A web address, such as https://example.com/products?branch=nkwen.",
+      "example": "The URL /products?branch=mile4 asks for products at the Mile 4 branch.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "user story",
+      "aliases": [
+        "user stories"
+      ],
+      "definition": "A short need written from a user's view: As a ..., I want ..., so that ...",
+      "example": "As a customer in Bafoussam, I want to see stock at my branch, so that I don't travel for nothing.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "deploy",
+      "aliases": [
+        "deployed",
+        "deployment"
+      ],
+      "definition": "To put your app on a server so real users can reach it.",
+      "example": "Deploy the Nkwen API so the web shop can call it from anywhere.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "root cause",
+      "aliases": [
+        "root causes"
+      ],
+      "definition": "The real reason a problem happens, not just its visible symptom.",
+      "example": "The root cause was a price stored as text, not the wrong total on screen.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "DOM",
+      "aliases": [],
+      "definition": "Document Object Model: the browser's live tree of a page's elements, which JavaScript can read and change.",
+      "example": "JavaScript changes the DOM to show 'Out of stock' under Rice 50kg without reloading.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "querySelector",
+      "aliases": [],
+      "definition": "A JavaScript method that finds the first element matching a CSS selector.",
+      "example": "document.querySelector('#basket-total') finds the element showing the basket total.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "event",
+      "aliases": [
+        "events"
+      ],
+      "definition": "Something that happens on a page, such as a click, a key press or a form being sent.",
+      "example": "Clicking Add to basket fires a click event for Rice 50kg.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "addEventListener",
+      "aliases": [
+        "event listener"
+      ],
+      "definition": "Tells an element to run a function each time a chosen event happens.",
+      "example": "button.addEventListener('click', addToBasket) adds rice to the basket on every click.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "state",
+      "aliases": [],
+      "definition": "The data an app is showing right now. When state changes, the screen is drawn again from it.",
+      "example": "The state holds the chosen branch, the search text and the basket items.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "innerHTML",
+      "aliases": [],
+      "definition": "A property that reads or replaces an element's HTML. Unsafe with user text, because it can run scripts.",
+      "example": "Never put a customer's review into innerHTML; use textContent instead.",
+      "chapter": 4,
+      "case_sensitive": true
+    },
+    {
+      "term": "localStorage",
+      "aliases": [],
+      "definition": "Browser storage that keeps small pieces of text on the device, even after the page is closed.",
+      "example": "The basket is saved in localStorage, so it is still there after a refresh.",
+      "chapter": 4,
+      "case_sensitive": true
+    },
+    {
+      "term": "XSS",
+      "aliases": [],
+      "definition": "Cross-site scripting: an attack where someone's text is run as code in other users' browsers.",
+      "example": "A product review containing <script> could cause XSS if shown with innerHTML.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "client",
+      "aliases": [
+        "clients"
+      ],
+      "definition": "A program that sends requests to a server, such as a browser or a mobile app.",
+      "example": "The rep app is a client: it asks the Nkwen server for today's products.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "server",
+      "aliases": [
+        "servers"
+      ],
+      "definition": "A computer or program that waits for requests and sends back answers.",
+      "example": "The Nkwen server answers GET /products with every product and its stock.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "DNS",
+      "aliases": [],
+      "definition": "Domain Name System: the internet's phone book that turns domain names into IP addresses.",
+      "example": "DNS tells your phone which server hosts the Nkwen Traders site.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "HTTP",
+      "aliases": [],
+      "definition": "HyperText Transfer Protocol: the rules browsers, apps and servers use to send requests and responses.",
+      "example": "The web shop sends an HTTP request to the API and gets the product list back.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "HTTPS",
+      "aliases": [],
+      "definition": "HTTP made secure with encryption, so others on the network cannot read or change the data.",
+      "example": "Login and Mobile Money pages must use HTTPS, never plain HTTP.",
+      "chapter": 5,
+      "case_sensitive": true
+    },
+    {
+      "term": "header",
+      "aliases": [
+        "headers"
+      ],
+      "definition": "The top part of a page or table. In HTTP, extra information sent with a request or response, such as Content-Type.",
+      "example": "The header Accept: application/json asks the Nkwen API to answer in JSON.",
+      "chapter": 3,
+      "case_sensitive": false
+    },
+    {
+      "term": "status code",
+      "aliases": [
+        "status codes"
+      ],
+      "definition": "A three-digit number in a response that says how the request went, such as 200, 404 or 500.",
+      "example": "Status code 201 means the order for Rice 50kg was created.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "GET",
+      "aliases": [],
+      "definition": "The HTTP method for reading data without changing anything.",
+      "example": "GET /products/12 reads the details of Rice 50kg.",
+      "chapter": 5,
+      "case_sensitive": true
+    },
+    {
+      "term": "POST",
+      "aliases": [],
+      "definition": "The HTTP method for sending data to create something new, such as an order.",
+      "example": "POST /orders creates an order for 2 bags of Rice 50kg at Mile 4.",
+      "chapter": 4,
+      "case_sensitive": true
+    },
+    {
+      "term": "PATCH",
+      "aliases": [],
+      "definition": "The HTTP method for changing only part of a resource.",
+      "example": "PATCH /orders/7 with {\"status\": \"delivered\"} changes only the order's status.",
+      "chapter": 5,
+      "case_sensitive": true
+    },
+    {
+      "term": "DELETE",
+      "aliases": [],
+      "definition": "The HTTP method for removing a resource.",
+      "example": "DELETE /products/12 removes Rice 50kg from the catalogue.",
+      "chapter": 5,
+      "case_sensitive": true
+    },
+    {
+      "term": "404",
+      "aliases": [],
+      "definition": "The status code meaning Not Found: the thing you asked for does not exist.",
+      "example": "GET /products/999 answers 404 because Nkwen has no product 999.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "422",
+      "aliases": [],
+      "definition": "The status code meaning Unprocessable Content: the request was understood but the data broke a rule.",
+      "example": "An order with quantity -3 gets 422 and a message saying which field is wrong.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "409",
+      "aliases": [],
+      "definition": "The status code meaning Conflict: the request clashes with the current state, such as too little stock.",
+      "example": "Ordering 20 bags when Mile 4 has 12 gets 409: not enough stock.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "401",
+      "aliases": [],
+      "definition": "The status code meaning Unauthorized: you are not logged in, or your token is missing or wrong.",
+      "example": "Calling /api/me with no token answers 401.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "403",
+      "aliases": [],
+      "definition": "The status code meaning Forbidden: you are logged in but not allowed to do this.",
+      "example": "A cashier who tries to change prices gets 403; only managers may.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "asynchronous",
+      "aliases": [],
+      "definition": "Code that starts a slow task, such as a network call, and carries on without waiting for it.",
+      "example": "Fetching products is asynchronous, so the page stays usable while they load.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "promise",
+      "aliases": [
+        "promises"
+      ],
+      "definition": "A JavaScript object for a result that will arrive later; it is pending, then fulfilled or rejected.",
+      "example": "fetch() returns a promise that later gives the response with Nkwen products.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "async",
+      "aliases": [],
+      "definition": "A keyword that marks a function as asynchronous, so it can use await and always returns a promise or Future.",
+      "example": "async function loadProducts() fetches the Nkwen catalogue.",
+      "chapter": 5,
+      "case_sensitive": true
+    },
+    {
+      "term": "await",
+      "aliases": [],
+      "definition": "A keyword that pauses an async function until a promise or Future finishes, then gives its result.",
+      "example": "const res = await fetch('/products'); waits for the product list.",
+      "chapter": 5,
+      "case_sensitive": true
+    },
+    {
+      "term": "fetch",
+      "aliases": [],
+      "definition": "The browser's built-in function for sending HTTP requests from JavaScript.",
+      "example": "fetch('/products?branch=nkwen') asks the API for Nkwen branch stock.",
+      "chapter": 5,
+      "case_sensitive": true
+    },
+    {
+      "term": "query string",
+      "aliases": [],
+      "definition": "The part of a URL after ?, holding name=value pairs separated by &.",
+      "example": "In /products?branch=mile4&category=grains, the query string has two filters.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "CORS",
+      "aliases": [],
+      "definition": "Cross-Origin Resource Sharing: browser rules that decide if a page from one site may call an API on another.",
+      "example": "The API must allow the web shop's address in CORS, or the browser blocks its requests.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "production",
+      "aliases": [],
+      "definition": "The live system that real users use, as opposed to test or development copies.",
+      "example": "In production, debug mode must be off so customers never see error details.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "webhook",
+      "aliases": [
+        "webhooks"
+      ],
+      "definition": "A message a service sends to your server's URL when something happens, such as a payment finishing.",
+      "example": "When the customer approves, the payment provider's webhook tells the Nkwen API the order is paid.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "endpoint",
+      "aliases": [
+        "endpoints"
+      ],
+      "definition": "One URL plus HTTP method that an API offers, such as GET /products.",
+      "example": "POST /orders is the endpoint for creating an order.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "curl",
+      "aliases": [],
+      "definition": "A command-line tool for sending HTTP requests, handy for testing APIs.",
+      "example": "curl http://localhost:8000/api/products shows the Nkwen products as JSON.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "encryption",
+      "aliases": [],
+      "definition": "Scrambling data so only someone with the right key can read it; it can be reversed with that key.",
+      "example": "HTTPS encryption stops anyone on the café Wi-Fi from reading your MoMo PIN.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "authorization",
+      "aliases": [],
+      "definition": "Deciding what a logged-in user is allowed to do.",
+      "example": "Authorization lets a branch manager change Mile 4 stock but not Bafoussam's.",
+      "chapter": 5,
+      "case_sensitive": false
+    },
+    {
+      "term": "authentication",
+      "aliases": [],
+      "definition": "Checking who a user is, for example with a password or token.",
+      "example": "Authentication checks that the email and password really belong to cashier Ngwa.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "token",
+      "aliases": [
+        "tokens"
+      ],
+      "definition": "A secret string the server gives after login, which the app sends to prove who it is.",
+      "example": "The rep app sends its token with each request, so the API knows which rep is calling.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "merge",
+      "aliases": [
+        "merging"
+      ],
+      "definition": "Combining the changes from one branch into another.",
+      "example": "Merge the add-search branch into main once the review is approved.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "merge conflict",
+      "aliases": [],
+      "definition": "When two branches change the same lines and Git cannot decide which version to keep.",
+      "example": "Both partners changed the VAT line, so Git shows a merge conflict for you to resolve.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "branch protection",
+      "aliases": [
+        "protected branch"
+      ],
+      "definition": "GitHub rules that stop changes reaching a branch unless checks pass and someone approves.",
+      "example": "Branch protection on main means every Nkwen change needs one approval first.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "hash",
+      "aliases": [
+        "hashes",
+        "hashed",
+        "hashing"
+      ],
+      "definition": "A fixed-length fingerprint made from data that cannot be turned back. Git names commits by hash; passwords are stored hashed.",
+      "example": "Commit a3f9c1e is identified by its hash; the cashier's password is stored only as a hash.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "SQL",
+      "aliases": [],
+      "definition": "Structured Query Language: the language for asking a database questions and changing its data.",
+      "example": "SQL can find every Nkwen order over 50,000 FCFA in one line.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "table",
+      "aliases": [
+        "tables"
+      ],
+      "definition": "Data arranged in rows and columns. In a database, each table holds one kind of thing, such as products or orders.",
+      "example": "The products table has one row per product, with columns for name, price and stock.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "row",
+      "aliases": [
+        "rows"
+      ],
+      "definition": "One line across a table. In a database table, each row is one record, such as one order.",
+      "example": "One row in orders: order 7, Mile 4, Rice 50kg, quantity 2.",
+      "chapter": 1,
+      "case_sensitive": false
+    },
+    {
+      "term": "column",
+      "aliases": [
+        "columns"
+      ],
+      "definition": "One line down a table or page layout. In a database, a column holds the same kind of value for every row.",
+      "example": "The price column holds every Nkwen product's price in FCFA.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "SELECT",
+      "aliases": [],
+      "definition": "The SQL command that reads data from tables.",
+      "example": "SELECT name, price FROM products; lists every Nkwen product and price.",
+      "chapter": 6,
+      "case_sensitive": true
+    },
+    {
+      "term": "WHERE",
+      "aliases": [],
+      "definition": "The part of a SQL query that keeps only rows matching a condition.",
+      "example": "WHERE branch = 'Mile 4' keeps only Mile 4 orders.",
+      "chapter": 6,
+      "case_sensitive": true
+    },
+    {
+      "term": "JOIN",
+      "aliases": [],
+      "definition": "SQL that combines rows from two tables where a column matches.",
+      "example": "JOIN branches ON orders.branch_id = branches.id adds the branch name to each order.",
+      "chapter": 6,
+      "case_sensitive": true
+    },
+    {
+      "term": "API contract",
+      "aliases": [],
+      "definition": "The agreed description of an API: its endpoints, inputs, outputs and errors, which both sides must follow.",
+      "example": "The API contract says POST /orders answers 409 when a branch lacks stock.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "resource",
+      "aliases": [],
+      "definition": "In an API, a thing you can read or change through a URL, such as a product or an order.",
+      "example": "/orders/7 is the URL of one order resource.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "idempotency",
+      "aliases": [
+        "Idempotency-Key",
+        "idempotency key",
+        "idempotency keys"
+      ],
+      "definition": "Making a request safe to repeat. An Idempotency-Key header lets the server spot and ignore a repeated request.",
+      "example": "The rep app resends an order with the same Idempotency-Key, and only one order is created.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "idempotent",
+      "aliases": [],
+      "definition": "An action is idempotent if repeating it gives the same result as doing it once.",
+      "example": "PUT is idempotent: sending the same Rice 50kg price twice leaves one price.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "trade-off",
+      "aliases": [
+        "trade-offs"
+      ],
+      "definition": "Gaining one thing by giving up another, such as speed for simplicity.",
+      "example": "Saving orders on the phone first is a trade-off: it works offline but needs syncing later.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "PHP",
+      "aliases": [],
+      "definition": "A programming language that runs on web servers; Laravel is written in it.",
+      "example": "The Nkwen API is written in PHP with the Laravel framework.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "Composer",
+      "aliases": [],
+      "definition": "PHP's package manager: it downloads the libraries a project needs, listed in composer.json.",
+      "example": "composer install downloads Laravel and every library the Nkwen API uses.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "Laravel",
+      "aliases": [],
+      "definition": "A popular PHP framework for building web apps and APIs, with routing, database tools and testing built in.",
+      "example": "Laravel lets you build the Nkwen products API in a few files.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "framework",
+      "aliases": [
+        "frameworks"
+      ],
+      "definition": "A ready-made structure for building apps: it calls your code and handles common jobs for you.",
+      "example": "Laravel is the framework; you only write the Nkwen routes, rules and models.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "php artisan",
+      "aliases": [
+        "artisan"
+      ],
+      "definition": "Laravel's command-line tool for creating files, running migrations, tests and the dev server.",
+      "example": "php artisan serve starts the Nkwen API on your laptop.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "route",
+      "aliases": [
+        "routes"
+      ],
+      "definition": "A rule linking a URL and HTTP method to the code that answers it.",
+      "example": "The route GET /api/products runs the controller that lists Nkwen products.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "Route::get",
+      "aliases": [],
+      "definition": "Laravel code that defines a route answering GET requests.",
+      "example": "Route::get('/products', [ProductController::class, 'index']); lists all products.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "controller",
+      "aliases": [
+        "controllers"
+      ],
+      "definition": "A class that holds the code answering a group of related routes.",
+      "example": "ProductController has index() to list products and show() to return one.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "migration",
+      "aliases": [
+        "migrations"
+      ],
+      "definition": "A file that describes a change to the database structure, so every copy of the database can be built the same way.",
+      "example": "A migration creates the products table with name, price and stock columns.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "validation",
+      "aliases": [],
+      "definition": "Checking that incoming data follows the rules before using it.",
+      "example": "Validation refuses an order with quantity 0 and answers 422.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "mass assignment",
+      "aliases": [],
+      "definition": "Filling many model fields at once from request data. Laravel blocks fields you did not allow, such as role.",
+      "example": "Mass assignment protection stops a user from sending role=manager when signing up.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "middleware",
+      "aliases": [],
+      "definition": "Code that runs before or after every request on a route, for example to check login.",
+      "example": "Auth middleware refuses any request to /api/orders that has no valid token.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "feature test",
+      "aliases": [
+        "feature tests"
+      ],
+      "definition": "In Laravel, a test that sends a real request to your app and checks the full response.",
+      "example": "A feature test posts an order and checks the answer is 201 and stock drops.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "environment variable",
+      "aliases": [
+        "environment variables"
+      ],
+      "definition": "A setting kept outside the code, such as a password or API address, that changes per computer or server.",
+      "example": "DB_PASSWORD is an environment variable, different on your laptop and the live server.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": ".env",
+      "aliases": [],
+      "definition": "The file holding a project's environment variables. Never commit it: it contains secrets.",
+      "example": "The .env file holds the MoMo key; .gitignore keeps it off GitHub.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "schema",
+      "aliases": [],
+      "definition": "The planned structure of a database or data: its tables, columns, types and links.",
+      "example": "The schema has products, branches and a stock table linking them.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "React",
+      "aliases": [],
+      "definition": "A JavaScript library for building user interfaces from components.",
+      "example": "The Nkwen shop is rebuilt in React, with one component per product card.",
+      "chapter": 4,
+      "case_sensitive": false
+    },
+    {
+      "term": "npm",
+      "aliases": [],
+      "definition": "Node.js's package manager: it installs JavaScript libraries and runs project scripts.",
+      "example": "npm install gets React; npm run dev starts the Nkwen shop locally.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "component",
+      "aliases": [
+        "components"
+      ],
+      "definition": "A reusable piece of UI, written as a function that returns what to show.",
+      "example": "<ProductCard /> is a component used once for every Nkwen product.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "JSX",
+      "aliases": [],
+      "definition": "HTML-like syntax inside JavaScript that React turns into elements.",
+      "example": "<h2>{product.name}</h2> is JSX that shows 'Rice 50kg'.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "prop",
+      "aliases": [
+        "props"
+      ],
+      "definition": "A value passed from a parent component to a child component. A child must not change its props.",
+      "example": "<ProductCard name=\"Rice 50kg\" price={35000} /> passes two props.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "useState",
+      "aliases": [],
+      "definition": "A React hook that gives a component a piece of state and a function to change it.",
+      "example": "const [basket, setBasket] = useState([]); starts with an empty basket.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "router",
+      "aliases": [
+        "routing"
+      ],
+      "definition": "Code that chooses which page or screen to show for a URL or route.",
+      "example": "The router shows ProductPage for /products/12 and BasketPage for /basket.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "TypeScript",
+      "aliases": [],
+      "definition": "JavaScript with types added. A checker finds mistakes before the code runs.",
+      "example": "TypeScript warns you when price is a string instead of a number.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "type checker",
+      "aliases": [],
+      "definition": "A tool that reads your code and reports places where values have the wrong type.",
+      "example": "The type checker flags product.prise as a typo before you open the browser.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "union type",
+      "aliases": [],
+      "definition": "A TypeScript type that can be one of several options, written with |.",
+      "example": "type Branch = 'nkwen' | 'mile4' | 'commercial' | 'bafoussam';",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "useEffect",
+      "aliases": [],
+      "definition": "A React hook for running code after the screen updates, such as fetching data.",
+      "example": "useEffect fetches Nkwen products when the branch changes.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "dependency array",
+      "aliases": [],
+      "definition": "The list given to useEffect saying which values make the effect run again.",
+      "example": "[branch] as the dependency array refetches stock whenever the branch changes.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "single-page app",
+      "aliases": [
+        "SPA"
+      ],
+      "definition": "A web app that loads once and then changes screens with JavaScript, without full page reloads.",
+      "example": "The Nkwen shop is a single-page app: moving to the basket needs no reload.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "reducer",
+      "aliases": [
+        "reducers"
+      ],
+      "definition": "A function that takes the current state and an action, and returns the new state.",
+      "example": "The basket reducer handles 'add', 'remove' and 'clear' actions.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "race condition",
+      "aliases": [
+        "race conditions"
+      ],
+      "definition": "A bug where the result depends on which of two things finishes first.",
+      "example": "Two cashiers sell the last bag of rice at once; without a lock, both sales succeed.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "sprint",
+      "aliases": [
+        "sprints"
+      ],
+      "definition": "A short fixed period, often one or two weeks, in which a team builds an agreed set of work.",
+      "example": "In Sprint 1, the squad builds ordering for Nkwen and Mile 4.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "Dart",
+      "aliases": [],
+      "definition": "The programming language used to write Flutter apps.",
+      "example": "The rep app's price formatting is written in Dart.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "Flutter",
+      "aliases": [],
+      "definition": "Google's toolkit for building mobile apps for Android and iOS from one Dart codebase.",
+      "example": "The Nkwen sales-rep app is built with Flutter.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "widget",
+      "aliases": [
+        "widgets"
+      ],
+      "definition": "In Flutter, every piece of the screen, from text and buttons to layouts, is a widget.",
+      "example": "ProductCard is a widget showing Rice 50kg and its price.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "null safety",
+      "aliases": [],
+      "definition": "Dart rules that stop a variable from being null unless its type allows it, catching crashes early.",
+      "example": "With null safety, String? phone may be null but String name never is.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "null",
+      "aliases": [
+        "NULL"
+      ],
+      "definition": "A value meaning 'nothing here' or 'unknown'. JavaScript and Dart write null; SQL writes NULL.",
+      "example": "customer.phone is null when Nkwen has no phone number for that customer.",
+      "chapter": 4,
+      "case_sensitive": true
+    },
+    {
+      "term": "Future",
+      "aliases": [
+        "Futures"
+      ],
+      "definition": "Dart's object for a result that arrives later, like a JavaScript promise.",
+      "example": "Future<List<Product>> loadProducts() returns the Nkwen catalogue later.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "package",
+      "aliases": [
+        "packages"
+      ],
+      "definition": "A bundle of ready-made code you add to a project, such as a library from npm or pub.dev.",
+      "example": "Add the http package so the rep app can call the Nkwen API.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "StatelessWidget",
+      "aliases": [],
+      "definition": "A Flutter widget with no changing data of its own; it draws only from what it is given.",
+      "example": "StockBadge is a StatelessWidget: it shows the stock it receives.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "StatefulWidget",
+      "aliases": [],
+      "definition": "A Flutter widget that keeps its own changing state.",
+      "example": "The quantity stepper is a StatefulWidget that remembers 1, 2 or 3 bags.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "setState",
+      "aliases": [],
+      "definition": "In Flutter, tells a StatefulWidget its state changed so it redraws. React uses state setters similarly.",
+      "example": "setState(() => quantity++) shows 3 bags instead of 2.",
+      "chapter": 7,
+      "case_sensitive": true
+    },
+    {
+      "term": "widget test",
+      "aliases": [
+        "widget tests"
+      ],
+      "definition": "A Flutter test that builds a widget and checks what it shows, without a real phone.",
+      "example": "A widget test checks ProductCard shows 'Rice 50kg' and '36,005 FCFA'.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "offline-first",
+      "aliases": [],
+      "definition": "Designing an app to work without a network, saving locally first and syncing later.",
+      "example": "Offline-first: the rep takes orders in a village with no signal, and they send later.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "sync",
+      "aliases": [
+        "synced",
+        "syncing"
+      ],
+      "definition": "Bringing the data on a phone and on the server into agreement.",
+      "example": "When the network returns, sync sends three saved orders to the Nkwen API.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "relational database",
+      "aliases": [],
+      "definition": "A database storing data in tables that link to each other through keys.",
+      "example": "MySQL is a relational database: orders link to branches and products.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "MySQL",
+      "aliases": [],
+      "definition": "A popular open-source relational database server.",
+      "example": "The live Nkwen API stores orders in MySQL.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "primary key",
+      "aliases": [
+        "primary keys"
+      ],
+      "definition": "A column whose value uniquely identifies each row in a table, often id.",
+      "example": "id is the primary key of products: Rice 50kg is id 12.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "foreign key",
+      "aliases": [
+        "foreign keys"
+      ],
+      "definition": "A column that points to the primary key of another table, linking the two.",
+      "example": "orders.branch_id is a foreign key pointing to the branches table.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "CRUD",
+      "aliases": [],
+      "definition": "Create, Read, Update, Delete: the four basic things you do with stored data.",
+      "example": "The products API offers CRUD: add, list, edit and remove products.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "INSERT",
+      "aliases": [],
+      "definition": "The SQL command that adds new rows to a table.",
+      "example": "INSERT INTO products (name, price) VALUES ('Rice 50kg', 35000);",
+      "chapter": 8,
+      "case_sensitive": true
+    },
+    {
+      "term": "UPDATE",
+      "aliases": [],
+      "definition": "The SQL command that changes existing rows.",
+      "example": "UPDATE stock SET quantity = 10 WHERE branch_id = 2;",
+      "chapter": 8,
+      "case_sensitive": true
+    },
+    {
+      "term": "SQL injection",
+      "aliases": [],
+      "definition": "An attack where user input is run as part of a SQL query, letting attackers read or destroy data.",
+      "example": "Typing ' OR 1=1 -- in the search box could reveal every order if there is SQL injection.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "prepared statement",
+      "aliases": [
+        "prepared statements"
+      ],
+      "definition": "A query sent with placeholders and the values separately, so input can never become SQL code.",
+      "example": "A prepared statement keeps a search for Rice 50kg as data, never as code.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "one-to-many",
+      "aliases": [],
+      "definition": "A link where one row in a table relates to many rows in another.",
+      "example": "One branch has many orders: a one-to-many relationship.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "normalization",
+      "aliases": [],
+      "definition": "Organising tables so each fact is stored once, avoiding repeated and conflicting data.",
+      "example": "Normalization stores each branch's name once, not in every order row.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "ERD",
+      "aliases": [],
+      "definition": "Entity-Relationship Diagram: a drawing of database tables and the links between them.",
+      "example": "The ERD shows branches, products, orders and the stock table between them.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "ORM",
+      "aliases": [],
+      "definition": "Object-Relational Mapper: a tool that lets you work with database rows as objects in code.",
+      "example": "Eloquent is Laravel's ORM: Product::find(12) returns Rice 50kg.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "Eloquent",
+      "aliases": [],
+      "definition": "Laravel's ORM; each model class matches a table and lets you query it with PHP.",
+      "example": "Order::with('items')->get() uses Eloquent to load orders with their items.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "N+1 problem",
+      "aliases": [
+        "N+1"
+      ],
+      "definition": "When code runs one query for a list, then one more for every item, making it very slow.",
+      "example": "Loading 100 orders then each branch separately makes 101 queries: the N+1 problem.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "database transaction",
+      "aliases": [
+        "transactions"
+      ],
+      "definition": "A group of database changes that succeed together or are all undone together.",
+      "example": "In a database transaction, the order is saved and stock reduced together, or neither happens.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "rollback",
+      "aliases": [],
+      "definition": "Undoing changes: in a database, cancelling a transaction; in deployment, returning to the last working version.",
+      "example": "If saving the order fails, rollback puts Mile 4 stock back to 12.",
+      "chapter": 8,
+      "case_sensitive": false
+    },
+    {
+      "term": "lockForUpdate",
+      "aliases": [],
+      "definition": "Laravel's query method that puts a row lock on the rows it reads, inside a transaction.",
+      "example": "Stock::where('product_id', 12)->lockForUpdate()->first() locks Rice 50kg stock.",
+      "chapter": 8,
+      "case_sensitive": true
+    },
+    {
+      "term": "salt",
+      "aliases": [],
+      "definition": "Random data added to each password before hashing, so the same password gives different hashes.",
+      "example": "Two cashiers both use 'nkwen123', but salt makes their stored hashes different.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "bcrypt",
+      "aliases": [],
+      "definition": "A deliberately slow password-hashing method with salt built in, used by Laravel.",
+      "example": "Laravel stores the cashier's password as a bcrypt hash starting with $2y$.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "sessions",
+      "aliases": [],
+      "definition": "A way to remember a logged-in user between requests, usually with a cookie holding a session id.",
+      "example": "After login, the session remembers the manager until she logs out.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "cookie",
+      "aliases": [
+        "cookies"
+      ],
+      "definition": "A small piece of data a website stores in the browser and gets back with every request.",
+      "example": "A session cookie keeps the manager logged in to the Nkwen dashboard.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "Laravel Sanctum",
+      "aliases": [
+        "Sanctum"
+      ],
+      "definition": "Laravel's package for simple API token and session login.",
+      "example": "Sanctum gives each Nkwen staff member a token after login.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "rate limiting",
+      "aliases": [
+        "rate limit"
+      ],
+      "definition": "Limiting how many requests someone can make in a period, to stop abuse.",
+      "example": "Rate limiting allows 5 login attempts a minute, then answers 429.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "HMAC",
+      "aliases": [],
+      "definition": "A signature made from a message and a shared secret, proving the message came from someone who knows the secret.",
+      "example": "The payment webhook carries an HMAC, so the API can tell it is genuine.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "JWT",
+      "aliases": [
+        "JWTs"
+      ],
+      "definition": "JSON Web Token: a signed token carrying data about the user. It is signed, not encrypted.",
+      "example": "A JWT says user 4 is a manager; anyone can read it, but nobody can change it.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "signature",
+      "aliases": [
+        "signatures"
+      ],
+      "definition": "A code made with a secret key that proves who sent data and that it was not changed.",
+      "example": "If someone changes the amount, the signature no longer matches and the API refuses it.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "Bearer token",
+      "aliases": [],
+      "definition": "A token sent in the Authorization header; whoever holds it is treated as the user.",
+      "example": "Authorization: Bearer 3|xyz... lets the rep app call /api/orders.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "policy",
+      "aliases": [
+        "policies"
+      ],
+      "definition": "A Laravel class with rules deciding whether a user may act on a model.",
+      "example": "OrderPolicy lets a manager see only her own branch's orders.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "permissions",
+      "aliases": [],
+      "definition": "The user's approval an app needs before using features such as the camera or notifications.",
+      "example": "The app asks for camera permission only when the rep taps Take photo.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "signing",
+      "aliases": [],
+      "definition": "Attaching a digital signature to an app, proving which developer made it so updates are trusted.",
+      "example": "Android refuses an update to the rep app unless the signing key matches.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "APK",
+      "aliases": [],
+      "definition": "Android Package: the file you install an Android app from.",
+      "example": "Share the rep app's APK with the Mile 4 reps for testing.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "app bundle",
+      "aliases": [
+        "AAB"
+      ],
+      "definition": "The upload format for Google Play (AAB); Google builds a fitting APK for each phone from it.",
+      "example": "Upload the app bundle to Google Play, not the APK.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "acceptance criteria",
+      "aliases": [],
+      "definition": "Clear, checkable conditions a user story must meet to be done.",
+      "example": "Acceptance criteria: the order is refused with 409 if the branch has too little stock.",
+      "chapter": 10,
+      "case_sensitive": false
+    },
+    {
+      "term": "definition of done",
+      "aliases": [],
+      "definition": "The team's checklist that every piece of work must meet before it counts as finished.",
+      "example": "Our definition of done: tests pass, code reviewed, README updated, deployed.",
+      "chapter": 10,
+      "case_sensitive": false
+    },
+    {
+      "term": "backlog",
+      "aliases": [],
+      "definition": "The ordered list of work the team still wants to do.",
+      "example": "The backlog lists ten stories, from login to the stock report.",
+      "chapter": 10,
+      "case_sensitive": false
+    },
+    {
+      "term": "sprint goal",
+      "aliases": [],
+      "definition": "The one outcome a team commits to reach by the end of a sprint.",
+      "example": "Sprint goal: a customer can order Rice 50kg online and the rep app sees it.",
+      "chapter": 10,
+      "case_sensitive": false
+    },
+    {
+      "term": "retrospective",
+      "aliases": [],
+      "definition": "A team meeting after a sprint about what went well and what to change.",
+      "example": "At the retrospective, the squad agreed to open smaller pull requests.",
+      "chapter": 10,
+      "case_sensitive": false
+    },
+    {
+      "term": "wireframe",
+      "aliases": [
+        "wireframes"
+      ],
+      "definition": "A simple sketch of a screen's layout, without colours or real content.",
+      "example": "A wireframe of the basket page shows where the total and Pay button go.",
+      "chapter": 10,
+      "case_sensitive": false
+    },
+    {
+      "term": "CI",
+      "aliases": [
+        "continuous integration"
+      ],
+      "definition": "Continuous integration: every push automatically runs the tests, so problems are found early.",
+      "example": "CI runs all Nkwen tests on each pull request and blocks the merge if one fails.",
+      "chapter": 9,
+      "case_sensitive": true
+    },
+    {
+      "term": "CD",
+      "aliases": [
+        "continuous deployment"
+      ],
+      "definition": "Continuous deployment: changes that pass all checks go live automatically.",
+      "example": "With CD, the Nkwen API deploys itself after CI passes on main.",
+      "chapter": 9,
+      "case_sensitive": true
+    },
+    {
+      "term": "pipeline",
+      "aliases": [],
+      "definition": "A series of automatic steps, such as install, test and deploy, run on each change.",
+      "example": "The pipeline installs packages, runs tests, then deploys the API.",
+      "chapter": 10,
+      "case_sensitive": false
+    },
+    {
+      "term": "GitHub Actions",
+      "aliases": [],
+      "definition": "GitHub's built-in service for running CI and other automatic workflows.",
+      "example": "GitHub Actions runs php artisan test on every pull request.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "contract test",
+      "aliases": [
+        "contract tests"
+      ],
+      "definition": "A test that checks an API and its clients both still follow the agreed contract.",
+      "example": "A contract test checks POST /orders still returns id, status and total.",
+      "chapter": 10,
+      "case_sensitive": false
+    },
+    {
+      "term": "regression test",
+      "aliases": [],
+      "definition": "A test that makes sure a bug that was fixed does not come back.",
+      "example": "After fixing the double-order bug, add a regression test for it.",
+      "chapter": 10,
+      "case_sensitive": false
+    },
+    {
+      "term": "smoke test",
+      "aliases": [],
+      "definition": "A quick check that the most important features work after a deploy.",
+      "example": "Smoke test: open the shop, order one Rice 50kg, see it in the manager app.",
+      "chapter": 10,
+      "case_sensitive": false
+    },
+    {
+      "term": "system design",
+      "aliases": [],
+      "definition": "Planning how the parts of a software system fit together to meet its needs.",
+      "example": "System design: how web shop, rep app, API and database share Nkwen orders.",
+      "chapter": 10,
+      "case_sensitive": false
+    },
+    {
+      "term": "Big-O",
+      "aliases": [],
+      "definition": "A way to describe how an algorithm's time or memory grows as the input grows.",
+      "example": "Checking every order against every other order is O(n²) in Big-O.",
+      "chapter": 11,
+      "case_sensitive": false
+    },
+    {
+      "term": "two pointers",
+      "aliases": [],
+      "definition": "A technique using two positions in a list that move towards each other or together.",
+      "example": "Two pointers find two prices in a sorted list that sum to 50,000 FCFA.",
+      "chapter": 11,
+      "case_sensitive": false
+    },
+    {
+      "term": "single point of failure",
+      "aliases": [],
+      "definition": "One part whose failure stops the whole system.",
+      "example": "One server for all four branches is a single point of failure.",
+      "chapter": 11,
+      "case_sensitive": false
+    },
+    {
+      "term": "algorithm",
+      "aliases": [
+        "algorithms"
+      ],
+      "definition": "A step-by-step method for solving a problem.",
+      "example": "bcrypt is a hashing algorithm designed to be slow on purpose.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "Vitest",
+      "aliases": [],
+      "definition": "A fast test runner for JavaScript and TypeScript projects that use Vite.",
+      "example": "npm test runs Vitest and checks that ProductCard shows 'Out of stock' for Rice 50kg.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "Testing Library",
+      "aliases": [],
+      "definition": "Tools for testing screens the way a user would: find elements by their text, label or role, then act.",
+      "example": "Testing Library finds the 'Add to basket' button by its name, then clicks it.",
+      "chapter": 7,
+      "case_sensitive": false
+    },
+    {
+      "term": "Core Web Vitals",
+      "aliases": [],
+      "definition": "Google's main measures of page experience: how fast the main content loads, how fast the page responds, and how stable the layout is.",
+      "example": "Core Web Vitals showed the Nkwen home page took 5 seconds to show its main image on 3G.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "Next.js",
+      "aliases": [],
+      "definition": "A React framework that adds routing, server rendering and other features for production websites.",
+      "example": "With Next.js, Nkwen product pages arrive as ready HTML, which helps slow phones.",
+      "chapter": 6,
+      "case_sensitive": false
+    },
+    {
+      "term": "preview deploy",
+      "aliases": [],
+      "definition": "A temporary live copy of a branch or pull request, so the team can try changes before merging.",
+      "example": "Open the preview deploy link on your phone to check the new basket page before merging.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "preflight",
+      "aliases": [],
+      "definition": "An automatic OPTIONS request the browser sends first, asking the API whether a cross-origin request is allowed.",
+      "example": "Before the shop's POST /orders, the browser sends a preflight; the API must allow the shop's address.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "flaky",
+      "aliases": [],
+      "definition": "Describes a test that sometimes passes and sometimes fails with no code change, often because of timing.",
+      "example": "The checkout test is flaky: it fails when the API answers slower than 2 seconds.",
+      "chapter": 2,
+      "case_sensitive": false
+    },
+    {
+      "term": "Playwright",
+      "aliases": [],
+      "definition": "A tool that controls a real browser automatically to run end-to-end tests.",
+      "example": "Playwright opens the shop, adds Rice 50kg to the basket and checks the total is 36,005 FCFA.",
+      "chapter": 9,
+      "case_sensitive": false
+    },
+    {
+      "term": "E2E",
+      "aliases": [],
+      "definition": "Short for end-to-end: a test that uses the whole app like a real user, from the page through the API to the database.",
+      "example": "An E2E test places an order in the browser and checks Mile 4 stock went down.",
+      "chapter": 9,
+      "case_sensitive": true
+    },
+    {
+      "term": "TLS",
+      "aliases": [],
+      "definition": "Transport Layer Security: the encryption that puts the S in HTTPS.",
+      "example": "The host gives the Nkwen API a TLS certificate, so its address starts with https://.",
+      "chapter": 9,
+      "case_sensitive": true
+    }
+  ]
+}

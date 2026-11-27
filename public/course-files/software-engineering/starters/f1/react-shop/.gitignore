@@ -1,0 +1,5 @@
+# Installed packages and build output: never commit these.
+node_modules
+dist
+*.local
+.DS_Store

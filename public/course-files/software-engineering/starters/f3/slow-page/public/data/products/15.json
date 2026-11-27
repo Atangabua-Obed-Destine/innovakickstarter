@@ -1,0 +1,14 @@
+{
+ "id": 15,
+ "sku": "NKT-OIL-015",
+ "name": "Palm Oil 5L",
+ "category": "Oils",
+ "unit": "jerrycan",
+ "price_fcfa": 6600,
+ "stock": {
+  "NKW": 15,
+  "ML4": 68,
+  "CAV": 31,
+  "BAF": 84
+ }
+}

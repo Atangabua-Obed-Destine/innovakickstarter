@@ -1,0 +1,14 @@
+{
+ "id": 2,
+ "sku": "NKT-DAI-002",
+ "name": "Milk Powder 400g",
+ "category": "Dairy",
+ "unit": "tin",
+ "price_fcfa": 2875,
+ "stock": {
+  "NKW": 74,
+  "ML4": 37,
+  "CAV": 0,
+  "BAF": 53
+ }
+}

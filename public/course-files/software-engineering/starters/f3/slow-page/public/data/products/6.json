@@ -1,0 +1,14 @@
+{
+ "id": 6,
+ "sku": "NKT-GRA-006",
+ "name": "Rice 50kg",
+ "category": "Grains",
+ "unit": "bag",
+ "price_fcfa": 36005,
+ "stock": {
+  "NKW": 42,
+  "ML4": 3,
+  "CAV": 58,
+  "BAF": 21
+ }
+}

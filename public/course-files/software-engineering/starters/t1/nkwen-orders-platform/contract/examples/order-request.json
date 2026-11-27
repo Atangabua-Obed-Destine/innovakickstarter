@@ -1,0 +1,16 @@
+{
+  "branch": "CAV",
+  "customer_name": "Mbah Clarisse",
+  "payment_method": "mtn_momo",
+  "channel": "web",
+  "items": [
+    {
+      "product_id": 6,
+      "quantity": 2
+    },
+    {
+      "product_id": 15,
+      "quantity": 1
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "data": [
+    {
+      "id": 6,
+      "sku": "NKT-GRA-006",
+      "name": "Rice 50kg",
+      "category": "Grains",
+      "unit": "bag",
+      "price_fcfa": 36005,
+      "currency": "FCFA"
+    },
+    {
+      "id": 15,
+      "sku": "NKT-OIL-015",
+      "name": "Palm Oil 5L",
+      "category": "Oils",
+      "unit": "jerrycan",
+      "price_fcfa": 6600,
+      "currency": "FCFA"
+    }
+  ],
+  "meta": {
+    "count": 2
+  }
+}

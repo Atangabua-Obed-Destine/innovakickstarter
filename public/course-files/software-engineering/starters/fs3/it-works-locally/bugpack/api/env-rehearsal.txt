@@ -1,0 +1,5 @@
+# Lines from the API's settings on the day of the incident (as the host had them).
+# Copy them into your API's .env on the rehearsal branch, replacing the lines with the same names.
+APP_ENV=local
+APP_DEBUG=true
+FRONTEND_URL=http://localhost:4173/

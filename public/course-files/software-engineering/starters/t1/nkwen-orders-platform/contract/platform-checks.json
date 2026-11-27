@@ -1,0 +1,316 @@
+{
+  "checks": [
+    {
+      "name": "List products",
+      "method": "GET",
+      "path": "/api/products",
+      "body": null,
+      "expect": {
+        "status": 200,
+        "has": [
+          "data.0.id",
+          "data.0.sku",
+          "data.0.name",
+          "data.0.price_fcfa",
+          "meta.count"
+        ],
+        "equals": {
+          "data.0.currency": "FCFA"
+        },
+        "min_count": {
+          "data": 20
+        }
+      }
+    },
+    {
+      "name": "Branches, Limbe still planned",
+      "method": "GET",
+      "path": "/api/branches",
+      "body": null,
+      "expect": {
+        "status": 200,
+        "equals": {
+          "data.0.code": "NKW",
+          "data.4.code": "LMB",
+          "data.4.status": "planned"
+        },
+        "min_count": {
+          "data": 5
+        }
+      }
+    },
+    {
+      "name": "Stock at Nkwen, with LOW/RESTOCK status",
+      "method": "GET",
+      "path": "/api/branches/NKW/stock",
+      "body": null,
+      "expect": {
+        "status": 200,
+        "has": [
+          "data.0.product_id",
+          "data.0.quantity",
+          "data.0.status",
+          "meta.count"
+        ],
+        "equals": {
+          "data.0.branch_code": "NKW"
+        },
+        "min_count": {
+          "data": 20
+        }
+      }
+    },
+    {
+      "name": "Bad order is 422",
+      "method": "POST",
+      "path": "/api/orders",
+      "body": {
+        "branch": "LMB",
+        "customer_name": "",
+        "payment_method": "bitcoin",
+        "items": []
+      },
+      "expect": {
+        "status": 422,
+        "has": [
+          "message",
+          "errors.branch",
+          "errors.customer_name",
+          "errors.payment_method",
+          "errors.items"
+        ]
+      }
+    },
+    {
+      "name": "Not enough stock is 409",
+      "method": "POST",
+      "path": "/api/orders",
+      "body": {
+        "branch": "NKW",
+        "customer_name": "Platform Check",
+        "payment_method": "cash",
+        "items": [
+          {
+            "product_id": 5,
+            "quantity": 10
+          }
+        ]
+      },
+      "expect": {
+        "status": 409,
+        "has": [
+          "message",
+          "available"
+        ],
+        "equals": {
+          "product_id": 5,
+          "requested": 10
+        }
+      }
+    },
+    {
+      "name": "Create an order",
+      "method": "POST",
+      "path": "/api/orders",
+      "headers": {
+        "Idempotency-Key": "platform-check-{{rand}}"
+      },
+      "body": {
+        "branch": "NKW",
+        "customer_name": "Platform Check",
+        "payment_method": "mtn_momo",
+        "channel": "web",
+        "items": [
+          {
+            "product_id": 6,
+            "quantity": 1
+          },
+          {
+            "product_id": 15,
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "status": 201,
+        "has": [
+          "data.id",
+          "data.created_at"
+        ],
+        "equals": {
+          "data.branch": "NKW",
+          "data.status": "awaiting_payment",
+          "data.items.0.unit_price_fcfa": 36005,
+          "data.items.1.line_total_fcfa": 6600,
+          "data.total_fcfa": 42605,
+          "data.currency": "FCFA"
+        }
+      },
+      "save": {
+        "orderId": "data.id"
+      }
+    },
+    {
+      "name": "Same Idempotency-Key again",
+      "method": "POST",
+      "path": "/api/orders",
+      "headers": {
+        "Idempotency-Key": "platform-check-{{rand}}"
+      },
+      "body": {
+        "branch": "NKW",
+        "customer_name": "Platform Check",
+        "payment_method": "mtn_momo",
+        "channel": "web",
+        "items": [
+          {
+            "product_id": 6,
+            "quantity": 1
+          },
+          {
+            "product_id": 15,
+            "quantity": 1
+          }
+        ]
+      },
+      "expect": {
+        "status": [
+          200,
+          201
+        ],
+        "equals": {
+          "data.total_fcfa": 42605
+        }
+      },
+      "save": {
+        "repeatId": "data.id"
+      }
+    },
+    {
+      "name": "Read the order",
+      "method": "GET",
+      "path": "/api/orders/{{orderId}}",
+      "body": null,
+      "expect": {
+        "status": 200,
+        "equals": {
+          "data.branch": "NKW",
+          "data.items.0.name": "Rice 50kg",
+          "data.total_fcfa": 42605
+        }
+      }
+    },
+    {
+      "name": "Unknown order is 404",
+      "method": "GET",
+      "path": "/api/orders/ORD-NOTFOUND",
+      "body": null,
+      "expect": {
+        "status": 404,
+        "has": [
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "Order list needs a login (401)",
+      "method": "GET",
+      "path": "/api/orders?branch=NKW",
+      "body": null,
+      "expect": {
+        "status": 401
+      }
+    },
+    {
+      "name": "Demo Nkwen manager logs in",
+      "method": "POST",
+      "path": "/api/login",
+      "body": {
+        "email": "manager.nkw@nkwen.test",
+        "password": "Nkwen-Demo-2026"
+      },
+      "expect": {
+        "status": 200,
+        "has": [
+          "token"
+        ],
+        "equals": {
+          "data.role": "branch_manager",
+          "data.branch": "NKW"
+        }
+      },
+      "save": {
+        "token": "token"
+      }
+    },
+    {
+      "name": "Manager lists Nkwen orders",
+      "method": "GET",
+      "path": "/api/orders?branch=NKW",
+      "headers": {
+        "Authorization": "Bearer {{token}}"
+      },
+      "body": null,
+      "expect": {
+        "status": 200,
+        "has": [
+          "data.0.id",
+          "data.0.status",
+          "data.0.total_fcfa"
+        ],
+        "equals": {
+          "data.0.branch": "NKW"
+        },
+        "min_count": {
+          "data": 1
+        }
+      }
+    },
+    {
+      "name": "Manager cancels the order",
+      "method": "PATCH",
+      "path": "/api/orders/{{orderId}}",
+      "headers": {
+        "Authorization": "Bearer {{token}}"
+      },
+      "body": {
+        "status": "cancelled"
+      },
+      "expect": {
+        "status": 200,
+        "equals": {
+          "data.status": "cancelled"
+        }
+      }
+    },
+    {
+      "name": "A cancelled order cannot be delivered (409)",
+      "method": "PATCH",
+      "path": "/api/orders/{{orderId}}",
+      "headers": {
+        "Authorization": "Bearer {{token}}"
+      },
+      "body": {
+        "status": "delivered"
+      },
+      "expect": {
+        "status": 409,
+        "has": [
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "The repeat was the same order",
+      "method": "GET",
+      "path": "/api/orders/{{repeatId}}",
+      "body": null,
+      "expect": {
+        "status": 200,
+        "equals": {
+          "data.status": "cancelled"
+        }
+      }
+    }
+  ]
+}

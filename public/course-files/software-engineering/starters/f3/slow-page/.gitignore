@@ -1,0 +1,5 @@
+node_modules
+dist
+*.local
+# Made by npm run photos
+public/photos

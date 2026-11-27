@@ -1,0 +1,13 @@
+entry,date,branch,customer,sales_rep,type,ref,details,amount_fcfa,method,note
+1,2026-10-02,NKW,Mama Ngozi Provisions,Nfor Emmanuel,SALE,INV-0101,Rice 50kg x5; Palm Oil 5L x10,246025,,
+2,2026-10-09,CAV,Ambe Hotel,Bih Clarisse,SALE,INV-0102,Vegetable Oil 5L x6; Rice 25kg x4,119480,,
+3,2026-10-15,NKW,Mama Ngozi Provisions,,PAYMENT,RCPT-0201,MoMo from 237670112233,150000,mtn_momo,for INV-0101
+4,2026-10-20,BAF,Tchoupo & Fils,Nfor Emmanuel,SALE,INV-0103,Sugar 1kg x50; Salt 1kg x40,50200,,
+5,2026-10-28,CAV,Ambe Hotel,,PAYMENT,RCPT-0202,Bank transfer,119480,bank_transfer,for INV-0102
+6,2026-11-03,ML4,St. Joseph College Canteen,Bih Clarisse,SALE,INV-0104,Rice 50kg x8; Beans (Red) x50; Palm Oil 5L x5,367540,,
+7,2026-11-05,NKW,Mama Ngozi Provisions,Nfor Emmanuel,SALE,INV-0105,Sugar 1kg x20; Soap (bar) x48,34880,,
+8,2026-11-12,NKW,Mama Ngozi Provisions,,PAYMENT,RCPT-0203,Cash at the Nkwen till,100000,cash,96025 finishes INV-0101; 3975 for INV-0105
+9,2026-11-14,ML4,St. Joseph College Canteen,,PAYMENT,RCPT-0204,MoMo,200000,mtn_momo,for INV-0104
+10,2026-11-18,CAV,Ambe Hotel,Bih Clarisse,SALE,INV-0106,Rice 50kg x10,360050,,
+11,2026-11-20,BAF,Tchoupo & Fils,Nfor Emmanuel,SALE,INV-0107,Palm Oil 5L x20,132000,,
+12,2026-11-22,CAV,Ambe Hotel,,PAYMENT,RCPT-0205,Orange Money,60000,orange_money,for INV-0106

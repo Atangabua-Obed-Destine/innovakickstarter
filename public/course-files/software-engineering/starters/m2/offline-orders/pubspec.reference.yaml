@@ -1,0 +1,33 @@
+# The dependencies we tested the rep app with (Flutter 3.50.1, Dart 3.14, 26 Nov 2026).
+# Compare with your own pubspec.yaml. Do not rename this file to pubspec.yaml.
+name: nkwen_rep_app
+description: "Nkwen Traders sales-rep app."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.14.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  material_ui: ^1.1.0
+
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.5+1
+  http: ^1.6.0
+  sqflite: ^2.4.6
+  path: ^1.9.1
+  uuid: ^4.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  sqflite_common_ffi: ^2.4.7
+
+flutter:
+
+  uses-material-design: true

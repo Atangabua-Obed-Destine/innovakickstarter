@@ -1,0 +1,12 @@
+{
+  "token": "7|q8sV0nKx3TzEa7bWm2LcYd5RfGh9Jp4UoNi6Ae1B",
+  "token_type": "Bearer",
+  "data": {
+    "id": 2,
+    "name": "Nkwen Manager Demo",
+    "email": "manager.nkw@nkwen.test",
+    "role": "branch_manager",
+    "branch": "NKW",
+    "is_active": true
+  }
+}

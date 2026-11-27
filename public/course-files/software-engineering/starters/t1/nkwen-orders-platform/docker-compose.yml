@@ -1,0 +1,60 @@
+# Docker Compose: start the whole backend (the API and its MySQL database) with one command.
+#
+#   1. Copy .env.example to .env and put a key in APP_KEY (see .env.example).
+#   2. docker compose up --build
+#   3. Open http://localhost:8000/api/products
+#   Stop with Ctrl+C. "docker compose down" removes the containers; the database is kept
+#   in the db-data volume. "docker compose down -v" removes the database too.
+#
+# Works with Docker Desktop on a laptop, or in a GitHub Codespace (Docker is already there).
+# Squads with no backend member can run the stand-in API instead:
+#   docker compose --profile stand-in up stand-in      -> http://localhost:8787/api/products
+
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: nkwen
+      MYSQL_USER: nkwen
+      MYSQL_PASSWORD: ${DB_PASSWORD:-local-dev-only}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-local-dev-root}
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      APP_KEY: ${APP_KEY:?Put a key in APP_KEY in the .env file next to docker-compose.yml (see .env.example)}
+      APP_URL: http://localhost:8000
+      PORT: "8000"
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_DATABASE: nkwen
+      DB_USERNAME: nkwen
+      DB_PASSWORD: ${DB_PASSWORD:-local-dev-only}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  stand-in:
+    profiles: ["stand-in"]
+    image: node:22-alpine
+    working_dir: /repo
+    command: ["node", "contract/stand-in-api.mjs"]
+    environment:
+      PORT: "8787"
+    ports:
+      - "8787:8787"
+    volumes:
+      - ./contract:/repo/contract:ro
+
+volumes:
+  db-data:

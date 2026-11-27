@@ -1,0 +1,13 @@
+# CODEOWNERS: who is asked to review changes to each folder.
+# GitHub requests a review from the owners automatically when a pull request changes their files.
+# With the branch rule "Require review from Code Owners", ONE of the listed owners must approve.
+#
+# 1. Replace the example usernames with your squad's (keep the @).
+# 2. Remove the "# " at the start of each rule line.
+# 3. Every owner needs write access to the repository, or GitHub ignores the line.
+#
+# /api/       @backend-username
+# /web/       @frontend-username
+# /mobile/    @mobile-username
+# /contract/  @backend-username @frontend-username @mobile-username
+# /.github/   @release-lead-username
