@@ -33,3 +33,6 @@ Schedule::command('standing:evaluate')->weeklyOn(1, '01:00')->withoutOverlapping
 
 // Early warning: kind nudges for fellows who are struggling (each signal at most once a week)
 Schedule::command('support:nudge')->dailyAt('08:30')->withoutOverlapping();
+
+// Mock interviews left open (30 min idle or 2 h after start) are cancelled as abandoned: never scored or counted
+Schedule::command('interviews:expire')->everyTenMinutes()->withoutOverlapping();

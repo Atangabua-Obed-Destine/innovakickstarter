@@ -196,6 +196,7 @@ class AttestationRecordBuilder
         $sessions = InterviewSession::where('fellow_id', $fellow->id)
             ->where('status', InterviewStatus::COMPLETED->value)
             ->where(fn ($q) => $q->where('is_practice', false)->orWhereNull('is_practice'))
+            ->whereNotNull('score') // not-scored interviews do not count
             ->whereBetween('completed_at', [$start, $end])
             ->orderBy('completed_at')
             ->get();

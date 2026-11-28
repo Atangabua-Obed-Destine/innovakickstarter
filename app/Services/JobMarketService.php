@@ -173,8 +173,8 @@ class JobMarketService
         $progress = FellowCurriculumProgress::where('fellow_id', $fellow->id)->whereIn('curriculum_activity_id', $activityIds)->with('curriculumActivity:id,title,type,interview_config')->get();
         $done = $progress->filter(fn ($p) => $p->status === CurriculumStatus::COMPLETED);
         $mock = fn (string $type, $rows) => $rows->filter(fn ($p) => $p->curriculumActivity?->type?->value === 'mock_interview' && (($p->curriculumActivity->interview_config['type'] ?? null) === $type));
-        $sessions = InterviewSession::where('fellow_id', $fellow->id)->where('status', 'completed')->get(['type', 'score', 'overall_score']);
-        $sessionPassed = fn (string $type) => $sessions->filter(fn ($s) => ($s->type?->value ?? $s->type) === $type && (float) ($s->overall_score ?? $s->score) >= 70)->count();
+        $sessions = InterviewSession::where('fellow_id', $fellow->id)->where('status', 'completed')->whereNotNull('score')->where(fn ($q) => $q->where('is_practice', false)->orWhereNull('is_practice'))->get(['type', 'score', 'overall_score']);
+        $sessionPassed = fn (string $type) => $sessions->filter(fn ($s) => ($s->type?->value ?? $s->type) === $type && (float) $s->score >= 70)->count();
         $practiceSolved = PracticeAttempt::where('fellow_id', $fellow->id)->where('correct', true)->distinct('challenge_id')->count('challenge_id');
         $casesSolved = DetectiveAnswer::where('fellow_id', $fellow->id)->where('correct', true)->distinct('case_id')->count('case_id');
         $projects = $done->filter(fn ($p) => $p->curriculumActivity?->type?->value === 'project')->count();

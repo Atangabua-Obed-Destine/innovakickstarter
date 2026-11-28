@@ -137,10 +137,10 @@
                                     <h3 class="font-medium text-gray-900">{{ $interview->fellow->name ?? 'Unknown Fellow' }}</h3>
                                     <div class="flex items-center gap-2 text-sm text-gray-500">
                                         <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-700">
-                                            {{ ucfirst(str_replace('_', ' ', $interview->type ?? 'technical')) }}
+                                            {{ ucfirst(str_replace('_', ' ', $interview->type?->value ?? 'technical')) }}
                                         </span>
                                         <span>•</span>
-                                        <span>{{ $interview->mode ?? 'Video' }}</span>
+                                        <span>{{ $interview->mode?->label() ?? 'Video' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -207,7 +207,7 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="text-sm text-gray-900">{{ ucfirst(str_replace('_', ' ', $interview->type ?? 'technical')) }}</span>
+                                    <span class="text-sm text-gray-900">{{ ucfirst(str_replace('_', ' ', $interview->type?->value ?? 'technical')) }}</span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="text-sm text-gray-500">{{ $interview->completed_at?->format('M d, Y') ?? 'N/A' }}</span>

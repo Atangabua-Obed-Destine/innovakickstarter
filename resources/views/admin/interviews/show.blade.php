@@ -21,12 +21,12 @@
             <h1 class="text-2xl font-bold text-white">Interview Details</h1>
         </div>
         <div class="flex gap-2">
-            @if($interview->mode->value === 'human' && in_array($interview->status->value, ['scheduled', 'pending']))
+            @if(in_array($interview->mode->value, ['human', 'peer']) && in_array($interview->status->value, ['scheduled', 'pending']))
                 <button @click="showAssignModal = true" class="btn btn-outline text-cyan-400 border-cyan-400 hover:bg-cyan-400/10">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                     </svg>
-                    {{ $interview->interviewer ? 'Change' : 'Assign' }} Mentor
+                    {{ $interview->interviewer ? 'Change mentor / time' : 'Schedule: mentor, time, link' }}
                 </button>
             @endif
 
@@ -132,8 +132,27 @@
                 </div>
             </div>
 
+            @if($interview->engine_version || !empty($interview->scorecard))
+                @if($interview->status->value === 'completed' && $interview->score === null && $interview->scoring_status !== 'queued')
+                    <div class="card p-6 space-y-4">
+                        <h3 class="text-lg font-semibold text-white">Score this interview</h3>
+                        <p class="text-dark-400 text-sm">The automatic scoring {{ $interview->scoring_status === 'failed' ? 'failed' : 'did not run' }}{{ !empty($interview->scorecard['error']) ? ' (' . $interview->scorecard['error'] . ')' : '' }}. It does not count until it has a score. Read the transcript below, then score it, or try the automatic scoring again.</p>
+                        <form method="POST" action="{{ route('admin.interviews.score', $interview) }}" class="space-y-3">
+                            @csrf
+                            <div><label class="block text-sm text-dark-300 mb-1">Score (0-100)</label><input type="number" name="score" min="0" max="100" step="1" required class="input-field w-full" style="max-width: 160px;"></div>
+                            <div><label class="block text-sm text-dark-300 mb-1">Feedback for the fellow</label><textarea name="feedback" rows="3" required minlength="10" class="input-field w-full"></textarea></div>
+                            <button type="submit" class="btn-primary">Save the score</button>
+                        </form>
+                        @if($interview->scoring_status === 'failed')
+                            <form method="POST" action="{{ route('admin.interviews.rescore', $interview) }}">@csrf<button type="submit" class="btn btn-outline">Try the automatic scoring again</button></form>
+                        @endif
+                    </div>
+                @endif
+                @include('partials.interview.report', ['interview' => $interview, 'audience' => 'reviewer'])
+            @endif
+
             <!-- Rubric Scores (if completed) -->
-            @if($interview->status->value === 'completed' && !empty($interview->rubric_scores))
+            @if(!$interview->engine_version && empty($interview->scorecard) && $interview->status->value === 'completed' && !empty($interview->rubric_scores))
                 <div class="card p-6">
                     <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                         <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,7 +182,7 @@
             @endif
 
             <!-- AI Feedback (if available) -->
-            @if($interview->ai_feedback && count($interview->ai_feedback) > 0)
+            @if(!$interview->engine_version && $interview->ai_feedback && count($interview->ai_feedback) > 0)
                 <div class="card p-6">
                     <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                         <span class="text-xl">🤖</span>
@@ -512,9 +531,18 @@
         <div class="flex items-center justify-center min-h-screen px-4">
             <div class="fixed inset-0 bg-black/60" @click="showAssignModal = false"></div>
             <div class="relative bg-dark-800 rounded-xl max-w-md w-full p-6 border border-dark-700">
-                <h3 class="text-lg font-semibold text-white mb-4">Assign Mentor</h3>
+                <h3 class="text-lg font-semibold text-white mb-4">Schedule the interview</h3>
                 <form action="{{ route('admin.interviews.assign-mentor', $interview) }}" method="POST">
                     @csrf
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-dark-300 mb-2">Date and time</label>
+                        <input type="datetime-local" name="scheduled_at" required min="{{ now()->format('Y-m-d\TH:i') }}"
+                               value="{{ $interview->scheduled_at?->format('Y-m-d\TH:i') }}" class="input-field w-full">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-dark-300 mb-2">Meeting link (Google Meet, Zoom...)</label>
+                        <input type="url" name="meeting_link" value="{{ $interview->meeting_link }}" placeholder="https://meet.google.com/..." class="input-field w-full">
+                    </div>
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-dark-300 mb-2">Select Mentor</label>
                         <select name="mentor_id" required class="input-field w-full">
@@ -532,7 +560,7 @@
                             Cancel
                         </button>
                         <button type="submit" class="btn-primary">
-                            Assign Mentor
+                            Schedule and notify
                         </button>
                     </div>
                 </form>

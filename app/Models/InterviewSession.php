@@ -93,7 +93,24 @@ class InterviewSession extends Model
         'difficulty_level',
         'curriculum_activity_id',
         'curriculum_progress_id',
+        'engine_version',
+        'plan',
+        'context',
+        'scorecard',
+        'integrity',
+        'integrity_level',
+        'hire_signal',
+        'scoring_status',
+        'current_turn',
+        'turn_started_at',
+        'last_activity_at',
+        'expires_at',
     ];
+
+    /**
+     * The plan holds the questions of an interview in progress: never serialise it.
+     */
+    protected $hidden = ['plan'];
 
     /**
      * The attributes that should be cast.
@@ -127,6 +144,14 @@ class InterviewSession extends Model
             'confidence_score' => 'decimal:2',
             'filler_word_count' => 'integer',
             'speaking_pace_wpm' => 'integer',
+            'plan' => 'array',
+            'context' => 'array',
+            'scorecard' => 'array',
+            'integrity' => 'array',
+            'current_turn' => 'integer',
+            'turn_started_at' => 'datetime',
+            'last_activity_at' => 'datetime',
+            'expires_at' => 'datetime',
         ];
     }
 

@@ -16,11 +16,11 @@
             </nav>
             <h1 class="text-2xl font-semibold text-gray-900">Interview Review</h1>
             <p class="mt-1 text-gray-600">
-                {{ ucfirst(str_replace('_', ' ', $interview->type ?? 'Technical')) }} Interview with {{ $interview->fellow->name ?? 'Fellow' }}
+                {{ ucfirst(str_replace('_', ' ', $interview->type?->value ?? 'Technical')) }} Interview with {{ $interview->fellow->name ?? 'Fellow' }}
             </p>
         </div>
         <div class="flex items-center gap-3">
-            @if($interview->meeting_link && $interview->status === 'scheduled')
+            @if($interview->meeting_link && $interview->status?->value === 'scheduled')
             <a href="{{ $interview->meeting_link }}" target="_blank" rel="noopener noreferrer"
                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,21 +44,21 @@
                 <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                     <h2 class="text-lg font-semibold text-gray-900">Interview Details</h2>
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                        {{ $interview->status === 'scheduled' ? 'bg-blue-100 text-blue-800' : '' }}
-                        {{ $interview->status === 'completed' ? 'bg-green-100 text-green-800' : '' }}
-                        {{ $interview->status === 'cancelled' ? 'bg-gray-100 text-gray-800' : '' }}">
-                        {{ ucfirst($interview->status ?? 'scheduled') }}
+                        {{ $interview->status?->value === 'scheduled' ? 'bg-blue-100 text-blue-800' : '' }}
+                        {{ $interview->status?->value === 'completed' ? 'bg-green-100 text-green-800' : '' }}
+                        {{ $interview->status?->value === 'cancelled' ? 'bg-gray-100 text-gray-800' : '' }}">
+                        {{ ($interview->status?->label() ?? 'Scheduled') }}
                     </span>
                 </div>
                 <div class="p-6">
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                         <div class="bg-gray-50 rounded-lg p-4">
                             <span class="text-xs text-gray-500 block mb-1">Interview Type</span>
-                            <span class="text-sm font-medium text-gray-900">{{ ucfirst(str_replace('_', ' ', $interview->type ?? 'Technical')) }}</span>
+                            <span class="text-sm font-medium text-gray-900">{{ ucfirst(str_replace('_', ' ', $interview->type?->value ?? 'Technical')) }}</span>
                         </div>
                         <div class="bg-gray-50 rounded-lg p-4">
                             <span class="text-xs text-gray-500 block mb-1">Mode</span>
-                            <span class="text-sm font-medium text-gray-900">{{ ucfirst($interview->mode ?? 'Video') }}</span>
+                            <span class="text-sm font-medium text-gray-900">{{ ($interview->mode?->label() ?? 'Video') }}</span>
                         </div>
                         <div class="bg-gray-50 rounded-lg p-4">
                             <span class="text-xs text-gray-500 block mb-1">Scheduled</span>
@@ -99,7 +99,7 @@
             </div>
 
             <!-- Feedback Form -->
-            @if(!$interview->feedback || $interview->status !== 'completed')
+            @if(in_array($interview->status?->value, ['scheduled', 'in_progress'], true))
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200">
                     <h2 class="text-lg font-semibold text-gray-900">Submit Feedback</h2>
@@ -426,10 +426,10 @@
                     @foreach($previousInterviews as $prev)
                     <div class="p-4 hover:bg-gray-50 transition-colors">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-gray-900">{{ ucfirst(str_replace('_', ' ', $prev->type ?? 'Interview')) }}</span>
+                            <span class="text-sm font-medium text-gray-900">{{ ucfirst(str_replace('_', ' ', $prev->type?->value ?? 'Interview')) }}</span>
                             @if($prev->score)
-                            <span class="text-sm font-bold {{ $prev->score >= 7 ? 'text-green-600' : ($prev->score >= 5 ? 'text-yellow-600' : 'text-red-600') }}">
-                                {{ number_format($prev->score, 1) }}/10
+                            <span class="text-sm font-bold {{ $prev->score >= 70 ? 'text-green-600' : ($prev->score >= 50 ? 'text-yellow-600' : 'text-red-600') }}">
+                                {{ number_format($prev->score, 0) }}/100
                             </span>
                             @endif
                         </div>

@@ -1466,39 +1466,89 @@ class AdminController extends Controller
     }
 
     /**
-     * Assign a mentor to a human interview.
+     * Schedule a human interview: assign the mentor, the time and the meeting link.
      */
     public function assignMentor(Request $request, InterviewSession $interview): RedirectResponse
     {
         $request->validate([
             'mentor_id' => 'required|exists:users,id',
+            'scheduled_at' => 'required|date|after:now',
+            'meeting_link' => 'nullable|url|max:500',
         ]);
 
-        // Verify the interview is human mode
-        if ($interview->mode !== InterviewMode::HUMAN) {
-            return redirect()->back()
-                ->with('error', 'Cannot assign mentor to AI interviews.');
-        }
-
         $mentor = User::findOrFail($request->mentor_id);
-        
-        // Verify user is a mentor
-        if (!$mentor->hasRole('mentor')) {
-            return redirect()->back()
-                ->with('error', 'Selected user is not a mentor.');
+        if (!$mentor->hasRole('mentor') && !$mentor->isMentor()) {
+            return redirect()->back()->with('error', 'Selected user is not a mentor.');
         }
 
         $oldMentor = $interview->interviewer;
-        $interview->update(['interviewer_id' => $mentor->id]);
+        try {
+            $interview = app(\App\Services\InterviewService::class)->scheduleHuman(
+                $interview, $mentor, \Carbon\Carbon::parse($request->scheduled_at), $request->meeting_link
+            );
+        } catch (\RuntimeException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
 
         $this->auditService->log('interview_mentor_assigned', auth()->user(), $interview, 'Mentor assigned to interview', [
             'mentor_id' => $mentor->id,
             'mentor_name' => $mentor->name,
             'old_mentor_id' => $oldMentor?->id,
+            'scheduled_at' => $interview->scheduled_at?->toIso8601String(),
         ]);
 
         return redirect()->route('admin.interviews.show', $interview)
-            ->with('success', "Mentor {$mentor->name} assigned successfully.");
+            ->with('success', "Scheduled with {$mentor->name}. The fellow and the mentor were notified.");
+    }
+
+    /**
+     * Score an interview by hand when the automatic scoring failed (0-100). The score
+     * then counts like any other (Career Capital, curriculum review).
+     */
+    public function scoreInterview(Request $request, InterviewSession $interview): RedirectResponse
+    {
+        $validated = $request->validate([
+            'score' => 'required|numeric|min:0|max:100',
+            'feedback' => 'required|string|min:10|max:3000',
+        ]);
+        if ($interview->status !== InterviewStatus::COMPLETED || $interview->score !== null) {
+            return redirect()->back()->with('error', 'Only a completed interview without a score can be scored by hand.');
+        }
+
+        $blueprints = app(\App\Services\Interview\BlueprintService::class);
+        $score = round((float) $validated['score'], 1);
+        $signal = $blueprints->hireSignal($blueprints->forTrack($interview->track), $score);
+        $scorecard = array_filter((array) $interview->scorecard, fn ($v, $k) => !in_array($k, ['failed', 'error'], true), ARRAY_FILTER_USE_BOTH);
+        $interview->forceFill([
+            'score' => $score,
+            'overall_score' => (int) round($score),
+            'hire_signal' => $signal,
+            'scoring_status' => 'manual',
+            'feedback' => $validated['feedback'],
+            'scorecard' => $scorecard + [
+                'version' => 1, 'by' => 'reviewer', 'reviewer' => auth()->user()->name, 'overall' => $score, 'hire_signal' => $signal,
+                'pass_mark' => (int) ($interview->context['pass_mark'] ?? 70), 'passed' => $score >= (int) ($interview->context['pass_mark'] ?? 70),
+                'summary' => $validated['feedback'], 'dimensions' => [], 'strengths' => [], 'improvements' => [], 'questions' => [], 'next_steps' => [],
+                'scored_at' => now()->toIso8601String(),
+            ],
+        ])->save();
+
+        $this->auditService->log('interview_scored_manually', auth()->user(), $interview, 'Interview scored by hand', ['score' => $score]);
+        app(\App\Services\InterviewService::class)->recordScored($interview->fresh());
+
+        return redirect()->route('admin.interviews.show', $interview)->with('success', "Scored {$score}/100.");
+    }
+
+    /** Try the automatic scoring again after a failure. */
+    public function rescoreInterview(InterviewSession $interview): RedirectResponse
+    {
+        if ($interview->status !== InterviewStatus::COMPLETED || $interview->scoring_status !== 'failed') {
+            return redirect()->back()->with('error', 'Only an interview whose scoring failed can be scored again.');
+        }
+        $interview->forceFill(['scoring_status' => 'queued'])->save();
+        \App\Jobs\ScoreInterview::dispatch($interview->id);
+
+        return redirect()->route('admin.interviews.show', $interview)->with('success', 'Scoring queued again.');
     }
 
     /**

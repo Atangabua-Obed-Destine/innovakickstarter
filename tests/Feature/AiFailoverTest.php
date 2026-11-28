@@ -11,7 +11,6 @@ use App\Services\Ai\AiProvider;
 use App\Services\Ai\AiUnavailableException;
 use App\Services\AiReview\AiGrader;
 use App\Services\Integrations\IntegrationTester;
-use App\Services\LiveAIInterviewService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Cache;
@@ -154,40 +153,6 @@ class AiFailoverTest extends TestCase
         $this->assertSame(3, Http::recorded()->filter(fn ($pair) => str_contains($pair[0]->url(), 'groq'))->count());
         Http::assertSent(fn (HttpRequest $r) => str_contains($r->url(), 'generativelanguage') && $r['reasoning_effort'] === 'medium'
             && $r['max_tokens'] === 10500);
-    }
-
-    public function test_live_interview_never_invents_a_score(): void
-    {
-        $interview = new InterviewSession();
-        $interview->id = 'live-test-1';
-        config(['services.groq.key' => null, 'services.gemini.key' => null]); // AI unavailable
-        $live = app(LiveAIInterviewService::class);
-        $base = ['started_at' => now()->subMinutes(5)->toISOString(), 'hints_used' => 0, 'type' => 'behavioral', 'difficulty' => 'intermediate'];
-
-        // No answer could be scored.
-        Cache::put('live_interview_live-test-1', $base + ['evaluations' => [
-            ['question_index' => 0, 'score' => null, 'strengths' => [], 'improvements' => [], 'skipped' => false],
-            ['question_index' => 1, 'score' => null, 'strengths' => [], 'improvements' => [], 'skipped' => false],
-        ]], 600);
-        $results = $live->endInterview($interview);
-        $this->assertNull($results['overall_score']);
-        $this->assertTrue($results['not_scored']);
-
-        // Some scored: the average leaves the unscored answer out.
-        Cache::put('live_interview_live-test-1', $base + ['evaluations' => [
-            ['question_index' => 0, 'score' => 80, 'strengths' => [], 'improvements' => [], 'skipped' => false],
-            ['question_index' => 1, 'score' => null, 'strengths' => [], 'improvements' => [], 'skipped' => false],
-            ['question_index' => 2, 'score' => 60, 'strengths' => [], 'improvements' => [], 'skipped' => false],
-        ]], 600);
-        $results = $live->endInterview($interview);
-        $this->assertEquals(70.0, $results['overall_score']);
-        $this->assertSame(1, $results['answers_not_scored']);
-
-        // The fallback reply used when the AI is down carries no score.
-        $method = new \ReflectionMethod($live, 'getFallbackResponse');
-        $method->setAccessible(true);
-        $fallback = $method->invoke($live, 'evaluate_and_next', $base + ['questions_asked' => 1], $interview);
-        $this->assertNull($fallback['evaluation']['score']);
     }
 
     public function test_test_button_checks_the_main_and_the_backup(): void

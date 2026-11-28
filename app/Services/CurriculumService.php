@@ -225,7 +225,9 @@ class CurriculumService
     }
 
     /**
-     * Create a linked interview session for a mock_interview curriculum activity.
+     * Create the interview for a mock_interview activity. AI interviews are planned by the
+     * interview engine and open in the room; human interviews wait (PENDING) until an admin
+     * assigns a mentor, a time and a meeting link.
      */
     public function createLinkedInterview(
         User $fellow,
@@ -233,48 +235,118 @@ class CurriculumService
         FellowCurriculumProgress $progress
     ): InterviewSession {
         $config = $activity->interview_config ?? [];
-        $track = Track::findOrFail($activity->track_id);
+        $mode = InterviewMode::tryFrom((string) ($config['mode'] ?? 'ai'));
 
-        // A missing or unknown type (some activities say "mock_interview") means a
-        // technical check of the milestone, not a generic behavioral interview.
-        $interviewType = InterviewType::tryFrom((string) ($config['type'] ?? '')) ?? InterviewType::TECHNICAL_CODING;
-        $interviewMode = InterviewMode::tryFrom($config['mode'] ?? 'ai') ?? InterviewMode::AI;
-        $difficulty = $config['difficulty'] ?? 'intermediate';
+        if (!in_array($mode, [InterviewMode::HUMAN, InterviewMode::PEER], true)) {
+            $interview = app(\App\Services\Interview\InterviewEngine::class)->createForActivity($fellow, $activity, $progress);
+            $progress->update(['linked_interview_id' => $interview->id]);
 
-        // AI interviews start immediately; human/peer need scheduling
-        $isAI = $interviewMode === InterviewMode::AI;
+            return $interview;
+        }
 
+        $type = InterviewType::tryFrom((string) ($config['type'] ?? '')) ?? InterviewType::TECHNICAL_CODING;
         $interview = InterviewSession::create([
             'fellow_id' => $fellow->id,
             'track_id' => $activity->track_id,
-            'type' => $interviewType,
-            'mode' => $interviewMode,
-            'status' => $isAI
-                ? \App\Enums\InterviewStatus::IN_PROGRESS
-                : \App\Enums\InterviewStatus::PENDING,
-            'scheduled_at' => now(),
-            'started_at' => $isAI ? now() : null,
-            'duration_minutes' => $interviewType->defaultDuration(),
-            'difficulty_level' => $difficulty,
-            'title' => "Curriculum: {$activity->title}",
-            'description' => "Interview session for curriculum activity: {$activity->title}",
+            'type' => $type,
+            'mode' => $mode,
+            'status' => \App\Enums\InterviewStatus::PENDING,
+            'scheduled_at' => null,
+            'target_duration' => (int) ($config['minutes'] ?? 45),
+            'difficulty_level' => $config['difficulty'] ?? 'intermediate',
+            'title' => $activity->title,
+            'description' => 'Interview with a mentor for: ' . $activity->title,
             'curriculum_activity_id' => $activity->id,
             'curriculum_progress_id' => $progress->id,
         ]);
-
-        // Link the interview to the progress record
         $progress->update(['linked_interview_id' => $interview->id]);
+
+        foreach (app(InterviewService::class)->team()->filter(fn ($u) => $u->isAdmin()) as $admin) {
+            try {
+                \App\Models\Notification::send($admin, \App\Models\Notification::TYPE_INTERVIEW_SCHEDULED, 'An interview needs a mentor and a time',
+                    "{$fellow->name} is ready for \"{$activity->title}\". Assign a mentor, a time and a meeting link.",
+                    ['action_url' => route('admin.interviews.show', $interview), 'action_label' => 'Schedule it', 'data' => ['interview_id' => $interview->id]]);
+            } catch (\Throwable $e) {
+                Log::warning('Interview scheduling alert not sent', ['error' => $e->getMessage()]);
+            }
+        }
 
         return $interview;
     }
 
+    /** Hours a fellow waits after a failed interview before a retake (with new questions). */
+    public const INTERVIEW_RETAKE_HOURS = 24;
+
+    /** Failed attempts after which the team is told and the fellow is asked to book a mentor. */
+    public const INTERVIEW_FAILS_BEFORE_MENTOR = 3;
+
+    /** Pass mark of a mock interview activity: interview_config.min_score, else the blueprint chapter's, else 70. */
+    public function interviewPassMark(TrackCurriculumActivity $activity): int
+    {
+        $config = (array) ($activity->interview_config ?? []);
+        if (isset($config['min_score']) && is_numeric($config['min_score'])) {
+            return (int) $config['min_score'];
+        }
+        $blueprints = app(\App\Services\Interview\BlueprintService::class);
+        $chapter = $blueprints->chapter($blueprints->forTrack($activity->track), $activity->milestone, $activity);
+
+        return !empty($chapter['matched']) ? (int) ($chapter['pass_mark'] ?? 70) : 70;
+    }
+
     /**
-     * Launch another interview attempt for a curriculum activity.
-     * Used when the fellow wants to retry (if multiple sessions are allowed).
+     * Interviews that count for an activity: completed, scored, not practice. Abandoned,
+     * cancelled and not-scored (scoring failed) sessions never count.
+     */
+    public function countedInterviews(int $fellowId, string $activityId, ?\Carbon\CarbonInterface $since = null): \Illuminate\Support\Collection
+    {
+        return InterviewSession::where('fellow_id', $fellowId)
+            ->where('curriculum_activity_id', $activityId)
+            ->when($since, fn ($q) => $q->where('completed_at', '>', $since))
+            ->where('status', \App\Enums\InterviewStatus::COMPLETED->value)
+            ->whereNotNull('score')
+            ->where(fn ($q) => $q->where('is_practice', false)->orWhereNull('is_practice'))
+            ->orderByDesc('completed_at')
+            ->get();
+    }
+
+    /**
+     * Where a fellow stands on a mock interview activity: attempts, best score, whether a
+     * retake is allowed yet, and whether they should book a mentor session.
+     */
+    public function interviewStanding(User $fellow, TrackCurriculumActivity $activity): array
+    {
+        $pass = $this->interviewPassMark($activity);
+        $required = max(1, (int) ($activity->interview_config['count'] ?? 1));
+        // After a reviewer sends the activity back, only interviews taken since then count.
+        $progress = FellowCurriculumProgress::where('fellow_id', $fellow->id)->where('curriculum_activity_id', $activity->id)->first();
+        $since = $progress?->status === CurriculumStatus::REJECTED ? $progress->reviewed_at : null;
+        $counted = $this->countedInterviews($fellow->id, $activity->id, $since);
+        $passedCount = $counted->filter(fn ($i) => (float) $i->score >= $pass)->count();
+        $failed = $counted->filter(fn ($i) => (float) $i->score < $pass);
+        $last = $counted->first();
+        $retakeAt = $last && (float) $last->score < $pass && $last->completed_at
+            ? $last->completed_at->copy()->addHours(self::INTERVIEW_RETAKE_HOURS) : null;
+
+        return [
+            'pass_mark' => $pass,
+            'required' => $required,
+            'counted' => $counted->count(),
+            'passed_count' => $passedCount,
+            'best_score' => $counted->max(fn ($i) => (float) $i->score),
+            'passed' => $passedCount >= $required,
+            'failed_count' => $failed->count(),
+            'retake_at' => $retakeAt && $retakeAt->isFuture() ? $retakeAt : null,
+            'needs_mentor' => $failed->count() >= self::INTERVIEW_FAILS_BEFORE_MENTOR,
+        ];
+    }
+
+    /**
+     * Launch another interview attempt for a curriculum activity. A failed attempt can be
+     * retaken after 24 hours, with new questions.
      */
     public function launchInterviewAttempt(User $fellow, string $activityId): InterviewSession
     {
-        $activity = TrackCurriculumActivity::findOrFail($activityId);
+        $activity = TrackCurriculumActivity::with(['milestone', 'track'])->findOrFail($activityId);
 
         if (!$activity->requiresInterviewSession()) {
             throw new \Exception('This activity does not require an interview session.');
@@ -284,92 +356,114 @@ class CurriculumService
             ->where('curriculum_activity_id', $activity->id)
             ->firstOrFail();
 
-        if (!in_array($progress->status, [CurriculumStatus::IN_PROGRESS, CurriculumStatus::REJECTED])) {
+        if (!in_array($progress->status, [CurriculumStatus::IN_PROGRESS, CurriculumStatus::REJECTED, CurriculumStatus::OVERDUE], true)) {
             throw new \Exception("Cannot launch interview in current status: {$progress->status->label()}");
         }
 
-        // Prevent launching if there's already an active (non-completed) session
-        $activeSession = InterviewSession::where('fellow_id', $fellow->id)
+        // Close an AI attempt that was left open too long, then refuse if one is still active.
+        $engine = app(\App\Services\Interview\InterviewEngine::class);
+        $active = InterviewSession::where('fellow_id', $fellow->id)
             ->where('curriculum_activity_id', $activity->id)
             ->whereIn('status', [
                 \App\Enums\InterviewStatus::SCHEDULED->value,
                 \App\Enums\InterviewStatus::IN_PROGRESS->value,
                 \App\Enums\InterviewStatus::PENDING->value,
             ])
-            ->first();
+            ->get()
+            ->reject(fn ($s) => $engine->isExpired($s) && $engine->expire($s));
 
-        if ($activeSession) {
+        if ($active->isNotEmpty()) {
             throw new \Exception('You already have an active interview session. Complete or cancel it before starting a new one.');
+        }
+
+        $standing = $this->interviewStanding($fellow, $activity);
+        if ($standing['passed']) {
+            throw new \Exception('You already passed this interview.');
+        }
+        if ($standing['retake_at']) {
+            throw new \Exception('You can retake this interview from ' . $standing['retake_at']->format('D j M, g:i A')
+                . ' (24 hours after your last attempt), with new questions. Use the time to work on the next steps in your scorecard.');
         }
 
         return $this->createLinkedInterview($fellow, $activity, $progress);
     }
 
     /**
-     * Handle the completion of a linked interview session.
-     * Called when the interview system completes an interview that's linked to a curriculum activity.
+     * Called once a linked interview has its final 0-100 score. Pass (score >= the activity's
+     * pass mark, enough counted sessions) submits the activity to the human review queue with
+     * the interview as evidence. A third failed attempt alerts the team.
      */
     public function handleInterviewCompletion(InterviewSession $interview): void
     {
-        if (!$interview->curriculum_progress_id) {
-            return; // Not linked to curriculum
+        if (!$interview->curriculum_progress_id || $interview->is_practice || $interview->score === null
+            || $interview->status !== \App\Enums\InterviewStatus::COMPLETED) {
+            return;
         }
 
-        DB::transaction(function () use ($interview) {
-            // Lock the progress row to prevent concurrent completion race conditions
-            $progress = FellowCurriculumProgress::lockForUpdate()
-                ->find($interview->curriculum_progress_id);
-            if (!$progress) {
+        $alertTeam = false;
+        DB::transaction(function () use ($interview, &$alertTeam) {
+            $progress = FellowCurriculumProgress::lockForUpdate()->find($interview->curriculum_progress_id);
+            $activity = $progress?->curriculumActivity;
+            if (!$progress || !$activity) {
                 return;
             }
 
-            $activity = $progress->curriculumActivity;
-            if (!$activity) {
-                return;
+            $standing = $this->interviewStanding($progress->fellow, $activity);
+            $counted = $this->countedInterviews($progress->fellow_id, $activity->id,
+                $progress->status === CurriculumStatus::REJECTED ? $progress->reviewed_at : null);
+            $best = $counted->sortByDesc(fn ($i) => (float) $i->score)->first();
+            $progress->update(['linked_interview_id' => $best?->id ?? $interview->id]);
+
+            $passedThis = (float) $interview->score >= $standing['pass_mark'];
+            if (!$passedThis && $standing['failed_count'] === self::INTERVIEW_FAILS_BEFORE_MENTOR) {
+                $alertTeam = true;
             }
 
-            $config = $activity->interview_config ?? [];
-            $minScore = $config['min_score'] ?? 70;
-            $requiredCount = $config['count'] ?? 1;
-
-            // Get all completed interviews for this curriculum activity
-            $completedInterviews = InterviewSession::where('fellow_id', $progress->fellow_id)
-                ->where('curriculum_activity_id', $activity->id)
-                ->where('status', 'completed')
-                ->orderByDesc('overall_score')
-                ->get();
-
-            $bestScore = $completedInterviews->max(fn($i) => $i->overall_score ?? $i->score ?? 0) ?? 0;
-            $completedSessionCount = $completedInterviews->count();
-            $passed = $bestScore >= $minScore && $completedSessionCount >= $requiredCount;
-
-            // Update the progress with the best interview score
-            $progress->update([
-                'linked_interview_id' => $completedInterviews->first()?->id,
-            ]);
-
-            // If passed and activity is still in_progress, auto-submit for review
-            if ($passed && $progress->status === CurriculumStatus::IN_PROGRESS) {
-                $progress->submit(
-                    [
-                        'evidence_text' => "Mock interview completed. Best score: {$bestScore}%. Sessions completed: {$completedSessionCount}/{$requiredCount}.",
+            if ($standing['passed'] && in_array($progress->status, [CurriculumStatus::IN_PROGRESS, CurriculumStatus::REJECTED, CurriculumStatus::OVERDUE], true)) {
+                $score = round((float) $best->score, 1);
+                $evidence = [
+                    'evidence_text' => "Mock interview passed: {$score}/100 (pass mark {$standing['pass_mark']}). "
+                        . 'Hire signal: ' . \App\Services\Interview\BlueprintService::signalLabel($best->hire_signal) . '. '
+                        . 'Integrity: ' . ($best->integrity_level ?? 'n/a') . '. Sessions counted: ' . $standing['counted'] . '.',
+                    'evidence_url' => route('admin.interviews.show', $best),
+                    'interview' => [
+                        'id' => $best->id,
+                        'score' => $score,
+                        'hire_signal' => $best->hire_signal,
+                        'integrity_level' => $best->integrity_level,
+                        'mode' => $best->mode?->value,
+                        'attempts' => $standing['counted'],
                     ],
-                    "Auto-submitted via interview system. Interview type: " . ($config['type'] ?? 'behavioral')
-                );
+                ];
+                $progress->submit($evidence, 'Submitted automatically after a passed mock interview. Review the transcript, scorecard and integrity report.');
+                $progress->update(['score_awarded' => (int) round($score)]);
 
-                $progress->update([
-                    'score_awarded' => round($bestScore),
-                ]);
-
-                Log::info("Curriculum activity auto-submitted after interview completion", [
-                    'fellow_id' => $progress->fellow_id,
-                    'activity_id' => $activity->id,
-                    'interview_id' => $interview->id,
-                    'best_score' => $bestScore,
-                    'sessions' => $completedSessionCount,
+                Log::info('Curriculum interview passed and sent to review', [
+                    'fellow_id' => $progress->fellow_id, 'activity_id' => $activity->id, 'interview_id' => $best->id, 'score' => $score,
                 ]);
             }
         });
+
+        if ($alertTeam) {
+            $fellow = $interview->fellow;
+            foreach (app(InterviewService::class)->team() as $member) {
+                try {
+                    \App\Models\Notification::send($member, \App\Models\Notification::TYPE_SYSTEM_ANNOUNCEMENT, 'A fellow failed a mock interview 3 times',
+                        "{$fellow->name} has not passed \"" . ($interview->title ?: 'a mock interview') . '" after ' . self::INTERVIEW_FAILS_BEFORE_MENTOR . ' attempts. Please offer a mentor session.',
+                        ['action_url' => $member->isAdmin() ? route('admin.interviews.show', $interview) : route('mentor.dashboard'),
+                            'action_label' => 'Open', 'priority' => \App\Models\Notification::PRIORITY_HIGH, 'data' => ['interview_id' => $interview->id, 'fellow_id' => $fellow->id]]);
+                } catch (\Throwable $e) {
+                    Log::warning('Interview team alert not sent', ['error' => $e->getMessage()]);
+                }
+            }
+            try {
+                \App\Models\Notification::send($fellow, \App\Models\Notification::TYPE_SYSTEM_ANNOUNCEMENT, 'Book a session with a mentor',
+                    'You have tried this interview 3 times. Book a session with a mentor: they will go through your scorecards with you before your next attempt.',
+                    ['action_url' => route('help.index'), 'action_label' => 'Ask for a mentor session']);
+            } catch (\Throwable $e) {
+                Log::warning('Interview mentor advice not sent', ['error' => $e->getMessage()]);
+            }
+        }
     }
 
     /**
@@ -402,37 +496,19 @@ class CurriculumService
 
         $activity = $progress->curriculumActivity;
 
-        // For mock_interview activities, validate interview completion
+        // For mock_interview activities, validate interview completion (scored, non-practice sessions only).
         if ($activity->requiresInterviewSession()) {
-            $config = $activity->interview_config ?? [];
-            $minScore = $config['min_score'] ?? 70;
-            $requiredCount = $config['count'] ?? 1;
+            $standing = $this->interviewStanding($fellow, $activity);
 
-            $completedInterviews = InterviewSession::where('fellow_id', $fellow->id)
-                ->where('curriculum_activity_id', $activity->id)
-                ->where('status', 'completed')
-                ->get();
-
-            $bestScore = $completedInterviews->max(fn($i) => $i->overall_score ?? $i->score ?? 0) ?? 0;
-
-            if ($completedInterviews->count() < $requiredCount) {
+            if ($standing['passed_count'] < $standing['required']) {
                 throw new \Exception(
-                    "You need to complete {$requiredCount} interview session(s). " .
-                    "Completed: {$completedInterviews->count()}"
+                    "You need {$standing['required']} passed interview session(s) with at least {$standing['pass_mark']}/100. " .
+                    "Passed so far: {$standing['passed_count']}."
                 );
             }
 
-            if ($bestScore < $minScore) {
-                throw new \Exception(
-                    "Your best interview score ({$bestScore}%) doesn't meet the minimum required ({$minScore}%). " .
-                    "Try another interview session to improve your score."
-                );
-            }
-
-            // Auto-fill evidence with interview results
             $data['evidence_text'] = ($data['evidence_text'] ?? '') .
-                "\n\n[Auto-generated] Mock interview completed. " .
-                "Best score: {$bestScore}%. Sessions: {$completedInterviews->count()}/{$requiredCount}.";
+                "\n\n[Auto-generated] Mock interview passed. Best score: " . round((float) $standing['best_score'], 1) . "/100. Sessions: {$standing['counted']}.";
         }
 
         if ($activity->requires_video && empty($data['video']['id'])) {

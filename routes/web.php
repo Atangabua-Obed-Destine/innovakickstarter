@@ -172,30 +172,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/activities/{activity}/complete', [ActivityController::class, 'complete'])->name('activities.complete');
 
         // Interviews - Static routes MUST come before resource/parameterized routes
-        // Practice Mode - Unlimited practice without affecting Career Capital
-        Route::get('/interviews/practice/start', [InterviewController::class, 'practiceRoom'])->name('interviews.practice');
+        // Practice: same engine and room, the fellow's own track and chapter; never counts.
+        Route::post('/interviews/practice', [InterviewController::class, 'practice'])->name('interviews.practice')->middleware(['throttle:10,1', \App\Http\Middleware\EnsureNoPenaltyHold::class]);
+        Route::get('/interviews/practice/start', [InterviewController::class, 'practiceLegacy'])->name('interviews.practice.legacy');
 
-        // Live AI Interview - Conversational voice-enabled interviews
-        Route::get('/interviews/live', [\App\Http\Controllers\LiveInterviewController::class, 'lobby'])->name('interviews.live.lobby');
-        Route::post('/interviews/live/start', [\App\Http\Controllers\LiveInterviewController::class, 'start'])->name('interviews.live.start')->middleware(\App\Http\Middleware\EnsureNoPenaltyHold::class);
+        // The live voice interview (text-to-speech) was retired: interviewers reply in text only.
+        Route::match(['get', 'post'], '/interviews/live/{any?}', fn () => redirect()->route('interviews.index')->with('info', 'The live voice interview was replaced by the new interview room: the interviewer writes, you answer out loud.'))
+            ->where('any', '.*')->name('interviews.live.retired');
 
-        // Interview resource and parameterized routes
-        Route::post('/interviews', [InterviewController::class, 'store'])->name('interviews.store')->middleware(\App\Http\Middleware\EnsureNoPenaltyHold::class);
-        Route::resource('interviews', InterviewController::class)->except(['edit', 'update', 'destroy', 'store']);
+        Route::get('/interviews', [InterviewController::class, 'index'])->name('interviews.index');
+        Route::get('/interviews/create', [InterviewController::class, 'create'])->name('interviews.create');
+        Route::get('/interviews/{interview}', [InterviewController::class, 'show'])->name('interviews.show');
         Route::post('/interviews/{interview}/start', [InterviewController::class, 'start'])->name('interviews.start')->middleware(\App\Http\Middleware\EnsureNoPenaltyHold::class);
         Route::post('/interviews/{interview}/cancel', [InterviewController::class, 'cancel'])->name('interviews.cancel');
-        Route::post('/interviews/{interview}/complete', [InterviewController::class, 'complete'])->name('interviews.complete');
         Route::get('/interviews/{interview}/ai-room', [InterviewController::class, 'aiRoom'])->name('interviews.ai-room');
-        Route::get('/interviews/{interview}/questions', [InterviewController::class, 'getQuestions'])->name('interviews.questions');
-        Route::post('/interviews/{interview}/evaluate', [InterviewController::class, 'evaluateResponse'])->name('interviews.evaluate');
-        
-        // Live interview parameterized routes (require interview ID)
-        Route::get('/interviews/{interview}/live', [\App\Http\Controllers\LiveInterviewController::class, 'room'])->name('interviews.live.room');
-        Route::post('/interviews/{interview}/live/message', [\App\Http\Controllers\LiveInterviewController::class, 'sendMessage'])->name('interviews.live.message');
-        Route::post('/interviews/{interview}/live/hint', [\App\Http\Controllers\LiveInterviewController::class, 'getHint'])->name('interviews.live.hint');
-        Route::post('/interviews/{interview}/live/skip', [\App\Http\Controllers\LiveInterviewController::class, 'skipQuestion'])->name('interviews.live.skip');
-        Route::post('/interviews/{interview}/live/end', [\App\Http\Controllers\LiveInterviewController::class, 'end'])->name('interviews.live.end');
-        Route::get('/interviews/{interview}/live/progress', [\App\Http\Controllers\LiveInterviewController::class, 'getProgress'])->name('interviews.live.progress');
+        Route::match(['get', 'post'], '/interviews/{interview}/live/{any?}', fn ($interview) => redirect()->route('interviews.index')->with('info', 'The live voice interview was replaced by the new interview room.'))
+            ->where('any', '.*')->name('interviews.live.retired-room');
+
+        // The interview room (AI): one question at a time from the server.
+        Route::get('/interviews/{interview}/room', [\App\Http\Controllers\InterviewRoomController::class, 'room'])->name('interviews.room');
+        Route::post('/interviews/{interview}/begin', [\App\Http\Controllers\InterviewRoomController::class, 'begin'])->name('interviews.begin')->middleware(['throttle:10,1', \App\Http\Middleware\EnsureNoPenaltyHold::class]);
+        Route::get('/interviews/{interview}/state', [\App\Http\Controllers\InterviewRoomController::class, 'state'])->name('interviews.state')->middleware('throttle:60,1');
+        Route::post('/interviews/{interview}/answer', [\App\Http\Controllers\InterviewRoomController::class, 'answer'])->name('interviews.answer')->middleware('throttle:30,1');
+        Route::post('/interviews/{interview}/transcribe', [\App\Http\Controllers\InterviewRoomController::class, 'transcribe'])->name('interviews.transcribe')->middleware('throttle:20,1');
+        Route::post('/interviews/{interview}/events', [\App\Http\Controllers\InterviewRoomController::class, 'events'])->name('interviews.events')->middleware('throttle:60,1');
+        Route::post('/interviews/{interview}/finish', [\App\Http\Controllers\InterviewRoomController::class, 'finish'])->name('interviews.finish')->middleware('throttle:10,1');
+        Route::get('/interviews/{interview}/score-status', [\App\Http\Controllers\InterviewRoomController::class, 'scoreStatus'])->name('interviews.score-status')->middleware('throttle:60,1');
 
         // Weekly Progress
         Route::get('/weekly-progress', [\App\Http\Controllers\WeeklyProgressController::class, 'index'])->name('weekly-progress.index');
@@ -521,6 +523,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/interviews/export', [AdminController::class, 'exportInterviews'])->name('interviews.export');
         Route::get('/interviews/{interview}', [AdminController::class, 'showInterview'])->name('interviews.show');
         Route::post('/interviews/{interview}/assign-mentor', [AdminController::class, 'assignMentor'])->name('interviews.assign-mentor');
+        Route::post('/interviews/{interview}/score', [AdminController::class, 'scoreInterview'])->name('interviews.score');
+        Route::post('/interviews/{interview}/rescore', [AdminController::class, 'rescoreInterview'])->name('interviews.rescore');
         Route::post('/interviews/{interview}/cancel', [AdminController::class, 'cancelInterview'])->name('interviews.cancel');
         Route::post('/interviews/{interview}/reschedule', [AdminController::class, 'rescheduleInterview'])->name('interviews.reschedule');
         Route::delete('/interviews/{interview}', [AdminController::class, 'destroyInterview'])->name('interviews.destroy');

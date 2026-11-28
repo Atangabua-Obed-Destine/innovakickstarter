@@ -162,21 +162,21 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                {{ ($interview->type ?? '') === 'technical' ? 'bg-blue-100 text-blue-800' : '' }}
-                                {{ ($interview->type ?? '') === 'behavioral' ? 'bg-purple-100 text-purple-800' : '' }}
-                                {{ ($interview->type ?? '') === 'system_design' ? 'bg-green-100 text-green-800' : '' }}
-                                {{ ($interview->type ?? '') === 'mock_interview' ? 'bg-orange-100 text-orange-800' : '' }}
-                                {{ !in_array($interview->type ?? '', ['technical', 'behavioral', 'system_design', 'mock_interview']) ? 'bg-gray-100 text-gray-800' : '' }}">
-                                {{ ucfirst(str_replace('_', ' ', $interview->type ?? 'general')) }}
+                                {{ ($interview->type?->value ?? '') === 'technical' ? 'bg-blue-100 text-blue-800' : '' }}
+                                {{ ($interview->type?->value ?? '') === 'behavioral' ? 'bg-purple-100 text-purple-800' : '' }}
+                                {{ ($interview->type?->value ?? '') === 'system_design' ? 'bg-green-100 text-green-800' : '' }}
+                                {{ ($interview->type?->value ?? '') === 'mock_interview' ? 'bg-orange-100 text-orange-800' : '' }}
+                                {{ !in_array($interview->type?->value ?? '', ['technical', 'behavioral', 'system_design', 'mock_interview']) ? 'bg-gray-100 text-gray-800' : '' }}">
+                                {{ ucfirst(str_replace('_', ' ', $interview->type?->value ?? 'general')) }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center gap-2">
-                                @if(($interview->mode ?? 'video') === 'video')
+                                @if(($interview->mode?->value ?? 'video') === 'video')
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                                 </svg>
-                                @elseif(($interview->mode ?? '') === 'phone')
+                                @elseif(($interview->mode?->value ?? '') === 'phone')
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                                 </svg>
@@ -186,7 +186,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 </svg>
                                 @endif
-                                <span class="text-sm text-gray-600">{{ ucfirst($interview->mode ?? 'Video') }}</span>
+                                <span class="text-sm text-gray-600">{{ ($interview->mode?->label() ?? 'Video') }}</span>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -206,20 +206,20 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                {{ ($interview->status ?? '') === 'scheduled' ? 'bg-blue-100 text-blue-800' : '' }}
-                                {{ ($interview->status ?? '') === 'completed' ? ($interview->feedback ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800') : '' }}
-                                {{ ($interview->status ?? '') === 'cancelled' ? 'bg-gray-100 text-gray-800' : '' }}
-                                {{ ($interview->status ?? '') === 'no_show' ? 'bg-red-100 text-red-800' : '' }}">
-                                @if($interview->status === 'completed' && !$interview->feedback)
+                                {{ ($interview->status?->value ?? '') === 'scheduled' ? 'bg-blue-100 text-blue-800' : '' }}
+                                {{ ($interview->status?->value ?? '') === 'completed' ? ($interview->feedback ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800') : '' }}
+                                {{ ($interview->status?->value ?? '') === 'cancelled' ? 'bg-gray-100 text-gray-800' : '' }}
+                                {{ ($interview->status?->value ?? '') === 'no_show' ? 'bg-red-100 text-red-800' : '' }}">
+                                @if($interview->status?->value === 'completed' && !$interview->feedback)
                                     Needs Review
                                 @else
-                                    {{ ucfirst(str_replace('_', ' ', $interview->status ?? 'pending')) }}
+                                    {{ ($interview->status?->label() ?? 'Pending') }}
                                 @endif
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right">
                             <div class="flex items-center justify-end gap-2">
-                                @if($interview->status === 'scheduled')
+                                @if($interview->status?->value === 'scheduled')
                                     @if($interview->meeting_link)
                                     <a href="{{ $interview->meeting_link }}" target="_blank" rel="noopener noreferrer"
                                        class="inline-flex items-center px-3 py-1.5 text-xs font-medium bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
@@ -230,7 +230,7 @@
                                        class="inline-flex items-center px-3 py-1.5 text-xs font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
                                         Start
                                     </a>
-                                @elseif($interview->status === 'completed' && !$interview->feedback)
+                                @elseif($interview->status?->value === 'completed' && !$interview->feedback)
                                     <a href="{{ route('mentor.interviews.review', $interview->id) }}"
                                        class="inline-flex items-center px-3 py-1.5 text-xs font-medium bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
                                         Review

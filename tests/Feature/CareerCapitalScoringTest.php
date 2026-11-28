@@ -160,11 +160,14 @@ class CareerCapitalScoringTest extends TestCase
         $this->assertEqualsWithDelta(42.0, $this->calculator()->mockInterviewScore($this->fellow, $this->track), 0.01);
     }
 
-    public function test_practice_interviews_count(): void
+    public function test_practice_interviews_never_count(): void
     {
-        // 5 / 20 volume x 80, consistent (+5%) = 21.
+        // Programme decision: practice interviews never affect Career Capital.
         $this->mockInterviews(5, 80, practice: true);
+        $this->assertEqualsWithDelta(0.0, $this->calculator()->mockInterviewScore($this->fellow, $this->track), 0.01);
 
+        // 5 / 20 volume x 80, consistent (+5%) = 21, from the real ones only.
+        $this->mockInterviews(5, 80);
         $this->assertEqualsWithDelta(21.0, $this->calculator()->mockInterviewScore($this->fellow, $this->track), 0.01);
     }
 

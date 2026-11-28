@@ -15,6 +15,7 @@
     $isInterviewActivity = $activity->requiresInterviewSession();
     $interviewConfig = $activity->interview_config ?? [];
     $linkedInterviews = $linkedInterviews ?? collect();
+    $interviewStanding = $interviewStanding ?? null;
 
     // Check availability for start button
     // "available" status means progress record exists but activity hasn't been started yet
@@ -37,12 +38,13 @@
 
     // Interview-specific computed values
     $interviewSessions = $linkedInterviews;
-    $completedSessions = $interviewSessions->filter(fn($s) => ($s->status->value ?? $s->status) === 'completed');
-    $bestScore = $completedSessions->max(fn($s) => $s->overall_score ?? $s->score ?? 0) ?? 0;
-    $requiredCount = $interviewConfig['count'] ?? 1;
-    $minScore = $interviewConfig['min_score'] ?? 70;
-    $passed = $bestScore >= $minScore && $completedSessions->count() >= $requiredCount;
-    $activeSession = $interviewSessions->filter(fn($s) => in_array($s->status->value ?? $s->status, ['in_progress', 'scheduled']))->first();
+    // Only scored, non-practice sessions count (abandoned and not-scored ones never do).
+    $completedSessions = $interviewSessions->filter(fn($s) => ($s->status->value ?? $s->status) === 'completed' && $s->score !== null && !$s->is_practice);
+    $bestScore = (float) ($interviewStanding['best_score'] ?? 0);
+    $requiredCount = $interviewStanding['required'] ?? ($interviewConfig['count'] ?? 1);
+    $minScore = $interviewStanding['pass_mark'] ?? ($interviewConfig['min_score'] ?? 70);
+    $passed = (bool) ($interviewStanding['passed'] ?? false);
+    $activeSession = $interviewSessions->filter(fn($s) => in_array($s->status->value ?? $s->status, ['in_progress', 'scheduled', 'pending']))->first();
 @endphp
 
 <div class="max-w-4xl mx-auto space-y-6">
@@ -176,65 +178,7 @@
 
             {{-- IN PROGRESS: INTERVIEW ACTIVITY --}}
             @elseif($isInterviewActivity && $canSubmit)
-            <div class="space-y-4">
-                <div class="flex items-center justify-between flex-wrap gap-4">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="w-2.5 h-2.5 bg-purple-500 rounded-full animate-pulse"></span>
-                            <h3 class="text-lg font-semibold text-purple-400">🎤 Interview In Progress</h3>
-                        </div>
-                        <p class="text-dark-400 text-sm">
-                            Complete {{ $requiredCount }} interview session{{ $requiredCount > 1 ? 's' : '' }} 
-                            with a minimum score of {{ $minScore }}% to pass.
-                        </p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        @if($activeSession)
-                            @if($activeSession->mode === \App\Enums\InterviewMode::AI)
-                            <a href="{{ route('interviews.ai-room', $activeSession) }}" class="btn-primary text-lg px-6 py-3 flex-shrink-0">
-                                🎤 Continue Interview
-                            </a>
-                            <form action="{{ route('interviews.cancel', $activeSession) }}" method="POST"
-                                  onsubmit="return confirm('Abandon this interview attempt? You can launch a new one right after.');">
-                                @csrf
-                                <button type="submit" class="btn-secondary px-4 py-3">Cancel &amp; Start Over</button>
-                            </form>
-                            @else
-                            <a href="{{ route('interviews.show', $activeSession) }}" class="btn-primary text-lg px-6 py-3 flex-shrink-0">
-                                📋 View Session
-                            </a>
-                            @endif
-                        @else
-                            <form action="{{ route('curriculum.activity.interview', $activity) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn-primary text-lg px-6 py-3">
-                                    🎤 {{ $completedSessions->count() > 0 ? 'Retry Interview' : 'Launch Interview' }}
-                                </button>
-                            </form>
-                        @endif
-                    </div>
-                </div>
-
-                {{-- Interview Progress Tracker --}}
-                <div class="p-4 bg-dark-800/50 rounded-xl border border-dark-700 space-y-3">
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-dark-400">Sessions: <span class="text-white font-medium">{{ $completedSessions->count() }}/{{ $requiredCount }}</span></span>
-                        <span class="text-dark-400">Best Score: 
-                            <span class="{{ $bestScore >= $minScore ? 'text-green-400' : 'text-amber-400' }} font-bold">{{ round($bestScore) }}%</span>
-                            <span class="text-dark-500">/ {{ $minScore }}% required</span>
-                        </span>
-                    </div>
-                    <div class="w-full bg-dark-700 rounded-full h-2.5">
-                        <div class="h-2.5 rounded-full transition-all {{ $bestScore >= $minScore ? 'bg-green-500' : 'bg-amber-500' }}"
-                             style="width: {{ min(100, ($bestScore / max($minScore, 1)) * 100) }}%"></div>
-                    </div>
-                    @if($passed)
-                    <p class="text-green-400 text-sm font-medium">✅ You've met the requirements! Your submission is being processed.</p>
-                    @elseif($completedSessions->count() > 0)
-                    <p class="text-amber-400 text-sm">{{ $bestScore < $minScore ? "Score needs improvement. Try again, you've got this!" : "Complete more sessions to meet the requirement." }}</p>
-                    @endif
-                </div>
-            </div>
+            @include('fellow.curriculum._interview-panel')
 
             {{-- IN PROGRESS / CAN SUBMIT (non-interview) --}}
             @elseif($canSubmit)
@@ -399,8 +343,14 @@
             @foreach($interviewSessions as $session)
             @php
                 $sessionStatus = $session->status->value ?? $session->status ?? 'unknown';
-                $sessionScore = $session->overall_score ?? $session->score ?? 0;
-                $sessionPassed = $sessionScore >= $minScore;
+                $sessionScore = $session->score !== null ? (float) $session->score : null;
+                $sessionPassed = $sessionScore !== null && $sessionScore >= $minScore;
+                if ($sessionStatus === 'completed' && $sessionScore === null) {
+                    $sessionStatus = $session->scoring_status === 'queued' ? 'scoring' : 'not_scored';
+                }
+                if ($sessionStatus === 'cancelled' && $session->cancellation_reason === 'abandoned') {
+                    $sessionStatus = 'abandoned';
+                }
             @endphp
             <div class="flex items-center gap-4 p-4 bg-dark-800 rounded-lg border border-dark-700 hover:border-dark-600 transition">
                 <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0
@@ -424,7 +374,7 @@
                         <span class="px-2 py-0.5 rounded-full text-xs font-medium
                             {{ $sessionStatus === 'completed' ? ($sessionPassed ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400') :
                                ($sessionStatus === 'in_progress' ? 'bg-blue-500/10 text-blue-400' : 'bg-dark-700 text-dark-400') }}">
-                            {{ ucfirst(str_replace('_', ' ', $sessionStatus)) }}
+                            {{ ['not_scored' => 'Not scored', 'scoring' => 'Scoring…', 'abandoned' => 'Abandoned (does not count)', 'no_show' => 'Missed'][$sessionStatus] ?? ucfirst(str_replace('_', ' ', $sessionStatus)) }}
                         </span>
                     </div>
                     <p class="text-dark-400 text-xs mt-0.5">
@@ -437,16 +387,14 @@
                 <div class="flex items-center gap-3 flex-shrink-0">
                     @if($sessionStatus === 'completed')
                     <div class="text-right">
-                        <p class="text-lg font-bold {{ $sessionPassed ? 'text-green-400' : 'text-red-400' }}">{{ round($sessionScore) }}%</p>
-                        <p class="text-dark-500 text-xs">{{ $sessionPassed ? 'Passed' : 'Below ' . $minScore . '%' }}</p>
+                        <p class="text-lg font-bold {{ $sessionPassed ? 'text-green-400' : 'text-red-400' }}">{{ round($sessionScore) }}/100</p>
+                        <p class="text-dark-500 text-xs">{{ $sessionPassed ? 'Passed' : 'Below ' . $minScore }}</p>
                     </div>
                     @endif
-                    @if(in_array($sessionStatus, ['completed', 'in_progress']))
+                    @if(in_array($sessionStatus, ['completed', 'in_progress', 'scoring', 'not_scored', 'scheduled', 'pending']))
                     @php
-                        $sessionLink = $sessionStatus === 'in_progress'
-                            ? ($session->mode === \App\Enums\InterviewMode::AI
-                                ? route('interviews.ai-room', $session)
-                                : route('interviews.show', $session))
+                        $sessionLink = $sessionStatus === 'in_progress' && $session->mode === \App\Enums\InterviewMode::AI
+                            ? route('interviews.room', $session)
                             : route('interviews.show', $session);
                     @endphp
                     <a href="{{ $sessionLink }}"
@@ -818,7 +766,7 @@
             @if($isInterviewActivity && $canSubmit)
                 @if($activeSession)
                     @if($activeSession->mode === \App\Enums\InterviewMode::AI)
-                    <a href="{{ route('interviews.ai-room', $activeSession) }}" class="btn-primary">
+                    <a href="{{ route('interviews.room', $activeSession) }}" class="btn-primary">
                         🎤 Continue Interview
                     </a>
                     @else
@@ -826,11 +774,11 @@
                         📋 View Session
                     </a>
                     @endif
-                @else
+                @elseif(empty($interviewStanding['retake_at']))
                     <form action="{{ route('curriculum.activity.interview', $activity) }}" method="POST">
                         @csrf
                         <button type="submit" class="btn-primary">
-                            🎤 {{ $completedSessions->count() > 0 ? 'Retry Interview' : 'Launch Interview' }}
+                            🎤 {{ $completedSessions->count() > 0 ? 'Retake Interview' : 'Start Interview' }}
                         </button>
                     </form>
                 @endif

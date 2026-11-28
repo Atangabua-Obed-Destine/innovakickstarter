@@ -152,7 +152,7 @@ class MentorController extends Controller
         
         // Get fellow's recent activities
         $recentActivities = Activity::with('track')
-            ->where('user_id', $interview->fellow_id)
+            ->where('fellow_id', $interview->fellow_id)
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
@@ -165,105 +165,47 @@ class MentorController extends Controller
     }
 
     /**
-     * Complete an interview and submit feedback.
+     * The mentor records four 1-10 scores and feedback (or a no-show). The 0-100 score is
+     * the average x 10; then Career Capital and the curriculum are updated.
      */
     public function completeInterview(Request $request, InterviewSession $interview)
     {
-        // Ensure the mentor is assigned to this interview
         if ($interview->interviewer_id !== Auth::id()) {
             abort(403, 'You are not assigned to this interview.');
         }
+        $service = app(\App\Services\InterviewService::class);
 
-        // Handle no-show
         if ($request->boolean('no_show')) {
-            $request->validate([
-                'no_show_notes' => 'nullable|string|max:500',
-            ]);
+            $request->validate(['no_show_notes' => 'nullable|string|max:500']);
+            try {
+                $service->markNoShow($interview, $request->input('no_show_notes'));
+            } catch (\RuntimeException $e) {
+                return redirect()->route('mentor.interviews.review', $interview)->with('error', $e->getMessage());
+            }
 
-            $interview->update([
-                'status' => 'no_show',
-                'completed_at' => now(),
-                'interviewer_notes' => $request->input('no_show_notes', 'Fellow did not attend the session.'),
-            ]);
-
-            return redirect()->route('mentor.interviews')
-                ->with('info', 'Interview marked as no-show.');
+            return redirect()->route('mentor.interviews')->with('info', 'Interview marked as no-show.');
         }
-        
+
         $validated = $request->validate([
             'technical_score' => 'required|integer|min:1|max:10',
             'communication_score' => 'required|integer|min:1|max:10',
             'problem_solving_score' => 'required|integer|min:1|max:10',
             'overall_score' => 'required|integer|min:1|max:10',
-            'feedback' => 'required|string|min:50',
-            'strengths' => 'nullable|string',
-            'areas_for_improvement' => 'nullable|string',
-            'recommendations' => 'nullable|string',
-            'internal_notes' => 'nullable|string',
+            'feedback' => 'required|string|min:50|max:5000',
+            'strengths' => 'nullable|string|max:3000',
+            'areas_for_improvement' => 'nullable|string|max:3000',
+            'recommendations' => 'nullable|string|max:3000',
+            'internal_notes' => 'nullable|string|max:3000',
         ]);
-        
-        // Calculate normalized score (1-10 → 0-100)
-        $avgScore = round((
-            $validated['technical_score'] + 
-            $validated['communication_score'] + 
-            $validated['problem_solving_score'] + 
-            $validated['overall_score']
-        ) / 4 * 10, 2);
-        
-        // Build rubric_scores JSON for the migration column
-        $rubricScores = [
-            'technical' => $validated['technical_score'],
-            'communication' => $validated['communication_score'],
-            'problem_solving' => $validated['problem_solving_score'],
-            'overall' => $validated['overall_score'],
-        ];
 
-        // Update interview with both individual fields and rubric JSON
-        $interview->update([
-            'status' => 'completed',
-            'completed_at' => now(),
-            'score' => $avgScore,
-            'rubric_scores' => $rubricScores,
-            'technical_score' => $validated['technical_score'],
-            'communication_score' => $validated['communication_score'],
-            'problem_solving_score' => $validated['problem_solving_score'],
-            'overall_score' => $validated['overall_score'],
-            'feedback' => $validated['feedback'],
-            'strengths' => $validated['strengths'],
-            'areas_for_improvement' => $validated['areas_for_improvement'],
-            'recommendations' => $validated['recommendations'],
-            'internal_notes' => $validated['internal_notes'],
-            'interviewer_notes' => $validated['feedback'],
-        ]);
-        
-        // Recalculate Career Capital score for the fellow
         try {
-            $fellow = $interview->fellow;
-            $track = $interview->track;
-            
-            if ($fellow && $track) {
-                $this->calculator->updateScore($fellow, $track);
-            }
-        } catch (\Throwable $e) {
-            // Log but don't fail the request
-            \Log::warning("Failed to update career capital after interview: {$e->getMessage()}");
+            $interview = $service->completeHuman($interview, Auth::user(), $validated);
+        } catch (\RuntimeException $e) {
+            return redirect()->route('mentor.interviews.review', $interview)->with('error', $e->getMessage());
         }
 
-        // Notify the fellow
-        try {
-            Notification::send(
-                $interview->fellow_id,
-                'Interview Feedback Ready',
-                "Your mentor has submitted feedback for your {$interview->track?->name} interview. Score: {$avgScore}/100",
-                route('fellow.interviews.show', $interview->id),
-                'View Feedback'
-            );
-        } catch (\Throwable $e) {
-            \Log::warning("Failed to send interview notification: {$e->getMessage()}");
-        }
-        
         return redirect()->route('mentor.interviews')
-            ->with('success', 'Interview feedback submitted successfully!');
+            ->with('success', 'Feedback submitted. Score: ' . rtrim(rtrim(number_format((float) $interview->score, 1), '0'), '.') . '/100.');
     }
 
     /**

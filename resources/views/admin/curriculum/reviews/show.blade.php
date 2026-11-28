@@ -106,6 +106,10 @@
             {{-- Activity Details (Collapsible) --}}
             @include('admin.curriculum.reviews._activity_details', ['activity' => $progress->curriculumActivity])
 
+            @if($progress->curriculumActivity?->requiresInterviewSession())
+                @include('admin.curriculum.reviews._interview')
+            @endif
+
             {{-- Submission Evidence --}}
             <div class="card p-6">
                 <h3 class="text-white font-semibold mb-4">Submission Evidence</h3>

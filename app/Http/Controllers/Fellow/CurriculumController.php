@@ -191,8 +191,12 @@ class CurriculumController extends Controller
 
         // For mock_interview activities, load linked interview sessions
         $linkedInterviews = collect();
+        $interviewStanding = null;
         if ($activity->requiresInterviewSession()) {
-            $linkedInterviews = $this->curriculumService->getLinkedInterviews($fellow, $activity);
+            $engine = app(\App\Services\Interview\InterviewEngine::class);
+            $linkedInterviews = $this->curriculumService->getLinkedInterviews($fellow, $activity)
+                ->each(fn ($s) => $engine->isExpired($s) && $engine->expire($s));
+            $interviewStanding = $this->curriculumService->interviewStanding($fellow, $activity);
         }
 
         // Collaborative activities: find (or show) the fellow's review partner.
@@ -248,7 +252,7 @@ class CurriculumController extends Controller
         // Key words: plain-English meanings of the technical words this lesson uses.
         $glossary = $isOpen ? app(\App\Services\GlossaryService::class)->forActivity($activity) : [];
 
-        return view('fellow.curriculum.activity-show', compact('activity', 'progress', 'linkedInterviews', 'reviewPartner', 'lessonSections', 'quickChecks', 'orientationRequired', 'colabUrl', 'sandbox', 'isOpen', 'why', 'stakeholder', 'foundationNeeds', 'glossary', 'squadChapter', 'squad', 'squadWaiting'));
+        return view('fellow.curriculum.activity-show', compact('activity', 'progress', 'linkedInterviews', 'interviewStanding', 'reviewPartner', 'lessonSections', 'quickChecks', 'orientationRequired', 'colabUrl', 'sandbox', 'isOpen', 'why', 'stakeholder', 'foundationNeeds', 'glossary', 'squadChapter', 'squad', 'squadWaiting'));
     }
 
     /** All key words of the fellow's track, grouped by the chapter that introduces them. */
@@ -284,16 +288,14 @@ class CurriculumController extends Controller
                 $interview = $result['interview'];
 
                 if ($interview->mode === \App\Enums\InterviewMode::AI) {
-                    // AI interviews are already IN_PROGRESS from createLinkedInterview
-                    return redirect()
-                        ->route('interviews.ai-room', $interview)
-                        ->with('success', 'Interview session started! Good luck.');
+                    // The briefing comes first; the questions start when the fellow is ready.
+                    return redirect()->route('interviews.room', $interview);
                 }
 
-                // For human/peer interviews, redirect to the interview show page
+                // Human interviews: the team assigns a mentor, a time and a meeting link.
                 return redirect()
                     ->route('interviews.show', $interview)
-                    ->with('success', 'Interview session created! Schedule it when ready.');
+                    ->with('success', 'Interview requested. The team will assign a mentor and a time, and you will be notified.');
             }
 
             return redirect()
@@ -318,15 +320,12 @@ class CurriculumController extends Controller
             $interview = $this->curriculumService->launchInterviewAttempt($fellow, $activity->id);
 
             if ($interview->mode === \App\Enums\InterviewMode::AI) {
-                // AI interviews are already IN_PROGRESS from createLinkedInterview
-                return redirect()
-                    ->route('interviews.ai-room', $interview)
-                    ->with('success', 'New interview session started!');
+                return redirect()->route('interviews.room', $interview);
             }
 
             return redirect()
                 ->route('interviews.show', $interview)
-                ->with('success', 'New interview session created!');
+                ->with('success', 'Interview requested. The team will assign a mentor and a time, and you will be notified.');
         } catch (\Exception $e) {
             return redirect()
                 ->route('curriculum.activity.show', $activity)

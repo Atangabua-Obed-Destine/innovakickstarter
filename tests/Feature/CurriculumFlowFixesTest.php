@@ -94,6 +94,7 @@ class CurriculumFlowFixesTest extends TestCase
     }
 
     // ---------------------------------------------------------------- interviews
+    // (The interview engine itself is covered in InterviewEngineTest and InterviewFlowTest.)
 
     public function test_a_mock_interview_with_an_unknown_type_is_a_technical_check(): void
     {
@@ -101,57 +102,19 @@ class CurriculumFlowFixesTest extends TestCase
 
         $this->assertSame(InterviewType::TECHNICAL_CODING, $interview->type);
         $this->assertSame(InterviewStatus::IN_PROGRESS, $interview->status);
+        // Planned on the server from the milestone, even with the AI unavailable.
+        $this->assertNotEmpty($interview->plan['items']);
+        $this->assertSame('NumPy & Pandas Fundamentals', $interview->context['milestone']['title']);
     }
 
-    public function test_finishing_the_ai_room_completes_the_interview_from_server_scores_and_passes_the_activity(): void
-    {
-        [, $progress, $interview] = $this->startMockInterview();
-        $this->answered($interview, [80, 90, null]); // the third answer could not be scored
-
-        // Exactly what the room sends; a made-up score from the browser is ignored.
-        $this->actingAs($this->fellow)
-            ->postJson(route('interviews.complete', $interview), ['score' => 100, 'scores' => [100], 'evaluations' => [['score' => 80], ['score' => 90], ['score' => null], ['score' => 0, 'skipped' => true]]])
-            ->assertOk()
-            ->assertJson(['status' => 'completed', 'not_scored' => false]);
-
-        $interview->refresh();
-        $this->assertSame(InterviewStatus::COMPLETED, $interview->status);
-        // (80 + 90 + 0 for the skipped question) / 3; the unscored answer is left out.
-        $this->assertEqualsWithDelta(56.7, (float) $interview->overall_score, 0.05);
-
-        // Below the 70 minimum: the activity stays open for another attempt.
-        $this->assertSame(CurriculumStatus::IN_PROGRESS, $progress->fresh()->status);
-
-        // A second attempt that passes submits the activity for review.
-        $retry = app(CurriculumService::class)->launchInterviewAttempt($this->fellow, $progress->curriculum_activity_id);
-        $this->answered($retry, [85, 75]);
-        $this->postJson(route('interviews.complete', $retry), ['evaluations' => []])->assertOk();
-
-        $this->assertSame(CurriculumStatus::SUBMITTED, $progress->fresh()->status);
-        $this->assertSame(80, (int) $progress->fresh()->score_awarded);
-    }
-
-    public function test_an_interview_nothing_could_score_is_completed_as_not_scored(): void
-    {
-        [, $progress, $interview] = $this->startMockInterview();
-        $this->answered($interview, [null, null]);
-
-        $this->actingAs($this->fellow)->postJson(route('interviews.complete', $interview), ['evaluations' => []])
-            ->assertOk()->assertJson(['not_scored' => true, 'score' => null]);
-
-        $this->assertNull($interview->fresh()->overall_score);
-        $this->assertSame(CurriculumStatus::IN_PROGRESS, $progress->fresh()->status);
-        // Completing it twice is refused.
-        $this->postJson(route('interviews.complete', $interview), [])->assertStatus(409);
-    }
-
-    public function test_a_fellow_cannot_post_rubric_scores_for_a_human_interview(): void
+    public function test_the_old_score_endpoints_are_gone_and_a_fellow_cannot_score_a_human_interview(): void
     {
         $interview = InterviewSession::create(['fellow_id' => $this->fellow->id, 'track_id' => $this->track->id, 'type' => InterviewType::BEHAVIORAL,
-            'mode' => InterviewMode::HUMAN, 'status' => InterviewStatus::IN_PROGRESS, 'scheduled_at' => now()]);
+            'mode' => InterviewMode::HUMAN, 'status' => InterviewStatus::SCHEDULED, 'scheduled_at' => now()]);
 
-        $this->actingAs($this->fellow)->post(route('interviews.complete', $interview), ['scores' => ['communication' => 100]])->assertForbidden();
-        $this->assertSame(InterviewStatus::IN_PROGRESS, $interview->fresh()->status);
+        $this->actingAs($this->fellow)->post("/interviews/{$interview->id}/complete", ['scores' => ['communication' => 100]])->assertNotFound();
+        $this->post(route('mentor.interviews.complete', $interview), ['technical_score' => 10])->assertForbidden();
+        $this->assertSame(InterviewStatus::SCHEDULED, $interview->fresh()->status);
     }
 
     public function test_a_stuck_ai_interview_can_be_cancelled_and_a_new_attempt_launched(): void
@@ -169,43 +132,12 @@ class CurriculumFlowFixesTest extends TestCase
     public function test_the_interview_page_shows_real_results(): void
     {
         [, , $interview] = $this->startMockInterview();
-        $this->answered($interview, [null]);
 
         $this->actingAs($this->fellow)->get(route('interviews.show', $interview))
-            ->assertOk()->assertSee('Continue Interview')->assertSee('Cancel Interview')->assertDontSee('John Doe');
+            ->assertOk()->assertSee('Open the briefing')->assertSee('Cancel')->assertDontSee('John Doe');
 
         $interview->update(['status' => InterviewStatus::COMPLETED, 'score' => null, 'overall_score' => null]);
         $this->get(route('interviews.show', $interview))->assertOk()->assertSee('Not scored')->assertDontSee('85%');
-    }
-
-    public function test_curriculum_interview_questions_are_about_the_milestone(): void
-    {
-        [, , $interview] = $this->startMockInterview();
-        $questions = ['questions' => [
-            ['question' => 'What does groupby return before you aggregate?', 'type' => 'conceptual'],
-            ['question' => 'How would you find total sales per region?', 'type' => 'coding'],
-            ['question' => 'When would you use a left merge?', 'type' => 'conceptual'],
-        ]];
-        Http::fake(['api.groq.com/*' => Http::response(['choices' => [['message' => ['content' => json_encode($questions)]]]])]);
-
-        $this->actingAs($this->fellow)->getJson(route('interviews.questions', $interview))
-            ->assertOk()->assertJsonPath('questions.0.question', 'What does groupby return before you aggregate?');
-
-        Http::assertSent(fn (HttpRequest $r) => str_contains($r['messages'][1]['content'], 'NumPy & Pandas Fundamentals')
-            && str_contains($r['messages'][1]['content'], 'Selecting & Filtering Data'));
-    }
-
-    public function test_question_answers_in_another_shape_are_read_and_a_useless_one_is_retried(): void
-    {
-        [, , $interview] = $this->startMockInterview();
-        $answer = fn (array $content) => ['choices' => [['message' => ['content' => json_encode($content)]]]];
-        Http::fake(['api.groq.com/*' => Http::sequence()
-            ->push($answer(['note' => 'Here are some questions']))
-            ->push($answer(['interview_questions' => [['text' => 'What is a DataFrame index?'], ['prompt' => 'How do you filter rows?'], ['question' => 'What does merge(how="left") keep?']]]))]);
-
-        $this->actingAs($this->fellow)->getJson(route('interviews.questions', $interview))
-            ->assertOk()->assertJsonCount(3, 'questions')->assertJsonPath('questions.1.question', 'How do you filter rows?');
-        Http::assertSentCount(2);
     }
 
     // ---------------------------------------------------------------- deadlines

@@ -232,8 +232,9 @@ class CareerCapitalCalculator
         $interviews = $fellow->interviewSessions()
             ->where('track_id', $track->id)
             ->completed()
-            // Interviews the AI could not score have no score and do not count.
+            // Interviews the AI could not score have no score and do not count; practice never counts.
             ->whereNotNull('score')
+            ->where(fn ($q) => $q->where('is_practice', false)->orWhereNull('is_practice'))
             ->orderByDesc('completed_at')
             ->limit(10) // Use last 10 interviews
             ->get(['id', 'score', 'completed_at']);
