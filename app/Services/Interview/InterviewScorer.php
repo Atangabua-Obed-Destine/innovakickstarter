@@ -74,6 +74,22 @@ class InterviewScorer
         ])->save();
     }
 
+    /**
+     * Lessons and Practice Lab links for a next step: the AI's skill first, then the chapter's
+     * own skills, so a step is linked even when the AI names a skill no lesson uses.
+     */
+    protected function stepLinks(InterviewSession $s, ?string $skill, ?string $milestoneId): array
+    {
+        $candidates = array_values(array_unique(array_filter(array_merge([$skill], (array) ($s->context['chapter']['skills'] ?? [])), 'is_string')));
+        foreach ($candidates as $candidate) {
+            if ($links = $this->links->links($s->track, $candidate, $milestoneId)) {
+                return $links;
+            }
+        }
+
+        return [];
+    }
+
     public function markFailed(InterviewSession $s, string $error): void
     {
         $s->forceFill([
@@ -199,7 +215,7 @@ PROMPT;
             ], $questions),
             'next_steps' => collect((array) ($out['next_steps'] ?? []))->filter(fn ($n) => is_array($n) && is_string($n['text'] ?? null))->take(3)
                 ->map(fn ($n) => ['text' => mb_substr($n['text'], 0, 400), 'skill' => is_string($n['skill'] ?? null) ? mb_substr($n['skill'], 0, 40) : null,
-                    'links' => $this->links->links($s->track, $n['skill'] ?? ($s->context['chapter']['skills'][0] ?? null), $chapterMilestone)])
+                    'links' => $this->stepLinks($s, is_string($n['skill'] ?? null) ? $n['skill'] : null, $chapterMilestone)])
                 ->values()->all(),
             'scored_at' => now()->toIso8601String(),
             'by' => 'ai',
